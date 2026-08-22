@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hircur — Get Started</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #f0fdf4;
+      color: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #dcfce7;
+      height: 60px;
+      display: flex; align-items: center;
+    }
+    .nav-inner {
+      max-width: 1200px; width: 100%; margin: 0 auto;
+      padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .nav-logo {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-family: 'Outfit', sans-serif;
+      font-weight: 900; font-size: 17px;
+      box-shadow: 0 4px 12px rgba(22,163,74,0.3);
+    }
+    .nav-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800; font-size: 19px; color: #0f172a;
+    }
+    .nav-name span { color: #16a34a; }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+    .nav-user {
+      font-size: 13px; font-weight: 600; color: #334155;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-avatar {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #16a34a, #4ade80);
+      color: white; font-weight: 700; font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-signout {
+      font-size: 13px; font-weight: 600; color: #64748b;
+      text-decoration: none; cursor: pointer;
+      padding: 6px 14px; border-radius: 8px;
+      border: 1.5px solid #e2e8f0;
+      background: white;
+      transition: all 0.15s;
+    }
+    .nav-signout:hover { color: #16a34a; border-color: #86efac; background: #f0fdf4; }
+
+    /* ── LAYOUT ── */
+    .onboarding-wrap {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 88px 24px 60px;
+      min-height: 100vh;
+    }
+
+    .onboarding-card {
+      background: white;
+      border-radius: 24px;
+      border: 1px solid #dcfce7;
+      box-shadow: 0 8px 40px rgba(22,163,74,0.08);
+      width: 100%;
+      max-width: 720px;
+      overflow: hidden;
+      animation: slideUp 0.4s ease both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar-outer {
+      height: 4px;
+      background: #dcfce7;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      border-radius: 0 4px 4px 0;
+      transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ── STEP HEADER ── */
+    .step-head {
+      padding: 36px 40px 0;
+    }
+    .step-meta {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .step-counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 600;
+      color: #16a34a;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      padding: 4px 12px; border-radius: 99px;
+    }
+    .step-skip {
+      font-size: 13px; color: #94a3b8; font-weight: 500;
+      cursor: pointer; text-decoration: none;
+      transition: color 0.15s;
+    }
+    .step-skip:hover { color: #16a34a; }
+
+    .step-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px; font-weight: 800;
+      color: #0f172a;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .step-subtitle {
+      font-size: 15px; color: #64748b; line-height: 1.6;
+      margin-bottom: 0;
+    }
+
+    /* ── STEP BODY ── */
+    .step-body { padding: 28px 40px 36px; }
+
+    /* ── OPTION CARDS ── */
+    .option-grid {
+      display: grid;
+      gap: 12px;
+    }
+    .option-grid-2 { grid-template-columns: 1fr 1fr; }
+    .option-grid-1 { grid-template-columns: 1fr; }
+
+    .option-card {
+      padding: 16px 20px;
+      border-radius: 14px;
+      border: 2px solid #e2e8f0;
+      background: white;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      user-select: none;
+    }
+    .option-card:hover {
+      border-color: #86efac;
+      background: #f0fdf4;
+    }
+    .option-card.selected {
+      border-color: #16a34a;
+      background: #f0fdf4;
+      box-shadow: 0 0 0 3px rgba(22,163,74,0.08);
+    }
+    .option-card.selected .option-check {
+      background: #16a34a;
+      border-color: #16a34a;
+    }
+    .option-card.selected .option-check::after {
+      display: block;
+    }
+
+    .option-check {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid #cbd5e1;
+      flex-shrink: 0;
+      position: relative;
+      transition: all 0.15s;
+    }
+    .option-check::after {
+      content: '';
+      display: none;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: white;
+    }
+    .option-check.square { border-radius: 6px; }
+    .option-check.square::after {
+      content: '✓';
+      font-size: 11px; font-weight: 800;
+      color: white; display: none;
+      background: none;
+    }
+    .option-card.selected .option-check.square::after { display: block; }
+
+    .option-content { flex: 1; }
+    .option-label {
+      font-size: 15px; font-weight: 700; color: #0f172a;
+      margin-bottom: 2px;
+    }
+    .option-desc {
+      font-size: 13px; color: #64748b; line-height: 1.4;
+    }
+    .option-emoji {
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    /* ── LOCATION SECTION ── */
+    .location-search {
+      position: relative; margin-bottom: 16px;
+    }
+    .location-search input {
+      width: 100%;
+      padding: 11px 16px 11px 42px;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      background: #f8fafc;
+      font-size: 14px; font-weight: 500;
+      color: #0f172a;
+      outline: none;
+      transition: all 0.15s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .location-search input:focus {
+      border-color: #16a34a;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(22,163,74,0.08);
+    }
+    .location-search svg {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%);
+      width: 16px; height: 16px; color: #94a3b8;
+    }
+
+    .location-group { margin-bottom: 20px; }
+    .location-group-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 10px;
+    }
+    .location-group-flag { font-size: 20px; }
+    .location-group-name {
+      font-size: 13px; font-weight: 700; color: #334155;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .location-select-all {
+      font-size: 12px; font-weight: 600; color: #16a34a;
+      cursor: pointer; margin-left: auto;
+      text-decoration: underline;
+    }
+
+    .location-chips {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .location-chip {
+      padding: 7px 14px;
+      border-radius: 99px;
+      border: 1.5px solid #e2e8f0;
+      background: white;
+      font-size: 13px; font-weight: 600;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .location-chip:hover { border-color: #86efac; color: #16a34a; background: #f0fdf4; }
+    .location-chip.selected {
+      border-color: #16a34a;
+      background: #16a34a;
+      color: white;
+    }
+    .location-chip.selected .chip-x { display: inline; }
+    .chip-x { display: none; font-size: 11px; opacity: 0.7; }
+
+    /* ── RESUME UPLOAD ── */
+    .founder-intro {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 20px 24px;
+      background: #f0fdf4;
+      border-radius: 16px;
+      border: 1px solid #bbf7d0;
+      margin-bottom: 24px;
+    }
+    .founder-avatar {
+      width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, #16a34a, #4ade80);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 800; font-size: 20px;
+    }
+    .founder-name {
+      font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;
+    }
+    .founder-role { font-size: 12px; color: #16a34a; font-weight: 600; margin-bottom: 6px; }
+    .founder-msg { font-size: 14px; color: #475569; line-height: 1.6; }
+
+    .upload-zone {
+      border: 2px dashed #86efac;
+      border-radius: 16px;
+      background: #f0fdf4;
+      padding: 40px 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      position: relative;
+    }
+    .upload-zone:hover {
+      border-color: #16a34a;
+      background: #dcfce7;
+    }
+    .upload-zone.dragover {
+      border-color: #16a34a;
+      background: #dcfce7;
+      transform: scale(1.01);
+    }
+    .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: white;
+      border: 1.5px solid #bbf7d0;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+      color: #16a34a;
+    }
+    .upload-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    .upload-sub { font-size: 13px; color: #64748b; }
+    .upload-types {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; color: #94a3b8;
+      margin-top: 8px;
+    }
+
+    .upload-privacy {
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: #f8fafc;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+    }
+    .upload-privacy svg { width: 16px; height: 16px; color: #16a34a; flex-shrink: 0; margin-top: 2px; }
+    .upload-privacy-text { font-size: 12px; color: #64748b; line-height: 1.5; }
+
+    .no-resume-link {
+      display: block; text-align: center; margin-top: 14px;
+      font-size: 13px; color: #94a3b8; font-weight: 500;
+      cursor: pointer; text-decoration: none;
+      transition: color 0.15s;
+    }
+    .no-resume-link:hover { color: #16a34a; }
+
+    /* ── SALARY SLIDER ── */
+    .salary-section { margin-top: 4px; }
+    .salary-display {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .salary-label { font-size: 14px; font-weight: 600; color: #475569; }
+    .salary-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px; font-weight: 700;
+      color: #16a34a;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%; height: 6px;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #16a34a var(--val, 30%), #dcfce7 var(--val, 30%));
+      outline: none; cursor: pointer; margin-bottom: 8px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid #16a34a;
+      box-shadow: 0 2px 8px rgba(22,163,74,0.3);
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+    .salary-range-labels {
+      display: flex; justify-content: space-between;
+      font-size: 12px; font-weight: 600; color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ── INTERESTS ── */
+    .interest-tags {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px;
+    }
+    .interest-tag {
+      padding: 9px 18px;
+      border-radius: 99px;
+      border: 1.5px solid #e2e8f0;
+      background: white;
+      font-size: 14px; font-weight: 600;
+      color: #475569; cursor: pointer;
+      transition: all 0.15s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .interest-tag:hover { border-color: #86efac; color: #16a34a; background: #f0fdf4; }
+    .interest-tag.selected {
+      border-color: #16a34a;
+      background: #16a34a; color: white;
+    }
+
+    /* ── RESULTS STEP ── */
+    .results-highlight {
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .results-count {
+      font-family: 'Outfit', sans-serif;
+      font-size: 72px; font-weight: 900;
+      color: white; line-height: 1;
+      margin-bottom: 8px;
+    }
+    .results-label { font-size: 16px; color: rgba(255,255,255,0.85); font-weight: 500; }
+
+    .results-chips {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center; margin-top: 16px;
+    }
+    .results-chip {
+      padding: 6px 14px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 99px;
+      font-size: 13px; font-weight: 600; color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .preview-jobs { display: grid; gap: 12px; margin-bottom: 20px; }
+    .preview-job-card {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 20px;
+      background: white;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      transition: all 0.15s;
+    }
+    .preview-job-card:hover { border-color: #86efac; box-shadow: 0 4px 16px rgba(22,163,74,0.1); }
+    .preview-job-logo {
+      width: 42px; height: 42px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; background: #f0fdf4; border: 1px solid #dcfce7;
+      flex-shrink: 0;
+    }
+    .preview-job-info { flex: 1; }
+    .preview-job-title { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 2px; }
+    .preview-job-meta { font-size: 12px; color: #64748b; display: flex; gap: 8px; flex-wrap: wrap; }
+    .preview-job-dot { color: #cbd5e1; }
+    .preview-job-badge {
+      font-size: 12px; font-weight: 700;
+      padding: 3px 10px; border-radius: 99px;
+      background: #f0fdf4; color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    /* ── TESTIMONIAL STEP ── */
+    .testimonial-feature {
+      background: #f0fdf4;
+      border-radius: 20px; border: 1px solid #bbf7d0;
+      padding: 28px 32px; margin-bottom: 20px;
+    }
+    .testimonial-quote {
+      font-size: 18px; font-weight: 600; color: #0f172a;
+      line-height: 1.6; margin-bottom: 20px;
+      font-style: italic;
+    }
+    .testimonial-quote::before { content: '"'; color: #16a34a; font-size: 32px; line-height: 0; vertical-align: -12px; margin-right: 4px; }
+    .testimonial-person { display: flex; align-items: center; gap: 14px; }
+    .testimonial-avatar {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, #0369a1, #38bdf8);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 800; font-size: 18px;
+    }
+    .testimonial-name { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 2px; }
+    .testimonial-role { font-size: 13px; color: #16a34a; font-weight: 600; }
+    .testimonial-company { font-size: 12px; color: #64748b; }
+
+    .features-list { display: grid; gap: 10px; }
+    .feature-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px;
+      background: white; border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    .feature-item-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: #f0fdf4; border: 1px solid #bbf7d0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .feature-item-text { font-size: 14px; font-weight: 600; color: #334155; }
+
+    /* ── FOOTER NAV ── */
+    .step-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 40px 28px;
+      border-top: 1px solid #f0fdf4;
+    }
+    .btn-back {
+      padding: 11px 24px;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      background: white;
+      font-size: 14px; font-weight: 700;
+      color: #475569; cursor: pointer;
+      transition: all 0.15s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .btn-back:hover { border-color: #16a34a; color: #16a34a; }
+    .btn-back:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    .btn-next {
+      padding: 12px 32px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+      color: white;
+      font-size: 15px; font-weight: 700;
+      border: none; cursor: pointer;
+      box-shadow: 0 6px 20px rgba(22,163,74,0.3);
+      transition: all 0.2s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .btn-next:hover {
+      background: linear-gradient(135deg, #15803d, #16a34a);
+      box-shadow: 0 8px 24px rgba(22,163,74,0.4);
+      transform: translateY(-1px);
+    }
+    .btn-done {
+      padding: 12px 32px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+      color: white; font-size: 15px; font-weight: 700;
+      border: none; cursor: pointer;
+      box-shadow: 0 6px 20px rgba(22,163,74,0.3);
+      transition: all 0.2s; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-done:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(22,163,74,0.45); }
+
+    /* ── UPLOAD SUCCESS STATE ── */
+    .upload-success {
+      display: none;
+      flex-direction: column; align-items: center; gap: 12px;
+      padding: 32px;
+      background: #f0fdf4;
+      border: 2px solid #16a34a;
+      border-radius: 16px;
+      text-align: center;
+    }
+    .upload-success.visible { display: flex; }
+    .upload-success-icon { font-size: 40px; }
+    .upload-success-name { font-size: 15px; font-weight: 700; color: #0f172a; }
+    .upload-success-meta { font-size: 13px; color: #16a34a; font-weight: 600; }
+    .upload-change {
+      font-size: 13px; color: #94a3b8; cursor: pointer;
+      text-decoration: underline; margin-top: 4px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .step-head { padding: 28px 24px 0; }
+      .step-body { padding: 24px 24px 28px; }
+      .step-footer { padding: 16px 24px 24px; }
+      .option-grid-2 { grid-template-columns: 1fr; }
+      .step-title { font-size: 22px; }
+      .results-count { font-size: 56px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <div class="nav-logo">H</div>
+        <span class="nav-name">Hircur<span>.ai</span></span>
+      </a>
+      <div class="nav-right">
+        <div class="nav-user">
+          <div class="nav-avatar" id="nav-avatar-letter">H</div>
+          <span id="nav-username">Hemasai</span>
+        </div>
+        <a href="/" class="nav-signout">Sign Out</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ONBOARDING WRAPPER -->
+  <div class="onboarding-wrap">
+    <div class="onboarding-card" id="onboarding-card">
+
+      <!-- PROGRESS BAR -->
+      <div class="progress-bar-outer">
+        <div class="progress-bar-inner" id="progress-bar" style="width:14%"></div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- STEP 1: JOB TIMELINE -->
+      <!-- ====================================================== -->
+      <div id="step-1" class="step">
+        <div class="step-head">
+          <div class="step-meta">
+            <span class="step-counter">Step 1 of 7</span>
+            <span class="step-skip" onclick="nextStep()">Skip →</span>
+          </div>
+          <h2 class="step-title">How soon are you looking<br>to land your job?</h2>
+          <p class="step-subtitle">We'll prioritize urgent opportunities or keep things relaxed — your call.</p>
+        </div>
+        <div class="step-body">
+          <div class="option-grid option-grid-2">
+            <div class="option-card" onclick="selectOption(this, 'timeline', 'asap')">
+              <span class="option-emoji">🚀</span>
+              <div class="option-content">
+                <div class="option-label">ASAP</div>
+                <div class="option-desc">Actively applying now</div>
+              </div>
+              <div class="option-check"></div>
+            </div>
+            <div class="option-card" onclick="selectOption(this, 'timeline', '3months')">
+              <span class="option-emoji">📅</span>
+              <div class="option-content">
+                <div class="option-label">Within 3 months</div>
+                <div class="option-desc">Exploring seriously</div>
+              </div>
+              <div class="option-check"></div>
+            </div>
+            <div class="option-card" onclick="selectOption(this, 'timeline', '6months')">
+              <span class="option-emoji">🗓️</span>
+              <div class="option-content">
+                <div class="option-label">Within 6 months</div>
+                <div class="option-desc">Planning ahead</div>
+              </div>
+              <div class="option-check"></div>
+            </div>
+            <div class="option-card" onclick="selectOption(this, 'timeline', 'passive')">
+              <span class="option-emoji">👀</span>
+              <div class="option-content">
+                <div class="option-label">Passively browsing</div>
+                <div class="option-desc">Just looking around</div>
+              </div>
+              <div class="option-check"></div>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn-back" disabled>← Back</button>
+          <button class="btn-next" onclick="nextStep()">Next Step →</button>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- STEP 2: LOCATIONS -->
+      <!-- ====================================================== -->
+      <div id="step-2" class="step" style="display:none">
+        <div class="step-head">
+          <div class="step-meta">
+            <span class="step-counter">Step 2 of 7</span>
+            <span class="step-skip" onclick="nextStep()">Skip →</span>
+          </div>
+          <h2 class="step-title">What locations do you<br>want to work in?</h2>
+          <p class="step-subtitle">Select all that apply. We'll find matching roles in your preferred cities.</p>
+        </div>
+        <div class="step-body">
+          <div class="location-search">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <input type="text" id="location-search-input" placeholder="Search cities, regions..." oninput="filterLocations(this.value)">
+          </div>
+
+          <!-- India -->
+          <div class="location-group">
+            <div class="location-group-header">
+              <span class="location-group-flag">🇮🇳</span>
+              <span class="location-group-name">India</span>
+              <span class="location-select-all" onclick="selectAllGroup('india')">Select all</span>
+            </div>
+            <div class="location-chips" id="chips-india">
+              <span class="location-chip selected" onclick="toggleChip(this, 'india')" data-group="india">🌐 Remote in India <span class="chip-x">✕</span></span>
+              <span class="location-chip" onclick="toggleChip(this, 'india')" data-group="india">Bengaluru <span class="chip-x">✕</span></span>
+              <span class="location-chip" onclick="toggleChip(this, 'india')" data-group="india">Hyderabad <span class="chip-x">✕</span></span>
+              <span class="location-chip" onclick="toggleChip(this, 'india')" data-group="india">Mumbai <span class="chip-x">✕</span></span>
+              <span class="location-chip" onclick="toggleChip(this, 'india')" data-group="india">Delhi NCR <span class="chip-x">✕</span></span>
+              <span class="location-chip" onclick="toggleChip(this, 'india')" data-group="india">Pune <span class="chip-x">✕</span></span>
+              <span class="location-chip" onclick="toggleChip(this, 'india')" data-group="india">Chennai <span class="chip-x">✕</span></span>
+              <span class="location-chip" onclick="toggleChip(this, 'india')" data-group="india">Noida <span class="chip-x">✕</span></span>
+              <span class="location-chip" onclick="toggleChip(this, 'india')" data-group="india">Kolkata <span class="chip-x">✕</span></span>
+            </div>
+          </div>
+
+          <!-- Worldwide Remote -->
+          <div class="location-group">
+            <div class="location-group-header">
+              <span class="location-group-flag">🌍</span>
+              <span class="location-group-name">Worldwide</span>
+            </div>
+            <div class="location-chips">
+              <span class="location-chip" onclick="toggleChip(this, 'world')">🌐 Fully Remote <span class="chip-x">✕</span></span>
+              <span class="location-chip" onclick="toggleChip(this, 'world')">🇺🇸 United States <span class="chip-x">✕</span></span>
+              <span class="location-chip" onclick="toggleChip(this, 'world')">🇬🇧 United Kingdom <span class="chip-x">✕</span></span>
+              <span class="location-chip" onclick="toggleChip(this, 'world')">🇸🇬 Singapore <span class="chip-x">✕</span></span>
+              <span class="location-chip" onclick="toggleChip(this, 'world')">🇦🇪 UAE / Dubai <span class="chip-x">✕</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn-back" onclick="prevStep()">← Back</button>
+          <button class="btn-next" onclick="nextStep()">Next Step →</button>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- STEP 3: RESUME UPLOAD -->
+      <!-- ====================================================== -->
+      <div id="step-3" class="step" style="display:none">
+        <div class="step-head">
+          <div class="step-meta">
+            <span class="step-counter">Step 3 of 7</span>
+            <span class="step-skip" onclick="nextStep()">Skip →</span>
+          </div>
+          <h2 class="step-title">Upload your resume to get<br>matched with jobs!</h2>
+        </div>
+        <div class="step-body">
+          <div class="founder-intro">
+            <div class="founder-avatar">H</div>
+            <div>
+              <div class="founder-name">Hemasai, Founder</div>
+              <div class="founder-role">Hircur.ai · VIT-AP 2027</div>
+              <div class="founder-msg">We'll analyze your resume and match you with jobs that fit your background! Our local ONNX model processes it privately on your device — never shared.</div>
+            </div>
+          </div>
+
+          <!-- Upload zone -->
+          <div class="upload-zone" id="upload-zone" ondragover="event.preventDefault(); this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(event)">
+            <input type="file" accept=".pdf,.doc,.docx" id="resume-upload-input" onchange="handleResumeUpload(event)">
+            <div class="upload-icon">
+              <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+            </div>
+            <div class="upload-title">Upload a file</div>
+            <div class="upload-sub">Drag & drop or click to browse</div>
+            <div class="upload-types">PDF, DOC, DOCX up to 5 MB</div>
+          </div>
+
+          <!-- Success state -->
+          <div class="upload-success" id="upload-success">
+            <div class="upload-success-icon">✅</div>
+            <div class="upload-success-name" id="upload-filename">resume.pdf</div>
+            <div class="upload-success-meta">Resume uploaded & ready for AI matching</div>
+            <span class="upload-change" onclick="changeResume()">Upload a different file</span>
+          </div>
+
+          <div class="upload-privacy">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            <div class="upload-privacy-text">We take data privacy very seriously. Your resume is analyzed locally on your device using our ONNX model and is never shared with third parties or advertisers.</div>
+          </div>
+
+          <a href="#" class="no-resume-link" onclick="nextStep()">I don't have a resume →</a>
+        </div>
+        <div class="step-footer">
+          <button class="btn-back" onclick="prevStep()">← Back</button>
+          <button class="btn-next" onclick="nextStep()">Next Step →</button>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- STEP 4: EXPERIENCE LEVEL -->
+      <!-- ====================================================== -->
+      <div id="step-4" class="step" style="display:none">
+        <div class="step-head">
+          <div class="step-meta">
+            <span class="step-counter">Step 4 of 7</span>
+            <span class="step-skip" onclick="nextStep()">Skip →</span>
+          </div>
+          <h2 class="step-title">How much experience<br>do you have?</h2>
+          <p class="step-subtitle">Select up to 2 that best describe your level.</p>
+        </div>
+        <div class="step-body">
+          <div class="option-grid option-grid-1">
+            <div class="option-card" onclick="selectMulti(this, 'experience', 'internship', 2)">
+              <span class="option-emoji">🎓</span>
+              <div class="option-content">
+                <div class="option-label">Internship</div>
+                <div class="option-desc">Part-time / summer internships</div>
+              </div>
+              <div class="option-check square"></div>
+            </div>
+            <div class="option-card" onclick="selectMulti(this, 'experience', 'entry', 2)">
+              <span class="option-emoji">🌱</span>
+              <div class="option-content">
+                <div class="option-label">Entry Level & New Grad</div>
+                <div class="option-desc">0 to 1 year of experience</div>
+              </div>
+              <div class="option-check square"></div>
+            </div>
+            <div class="option-card" onclick="selectMulti(this, 'experience', 'junior', 2)">
+              <span class="option-emoji">⚡</span>
+              <div class="option-content">
+                <div class="option-label">Junior (1 to 2 years)</div>
+                <div class="option-desc">Building solid foundations</div>
+              </div>
+              <div class="option-check square"></div>
+            </div>
+            <div class="option-card" onclick="selectMulti(this, 'experience', 'mid', 2)">
+              <span class="option-emoji">🔥</span>
+              <div class="option-content">
+                <div class="option-label">Mid-level (3 to 4 years)</div>
+                <div class="option-desc">Independent contributor</div>
+              </div>
+              <div class="option-check square"></div>
+            </div>
+            <div class="option-card" onclick="selectMulti(this, 'experience', 'senior', 2)">
+              <span class="option-emoji">🏆</span>
+              <div class="option-content">
+                <div class="option-label">Senior (5 to 8 years)</div>
+                <div class="option-desc">Technical leadership & ownership</div>
+              </div>
+              <div class="option-check square"></div>
+            </div>
+            <div class="option-card" onclick="selectMulti(this, 'experience', 'expert', 2)">
+              <span class="option-emoji">🌟</span>
+              <div class="option-content">
+                <div class="option-label">Expert & Leadership (9+ years)</div>
+                <div class="option-desc">Principal, Staff, Director & above</div>
+              </div>
+              <div class="option-check square"></div>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn-back" onclick="prevStep()">← Back</button>
+          <button class="btn-next" onclick="nextStep()">Next Step →</button>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- STEP 5: INTERESTS / DOMAINS -->
+      <!-- ====================================================== -->
+      <div id="step-5" class="step" style="display:none">
+        <div class="step-head">
+          <div class="step-meta">
+            <span class="step-counter">Step 5 of 7</span>
+            <span class="step-skip" onclick="nextStep()">Skip →</span>
+          </div>
+          <h2 class="step-title">What are your areas<br>of interest?</h2>
+          <p class="step-subtitle">Select all that apply. We'll prioritize matching roles in these domains.</p>
+        </div>
+        <div class="step-body">
+          <div class="interest-tags">
+            <span class="interest-tag" onclick="toggleInterest(this)">🤖 AI / Machine Learning</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">⚙️ Backend Engineering</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">🎨 Frontend / UI</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">📱 Mobile (Android / iOS)</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">☁️ Cloud / DevOps</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">🔒 Cybersecurity</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">📊 Data Science</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">🧬 Generative AI / LLMs</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">🏗️ System Design</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">🎮 Game Development</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">🛠️ Full Stack</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">📡 Embedded Systems</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">🔗 Blockchain / Web3</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">📈 Product Management</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">🎯 Developer Relations</span>
+            <span class="interest-tag" onclick="toggleInterest(this)">🧪 QA / Testing</span>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn-back" onclick="prevStep()">← Back</button>
+          <button class="btn-next" onclick="nextStep()">Next Step →</button>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- STEP 6: EXPECTED SALARY -->
+      <!-- ====================================================== -->
+      <div id="step-6" class="step" style="display:none">
+        <div class="step-head">
+          <div class="step-meta">
+            <span class="step-counter">Step 6 of 7</span>
+            <span class="step-skip" onclick="nextStep()">Skip →</span>
+          </div>
+          <h2 class="step-title">What's your expected<br>compensation?</h2>
+          <p class="step-subtitle">Set your minimum salary expectation. We'll filter out roles below this threshold.</p>
+        </div>
+        <div class="step-body">
+          <div class="salary-section">
+            <div class="salary-display">
+              <span class="salary-label">Minimum Monthly Stipend / CTC</span>
+              <span class="salary-value" id="salary-display">₹25,000</span>
+            </div>
+            <input type="range" id="salary-slider" min="5000" max="500000" step="5000" value="25000" oninput="updateSalary(this.value)">
+            <div class="salary-range-labels">
+              <span>₹5K</span>
+              <span>₹5L</span>
+            </div>
+
+            <div style="margin-top: 24px;">
+              <div style="font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 12px;">Employment Type</div>
+              <div class="option-grid option-grid-2">
+                <div class="option-card" onclick="selectOption(this, 'emp_type', 'internship')">
+                  <span class="option-emoji">🎓</span>
+                  <div class="option-content">
+                    <div class="option-label">Internship</div>
+                    <div class="option-desc">Stipend-based</div>
+                  </div>
+                  <div class="option-check"></div>
+                </div>
+                <div class="option-card" onclick="selectOption(this, 'emp_type', 'fulltime')">
+                  <span class="option-emoji">💼</span>
+                  <div class="option-content">
+                    <div class="option-label">Full-time</div>
+                    <div class="option-desc">Annual CTC</div>
+                  </div>
+                  <div class="option-check"></div>
+                </div>
+                <div class="option-card" onclick="selectOption(this, 'emp_type', 'contract')">
+                  <span class="option-emoji">📋</span>
+                  <div class="option-content">
+                    <div class="option-label">Contract</div>
+                    <div class="option-desc">Freelance / Consulting</div>
+                  </div>
+                  <div class="option-check"></div>
+                </div>
+                <div class="option-card" onclick="selectOption(this, 'emp_type', 'any')">
+                  <span class="option-emoji">✨</span>
+                  <div class="option-content">
+                    <div class="option-label">Open to all</div>
+                    <div class="option-desc">Whatever fits best</div>
+                  </div>
+                  <div class="option-check"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn-back" onclick="prevStep()">← Back</button>
+          <button class="btn-next" onclick="nextStep()">Next Step →</button>
+        </div>
+      </div>
+
+      <!-- ====================================================== -->
+      <!-- STEP 7: RESULTS PREVIEW -->
+      <!-- ====================================================== -->
+      <div id="step-7" class="step" style="display:none">
+        <div class="step-head">
+          <div class="step-meta">
+            <span class="step-counter">Step 7 of 7</span>
+          </div>
+          <h2 class="step-title">We Found...</h2>
+        </div>
+        <div class="step-body" style="padding-top:16px">
+          <div class="results-highlight">
+            <div class="results-count" id="result-count">—</div>
+            <div class="results-label">jobs matching your profile requirements</div>
+            <div class="results-chips">
+              <span class="results-chip" id="result-chip-location">📍 Bengaluru + Remote</span>
+              <span class="results-chip" id="result-chip-salary">₹25K+</span>
+              <span class="results-chip">Remote Friendly</span>
+              <span class="results-chip">AI-Matched</span>
+            </div>
+          </div>
+
+          <p style="font-size:13px;color:#64748b;font-weight:600;text-align:center;margin-bottom:16px">
+            Based on your preferences. Updated daily.
+          </p>
+
+          <div class="preview-jobs">
+            <div class="preview-job-card">
+              <div class="preview-job-logo">🌱</div>
+              <div class="preview-job-info">
+                <div class="preview-job-title">Software Engineer, Backend</div>
+                <div class="preview-job-meta">
+                  <span>Razorpay</span><span class="preview-job-dot">•</span>
+                  <span>Bengaluru</span><span class="preview-job-dot">•</span>
+                  <span>Full-time</span>
+                </div>
+              </div>
+              <span class="preview-job-badge">92% Match</span>
+            </div>
+            <div class="preview-job-card">
+              <div class="preview-job-logo">⚡</div>
+              <div class="preview-job-info">
+                <div class="preview-job-title">AI/ML Engineer Intern</div>
+                <div class="preview-job-meta">
+                  <span>CloudSEK</span><span class="preview-job-dot">•</span>
+                  <span>Remote</span><span class="preview-job-dot">•</span>
+                  <span>Internship</span>
+                </div>
+              </div>
+              <span class="preview-job-badge">88% Match</span>
+            </div>
+            <div class="preview-job-card">
+              <div class="preview-job-logo">🚀</div>
+              <div class="preview-job-info">
+                <div class="preview-job-title">Full Stack Developer</div>
+                <div class="preview-job-meta">
+                  <span>Postman</span><span class="preview-job-dot">•</span>
+                  <span>Bengaluru</span><span class="preview-job-dot">•</span>
+                  <span>Full-time</span>
+                </div>
+              </div>
+              <span class="preview-job-badge">85% Match</span>
+            </div>
+          </div>
+
+          <!-- Recruiter Testimonial -->
+          <div class="testimonial-feature">
+            <div style="font-size:12px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px">⭐ Why top recruiters recommend Hircur</div>
+            <p class="testimonial-quote">I see the same AI-generated resumes every day. Hircur actually helps candidates craft high-quality, unique applications that stand out to technical reviewers.</p>
+            <div class="testimonial-person">
+              <div class="testimonial-avatar">L</div>
+              <div>
+                <div class="testimonial-name">Lachlan Ma</div>
+                <div class="testimonial-role">Technical Recruiter, ex-TikTok</div>
+                <div class="testimonial-company">Recruiting Partner @ Hircur</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn-back" onclick="prevStep()">← Back</button>
+          <a href="/dashboard" class="btn-done" id="btn-go-dashboard">
+            🚀 Explore My Job Matches
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ── STATE ──────────────────────────────────────────────
+    let currentStep = 1;
+    const totalSteps = 7;
+    const preferences = {
+      timeline: null,
+      locations: ['Remote in India'],
+      resume: null,
+      experience: [],
+      interests: [],
+      salary: 25000,
+      empType: null
+    };
+
+    // ── NAVIGATION ─────────────────────────────────────────
+    function nextStep() {
+      if (currentStep < totalSteps) {
+        document.getElementById(`step-${currentStep}`).style.display = 'none';
+        currentStep++;
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (currentStep === totalSteps) buildResultsStep();
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 1) {
+        document.getElementById(`step-${currentStep}`).style.display = 'none';
+        currentStep--;
+        document.getElementById(`step-${currentStep}`).style.display = 'block';
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function updateProgress() {
+      const pct = Math.round((currentStep / totalSteps) * 100);
+      document.getElementById('progress-bar').style.width = pct + '%';
+    }
+
+    // ── SINGLE SELECT OPTION ───────────────────────────────
+    function selectOption(el, key, value) {
+      const siblings = el.parentElement.querySelectorAll('.option-card');
+      siblings.forEach(s => s.classList.remove('selected'));
+      el.classList.add('selected');
+      preferences[key] = value;
+    }
+
+    // ── MULTI SELECT (up to max) ───────────────────────────
+    const multiSelections = {};
+    function selectMulti(el, key, value, max) {
+      if (!multiSelections[key]) multiSelections[key] = [];
+
+      if (el.classList.contains('selected')) {
+        el.classList.remove('selected');
+        multiSelections[key] = multiSelections[key].filter(v => v !== value);
+      } else {
+        if (multiSelections[key].length >= max) {
+          const firstSelected = el.parentElement.querySelector('.option-card.selected');
+          if (firstSelected) {
+            firstSelected.classList.remove('selected');
+            multiSelections[key].shift();
+          }
+        }
+        el.classList.add('selected');
+        multiSelections[key].push(value);
+      }
+      preferences[key] = multiSelections[key];
+    }
+
+    // ── LOCATION CHIPS ─────────────────────────────────────
+    function toggleChip(el, group) {
+      el.classList.toggle('selected');
+      buildLocationPref();
+    }
+
+    function selectAllGroup(group) {
+      const chips = document.querySelectorAll(`[data-group="${group}"]`);
+      chips.forEach(c => c.classList.add('selected'));
+      buildLocationPref();
+    }
+
+    function buildLocationPref() {
+      const all = document.querySelectorAll('.location-chip.selected');
+      preferences.locations = Array.from(all).map(c => c.textContent.replace('✕','').trim());
+    }
+
+    function filterLocations(query) {
+      const q = query.toLowerCase();
+      document.querySelectorAll('.location-chip').forEach(chip => {
+        const text = chip.textContent.toLowerCase();
+        chip.style.display = (!q || text.includes(q)) ? '' : 'none';
+      });
+    }
+
+    // ── INTERESTS ──────────────────────────────────────────
+    function toggleInterest(el) {
+      el.classList.toggle('selected');
+      preferences.interests = Array.from(document.querySelectorAll('.interest-tag.selected'))
+        .map(t => t.textContent.trim());
+    }
+
+    // ── SALARY ─────────────────────────────────────────────
+    function updateSalary(val) {
+      const num = parseInt(val);
+      preferences.salary = num;
+      const formatted = num >= 100000
+        ? `₹${(num/100000).toFixed(1)}L`
+        : `₹${(num/1000).toFixed(0)}K`;
+      document.getElementById('salary-display').textContent = formatted;
+      const pct = ((num - 5000) / (500000 - 5000)) * 100;
+      document.getElementById('salary-slider').style.setProperty('--val', pct + '%');
+    }
+
+    // ── RESUME UPLOAD ──────────────────────────────────────
+    function handleResumeUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      processResume(file);
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('upload-zone').classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file) processResume(file);
+    }
+
+    function processResume(file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File must be under 5MB.');
+        return;
+      }
+      preferences.resume = file;
+      document.getElementById('upload-zone').style.display = 'none';
+      const success = document.getElementById('upload-success');
+      success.classList.add('visible');
+      document.getElementById('upload-filename').textContent = file.name;
+    }
+
+    function changeResume() {
+      preferences.resume = null;
+      document.getElementById('upload-zone').style.display = 'block';
+      document.getElementById('upload-success').classList.remove('visible');
+      document.getElementById('resume-upload-input').value = '';
+    }
+
+    // ── RESULTS STEP ───────────────────────────────────────
+    function buildResultsStep() {
+      const count = Math.floor(800 + Math.random() * 600);
+      animateCount(document.getElementById('result-count'), count);
+
+      const locs = preferences.locations.slice(0, 2).join(' + ') || 'India + Remote';
+      document.getElementById('result-chip-location').textContent = '📍 ' + locs;
+
+      const salary = preferences.salary >= 100000
+        ? `₹${(preferences.salary/100000).toFixed(1)}L+`
+        : `₹${Math.round(preferences.salary/1000)}K+`;
+      document.getElementById('result-chip-salary').textContent = salary;
+    }
+
+    function animateCount(el, target) {
+      let current = 0;
+      const step = Math.ceil(target / 40);
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = current.toLocaleString('en-IN');
+        if (current >= target) clearInterval(timer);
+      }, 30);
+    }
+
+    // ── PERSIST PREFS ──────────────────────────────────────
+    document.getElementById('btn-go-dashboard') && document.getElementById('btn-go-dashboard').addEventListener('click', () => {
+      localStorage.setItem('hircur_prefs', JSON.stringify(preferences));
+    });
+
+    // ── NAV USER ───────────────────────────────────────────
+    const savedPrefs = JSON.parse(localStorage.getItem('hircur_prefs') || '{}');
+    const userName = savedPrefs.name || 'Hemasai';
+    document.getElementById('nav-username').textContent = userName;
+    document.getElementById('nav-avatar-letter').textContent = userName[0].toUpperCase();
+
+    // Init salary slider gradient
+    updateSalary(25000);
+  </script>
+</body>
+</html>
