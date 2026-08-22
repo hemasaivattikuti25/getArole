@@ -259,7 +259,7 @@
     <div class="sidebar-user">
       <div class="user-avatar" id="sidebar-avatar">H</div>
       <div>
-        <div class="user-name" id="sidebar-username">Hemasai</div>
+        <div class="user-name" id="sidebar-username">Candidate</div>
         <div class="user-sub">Candidate Workspace</div>
       </div>
     </div>
@@ -273,7 +273,7 @@
       <div class="search-input-wrap">
         <input type="text" id="job-search-input" placeholder="Search by role, company, or tech stack..." oninput="filterJobs(this.value)">
       </div>
-      <button class="filter-btn active" onclick="toggleFilter(this, 'remote')">Remote</button>
+      <button class="filter-btn" onclick="toggleFilter(this, 'remote')">Remote</button>
       <button class="filter-btn" onclick="toggleFilter(this, 'internship')">Internship</button>
       <button class="filter-btn" onclick="toggleFilter(this, 'fulltime')">Full-Time</button>
       <div style="margin-left:auto; display:flex; gap:8px">
@@ -288,7 +288,7 @@
         
         <div class="col-left">
           <div class="banner-card">
-            <h2 class="banner-title">Welcome, <span id="home-greeting">Hemasai</span></h2>
+            <h2 class="banner-title">Welcome, <span id="home-greeting">Candidate</span></h2>
             <p class="banner-sub">Configure candidate preferences and evaluate active openings using local vector retrieval and 70B parameter neural reasoning.</p>
             <a href="/onboarding" class="btn-banner">Configure Preferences</a>
           </div>
@@ -328,8 +328,8 @@
           <div class="card">
             <div class="card-head"><span class="card-title">Candidate Profile</span></div>
             <div class="card-body">
-              <div style="font-size:14px;font-weight:700;color:var(--text-main);margin-bottom:2px">Hemasai Vattikuti</div>
-              <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">B.Tech Computer Science (2027)</div>
+              <div style="font-size:14px;font-weight:700;color:var(--text-main);margin-bottom:2px">Candidate Profile</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">Computer Science & Engineering</div>
               <div style="padding:10px 14px;background:var(--background);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text-muted);line-height:1.5">
                 ONNX dense embedding index initialized for local similarity scoring.
               </div>
@@ -409,7 +409,7 @@
   <script>
     let allJobs = [];
     let filteredJobs = [];
-    let activeFilter = 'remote';
+    let activeFilter = 'all';
     let selectedJobId = null;
     let tracker = JSON.parse(localStorage.getItem('getarole_tracker') || '{"saved":[],"applied":[],"interview":[],"offer":[]}');
     const prefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
