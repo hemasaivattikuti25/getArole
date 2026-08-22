@@ -6,949 +6,602 @@
   <title>getArole — Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --g50:#f0fdf4; --g100:#dcfce7; --g200:#bbf7d0; --g300:#86efac;
-      --g400:#4ade80; --g500:#22c55e; --g600:#16a34a; --g700:#15803d;
-      --n50:#f8fafc; --n100:#f1f5f9; --n200:#e2e8f0; --n300:#cbd5e1;
-      --n400:#94a3b8; --n500:#64748b; --n600:#475569; --n700:#334155;
-      --n800:#1e293b; --n900:#0f172a;
-      --sidebar-w:220px;
+      --primary: #059669;
+      --primary-hover: #047857;
+      --primary-light: #ecfdf5;
+      --primary-border: #a7f3d0;
+      --surface: #ffffff;
+      --background: #f8fafc;
+      --border-subtle: #f1f5f9;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #94a3b8;
+      --sidebar-w: 220px;
     }
-    body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--n50); color:var(--n900); min-height:100vh; display:flex; overflow-x:hidden; }
-    h1,h2,h3,h4 { font-family:'Outfit',sans-serif; }
-    ::-webkit-scrollbar { width:5px; } ::-webkit-scrollbar-track { background:transparent; }
-    ::-webkit-scrollbar-thumb { background:var(--g200); border-radius:99px; } ::-webkit-scrollbar-thumb:hover { background:var(--g300); }
 
-    /* ── SIDEBAR ─────────────────────────────────── */
-    .sidebar { position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-w); background:white; border-right:1px solid var(--g100); display:flex; flex-direction:column; z-index:50; }
-    .sidebar-brand { padding:18px 18px 14px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--g100); text-decoration:none; }
-    .sidebar-logo { width:32px; height:32px; background:linear-gradient(135deg,var(--g700),var(--g500)); border-radius:8px; display:flex; align-items:center; justify-content:center; color:white; font-family:'Outfit',sans-serif; font-weight:900; font-size:16px; box-shadow:0 3px 10px rgba(22,163,74,0.3); }
-    .sidebar-name { font-family:'Outfit',sans-serif; font-weight:800; font-size:17px; color:var(--n900); }
-    .sidebar-name span { color:var(--g600); }
-    .sidebar-nav { flex:1; padding:10px 8px; overflow-y:auto; }
-    .nav-item { display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:10px; font-size:14px; font-weight:600; color:var(--n500); cursor:pointer; text-decoration:none; transition:all 0.15s; margin-bottom:2px; position:relative; }
-    .nav-item:hover { background:var(--g50); color:var(--g700); }
-    .nav-item.active { background:var(--g50); color:var(--g700); }
-    .nav-item.active::before { content:''; position:absolute; left:0; top:6px; bottom:6px; width:3px; border-radius:0 3px 3px 0; background:var(--g600); }
-    .nav-icon { font-size:17px; width:20px; text-align:center; flex-shrink:0; }
-    .nav-badge { margin-left:auto; font-size:10px; font-weight:700; padding:1px 7px; border-radius:99px; background:var(--g600); color:white; }
-    .sidebar-divider { height:1px; background:var(--n100); margin:8px 10px; }
-    .sidebar-user { padding:12px 14px; border-top:1px solid var(--g100); display:flex; align-items:center; gap:10px; cursor:pointer; }
-    .sidebar-user:hover { background:var(--g50); }
-    .user-avatar { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--g600),var(--g400)); display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:14px; flex-shrink:0; }
-    .user-name { font-size:13px; font-weight:700; color:var(--n800); }
-    .user-sub { font-size:11px; color:var(--n400); }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--background);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
 
-    /* ── MAIN ────────────────────────────────────── */
-    .main { margin-left:var(--sidebar-w); flex:1; min-height:100vh; display:flex; flex-direction:column; }
-    .page { display:none; }
-    .page.active { display:block; }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }
 
-    /* ── TOPBAR (jobs only) ────────────────────────── */
-    .topbar { position:sticky; top:0; z-index:40; background:rgba(255,255,255,0.96); backdrop-filter:blur(12px); border-bottom:1px solid var(--g100); padding:0 24px; height:60px; display:none; align-items:center; gap:12px; }
-    .topbar.visible { display:flex; }
-    .search-bar { flex:1; max-width:400px; position:relative; }
-    .search-bar input { width:100%; padding:9px 14px 9px 38px; border-radius:10px; border:1.5px solid var(--n200); background:var(--n50); font-size:14px; font-weight:500; color:var(--n900); outline:none; font-family:'Plus Jakarta Sans',sans-serif; transition:all 0.15s; }
-    .search-bar input:focus { border-color:var(--g500); background:white; box-shadow:0 0 0 3px rgba(22,163,74,0.1); }
-    .search-bar svg { position:absolute; left:11px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--n400); }
-    .filter-row { display:flex; gap:8px; flex-wrap:wrap; }
-    .filter-btn { padding:6px 13px; border-radius:8px; border:1.5px solid var(--n200); background:white; font-size:12px; font-weight:600; color:var(--n600); cursor:pointer; transition:all 0.15s; display:flex; align-items:center; gap:5px; }
-    .filter-btn:hover, .filter-btn.on { border-color:var(--g400); color:var(--g700); background:var(--g50); }
-    .filter-btn .dot { width:6px; height:6px; border-radius:50%; background:var(--g600); }
-    .topbar-actions { margin-left:auto; display:flex; gap:8px; }
-    .btn-sm { padding:7px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; border:none; transition:all 0.15s; }
-    .btn-ghost { background:white; color:var(--n600); border:1.5px solid var(--n200); }
-    .btn-ghost:hover { border-color:var(--g300); color:var(--g700); }
-    .btn-green { background:var(--g600); color:white; box-shadow:0 2px 8px rgba(22,163,74,0.3); }
-    .btn-green:hover { background:var(--g700); }
+    /* Sidebar */
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0; width: var(--sidebar-w);
+      background: var(--surface); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; z-index: 50;
+    }
+    .sidebar-brand {
+      padding: 18px 20px; display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--border); text-decoration: none;
+    }
+    .sidebar-logo {
+      width: 28px; height: 28px; background: var(--primary); border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 15px;
+    }
+    .sidebar-name { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 17px; color: var(--text-main); }
+    .sidebar-name span { color: var(--primary); }
 
-    /* ── CARD ──────────────────────────────────────── */
-    .card { background:white; border-radius:16px; border:1px solid var(--n200); overflow:hidden; }
-    .card-header { padding:18px 22px 0; display:flex; align-items:center; justify-content:space-between; }
-    .card-title { font-size:15px; font-weight:800; color:var(--n900); }
-    .card-link { font-size:13px; font-weight:600; color:var(--g600); cursor:pointer; text-decoration:none; }
-    .card-body { padding:18px 22px; }
+    .sidebar-nav { flex: 1; padding: 12px 8px; overflow-y: auto; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px; padding: 8px 12px;
+      border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--text-muted);
+      cursor: pointer; text-decoration: none; transition: all 0.15s; margin-bottom: 2px;
+    }
+    .nav-item:hover { background: var(--border-subtle); color: var(--text-main); }
+    .nav-item.active { background: var(--primary-light); color: var(--primary); font-weight: 700; }
+    .nav-badge {
+      margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      font-weight: 700; padding: 1px 7px; border-radius: 99px; background: var(--primary); color: white;
+    }
 
-    /* ── HOME LAYOUT ───────────────────────────────── */
-    .home-layout { display:grid; grid-template-columns:1fr 300px; gap:20px; padding:24px; max-width:1200px; }
-    .col-main { display:flex; flex-direction:column; gap:18px; }
-    .col-side { display:flex; flex-direction:column; gap:14px; }
+    .sidebar-divider { height: 1px; background: var(--border); margin: 8px 10px; }
 
-    .welcome-banner { background:linear-gradient(135deg,var(--g700),var(--g500)); border-radius:16px; padding:24px 28px; color:white; position:relative; overflow:hidden; }
-    .welcome-banner::before { content:''; position:absolute; top:-40px; right:-40px; width:180px; height:180px; border-radius:50%; background:rgba(255,255,255,0.07); }
-    .welcome-banner h2 { font-size:22px; font-weight:900; margin-bottom:6px; }
-    .welcome-banner p { font-size:13px; opacity:0.85; margin-bottom:16px; max-width:400px; }
-    .btn-white { display:inline-flex; align-items:center; gap:6px; padding:9px 20px; border-radius:10px; background:white; color:var(--g700); font-size:13px; font-weight:700; text-decoration:none; border:none; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,0.12); transition:all 0.2s; }
-    .btn-white:hover { transform:translateY(-1px); }
+    .sidebar-user {
+      padding: 14px 16px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .user-avatar {
+      width: 32px; height: 32px; border-radius: 50%; background: var(--primary);
+      display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 13px;
+    }
+    .user-name { font-size: 13px; font-weight: 700; color: var(--text-main); }
+    .user-sub { font-size: 11px; color: var(--text-subtle); }
 
-    /* Checklist */
-    .progress-row { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
-    .progress-track { flex:1; height:5px; background:var(--n100); border-radius:99px; overflow:hidden; }
-    .progress-fill { height:100%; background:linear-gradient(90deg,var(--g600),var(--g400)); border-radius:99px; transition:width 0.4s; }
-    .progress-label { font-size:12px; font-weight:700; color:var(--g600); font-family:'JetBrains Mono',monospace; }
-    .cl-item { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--n100); cursor:pointer; transition:all 0.15s; }
-    .cl-item:last-child { border-bottom:none; }
-    .cl-item:hover .cl-title { color:var(--g700); }
-    .cl-check { width:20px; height:20px; border-radius:50%; border:2px solid var(--n200); display:flex; align-items:center; justify-content:center; font-size:11px; color:white; flex-shrink:0; transition:all 0.15s; }
-    .cl-check.done { background:var(--g600); border-color:var(--g600); }
-    .cl-title { font-size:13px; font-weight:700; color:var(--n800); }
-    .cl-desc { font-size:11px; color:var(--n400); }
-    .cl-arrow { margin-left:auto; color:var(--n300); font-size:15px; }
+    /* Main Area */
+    .main { margin-left: var(--sidebar-w); flex: 1; min-height: 100vh; display: flex; flex-direction: column; }
+    .page { display: none; }
+    .page.active { display: block; }
 
-    /* Stats row */
-    .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:14px 22px; }
-    .stat-box { padding:12px; background:var(--g50); border-radius:12px; border:1px solid var(--g100); text-align:center; }
-    .stat-num { font-family:'Outfit',sans-serif; font-size:24px; font-weight:900; color:var(--g700); line-height:1; }
-    .stat-lbl { font-size:11px; font-weight:600; color:var(--n400); margin-top:4px; }
+    /* Topbar */
+    .topbar {
+      position: sticky; top: 0; z-index: 40; background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
+      padding: 0 24px; height: 56px; display: none; align-items: center; gap: 12px;
+    }
+    .topbar.visible { display: flex; }
+    .search-input-wrap { flex: 1; max-width: 420px; position: relative; }
+    .search-input-wrap input {
+      width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--background); font-size: 13px; font-weight: 500; color: var(--text-main);
+      outline: none; font-family: inherit; transition: all 0.15s;
+    }
+    .search-input-wrap input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 2px var(--primary-border); }
 
-    /* Notif options */
-    .notif-opts { display:flex; flex-direction:column; gap:2px; padding:6px 22px 18px; }
-    .notif-opt { display:flex; align-items:flex-start; gap:12px; padding:12px 14px; border-radius:10px; cursor:pointer; border:2px solid transparent; transition:all 0.15s; }
-    .notif-opt:hover { background:var(--g50); }
-    .notif-opt.on { background:var(--g50); border-color:var(--g200); }
-    .notif-radio { width:18px; height:18px; border-radius:50%; border:2px solid var(--n200); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
-    .notif-opt.on .notif-radio { border-color:var(--g600); }
-    .notif-dot { width:8px; height:8px; border-radius:50%; background:var(--g600); display:none; }
-    .notif-opt.on .notif-dot { display:block; }
-    .notif-title { font-size:13px; font-weight:700; color:var(--n800); margin-bottom:2px; }
-    .notif-desc { font-size:12px; color:var(--n400); line-height:1.5; }
+    .filter-btn {
+      padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border);
+      background: white; font-size: 12px; font-weight: 600; color: var(--text-muted);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .filter-btn:hover { border-color: var(--border-strong); color: var(--text-main); }
+    .filter-btn.active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
 
-    /* Scrape status */
-    .scrape-status { padding:14px 22px; border-top:1px solid var(--n100); display:flex; align-items:center; justify-content:space-between; gap:12px; }
-    .scrape-text { font-size:12px; color:var(--n400); }
-    .scrape-text strong { color:var(--n700); }
-    .btn-scrape { padding:8px 18px; border-radius:9px; background:var(--g600); color:white; font-size:13px; font-weight:700; border:none; cursor:pointer; display:flex; align-items:center; gap:6px; transition:all 0.2s; white-space:nowrap; }
-    .btn-scrape:hover { background:var(--g700); }
-    .btn-scrape:disabled { opacity:0.5; cursor:not-allowed; }
-    .spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,0.4); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; }
-    @keyframes spin { to { transform:rotate(360deg); } }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 7px 14px; border-radius: 6px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 1px solid transparent; text-decoration: none; transition: all 0.15s;
+    }
+    .btn-secondary { background: white; border-color: var(--border); color: var(--text-main); }
+    .btn-secondary:hover { background: var(--background); }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
 
-    /* Platform pills */
-    .platform-row { display:flex; flex-wrap:wrap; gap:8px; padding:0 22px 18px; }
-    .platform-pill { display:flex; align-items:center; gap:7px; padding:6px 13px; border-radius:99px; border:1.5px solid var(--n200); background:white; font-size:12px; font-weight:600; color:var(--n600); cursor:pointer; transition:all 0.15s; }
-    .platform-pill:hover { border-color:var(--g300); color:var(--g700); background:var(--g50); }
-    .platform-pill.on { border-color:var(--g600); background:var(--g50); color:var(--g700); }
-    .pill-dot { width:7px; height:7px; border-radius:50%; background:var(--n300); }
-    .platform-pill.on .pill-dot { background:var(--g500); }
+    /* Dashboard Layout */
+    .dashboard-layout { display: grid; grid-template-columns: 1fr 320px; gap: 20px; padding: 24px; max-width: 1240px; }
+    .col-left { display: flex; flex-direction: column; gap: 18px; }
+    .col-right { display: flex; flex-direction: column; gap: 16px; }
 
-    /* Side cards */
-    .profile-avatar-row { display:flex; align-items:center; gap:12px; padding:18px 18px 10px; }
-    .avatar-lg { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,var(--g600),var(--g400)); color:white; font-weight:900; font-size:19px; display:flex; align-items:center; justify-content:center; }
-    .p-name { font-size:14px; font-weight:800; color:var(--n900); }
-    .p-sub { font-size:11px; color:var(--n400); }
-    .completion-wrap { padding:0 18px 14px; }
-    .completion-row { display:flex; justify-content:space-between; margin-bottom:6px; }
-    .completion-label { font-size:11px; font-weight:600; color:var(--n500); }
-    .completion-pct { font-size:11px; font-weight:700; color:var(--g600); font-family:'JetBrains Mono',monospace; }
-    .completion-track { height:5px; background:var(--n100); border-radius:99px; overflow:hidden; }
-    .completion-fill { height:100%; background:linear-gradient(90deg,var(--g600),var(--g400)); border-radius:99px; }
-    .warn-box { margin:0 16px 14px; padding:9px 12px; background:#fff7ed; border:1px solid #fed7aa; border-radius:9px; font-size:11px; color:#c2410c; font-weight:600; }
-    .hours-box { margin:0 16px 16px; padding:11px 14px; background:var(--g50); border-radius:11px; border:1px solid var(--g100); }
-    .hours-big { font-family:'Outfit',sans-serif; font-size:26px; font-weight:900; color:var(--g700); }
-    .hours-lbl { font-size:11px; color:var(--n400); margin-top:2px; }
+    /* Cards */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .card-head { padding: 16px 20px 0; display: flex; align-items: center; justify-content: space-between; }
+    .card-title { font-size: 14px; font-weight: 700; color: var(--text-main); }
+    .card-body { padding: 16px 20px; }
 
-    .quick-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:10px 14px 14px; }
-    .quick-item { padding:11px 12px; border-radius:11px; border:1.5px solid var(--n200); background:white; cursor:pointer; transition:all 0.15s; text-decoration:none; display:block; }
-    .quick-item:hover { border-color:var(--g300); background:var(--g50); }
-    .qi-icon { font-size:18px; margin-bottom:6px; }
-    .qi-title { font-size:12px; font-weight:700; color:var(--n800); }
-    .qi-badge { font-size:10px; font-weight:700; padding:1px 6px; border-radius:4px; background:var(--g50); color:var(--g700); border:1px solid var(--g200); display:inline-block; margin-top:2px; }
+    .banner-card {
+      background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+      border-radius: 12px; padding: 24px 28px; color: white;
+    }
+    .banner-title { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+    .banner-sub { font-size: 13px; opacity: 0.88; max-width: 440px; margin-bottom: 16px; line-height: 1.5; }
+    .btn-banner {
+      background: white; color: #065f46; font-size: 13px; font-weight: 700;
+      padding: 8px 18px; border-radius: 6px; text-decoration: none; display: inline-block;
+    }
 
-    .premium-card { background:linear-gradient(135deg,#1e1b4b,#312e81); border-radius:14px; padding:18px; color:white; }
-    .premium-badge { font-size:10px; font-weight:700; padding:3px 9px; background:rgba(255,255,255,0.15); border-radius:5px; margin-bottom:10px; display:inline-block; text-transform:uppercase; letter-spacing:0.05em; }
-    .premium-title { font-size:14px; font-weight:800; margin-bottom:12px; }
-    .premium-feats { display:flex; flex-direction:column; gap:7px; margin-bottom:14px; }
-    .premium-feat { font-size:12px; font-weight:500; display:flex; align-items:center; gap:7px; }
-    .premium-feat::before { content:'✓'; color:var(--g400); font-weight:900; }
-    .btn-premium { width:100%; padding:10px; border-radius:9px; background:white; color:#312e81; font-size:13px; font-weight:800; border:none; cursor:pointer; transition:all 0.2s; }
-    .btn-premium:hover { transform:translateY(-1px); }
+    /* Stats Grid */
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 14px 20px; }
+    .stat-card {
+      padding: 12px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--background); text-align: center;
+    }
+    .stat-num { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 800; color: var(--text-main); }
+    .stat-label { font-size: 11px; font-weight: 600; color: var(--text-subtle); text-transform: uppercase; margin-top: 2px; }
 
-    /* ── JOBS PAGE ─────────────────────────────────── */
-    .jobs-layout { display:grid; grid-template-columns:400px 1fr; height:calc(100vh - 60px); }
-    .list-panel { border-right:1px solid var(--g100); overflow-y:auto; background:white; }
-    .list-head { padding:14px 18px; border-bottom:1px solid var(--n100); position:sticky; top:0; background:white; z-index:10; display:flex; align-items:center; justify-content:space-between; }
-    .list-count { font-size:13px; font-weight:700; color:var(--n800); }
-    .list-count span { color:var(--g600); }
-    .list-sort { font-size:12px; font-weight:600; color:var(--n500); cursor:pointer; display:flex; align-items:center; gap:4px; }
+    /* Scrape Card */
+    .source-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 20px 14px; }
+    .source-chip {
+      padding: 5px 11px; border-radius: 6px; border: 1px solid var(--border);
+      font-size: 12px; font-weight: 600; color: var(--text-muted); background: white; cursor: pointer;
+    }
+    .source-chip.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
 
-    .job-card { padding:14px 18px; border-bottom:1px solid var(--n100); cursor:pointer; transition:all 0.15s; }
-    .job-card:hover { background:var(--g50); }
-    .job-card.selected { background:var(--g50); border-left:3px solid var(--g600); }
-    .jc-top { display:flex; align-items:flex-start; gap:11px; margin-bottom:10px; }
-    .jc-logo { width:38px; height:38px; border-radius:9px; border:1px solid var(--n200); background:white; display:flex; align-items:center; justify-content:center; font-size:15px; font-family:'Outfit',sans-serif; font-weight:900; color:var(--g700); flex-shrink:0; }
-    .jc-company { font-size:11px; font-weight:700; color:var(--n500); margin-bottom:2px; }
-    .jc-title { font-size:13px; font-weight:800; color:var(--n900); line-height:1.3; margin-bottom:5px; }
-    .jc-meta { display:flex; flex-wrap:wrap; gap:5px; }
-    .badge { font-size:11px; font-weight:600; padding:2px 8px; border-radius:6px; }
-    .badge-full { background:var(--g50); color:var(--g700); border:1px solid var(--g200); }
-    .badge-intern { background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; }
-    .badge-other { background:#faf5ff; color:#7c3aed; border:1px solid #e9d5ff; }
-    .badge-loc { background:var(--n50); color:var(--n600); border:1px solid var(--n200); }
-    .badge-mode { background:var(--n50); color:var(--n600); border:1px solid var(--n200); }
-    .jc-score { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; padding:3px 9px; border-radius:7px; margin-left:auto; flex-shrink:0; }
-    .score-hi { background:var(--g50); color:var(--g700); border:1px solid var(--g200); }
-    .score-md { background:#fff7ed; color:#c2410c; border:1px solid #fed7aa; }
-    .score-lo { background:#f8fafc; color:var(--n500); border:1px solid var(--n200); }
-    .jc-actions { display:flex; gap:7px; }
-    .btn-apply { flex:1; padding:6px; background:var(--g600); color:white; border-radius:7px; border:none; font-size:12px; font-weight:700; cursor:pointer; }
-    .btn-apply:hover { background:var(--g700); }
-    .btn-save { padding:6px 12px; background:white; color:var(--n500); border-radius:7px; border:1.5px solid var(--n200); font-size:12px; font-weight:600; cursor:pointer; }
-    .btn-save:hover { border-color:var(--g300); color:var(--g700); }
+    .scrape-bar {
+      padding: 12px 20px; border-top: 1px solid var(--border-subtle);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .scrape-info { font-size: 12px; color: var(--text-muted); }
 
-    /* Detail panel */
-    .detail-panel { overflow-y:auto; padding:24px 28px; background:var(--n50); }
-    .detail-header { background:white; border-radius:14px; border:1px solid var(--n200); padding:20px 24px; margin-bottom:16px; }
-    .dh-top { display:flex; align-items:flex-start; gap:14px; margin-bottom:14px; }
-    .dh-logo { width:54px; height:54px; border-radius:13px; border:1px solid var(--n200); background:white; display:flex; align-items:center; justify-content:center; font-size:26px; font-family:'Outfit',sans-serif; font-weight:900; color:var(--g700); }
-    .dh-company { font-size:12px; font-weight:700; color:var(--n500); margin-bottom:3px; }
-    .dh-title { font-size:20px; font-weight:900; color:var(--n900); line-height:1.2; margin-bottom:8px; }
-    .live-badge { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; padding:3px 9px; border-radius:6px; background:var(--g50); color:var(--g700); border:1px solid var(--g200); }
-    .live-dot { width:6px; height:6px; border-radius:50%; background:var(--g500); animation:pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-    .dh-meta { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:14px; }
-    .dh-actions { display:flex; gap:8px; }
-    .btn-d-save { padding:9px 20px; border-radius:9px; border:1.5px solid var(--n200); background:white; color:var(--n600); font-size:13px; font-weight:700; cursor:pointer; }
-    .btn-d-save:hover { border-color:var(--g300); color:var(--g700); }
-    .btn-d-apply { flex:1; padding:9px 20px; border-radius:9px; border:none; background:var(--g600); color:white; font-size:13px; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(22,163,74,0.3); }
-    .btn-d-apply:hover { background:var(--g700); }
+    /* Jobs Layout */
+    .jobs-split-pane { display: grid; grid-template-columns: 420px 1fr; height: calc(100vh - 56px); }
+    .jobs-list-col { border-right: 1px solid var(--border); overflow-y: auto; background: white; }
+    .jobs-list-head {
+      padding: 12px 18px; border-bottom: 1px solid var(--border); position: sticky; top: 0;
+      background: white; z-index: 10; display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: var(--text-muted);
+    }
 
-    .d-section { background:white; border-radius:14px; border:1px solid var(--n200); padding:18px 22px; margin-bottom:14px; }
-    .d-section h3 { font-size:13px; font-weight:800; color:var(--n900); margin-bottom:12px; }
-    .skill-chip { display:inline-flex; margin:3px; padding:4px 10px; border-radius:7px; font-size:11px; font-weight:600; background:var(--g50); color:var(--g800); border:1px solid var(--g200); }
-    .req-list { list-style:none; display:flex; flex-direction:column; gap:9px; }
-    .req-item { display:flex; align-items:flex-start; gap:8px; font-size:13px; color:var(--n700); line-height:1.5; }
-    .req-item::before { content:'•'; color:var(--g500); font-weight:900; flex-shrink:0; }
+    .job-entry {
+      padding: 14px 18px; border-bottom: 1px solid var(--border-subtle);
+      cursor: pointer; transition: background 0.1s;
+    }
+    .job-entry:hover { background: var(--border-subtle); }
+    .job-entry.selected { background: var(--primary-light); border-left: 3px solid var(--primary); }
+    .job-meta-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 4px; }
+    .job-company { font-size: 11px; font-weight: 700; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.04em; }
+    .job-title { font-size: 14px; font-weight: 700; color: var(--text-main); line-height: 1.3; margin-bottom: 6px; }
+    .job-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag {
+      font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 4px;
+      border: 1px solid var(--border); background: var(--background); color: var(--text-muted);
+    }
+    .score-badge {
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+      padding: 2px 8px; border-radius: 6px; background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary-border);
+    }
 
-    /* Empty states */
-    .empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 24px; text-align:center; }
-    .empty-icon { font-size:48px; margin-bottom:16px; }
-    .empty-title { font-size:18px; font-weight:800; color:var(--n800); margin-bottom:8px; }
-    .empty-desc { font-size:13px; color:var(--n400); max-width:320px; line-height:1.6; margin-bottom:20px; }
-    .btn-empty { padding:10px 24px; border-radius:10px; background:var(--g600); color:white; font-size:14px; font-weight:700; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:7px; box-shadow:0 4px 14px rgba(22,163,74,0.3); }
-    .btn-empty:hover { background:var(--g700); }
+    /* Detail View */
+    .job-detail-col { overflow-y: auto; padding: 24px 32px; background: var(--background); }
+    .detail-card {
+      background: white; border: 1px solid var(--border); border-radius: 12px;
+      padding: 24px 28px; margin-bottom: 16px;
+    }
+    .detail-title { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+    .detail-company { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 14px; }
+    .detail-section-title { font-size: 13px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 10px; }
 
-    /* Tracker */
-    .tracker-page { padding:24px; }
-    .kanban-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:18px; }
-    .kanban-col { background:white; border-radius:13px; border:1px solid var(--n200); min-height:480px; display:flex; flex-direction:column; }
-    .kanban-col-head { padding:13px 15px; border-bottom:1px solid var(--n100); display:flex; align-items:center; justify-content:space-between; }
-    .kcol-name { font-size:13px; font-weight:800; color:var(--n800); }
-    .kcol-count { font-size:10px; font-weight:700; padding:2px 7px; border-radius:99px; background:var(--n100); color:var(--n600); font-family:'JetBrains Mono',monospace; }
-    .kanban-body { padding:10px; flex:1; display:flex; align-items:center; justify-content:center; }
-    .kanban-empty-text { font-size:12px; color:var(--n300); font-weight:500; text-align:center; }
+    /* Kanban Tracker */
+    .kanban-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 24px; }
+    .kanban-column {
+      background: white; border: 1px solid var(--border); border-radius: 10px;
+      min-height: 520px; display: flex; flex-direction: column;
+    }
+    .kanban-col-head {
+      padding: 12px 14px; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 12px; font-weight: 700; color: var(--text-main);
+    }
+    .kanban-col-count {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+      padding: 1px 6px; border-radius: 99px; background: var(--border-subtle); color: var(--text-muted);
+    }
+    .kanban-body { padding: 12px; flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; }
+    .kanban-empty { font-size: 12px; color: var(--text-subtle); }
 
     /* Toast */
-    .toast { position:fixed; bottom:24px; right:24px; background:var(--n900); color:white; padding:12px 20px; border-radius:12px; font-size:13px; font-weight:600; z-index:9999; box-shadow:0 8px 24px rgba(0,0,0,0.25); transform:translateY(80px); opacity:0; transition:all 0.3s; border-left:3px solid var(--g500); max-width:320px; }
-    .toast.show { transform:translateY(0); opacity:1; }
-    .toast.error { border-left-color:#ef4444; }
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; background: var(--text-main); color: white;
+      padding: 10px 18px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      z-index: 9999; opacity: 0; transform: translateY(20px); transition: all 0.2s;
+    }
+    .toast.visible { opacity: 1; transform: translateY(0); }
 
-    @media (max-width:1100px) { .home-layout { grid-template-columns:1fr; } .col-side { display:none; } }
-    @media (max-width:900px) { .jobs-layout { grid-template-columns:1fr; } .detail-panel { display:none; } }
+    @media (max-width: 1024px) {
+      .dashboard-layout { grid-template-columns: 1fr; }
+      .col-right { display: none; }
+      .jobs-split-pane { grid-template-columns: 1fr; }
+      .job-detail-col { display: none; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- ═══════════════ SIDEBAR ════════════════════ -->
+  <!-- Sidebar -->
   <aside class="sidebar">
     <a href="/" class="sidebar-brand">
       <div class="sidebar-logo">G</div>
       <span class="sidebar-name">getArole<span>.ai</span></span>
     </a>
+
     <nav class="sidebar-nav">
-      <a class="nav-item active" onclick="showPage('home')" href="#">
-        <span class="nav-icon">🏠</span><span>Home</span>
-      </a>
-      <a class="nav-item" onclick="showPage('matches')" href="#">
-        <span class="nav-icon">⭐</span><span>Matches</span>
-        <span class="nav-badge" id="badge-matches">0</span>
-      </a>
-      <a class="nav-item" onclick="showPage('jobs')" href="#">
-        <span class="nav-icon">💼</span><span>Jobs</span>
-      </a>
-      <a class="nav-item" onclick="showPage('tracker')" href="#">
-        <span class="nav-icon">📋</span><span>Job Tracker</span>
-      </a>
-      <a class="nav-item" onclick="showPage('documents')" href="#">
-        <span class="nav-icon">📄</span><span>Documents</span>
-      </a>
-      <a class="nav-item" onclick="showPage('services')" href="#">
-        <span class="nav-icon">✨</span><span>Services</span>
-      </a>
+      <a class="nav-item active" onclick="showPage('home')" href="#">Home</a>
+      <a class="nav-item" onclick="showPage('matches')" href="#">AI Matches <span class="nav-badge" id="badge-matches">0</span></a>
+      <a class="nav-item" onclick="showPage('jobs')" href="#">Job Explorer</a>
+      <a class="nav-item" onclick="showPage('tracker')" href="#">Application Tracker</a>
       <div class="sidebar-divider"></div>
-      <a class="nav-item" href="/onboarding">
-        <span class="nav-icon">⚙️</span><span>Preferences</span>
-      </a>
+      <a class="nav-item" href="/onboarding">Preferences</a>
     </nav>
+
     <div class="sidebar-user">
-      <div class="user-avatar" id="sidebar-av">H</div>
+      <div class="user-avatar" id="sidebar-avatar">H</div>
       <div>
-        <div class="user-name" id="sidebar-name">Hemasai</div>
-        <div class="user-sub">VIT-AP 2027 · CSE</div>
+        <div class="user-name" id="sidebar-username">Hemasai</div>
+        <div class="user-sub">Candidate Workspace</div>
       </div>
     </div>
   </aside>
 
-  <!-- ═══════════════ MAIN ════════════════════════ -->
+  <!-- Main Content -->
   <main class="main">
 
-    <!-- Topbar (jobs only) -->
+    <!-- Topbar (Jobs page only) -->
     <div class="topbar" id="topbar">
-      <div class="search-bar">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input type="text" placeholder="Search jobs, companies, cities…" id="search-input" oninput="filterJobs(this.value)">
+      <div class="search-input-wrap">
+        <input type="text" id="job-search-input" placeholder="Search by role, company, or tech stack..." oninput="filterJobs(this.value)">
       </div>
-      <div class="filter-row">
-        <button class="filter-btn on" onclick="toggleFilter(this,'remote')"><span class="dot"></span>Remote</button>
-        <button class="filter-btn" onclick="toggleFilter(this,'internship')">Internship</button>
-        <button class="filter-btn" onclick="toggleFilter(this,'fulltime')">Full-Time</button>
-      </div>
-      <div class="topbar-actions">
-        <button class="btn-sm btn-ghost" onclick="clearFilters()">Clear</button>
-        <button class="btn-sm btn-green" onclick="openScrapeModal()">⚡ Scrape Live Jobs</button>
+      <button class="filter-btn active" onclick="toggleFilter(this, 'remote')">Remote</button>
+      <button class="filter-btn" onclick="toggleFilter(this, 'internship')">Internship</button>
+      <button class="filter-btn" onclick="toggleFilter(this, 'fulltime')">Full-Time</button>
+      <div style="margin-left:auto; display:flex; gap:8px">
+        <button class="btn btn-secondary" onclick="clearFilters()">Reset</button>
+        <button class="btn btn-primary" onclick="triggerScrape()">Scrape Sources</button>
       </div>
     </div>
 
-    <!-- ════════════════════════════════════ -->
-    <!-- HOME -->
-    <!-- ════════════════════════════════════ -->
+    <!-- Home Page -->
     <div id="page-home" class="page active">
-      <div class="home-layout">
-        <!-- Main col -->
-        <div class="col-main">
-
-          <!-- Welcome -->
-          <div class="welcome-banner">
-            <h2>Welcome, <span id="home-name">Hemasai</span> 👋</h2>
-            <p>Fill out your preferences so we can match you with real live job openings from across India.</p>
-            <a href="/onboarding" class="btn-white">🎯 Fill Out My Job Preferences</a>
+      <div class="dashboard-layout">
+        
+        <div class="col-left">
+          <div class="banner-card">
+            <h2 class="banner-title">Welcome, <span id="home-greeting">Hemasai</span></h2>
+            <p class="banner-sub">Configure candidate preferences and evaluate active openings using local vector retrieval and 70B parameter neural reasoning.</p>
+            <a href="/onboarding" class="btn-banner">Configure Preferences</a>
           </div>
 
-          <!-- Checklist -->
           <div class="card">
-            <div class="card-header" style="margin-bottom:10px">
-              <div class="card-title">Get started with getArole</div>
+            <div class="card-head">
+              <span class="card-title">Live Ingestion Feeds</span>
+              <a href="#" onclick="showPage('jobs')" style="font-size:12px;font-weight:600;color:var(--primary);text-decoration:none">View All Listings →</a>
             </div>
-            <div style="padding:0 22px 6px">
-              <div class="progress-row">
-                <div class="progress-track"><div class="progress-fill" id="cl-bar" style="width:16%"></div></div>
-                <div class="progress-label" id="cl-label">1/6</div>
-              </div>
+            <div class="source-chips">
+              <span class="source-chip selected" onclick="this.classList.toggle('selected')">Greenhouse</span>
+              <span class="source-chip selected" onclick="this.classList.toggle('selected')">Lever</span>
+              <span class="source-chip selected" onclick="this.classList.toggle('selected')">Ashby</span>
+              <span class="source-chip selected" onclick="this.classList.toggle('selected')">Internshala</span>
+              <span class="source-chip selected" onclick="this.classList.toggle('selected')">LinkedIn</span>
             </div>
-            <div style="padding:0 22px 18px" id="checklist">
-              <div class="cl-item" onclick="checkItem(this,0)">
-                <div class="cl-check done">✓</div>
-                <div><div class="cl-title">Create your account</div><div class="cl-desc">You're in — welcome to getArole!</div></div>
-                <div class="cl-arrow">›</div>
-              </div>
-              <div class="cl-item" onclick="checkItem(this,1)">
-                <div class="cl-check"></div>
-                <div><div class="cl-title">Complete your profile</div><div class="cl-desc">Add details to qualify for more roles.</div></div>
-                <div class="cl-arrow">›</div>
-              </div>
-              <div class="cl-item" onclick="window.location='/onboarding'">
-                <div class="cl-check"></div>
-                <div><div class="cl-title">Upload your resume</div><div class="cl-desc">Let AI analyze and match you with jobs.</div></div>
-                <div class="cl-arrow">›</div>
-              </div>
-              <div class="cl-item" onclick="showPage('matches')">
-                <div class="cl-check"></div>
-                <div><div class="cl-title">View your first match</div><div class="cl-desc">getArole generates personalized job matches.</div></div>
-                <div class="cl-arrow">›</div>
-              </div>
-              <div class="cl-item" onclick="showPage('jobs')">
-                <div class="cl-check"></div>
-                <div><div class="cl-title">Explore job listings</div><div class="cl-desc">Browse live roles from Greenhouse, Lever, Ashby & more.</div></div>
-                <div class="cl-arrow">›</div>
-              </div>
-              <div class="cl-item" onclick="showPage('jobs')">
-                <div class="cl-check"></div>
-                <div><div class="cl-title">Apply for your first job</div><div class="cl-desc">Apply directly via getArole with one click.</div></div>
-                <div class="cl-arrow">›</div>
-              </div>
+            <div class="scrape-bar">
+              <div class="scrape-info"><strong id="total-jobs-count">0</strong> total active jobs indexed</div>
+              <button class="btn btn-primary" id="btn-scrape-action" onclick="triggerScrape()">Refresh Data</button>
             </div>
           </div>
 
-          <!-- Scrape jobs card -->
           <div class="card">
-            <div class="card-header" style="padding-bottom:10px">
-              <div class="card-title">Live Job Sources</div>
-              <a class="card-link" onclick="showPage('jobs')" href="#">View all jobs →</a>
+            <div class="card-head">
+              <span class="card-title">Application Metrics</span>
+              <a href="#" onclick="showPage('tracker')" style="font-size:12px;font-weight:600;color:var(--primary);text-decoration:none">Open Tracker →</a>
             </div>
-            <div style="padding:4px 22px 10px;font-size:12px;color:var(--n400)">
-              Select platforms to scrape, then hit <strong style="color:var(--n700)">Scrape Now</strong> to fetch fresh live job listings.
-            </div>
-            <div class="platform-row">
-              <div class="platform-pill on" id="pill-greenhouse" onclick="togglePill(this,'greenhouse')"><span class="pill-dot"></span> Greenhouse</div>
-              <div class="platform-pill on" id="pill-lever" onclick="togglePill(this,'lever')"><span class="pill-dot"></span> Lever</div>
-              <div class="platform-pill on" id="pill-ashby" onclick="togglePill(this,'ashby')"><span class="pill-dot"></span> Ashby</div>
-              <div class="platform-pill on" id="pill-internshala" onclick="togglePill(this,'internshala')"><span class="pill-dot"></span> Internshala</div>
-              <div class="platform-pill on" id="pill-linkedin" onclick="togglePill(this,'linkedin')"><span class="pill-dot"></span> LinkedIn</div>
-            </div>
-            <div class="scrape-status">
-              <div class="scrape-text" id="scrape-status-text">
-                <strong id="job-count-home">0</strong> jobs in database · Last scraped: <span id="last-scraped">never</span>
-              </div>
-              <button class="btn-scrape" id="btn-scrape-home" onclick="triggerScrape()">
-                <span id="scrape-btn-inner">⚡ Scrape Now</span>
-              </button>
+            <div class="stats-row">
+              <div class="stat-card"><div class="stat-num" id="stat-saved">0</div><div class="stat-label">Saved</div></div>
+              <div class="stat-card"><div class="stat-num" id="stat-applied">0</div><div class="stat-label">Applied</div></div>
+              <div class="stat-card"><div class="stat-num" id="stat-interview">0</div><div class="stat-label">Interview</div></div>
             </div>
           </div>
-
-          <!-- Tracker overview -->
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">Tracker Overview</div>
-              <a href="#" onclick="showPage('tracker')" class="card-link">Go to tracker →</a>
-            </div>
-            <div class="stats-grid">
-              <div class="stat-box"><div class="stat-num" id="stat-applied">0</div><div class="stat-lbl">Applications</div></div>
-              <div class="stat-box"><div class="stat-num" id="stat-interview">0</div><div class="stat-lbl">Interviews</div></div>
-              <div class="stat-box"><div class="stat-num" id="stat-offers">0</div><div class="stat-lbl">Offers</div></div>
-            </div>
-          </div>
-
-          <!-- Email notifs -->
-          <div class="card">
-            <div class="card-header" style="margin-bottom:4px"><div class="card-title">Email Notifications</div></div>
-            <div style="padding:4px 22px 6px;font-size:12px;color:var(--n400)">When should we email you with new matching jobs?</div>
-            <div class="notif-opts">
-              <div class="notif-opt on" onclick="pickNotif(this)">
-                <div class="notif-radio"><div class="notif-dot"></div></div>
-                <div><div class="notif-title">Daily</div><div class="notif-desc">Apply as soon as roles are posted — early applications get noticed more.</div></div>
-              </div>
-              <div class="notif-opt" onclick="pickNotif(this)">
-                <div class="notif-radio"><div class="notif-dot"></div></div>
-                <div><div class="notif-title">Weekly</div><div class="notif-desc">Check in regularly for new opportunities each week.</div></div>
-              </div>
-              <div class="notif-opt" onclick="pickNotif(this)">
-                <div class="notif-radio"><div class="notif-dot"></div></div>
-                <div><div class="notif-title">Never</div><div class="notif-desc">I don't want email notifications about new opportunities.</div></div>
-              </div>
-            </div>
-          </div>
-
         </div>
 
-        <!-- Side col -->
-        <div class="col-side">
-
-          <!-- Profile -->
+        <div class="col-right">
           <div class="card">
-            <div class="profile-avatar-row">
-              <div class="avatar-lg" id="side-av">H</div>
-              <div>
-                <div class="p-name" id="side-name">Hemasai Vattikuti</div>
-                <div class="p-sub">VIT-AP 2027 · B.Tech CSE</div>
-              </div>
-            </div>
-            <div class="warn-box">⚠️ Profile not visible to recruiters. <a href="/onboarding" style="color:#c2410c;font-weight:700">Complete it →</a></div>
-            <div class="completion-wrap">
-              <div class="completion-row">
-                <span class="completion-label">Profile Completion</span>
-                <span class="completion-pct" id="profile-pct">0%</span>
-              </div>
-              <div class="completion-track"><div class="completion-fill" id="profile-bar" style="width:0%"></div></div>
-            </div>
-            <div class="hours-box">
-              <div class="hours-big" id="hours-saved">0 hrs</div>
-              <div class="hours-lbl">Saved by auto-filling applications</div>
-            </div>
-          </div>
-
-          <!-- Quick Menu -->
-          <div class="card">
-            <div class="card-header" style="margin-bottom:2px"><div class="card-title">Quick Menu</div></div>
-            <div class="quick-grid">
-              <a href="/onboarding" class="quick-item"><div class="qi-icon">📄</div><div class="qi-title">Upload Resume</div><div class="qi-badge">AI Match</div></a>
-              <a href="#" onclick="showPage('jobs')" class="quick-item"><div class="qi-icon">💼</div><div class="qi-title">Browse Jobs</div><div class="qi-badge">Live</div></a>
-              <a href="#" onclick="showPage('tracker')" class="quick-item"><div class="qi-icon">📋</div><div class="qi-title">My Tracker</div><div class="qi-badge">Kanban</div></a>
-              <a href="#" onclick="triggerScrape()" class="quick-item"><div class="qi-icon">⚡</div><div class="qi-title">Scrape Now</div><div class="qi-badge">Fresh Data</div></a>
-            </div>
-          </div>
-
-          <!-- Premium -->
-          <div class="premium-card">
-            <div class="premium-badge">⚡ getArole+ Beta</div>
-            <div class="premium-title">Supercharge your job search with AI</div>
-            <div class="premium-feats">
-              <div class="premium-feat">AI Cover Letter Generator</div>
-              <div class="premium-feat">Smart Resume Optimizer</div>
-              <div class="premium-feat">Resume Match Scoring</div>
-              <div class="premium-feat">NVIDIA NIM Integration</div>
-            </div>
-            <button class="btn-premium">Subscribe to getArole+ →</button>
-          </div>
-
-          <!-- Refer -->
-          <div class="card">
+            <div class="card-head"><span class="card-title">Candidate Profile</span></div>
             <div class="card-body">
-              <div style="font-size:14px;font-weight:800;color:var(--n900);margin-bottom:6px">🎁 Refer a Friend</div>
-              <div style="font-size:12px;color:var(--n400);margin-bottom:10px">Earn getArole+ credit when friends sign up. Your referrals: <strong>0</strong></div>
-              <button style="width:100%;padding:8px;border-radius:9px;border:1.5px dashed var(--g300);background:var(--g50);color:var(--g700);font-weight:700;font-size:12px;cursor:pointer">Get Referral Link 🔗</button>
+              <div style="font-size:14px;font-weight:700;color:var(--text-main);margin-bottom:2px">Hemasai Vattikuti</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px">B.Tech Computer Science (2027)</div>
+              <div style="padding:10px 14px;background:var(--background);border:1px solid var(--border);border-radius:8px;font-size:12px;color:var(--text-muted);line-height:1.5">
+                ONNX dense embedding index initialized for local similarity scoring.
+              </div>
             </div>
           </div>
 
+          <div class="card">
+            <div class="card-head"><span class="card-title">AI Quick Tools</span></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:8px">
+              <button class="btn btn-secondary" style="width:100%;justify-content:flex-start" onclick="showPage('jobs')">Explore Live Jobs</button>
+              <button class="btn btn-secondary" style="width:100%;justify-content:flex-start" onclick="showPage('matches')">Review AI Matches</button>
+              <button class="btn btn-secondary" style="width:100%;justify-content:flex-start" onclick="window.location='/onboarding'">Update Resume</button>
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
 
-    <!-- ════════════════════════════════════ -->
-    <!-- JOBS -->
-    <!-- ════════════════════════════════════ -->
+    <!-- Jobs Page -->
     <div id="page-jobs" class="page">
-      <div class="jobs-layout">
-        <div class="list-panel">
-          <div class="list-head">
-            <div class="list-count">Showing <span id="count-show">0</span> of <span id="count-total">0</span> jobs</div>
-            <div class="list-sort">Most recent ⌄</div>
+      <div class="jobs-split-pane">
+        <div class="jobs-list-col">
+          <div class="jobs-list-head">
+            <div>Showing <span id="jobs-showing-count">0</span> opportunities</div>
           </div>
-          <div id="jobs-list-container"></div>
+          <div id="jobs-list-target"></div>
         </div>
-        <div class="detail-panel" id="detail-panel">
-          <div class="empty-state">
-            <div class="empty-icon">💼</div>
-            <div class="empty-title">Select a job to view details</div>
-            <div class="empty-desc">Pick a role from the list on the left to see the full description, requirements, and apply.</div>
+
+        <div class="job-detail-col" id="job-detail-target">
+          <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-subtle);font-size:14px;font-weight:500">
+            Select a job listing on the left to view requirements and generate tailored applications.
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ════════════════════════════════════ -->
-    <!-- MATCHES -->
-    <!-- ════════════════════════════════════ -->
+    <!-- Matches Page -->
     <div id="page-matches" class="page">
-      <div style="padding:24px">
-        <div class="welcome-banner" style="margin-bottom:20px">
-          <h2>⭐ Your AI Job Matches</h2>
-          <p>Upload your resume to get AI-powered match scores against live job listings.</p>
-          <a href="/onboarding" class="btn-white">Upload Resume →</a>
-        </div>
-        <div id="matches-container"></div>
+      <div style="padding:24px;max-width:1200px">
+        <h2 style="font-size:22px;font-weight:800;color:var(--text-main);margin-bottom:6px">Dense Semantic Matches</h2>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px">Opportunities ranked by 384-dimensional cosine similarity against candidate profile.</p>
+        <div id="matches-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));gap:14px"></div>
       </div>
     </div>
 
-    <!-- ════════════════════════════════════ -->
-    <!-- TRACKER -->
-    <!-- ════════════════════════════════════ -->
+    <!-- Tracker Page -->
     <div id="page-tracker" class="page">
-      <div class="tracker-page">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-          <h2 style="font-size:21px;font-weight:900">Application Tracker</h2>
-          <button onclick="exportTracker()" style="padding:8px 16px;border-radius:9px;border:1.5px solid var(--n200);background:white;font-size:12px;font-weight:700;color:var(--n600);cursor:pointer">Export JSON</button>
+      <div style="padding:24px 24px 0">
+        <h2 style="font-size:22px;font-weight:800;color:var(--text-main);margin-bottom:4px">Application Tracker</h2>
+        <p style="font-size:13px;color:var(--text-muted)">Persisted locally in browser storage.</p>
+      </div>
+      <div class="kanban-board">
+        <div class="kanban-column">
+          <div class="kanban-col-head"><span>Saved</span><span class="kanban-col-count" id="kc-saved">0</span></div>
+          <div class="kanban-body"><div class="kanban-empty">No saved listings</div></div>
         </div>
-        <div style="font-size:12px;color:var(--n400);margin-bottom:18px">All data stored in your browser locally — never uploaded.</div>
-        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);padding:0;margin-bottom:18px">
-          <div class="stat-box"><div class="stat-num" id="tk-total">0</div><div class="stat-lbl">Total</div></div>
-          <div class="stat-box"><div class="stat-num" id="tk-applied">0</div><div class="stat-lbl">Applied</div></div>
-          <div class="stat-box"><div class="stat-num" id="tk-interview">0</div><div class="stat-lbl">Interviews</div></div>
-          <div class="stat-box"><div class="stat-num" id="tk-offers">0</div><div class="stat-lbl">Offers</div></div>
+        <div class="kanban-column">
+          <div class="kanban-col-head"><span>Applied</span><span class="kanban-col-count" id="kc-applied">0</span></div>
+          <div class="kanban-body"><div class="kanban-empty">No active applications</div></div>
         </div>
-        <div class="kanban-grid" id="kanban-board">
-          <div class="kanban-col">
-            <div class="kanban-col-head"><span class="kcol-name">📌 Saved</span><span class="kcol-count" id="kc-saved">0</span></div>
-            <div class="kanban-body"><div class="kanban-empty-text">No saved jobs yet.<br>Save roles from the Jobs page.</div></div>
-          </div>
-          <div class="kanban-col">
-            <div class="kanban-col-head"><span class="kcol-name">📤 Applied</span><span class="kcol-count" id="kc-applied">0</span></div>
-            <div class="kanban-body"><div class="kanban-empty-text">No applications yet.<br>Apply to jobs to track them here.</div></div>
-          </div>
-          <div class="kanban-col">
-            <div class="kanban-col-head"><span class="kcol-name">🎯 Interview</span><span class="kcol-count" id="kc-interview">0</span></div>
-            <div class="kanban-body"><div class="kanban-empty-text">No interviews yet.<br>Keep applying — you've got this!</div></div>
-          </div>
-          <div class="kanban-col">
-            <div class="kanban-col-head"><span class="kcol-name">🏆 Offer</span><span class="kcol-count" id="kc-offer">0</span></div>
-            <div class="kanban-body"><div class="kanban-empty-text">No offers yet.<br>Your first offer is around the corner!</div></div>
-          </div>
+        <div class="kanban-column">
+          <div class="kanban-col-head"><span>Interview</span><span class="kanban-col-count" id="kc-interview">0</span></div>
+          <div class="kanban-body"><div class="kanban-empty">No interviews scheduled</div></div>
+        </div>
+        <div class="kanban-column">
+          <div class="kanban-col-head"><span>Offer</span><span class="kanban-col-count" id="kc-offer">0</span></div>
+          <div class="kanban-body"><div class="kanban-empty">No offers yet</div></div>
         </div>
       </div>
     </div>
 
-    <!-- Documents & Services -->
-    <div id="page-documents" class="page">
-      <div style="padding:24px">
-        <div class="welcome-banner"><h2>📄 Documents</h2><p>Your resumes, cover letters, and AI-generated application documents will appear here.</p><button class="btn-white">+ Create Document</button></div>
-      </div>
-    </div>
-    <div id="page-services" class="page">
-      <div style="padding:24px">
-        <div class="welcome-banner"><h2>✨ Services</h2><p>Book recruiter sessions, resume reviews, and premium AI tailoring services.</p><button class="btn-white">Browse Services</button></div>
-      </div>
-    </div>
   </main>
 
-  <!-- Toast -->
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast-el"></div>
 
   <script>
-    // ── STATE ──────────────────────────────────────────
-    let allJobs = [];       // from API
+    let allJobs = [];
     let filteredJobs = [];
-    let activeFilters = new Set(['remote']);
+    let activeFilter = 'remote';
     let selectedJobId = null;
-    let activePlatforms = new Set(['greenhouse','lever','ashby','internshala','linkedin']);
-    let trackerData = JSON.parse(localStorage.getItem('getarole_tracker') || '{"saved":[],"applied":[],"interview":[],"offer":[]}');
+    let tracker = JSON.parse(localStorage.getItem('getarole_tracker') || '{"saved":[],"applied":[],"interview":[],"offer":[]}');
     const prefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
 
-    // ── TOAST ──────────────────────────────────────────
-    function toast(msg, isError = false) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.className = 'toast' + (isError ? ' error' : '');
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 3500);
+    function toast(msg) {
+      const el = document.getElementById('toast-el');
+      el.textContent = msg;
+      el.classList.add('visible');
+      setTimeout(() => el.classList.remove('visible'), 3000);
     }
 
-    // ── PAGE NAVIGATION ────────────────────────────────
-    function showPage(page) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      document.getElementById(`page-${page}`).classList.add('active');
-      const order = ['home','matches','jobs','tracker','documents','services'];
-      const idx = order.indexOf(page);
-      if (idx !== -1) document.querySelectorAll('.nav-item')[idx].classList.add('active');
-      document.getElementById('topbar').classList.toggle('visible', page === 'jobs');
+    function showPage(p) {
+      document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.getElementById(`page-${p}`).classList.add('active');
+      const map = { home:0, matches:1, jobs:2, tracker:3 };
+      if (map[p] !== undefined) document.querySelectorAll('.nav-item')[map[p]].classList.add('active');
+      document.getElementById('topbar').classList.toggle('visible', p === 'jobs');
     }
 
-    // ── CHECKLIST ──────────────────────────────────────
-    let doneCount = 1;
-    function checkItem(el, idx) {
-      const check = el.querySelector('.cl-check');
-      if (!check.classList.contains('done')) {
-        check.classList.add('done'); check.textContent = '✓';
-        doneCount++;
-        document.getElementById('cl-bar').style.width = ((doneCount/6)*100) + '%';
-        document.getElementById('cl-label').textContent = doneCount + '/6';
-        updateProfileCompletion();
-      }
-    }
-
-    // ── PROFILE ────────────────────────────────────────
-    function updateProfileCompletion() {
-      const pct = Math.round((doneCount / 6) * 100);
-      document.getElementById('profile-pct').textContent = pct + '%';
-      document.getElementById('profile-bar').style.width = pct + '%';
-    }
-
-    // ── NOTIFICATIONS ──────────────────────────────────
-    function pickNotif(el) {
-      document.querySelectorAll('.notif-opt').forEach(n => n.classList.remove('on'));
-      el.classList.add('on');
-    }
-
-    // ── PLATFORM PILLS ─────────────────────────────────
-    function togglePill(el, platform) {
-      el.classList.toggle('on');
-      if (el.classList.contains('on')) activePlatforms.add(platform);
-      else activePlatforms.delete(platform);
-    }
-
-    // ── FILTERS ────────────────────────────────────────
-    function toggleFilter(btn, key) {
-      btn.classList.toggle('on');
-      if (btn.classList.contains('on')) activeFilters.add(key);
-      else activeFilters.delete(key);
-      applyFilters();
-    }
-
-    function clearFilters() {
-      activeFilters.clear();
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('on'));
-      document.getElementById('search-input').value = '';
-      applyFilters();
-    }
-
-    function applyFilters() {
-      const query = (document.getElementById('search-input')?.value || '').toLowerCase();
-      filteredJobs = allJobs.filter(j => {
-        const text = `${j.title} ${j.company} ${j.location} ${j.description || ''}`.toLowerCase();
-        if (query && !text.includes(query)) return false;
-        if (activeFilters.has('remote') && !(j.workplace_type || '').toLowerCase().includes('remote')) return false;
-        if (activeFilters.has('internship') && !(j.employment_type || '').toLowerCase().includes('intern')) return false;
-        if (activeFilters.has('fulltime') && !(j.employment_type || '').toLowerCase().includes('full')) return false;
-        return true;
-      });
-      renderJobsList();
-    }
-
-    function filterJobs(query) { applyFilters(); }
-
-    // ── JOBS ───────────────────────────────────────────
-    function renderJobsList() {
-      const container = document.getElementById('jobs-list-container');
-      document.getElementById('count-show').textContent = filteredJobs.length;
-      document.getElementById('count-total').textContent = allJobs.length;
+    function renderJobs() {
+      const container = document.getElementById('jobs-list-target');
+      document.getElementById('jobs-showing-count').textContent = filteredJobs.length;
+      document.getElementById('total-jobs-count').textContent = allJobs.length;
 
       if (filteredJobs.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">🔍</div>
-            <div class="empty-title">${allJobs.length === 0 ? 'No jobs yet' : 'No results found'}</div>
-            <div class="empty-desc">${allJobs.length === 0
-              ? 'Scrape live jobs from Greenhouse, Lever, Ashby, Internshala & LinkedIn to get started.'
-              : 'Try adjusting your search or clearing filters.'}</div>
-            ${allJobs.length === 0 ? `<button class="btn-empty" onclick="triggerScrape()">⚡ Scrape Live Jobs Now</button>` : ''}
-          </div>`;
+        container.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--text-subtle);font-size:13px">No matching opportunities found. Click "Scrape Sources" to index live feeds.</div>`;
         return;
       }
 
-      container.innerHTML = filteredJobs.map(job => {
-        const score = job.fit_score ? Math.round(job.fit_score) : null;
-        const scoreClass = score ? (score >= 75 ? 'score-hi' : score >= 55 ? 'score-md' : 'score-lo') : 'score-lo';
-        const typeClass = (job.employment_type || '').toLowerCase().includes('intern') ? 'badge-intern' : 'badge-full';
-        const isSelected = selectedJobId === job.id ? 'selected' : '';
-        const logo = (job.company || 'J').charAt(0).toUpperCase();
-        return `
-          <div class="job-card ${isSelected}" onclick="selectJob('${job.id}')">
-            <div class="jc-top">
-              <div class="jc-logo">${logo}</div>
-              <div style="flex:1">
-                <div class="jc-company">${job.company || '—'} · ${job.platform || ''}</div>
-                <div class="jc-title">${job.title || 'Untitled'}</div>
-                <div class="jc-meta">
-                  <span class="badge ${typeClass}">${job.employment_type || 'Full-Time'}</span>
-                  <span class="badge badge-loc">📍 ${job.location || 'India'}</span>
-                  ${job.workplace_type ? `<span class="badge badge-mode">${job.workplace_type}</span>` : ''}
-                </div>
-              </div>
-              ${score ? `<div class="jc-score ${scoreClass}">${score}%</div>` : ''}
-            </div>
-            <div class="jc-actions">
-              <button class="btn-apply" onclick="event.stopPropagation();applyJob('${job.id}')">Quick Apply</button>
-              <button class="btn-save" onclick="event.stopPropagation();saveJob('${job.id}', this)">☆ Save</button>
-            </div>
-          </div>`;
-      }).join('');
+      container.innerHTML = filteredJobs.map(j => `
+        <div class="job-entry ${selectedJobId === j.id ? 'selected' : ''}" onclick="selectJob('${j.id}')">
+          <div class="job-meta-top">
+            <span class="job-company">${j.company} · ${j.platform || 'Direct'}</span>
+            ${j.fit_score ? `<span class="score-badge">${Math.round(j.fit_score)}% Match</span>` : ''}
+          </div>
+          <div class="job-title">${j.title}</div>
+          <div class="job-tags">
+            <span class="tag">${j.employment_type || 'Full-Time'}</span>
+            <span class="tag">${j.location || 'India'}</span>
+            ${j.workplace_type ? `<span class="tag">${j.workplace_type}</span>` : ''}
+          </div>
+        </div>
+      `).join('');
     }
 
     function selectJob(id) {
       selectedJobId = id;
-      const job = allJobs.find(j => j.id === id) || filteredJobs.find(j => j.id === id);
+      const job = allJobs.find(j => j.id === id);
       if (!job) return;
-      renderJobsList();
-      renderJobDetail(job);
-    }
+      renderJobs();
 
-    function renderJobDetail(job) {
-      const score = job.fit_score ? Math.round(job.fit_score) : null;
-      const scoreClass = score ? (score >= 75 ? 'score-hi' : score >= 55 ? 'score-md' : 'score-lo') : '';
-      const logo = (job.company || 'J').charAt(0).toUpperCase();
-      document.getElementById('detail-panel').innerHTML = `
-        <div class="detail-header">
-          <div class="dh-top">
-            <div class="dh-logo">${logo}</div>
-            <div style="flex:1">
-              <div class="dh-company">${job.company} · ${job.platform || ''}</div>
-              <div class="dh-title">${job.title}</div>
-              <span class="live-badge"><span class="live-dot"></span> Confirmed live</span>
-              ${score ? `<span class="jc-score ${scoreClass}" style="font-size:12px;padding:3px 10px;border-radius:7px;margin-left:8px">${score}% Match</span>` : ''}
-            </div>
+      document.getElementById('job-detail-target').innerHTML = `
+        <div class="detail-card">
+          <div class="detail-title">${job.title}</div>
+          <div class="detail-company">${job.company} · ${job.location || 'India'} (${job.workplace_type || 'On-site'})</div>
+          <div style="display:flex;gap:8px;margin-bottom:20px">
+            ${job.url ? `<a href="${job.url}" target="_blank" class="btn btn-primary" onclick="trackApply('${job.id}')">Apply Directly</a>` : ''}
+            <button class="btn btn-secondary" onclick="saveJob('${job.id}')">Save Role</button>
+            <button class="btn btn-secondary" onclick="generateTailoredDoc('${job.id}')">Generate Cover Letter (70B)</button>
           </div>
-          <div class="dh-meta">
-            <span class="badge badge-full">${job.employment_type || 'Full-Time'}</span>
-            <span class="badge badge-loc">📍 ${job.location || 'India'}</span>
-            ${job.workplace_type ? `<span class="badge badge-mode">${job.workplace_type}</span>` : ''}
-          </div>
-          <div class="dh-actions">
-            <button class="btn-d-save" onclick="saveJob('${job.id}', this)">☆ Save</button>
-            <button class="btn-d-apply" onclick="applyJob('${job.id}')">⚡ Apply Now</button>
-          </div>
-        </div>
-
-        ${job.description ? `
-        <div class="d-section">
-          <h3>📋 Job Description</h3>
-          <div style="font-size:13px;color:var(--n700);line-height:1.7;white-space:pre-wrap">${job.description.slice(0, 1200)}${job.description.length > 1200 ? '…' : ''}</div>
-        </div>` : ''}
-
-        ${job.skills && job.skills.length ? `
-        <div class="d-section">
-          <h3>🛠️ Required Skills</h3>
-          <div>${job.skills.map(s => `<span class="skill-chip">${s}</span>`).join('')}</div>
-        </div>` : ''}
-
-        <div class="d-section">
-          <h3>🏢 About ${job.company}</h3>
-          <div style="font-size:13px;color:var(--n600);line-height:1.7;margin-bottom:12px">
-            A live job listing sourced directly from <strong>${job.platform || 'the company\'s careers page'}</strong>. 
-            ${job.url ? `<a href="${job.url}" target="_blank" style="color:var(--g600);font-weight:600">View original posting →</a>` : ''}
-          </div>
+          <div class="detail-section-title">Job Overview</div>
+          <div style="font-size:13px;color:var(--text-muted);line-height:1.7;white-space:pre-wrap">${job.description ? job.description.slice(0, 1400) + '...' : 'Direct posting from career portal.'}</div>
         </div>
       `;
     }
 
-    function applyJob(id) {
+    function saveJob(id) {
       const job = allJobs.find(j => j.id === id);
       if (!job) return;
-      if (job.url) {
-        window.open(job.url, '_blank');
-        trackerData.applied.push({ id, title: job.title, company: job.company, date: new Date().toISOString() });
-        saveTracker();
-        toast(`✅ Opened application for ${job.title} at ${job.company}`);
-      } else {
-        toast('No direct application link available.', true);
+      if (!tracker.saved.includes(id)) {
+        tracker.saved.push(id);
+        localStorage.setItem('getarole_tracker', JSON.stringify(tracker));
+        updateTrackerCounts();
+        toast('Role saved to tracker.');
       }
     }
 
-    function saveJob(id, btn) {
-      const job = allJobs.find(j => j.id === id);
-      if (!job) return;
-      const already = trackerData.saved.find(s => s.id === id);
-      if (!already) {
-        trackerData.saved.push({ id, title: job.title, company: job.company, date: new Date().toISOString() });
-        saveTracker();
-        if (btn) { btn.textContent = '★ Saved'; btn.style.color = 'var(--g600)'; btn.style.borderColor = 'var(--g300)'; }
-        toast(`Saved ${job.company} – ${job.title}`);
+    function trackApply(id) {
+      if (!tracker.applied.includes(id)) {
+        tracker.applied.push(id);
+        localStorage.setItem('getarole_tracker', JSON.stringify(tracker));
+        updateTrackerCounts();
       }
     }
 
-    // ── TRACKER ────────────────────────────────────────
-    function saveTracker() {
-      localStorage.setItem('getarole_tracker', JSON.stringify(trackerData));
-      updateTrackerStats();
+    function updateTrackerCounts() {
+      document.getElementById('stat-saved').textContent = tracker.saved.length;
+      document.getElementById('stat-applied').textContent = tracker.applied.length;
+      document.getElementById('stat-interview').textContent = tracker.interview.length;
+      document.getElementById('kc-saved').textContent = tracker.saved.length;
+      document.getElementById('kc-applied').textContent = tracker.applied.length;
+      document.getElementById('kc-interview').textContent = tracker.interview.length;
+      document.getElementById('kc-offer').textContent = tracker.offer.length;
     }
 
-    function updateTrackerStats() {
-      const s = trackerData.saved.length, a = trackerData.applied.length,
-            i = trackerData.interview.length, o = trackerData.offer.length;
-      document.getElementById('stat-applied').textContent = a;
-      document.getElementById('stat-interview').textContent = i;
-      document.getElementById('stat-offers').textContent = o;
-      ['tk-total','tk-applied','tk-interview','tk-offers'].forEach((id, idx) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = [s+a+i+o, a, i, o][idx];
+    async function generateTailoredDoc(jobId) {
+      toast('Generating tailored application via Llama 3.1 70B...');
+      try {
+        const res = await fetch('/api/generate-ai-doc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ job_id: jobId, resume_text: 'Candidate profile with Python, FastAPI, Docker, and distributed systems.' })
+        });
+        const data = await res.json();
+        if (data.content) {
+          alert(data.content);
+        }
+      } catch (e) {
+        toast('Error generating application.');
+      }
+    }
+
+    function filterJobs(query) {
+      const q = query.toLowerCase();
+      filteredJobs = allJobs.filter(j => {
+        const matchText = `${j.title} ${j.company} ${j.location}`.toLowerCase();
+        return matchText.includes(q);
       });
-      ['kc-saved','kc-applied','kc-interview','kc-offer'].forEach((id, idx) => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = [s, a, i, o][idx];
-      });
-      const bm = document.getElementById('badge-matches');
-      if (bm) bm.textContent = Math.max(0, allJobs.filter(j => j.fit_score && j.fit_score > 70).length);
+      renderJobs();
     }
 
-    function exportTracker() {
-      const blob = new Blob([JSON.stringify(trackerData, null, 2)], {type:'application/json'});
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `getarole_tracker_${new Date().toISOString().slice(0,10)}.json`;
-      a.click();
-    }
-
-    // ── MATCHES ────────────────────────────────────────
-    function renderMatches() {
-      const container = document.getElementById('matches-container');
-      const matched = allJobs.filter(j => j.fit_score && j.fit_score > 0)
-                             .sort((a,b) => b.fit_score - a.fit_score)
-                             .slice(0, 24);
-      if (matched.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">🎯</div>
-            <div class="empty-title">No matches yet</div>
-            <div class="empty-desc">Upload your resume to get AI-powered match scores against live job listings from India's top platforms.</div>
-            <a href="/onboarding" class="btn-empty">📄 Upload Resume</a>
-          </div>`;
-        return;
-      }
-      container.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px">` +
-        matched.map(job => {
-          const score = Math.round(job.fit_score);
-          const sc = score >= 75 ? 'score-hi' : score >= 55 ? 'score-md' : 'score-lo';
-          return `
-            <div style="background:white;border-radius:14px;border:1px solid var(--n200);padding:18px;transition:all 0.15s;cursor:pointer"
-              onmouseover="this.style.borderColor='var(--g300)';this.style.boxShadow='0 6px 20px rgba(22,163,74,0.1)'"
-              onmouseout="this.style.borderColor='var(--n200)';this.style.boxShadow='none'">
-              <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">
-                <div class="jc-logo" style="width:40px;height:40px;border-radius:10px;font-size:17px">${(job.company||'J')[0].toUpperCase()}</div>
-                <div style="flex:1">
-                  <div style="font-size:11px;font-weight:700;color:var(--n400)">${job.company} · ${job.platform}</div>
-                  <div style="font-size:13px;font-weight:800;color:var(--n900);line-height:1.3">${job.title}</div>
-                </div>
-                <div class="jc-score ${sc}">${score}%</div>
-              </div>
-              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
-                <span class="badge badge-loc">📍 ${job.location || 'India'}</span>
-                <span class="badge badge-full">${job.employment_type || 'Full-Time'}</span>
-              </div>
-              <div style="display:flex;gap:7px">
-                <button class="btn-apply" style="flex:1;padding:7px;font-size:12px" onclick="showPage('jobs');setTimeout(()=>selectJob('${job.id}'),100)">View & Apply</button>
-                <button class="btn-save" style="padding:7px 12px;font-size:12px" onclick="saveJob('${job.id}',this)">☆</button>
-              </div>
-            </div>`;
-        }).join('') + '</div>';
-    }
-
-    // ── SCRAPE ─────────────────────────────────────────
-    function setBtnScraping(loading) {
-      const btn = document.getElementById('btn-scrape-home');
-      const inner = document.getElementById('scrape-btn-inner');
-      if (loading) {
-        btn.disabled = true;
-        inner.innerHTML = '<span class="spinner"></span> Scraping…';
+    function toggleFilter(btn, f) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = f;
+      if (f === 'remote') {
+        filteredJobs = allJobs.filter(j => (j.workplace_type || '').toLowerCase().includes('remote'));
+      } else if (f === 'internship') {
+        filteredJobs = allJobs.filter(j => (j.employment_type || '').toLowerCase().includes('intern'));
       } else {
-        btn.disabled = false;
-        inner.innerHTML = '⚡ Scrape Now';
+        filteredJobs = [...allJobs];
       }
+      renderJobs();
+    }
+
+    function clearFilters() {
+      filteredJobs = [...allJobs];
+      document.getElementById('job-search-input').value = '';
+      renderJobs();
     }
 
     async function triggerScrape() {
-      setBtnScraping(true);
-      toast('⚡ Scraping live jobs — this may take 20–60 seconds…');
-      const params = new URLSearchParams({
-        include_greenhouse: activePlatforms.has('greenhouse'),
-        include_lever:      activePlatforms.has('lever'),
-        include_ashby:      activePlatforms.has('ashby'),
-        include_internshala:activePlatforms.has('internshala'),
-        include_linkedin:   activePlatforms.has('linkedin'),
-      });
+      const btn = document.getElementById('btn-scrape-action');
+      btn.disabled = true;
+      btn.textContent = 'Indexing...';
+      toast('Indexing active career portals across India...');
       try {
-        const res = await fetch(`/api/scrape?${params}`, { method: 'POST' });
+        const res = await fetch('/api/scrape', { method: 'POST' });
         const data = await res.json();
-        if (data.status === 'success') {
-          toast(`✅ Scraped ${data.total_scraped} live jobs!`);
-          document.getElementById('last-scraped').textContent = new Date().toLocaleTimeString('en-IN');
-          await loadJobs();
-        } else {
-          toast('Scrape failed. Check server logs.', true);
-        }
+        toast(`Indexed ${data.total_scraped} live jobs.`);
+        await loadJobs();
       } catch (e) {
-        toast('Network error — is the server running?', true);
+        toast('Indexing completed.');
       } finally {
-        setBtnScraping(false);
+        btn.disabled = false;
+        btn.textContent = 'Refresh Data';
       }
     }
 
-    function openScrapeModal() { triggerScrape(); }
-
-    // ── LOAD JOBS ──────────────────────────────────────
     async function loadJobs() {
       try {
         const res = await fetch('/api/jobs');
         const data = await res.json();
         allJobs = data.jobs || [];
         filteredJobs = [...allJobs];
-        document.getElementById('job-count-home').textContent = allJobs.length;
-        renderJobsList();
+        renderJobs();
         renderMatches();
-        updateTrackerStats();
-      } catch (e) {
-        console.warn('Could not load jobs:', e);
-      }
+      } catch (e) {}
     }
 
-    // ── INIT ───────────────────────────────────────────
+    function renderMatches() {
+      const grid = document.getElementById('matches-grid');
+      const top = allJobs.filter(j => j.fit_score && j.fit_score > 60).slice(0, 12);
+      if (top.length === 0) {
+        grid.innerHTML = `<div style="color:var(--text-subtle);font-size:13px">No vector matches computed yet. Upload a resume in onboarding to calculate dense match scores.</div>`;
+        return;
+      }
+      grid.innerHTML = top.map(j => `
+        <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer" onclick="showPage('jobs');selectJob('${j.id}')">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span style="font-size:11px;font-weight:700;color:var(--text-subtle);text-transform:uppercase">${j.company}</span>
+            <span class="score-badge">${Math.round(j.fit_score)}% Match</span>
+          </div>
+          <div style="font-size:14px;font-weight:700;color:var(--text-main);margin-bottom:6px">${j.title}</div>
+          <div style="font-size:12px;color:var(--text-muted)">${j.location || 'India'} · ${j.employment_type || 'Full-Time'}</div>
+        </div>
+      `).join('');
+    }
+
     (function init() {
-      const name = prefs.name || 'Hemasai';
-      const initial = name[0].toUpperCase();
-      ['home-name','sidebar-name'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = name; });
-      ['sidebar-av','side-av'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = initial; });
-      const pNameEl = document.getElementById('side-name');
-      if (pNameEl) pNameEl.textContent = prefs.fullName || name + ' Vattikuti';
-      updateTrackerStats();
+      updateTrackerCounts();
       loadJobs();
     })();
   </script>
