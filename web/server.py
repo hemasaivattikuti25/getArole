@@ -14,7 +14,7 @@ from scrapers.aggregator import JobAggregator
 from scrapers.matcher import ResumeMatcher
 
 app = FastAPI(
-    title="Hircur — Smart Resume Screener & Job Discovery Engine",
+    title="getArole — Smart Resume Screener & Job Discovery Engine",
     description="Multi-platform job aggregator, local vector matcher, and AI recruiter resume screening pipeline",
     version="1.1.0"
 )
@@ -295,7 +295,7 @@ async def serve_landing():
     if os.path.exists(landing_file):
         with open(landing_file, "r", encoding="utf-8") as f:
             return f.read()
-    return "<h1>Hircur — Starting Up</h1>"
+    return "<h1>getArole — Starting Up</h1>"
 
 @app.get("/onboarding", response_class=HTMLResponse)
 async def serve_onboarding():
@@ -303,7 +303,7 @@ async def serve_onboarding():
     if os.path.exists(ob_file):
         with open(ob_file, "r", encoding="utf-8") as f:
             return f.read()
-    return "<h1>Hircur Onboarding</h1>"
+    return "<h1>getArole Onboarding</h1>"
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def serve_dashboard():
@@ -311,4 +311,4 @@ async def serve_dashboard():
     if os.path.exists(index_file):
         with open(index_file, "r", encoding="utf-8") as f:
             return f.read()
-    return "<h1>Hircur Dashboard</h1>"
+    return "<h1>getArole Dashboard</h1>"

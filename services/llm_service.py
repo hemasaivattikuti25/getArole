@@ -61,7 +61,7 @@ class NvidiaLLMService:
         """
         Async Llama 3.1 70B candidate evaluation.
         """
-        prompt = f"""You are an elite technical recruiter and AI talent screener for Hircur.
+        prompt = f"""You are an elite technical recruiter and AI talent screener for getArole.
 Objectively evaluate this candidate against the job description.
 Be strict, realistic, and insightful.
 
@@ -123,7 +123,7 @@ Respond ONLY in valid JSON:
         """
         Async Llama 3.1 70B application generation.
         """
-        prompt = f"""You are an elite career strategist and technical recruiter at Hircur.
+        prompt = f"""You are an elite career strategist and technical recruiter at getArole.
 Generate a tailored, high-signal application package for the candidate based on their real resume and target job.
 
 TARGET ROLE: {job_title} at {company}

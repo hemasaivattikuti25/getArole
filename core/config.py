@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings
 from typing import List
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "Hircur — Enterprise AI Screening & Job Discovery Platform"
+    PROJECT_NAME: str = "getArole — Enterprise AI Screening & Job Discovery Platform"
     VERSION: str = "2.0.0"
     API_V1_STR: str = "/api/v1"
     

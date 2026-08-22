@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hircur — Dashboard</title>
+  <title>getArole — Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -254,8 +254,8 @@
   <!-- ═══════════════ SIDEBAR ════════════════════ -->
   <aside class="sidebar">
     <a href="/" class="sidebar-brand">
-      <div class="sidebar-logo">H</div>
-      <span class="sidebar-name">Hircur<span>.ai</span></span>
+      <div class="sidebar-logo">G</div>
+      <span class="sidebar-name">getArole<span>.ai</span></span>
     </a>
     <nav class="sidebar-nav">
       <a class="nav-item active" onclick="showPage('home')" href="#">
@@ -329,7 +329,7 @@
           <!-- Checklist -->
           <div class="card">
             <div class="card-header" style="margin-bottom:10px">
-              <div class="card-title">Get started with Hircur</div>
+              <div class="card-title">Get started with getArole</div>
             </div>
             <div style="padding:0 22px 6px">
               <div class="progress-row">
@@ -340,7 +340,7 @@
             <div style="padding:0 22px 18px" id="checklist">
               <div class="cl-item" onclick="checkItem(this,0)">
                 <div class="cl-check done">✓</div>
-                <div><div class="cl-title">Create your account</div><div class="cl-desc">You're in — welcome to Hircur!</div></div>
+                <div><div class="cl-title">Create your account</div><div class="cl-desc">You're in — welcome to getArole!</div></div>
                 <div class="cl-arrow">›</div>
               </div>
               <div class="cl-item" onclick="checkItem(this,1)">
@@ -355,7 +355,7 @@
               </div>
               <div class="cl-item" onclick="showPage('matches')">
                 <div class="cl-check"></div>
-                <div><div class="cl-title">View your first match</div><div class="cl-desc">Hircur generates personalized job matches.</div></div>
+                <div><div class="cl-title">View your first match</div><div class="cl-desc">getArole generates personalized job matches.</div></div>
                 <div class="cl-arrow">›</div>
               </div>
               <div class="cl-item" onclick="showPage('jobs')">
@@ -365,7 +365,7 @@
               </div>
               <div class="cl-item" onclick="showPage('jobs')">
                 <div class="cl-check"></div>
-                <div><div class="cl-title">Apply for your first job</div><div class="cl-desc">Apply directly via Hircur with one click.</div></div>
+                <div><div class="cl-title">Apply for your first job</div><div class="cl-desc">Apply directly via getArole with one click.</div></div>
                 <div class="cl-arrow">›</div>
               </div>
             </div>
@@ -471,7 +471,7 @@
 
           <!-- Premium -->
           <div class="premium-card">
-            <div class="premium-badge">⚡ Hircur+ Beta</div>
+            <div class="premium-badge">⚡ getArole+ Beta</div>
             <div class="premium-title">Supercharge your job search with AI</div>
             <div class="premium-feats">
               <div class="premium-feat">AI Cover Letter Generator</div>
@@ -479,14 +479,14 @@
               <div class="premium-feat">Resume Match Scoring</div>
               <div class="premium-feat">NVIDIA NIM Integration</div>
             </div>
-            <button class="btn-premium">Subscribe to Hircur+ →</button>
+            <button class="btn-premium">Subscribe to getArole+ →</button>
           </div>
 
           <!-- Refer -->
           <div class="card">
             <div class="card-body">
               <div style="font-size:14px;font-weight:800;color:var(--n900);margin-bottom:6px">🎁 Refer a Friend</div>
-              <div style="font-size:12px;color:var(--n400);margin-bottom:10px">Earn Hircur+ credit when friends sign up. Your referrals: <strong>0</strong></div>
+              <div style="font-size:12px;color:var(--n400);margin-bottom:10px">Earn getArole+ credit when friends sign up. Your referrals: <strong>0</strong></div>
               <button style="width:100%;padding:8px;border-radius:9px;border:1.5px dashed var(--g300);background:var(--g50);color:var(--g700);font-weight:700;font-size:12px;cursor:pointer">Get Referral Link 🔗</button>
             </div>
           </div>
@@ -591,8 +591,8 @@
     let activeFilters = new Set(['remote']);
     let selectedJobId = null;
     let activePlatforms = new Set(['greenhouse','lever','ashby','internshala','linkedin']);
-    let trackerData = JSON.parse(localStorage.getItem('hircur_tracker') || '{"saved":[],"applied":[],"interview":[],"offer":[]}');
-    const prefs = JSON.parse(localStorage.getItem('hircur_prefs') || '{}');
+    let trackerData = JSON.parse(localStorage.getItem('getarole_tracker') || '{"saved":[],"applied":[],"interview":[],"offer":[]}');
+    const prefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
 
     // ── TOAST ──────────────────────────────────────────
     function toast(msg, isError = false) {
@@ -808,7 +808,7 @@
 
     // ── TRACKER ────────────────────────────────────────
     function saveTracker() {
-      localStorage.setItem('hircur_tracker', JSON.stringify(trackerData));
+      localStorage.setItem('getarole_tracker', JSON.stringify(trackerData));
       updateTrackerStats();
     }
 
@@ -834,7 +834,7 @@
       const blob = new Blob([JSON.stringify(trackerData, null, 2)], {type:'application/json'});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = `hircur_tracker_${new Date().toISOString().slice(0,10)}.json`;
+      a.download = `getarole_tracker_${new Date().toISOString().slice(0,10)}.json`;
       a.click();
     }
 

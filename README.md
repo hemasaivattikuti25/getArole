@@ -1,4 +1,4 @@
-# 🌿 Hircur AI — Intelligent Job Discovery & Smart Resume Screener
+# 🌿 getArole AI — Intelligent Job Discovery & Smart Resume Screener
 
 <div align="center">
 
@@ -20,9 +20,9 @@
 
 ## 🚀 Overview
 
-**Hircur AI** is an enterprise-grade job discovery and talent evaluation platform engineered specifically for the modern tech hiring ecosystem. 
+**getArole AI** is an enterprise-grade job discovery and talent evaluation platform engineered specifically for the modern tech hiring ecosystem. 
 
-Unlike traditional keyword-based ATS systems, Hircur utilizes a **3-Stage Hybrid Screening Engine** combining deterministic entity parsing, sub-15ms local ONNX dense vector retrieval, and 70-billion parameter neural reasoning (NVIDIA NIM Llama 3.1 70B) to deliver objective, calibrated candidate-job fit scores.
+Unlike traditional keyword-based ATS systems, getArole utilizes a **3-Stage Hybrid Screening Engine** combining deterministic entity parsing, sub-15ms local ONNX dense vector retrieval, and 70-billion parameter neural reasoning (NVIDIA NIM Llama 3.1 70B) to deliver objective, calibrated candidate-job fit scores.
 
 ---
 
@@ -111,8 +111,8 @@ Directly queries public career APIs and job boards in real time without stale da
 
 ### 1. Clone & Setup
 ```bash
-git clone https://github.com/your-username/hircur-ai.git
-cd hircur-ai
+git clone https://github.com/your-username/getarole-ai.git
+cd getarole-ai
 
 python3 -m venv venv
 source venv/bin/activate
@@ -182,7 +182,7 @@ curl -X POST "http://localhost:8000/api/scrape"
 
 **Hemasai Vattikuti**
 - B.Tech Computer Science & Engineering (Batch 2027) · VIT-AP University
-- Project Lead & System Architect — Hircur AI
+- Project Lead & System Architect — getArole AI
 
 ---
 

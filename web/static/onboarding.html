@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hircur — Get Started</title>
+  <title>getArole — Get Started</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -602,8 +602,8 @@
   <nav>
     <div class="nav-inner">
       <a href="/" class="nav-brand">
-        <div class="nav-logo">H</div>
-        <span class="nav-name">Hircur<span>.ai</span></span>
+        <div class="nav-logo">G</div>
+        <span class="nav-name">getArole<span>.ai</span></span>
       </a>
       <div class="nav-right">
         <div class="nav-user">
@@ -753,7 +753,7 @@
             <div class="founder-avatar">H</div>
             <div>
               <div class="founder-name">Hemasai, Founder</div>
-              <div class="founder-role">Hircur.ai · VIT-AP 2027</div>
+              <div class="founder-role">getArole.ai · VIT-AP 2027</div>
               <div class="founder-msg">We'll analyze your resume and match you with jobs that fit your background! Our local ONNX model processes it privately on your device — never shared.</div>
             </div>
           </div>
@@ -1034,14 +1034,14 @@
 
           <!-- Recruiter Testimonial -->
           <div class="testimonial-feature">
-            <div style="font-size:12px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px">⭐ Why top recruiters recommend Hircur</div>
-            <p class="testimonial-quote">I see the same AI-generated resumes every day. Hircur actually helps candidates craft high-quality, unique applications that stand out to technical reviewers.</p>
+            <div style="font-size:12px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px">⭐ Why top recruiters recommend getArole</div>
+            <p class="testimonial-quote">I see the same AI-generated resumes every day. getArole actually helps candidates craft high-quality, unique applications that stand out to technical reviewers.</p>
             <div class="testimonial-person">
               <div class="testimonial-avatar">L</div>
               <div>
                 <div class="testimonial-name">Lachlan Ma</div>
                 <div class="testimonial-role">Technical Recruiter, ex-TikTok</div>
-                <div class="testimonial-company">Recruiting Partner @ Hircur</div>
+                <div class="testimonial-company">Recruiting Partner @ getArole</div>
               </div>
             </div>
           </div>
@@ -1231,11 +1231,11 @@
 
     // ── PERSIST PREFS ──────────────────────────────────────
     document.getElementById('btn-go-dashboard') && document.getElementById('btn-go-dashboard').addEventListener('click', () => {
-      localStorage.setItem('hircur_prefs', JSON.stringify(preferences));
+      localStorage.setItem('getarole_prefs', JSON.stringify(preferences));
     });
 
     // ── NAV USER ───────────────────────────────────────────
-    const savedPrefs = JSON.parse(localStorage.getItem('hircur_prefs') || '{}');
+    const savedPrefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
     const userName = savedPrefs.name || 'Hemasai';
     document.getElementById('nav-username').textContent = userName;
     document.getElementById('nav-avatar-letter').textContent = userName[0].toUpperCase();
