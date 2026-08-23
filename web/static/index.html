@@ -411,7 +411,7 @@
           <div class="user-dropdown" id="user-dropdown">
             <a href="/onboarding" class="dropdown-item">Profile (8-Stage Builder)</a>
             <a href="#" onclick="openCandidateDatabaseModal()" class="dropdown-item">Candidate Resumes &amp; Data</a>
-            <a href="/onboarding" class="dropdown-item">Search Preferences</a>
+            <a href="#" onclick="openPreferencesModal()" class="dropdown-item">Search Preferences</a>
             <div style="height:1px; background:var(--border); margin:4px 0;"></div>
             <a href="#" onclick="handleLogout()" class="dropdown-item" style="color:#ef4444">Sign Out</a>
           </div>
@@ -638,6 +638,10 @@
         }
       }
     });
+
+    window.openPreferencesModal = function() {
+      toast('Search Preferences feature is coming soon!');
+    };
 
     window.handleLogout = async function() {
       await logoutUser();
