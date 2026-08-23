@@ -412,7 +412,6 @@
           <a class="nav-tab active" onclick="showTab('home')" id="tab-btn-home">Overview</a>
           <a class="nav-tab" onclick="showTab('matches')" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
           <a class="nav-tab" onclick="showTab('jobs')" id="tab-btn-jobs">Explore</a>
-          <a class="nav-tab" onclick="showTab('tracker')" id="tab-btn-tracker">Pipeline</a>
           <a class="nav-tab" onclick="showTab('tailor')" id="tab-btn-tailor">Synthesis</a>
           <a class="nav-tab" href="/resume-builder" id="tab-btn-resume">Resume</a>
         </nav>
@@ -520,6 +519,38 @@
       </div>
 
 
+      <!-- Application Tracker (Moved from Pipeline Page) -->
+      <div style="margin-bottom: 24px; margin-top: 48px;">
+        <h2 style="font-size:24px; font-weight:800; color:var(--text-main); margin-bottom:4px;">Application Tracker</h2>
+        <p style="font-size:14px; color:var(--text-muted)">Manage your application pipeline from saved opportunities to official offers.</p>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px; margin-bottom: 32px;">
+        <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:16px;">
+          <div style="font-size:14px; font-weight:800; color:var(--text-main); margin-bottom:12px; display:flex; justify-content:space-between;">
+            <span>🔖 Saved</span> <span class="nav-badge" id="count-saved">0</span>
+          </div>
+          <div id="col-saved" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+        <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:16px;">
+          <div style="font-size:14px; font-weight:800; color:#2563eb; margin-bottom:12px; display:flex; justify-content:space-between;">
+            <span>Applied</span> <span class="nav-badge" style="background:#2563eb" id="count-applied">0</span>
+          </div>
+          <div id="col-applied" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+        <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:16px;">
+          <div style="font-size:14px; font-weight:800; color:#d97706; margin-bottom:12px; display:flex; justify-content:space-between;">
+            <span>🤝 Interviewing</span> <span class="nav-badge" style="background:#d97706" id="count-interview">0</span>
+          </div>
+          <div id="col-interview" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+        <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:16px;">
+          <div style="font-size:14px; font-weight:800; color:var(--primary); margin-bottom:12px; display:flex; justify-content:space-between;">
+            <span>🎉 Offer Received</span> <span class="nav-badge" style="background:var(--primary)" id="count-offer">0</span>
+          </div>
+          <div id="col-offer" style="display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
+      </div>
+
     </div>
 
     <!-- 1. JOBS EXPLORER VIEW (SPLIT PANE) -->
@@ -567,40 +598,6 @@
           </div>
         </div>
 
-      </div>
-    </div>
-
-    <!-- 3. JOB TRACKER VIEW (KANBAN) -->
-    <div id="view-tracker" class="page-view" style="padding: 28px 24px;">
-      <div style="margin-bottom: 24px;">
-        <h2 style="font-size:24px; font-weight:800; color:var(--text-main); margin-bottom:4px;">Application Tracker</h2>
-        <p style="font-size:14px; color:var(--text-muted)">Manage your application pipeline from saved opportunities to official offers.</p>
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px;">
-        <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:16px;">
-          <div style="font-size:14px; font-weight:800; color:var(--text-main); margin-bottom:12px; display:flex; justify-content:space-between;">
-            <span>🔖 Saved</span> <span class="nav-badge" id="count-saved">0</span>
-          </div>
-          <div id="col-saved" style="display:flex; flex-direction:column; gap:8px;"></div>
-        </div>
-        <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:16px;">
-          <div style="font-size:14px; font-weight:800; color:#2563eb; margin-bottom:12px; display:flex; justify-content:space-between;">
-            <span>Applied</span> <span class="nav-badge" style="background:#2563eb" id="count-applied">0</span>
-          </div>
-          <div id="col-applied" style="display:flex; flex-direction:column; gap:8px;"></div>
-        </div>
-        <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:16px;">
-          <div style="font-size:14px; font-weight:800; color:#d97706; margin-bottom:12px; display:flex; justify-content:space-between;">
-            <span>🤝 Interviewing</span> <span class="nav-badge" style="background:#d97706" id="count-interview">0</span>
-          </div>
-          <div id="col-interview" style="display:flex; flex-direction:column; gap:8px;"></div>
-        </div>
-        <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:16px;">
-          <div style="font-size:14px; font-weight:800; color:var(--primary); margin-bottom:12px; display:flex; justify-content:space-between;">
-            <span>🎉 Offer Received</span> <span class="nav-badge" style="background:var(--primary)" id="count-offer">0</span>
-          </div>
-          <div id="col-offer" style="display:flex; flex-direction:column; gap:8px;"></div>
-        </div>
       </div>
     </div>
 
