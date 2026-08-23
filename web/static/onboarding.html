@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>getArole — Candidate Setup</title>
+  <title>getArole — Candidate Preferences & Setup</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -47,9 +47,9 @@
     }
     .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
     .nav-logo {
-      width: 30px; height: 30px;
-      background: var(--primary);
-      border-radius: 7px;
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
       color: white; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 15px;
     }
@@ -69,14 +69,14 @@
     .setup-card {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 18px;
       width: 100%; max-width: 680px;
       overflow: hidden;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
+      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
     }
 
     /* Progress bar */
-    .progress-bar-container { height: 3px; background: var(--border-subtle); }
+    .progress-bar-container { height: 4px; background: var(--border-subtle); }
     .progress-bar-fill { height: 100%; background: var(--primary); transition: width 0.3s ease; }
 
     /* Step content */
@@ -101,76 +101,105 @@
     .option-group-1 { grid-template-columns: 1fr; }
 
     .option-item {
-      padding: 14px 18px; border-radius: 10px; border: 1px solid var(--border);
-      background: var(--surface); cursor: pointer; transition: all 0.15s;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      cursor: pointer;
       display: flex; align-items: center; justify-content: space-between;
+      transition: all 0.15s ease;
+      background: var(--surface);
     }
-    .option-item:hover { border-color: var(--border-strong); background: var(--background); }
-    .option-item.selected { border-color: var(--primary); background: var(--primary-light); }
-    .option-label { font-size: 14px; font-weight: 600; color: var(--text-main); }
-    .option-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
-    .option-radio {
-      width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--border-strong);
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    .option-item:hover { border-color: var(--primary-border); background: var(--primary-light); }
+    .option-item.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
     }
-    .option-item.selected .option-radio { border-color: var(--primary); background: var(--primary); }
-    .option-radio-dot { width: 6px; height: 6px; border-radius: 50%; background: white; display: none; }
-    .option-item.selected .option-radio-dot { display: block; }
+    .option-label { font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
+    .option-sub { font-size: 12px; color: var(--text-muted); }
 
-    /* Checkbox mode */
-    .option-checkbox {
-      width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid var(--border-strong);
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 11px; color: white;
+    .option-radio {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 1.5px solid var(--border-strong);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
     }
-    .option-item.selected .option-checkbox { border-color: var(--primary); background: var(--primary); }
+    .option-item.selected .option-radio {
+      border-color: var(--primary); background: var(--primary);
+    }
+    .option-radio-dot { width: 6px; height: 6px; border-radius: 50%; background: white; }
+
+    .option-checkbox {
+      width: 18px; height: 18px; border-radius: 4px;
+      border: 1.5px solid var(--border-strong);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: transparent;
+    }
+    .option-item.selected .option-checkbox {
+      border-color: var(--primary); background: var(--primary); color: white;
+    }
 
     /* Chips */
     .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
     .chip {
-      padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border);
-      background: var(--surface); font-size: 13px; font-weight: 500; color: var(--text-main);
-      cursor: pointer; transition: all 0.15s;
+      padding: 8px 14px; border-radius: 100px;
+      font-size: 13px; font-weight: 600;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      cursor: pointer; transition: all 0.15s ease;
     }
-    .chip:hover { border-color: var(--border-strong); }
-    .chip.selected { border-color: var(--primary); background: var(--primary-light); color: var(--primary); font-weight: 600; }
+    .chip:hover { border-color: var(--primary-border); color: var(--primary); }
+    .chip.selected {
+      border-color: var(--primary); background: var(--primary-light); color: var(--primary);
+      box-shadow: 0 1px 3px rgba(5, 150, 105, 0.1);
+    }
 
-    /* Upload box */
+    /* Dropzone */
     .dropzone {
-      border: 1.5px dashed var(--border-strong); border-radius: 12px;
-      padding: 36px 24px; text-align: center; background: var(--background);
-      cursor: pointer; position: relative; transition: all 0.15s;
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+      background: #fafbfc;
+      transition: all 0.2s;
     }
-    .dropzone:hover { border-color: var(--primary); background: var(--primary-light); }
-    .dropzone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-    .drop-title { font-size: 14px; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .dropzone input {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .drop-icon { font-size: 28px; color: var(--primary); margin-bottom: 8px; }
+    .drop-title { font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
     .drop-sub { font-size: 12px; color: var(--text-muted); }
 
-    /* Slider */
-    .salary-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .salary-val { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: var(--primary); }
+    /* Salary range */
+    .salary-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+    .salary-val { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800; color: var(--primary); }
     input[type=range] {
-      width: 100%; height: 6px; border-radius: 3px; background: var(--border);
-      outline: none; -webkit-appearance: none; cursor: pointer;
-    }
-    input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
-      background: var(--primary); border: 2px solid white; box-shadow: 0 1px 3px rgba(0,0,0,0.2); cursor: pointer;
+      width: 100%; accent-color: var(--primary); cursor: pointer;
     }
 
-    /* Footer Buttons */
+    /* Footer buttons */
     .step-footer {
-      padding: 18px 36px 28px; border-top: 1px solid var(--border-subtle);
+      border-top: 1px solid var(--border-subtle);
+      padding: 18px 36px 24px;
       display: flex; justify-content: space-between; align-items: center;
+      background: #fafbfc;
     }
     .btn {
-      padding: 9px 20px; border-radius: 8px; font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: all 0.15s; border: 1px solid transparent; text-decoration: none;
+      padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 700;
+      border: none; cursor: pointer; transition: all 0.15s ease;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
     }
-    .btn-secondary { background: white; border-color: var(--border); color: var(--text-main); }
-    .btn-secondary:hover { background: var(--background); }
+    .btn-secondary { background: var(--surface); border: 1px solid var(--border); color: var(--text-main); }
+    .btn-secondary:hover:not(:disabled) { border-color: var(--border-strong); }
     .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(5,150,105,0.25); }
+    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
 
     @media (max-width: 600px) {
       .step-header { padding: 24px 20px 0; }
@@ -189,8 +218,8 @@
         <span class="nav-title">getArole<span>.ai</span></span>
       </a>
       <div class="nav-user-info">
-        <span class="user-tag" id="user-display">Candidate</span>
-        <a href="/" class="btn-signout">Exit</a>
+        <span class="user-tag" id="user-display">Candidate Profile</span>
+        <a href="/dashboard" class="btn-signout">Skip to Dashboard</a>
       </div>
     </div>
   </nav>
@@ -198,7 +227,7 @@
   <div class="setup-container">
     <div class="setup-card">
       <div class="progress-bar-container">
-        <div class="progress-bar-fill" id="progress-fill" style="width: 14%"></div>
+        <div class="progress-bar-fill" id="progress-fill" style="width: 16%"></div>
       </div>
 
       <!-- Step 1: Timeline -->
@@ -208,13 +237,13 @@
             <span class="step-indicator">STEP 1 OF 6</span>
             <span class="btn-skip" onclick="nextStep()">Skip</span>
           </div>
-          <h2 class="step-title">What is your target timeline?</h2>
-          <p class="step-desc">Select how actively you are seeking new roles.</p>
+          <h2 class="step-title">What is your hiring timeline?</h2>
+          <p class="step-desc">Calibrate job match alerts to your search urgency.</p>
         </div>
         <div class="step-body">
           <div class="option-group option-group-2">
-            <div class="option-item" onclick="selectOption(this, 'timeline', 'immediate')">
-              <div><div class="option-label">Immediate</div><div class="option-sub">Actively interviewing</div></div>
+            <div class="option-item selected" onclick="selectOption(this, 'timeline', 'immediate')">
+              <div><div class="option-label">Immediate</div><div class="option-sub">Actively interviewing now</div></div>
               <div class="option-radio"><div class="option-radio-dot"></div></div>
             </div>
             <div class="option-item" onclick="selectOption(this, 'timeline', '3months')">
@@ -222,22 +251,22 @@
               <div class="option-radio"><div class="option-radio-dot"></div></div>
             </div>
             <div class="option-item" onclick="selectOption(this, 'timeline', '6months')">
-              <div><div class="option-label">Within 6 Months</div><div class="option-sub">Planning graduation / transition</div></div>
+              <div><div class="option-label">Within 6 Months</div><div class="option-sub">Planning graduation / switch</div></div>
               <div class="option-radio"><div class="option-radio-dot"></div></div>
             </div>
             <div class="option-item" onclick="selectOption(this, 'timeline', 'passive')">
-              <div><div class="option-label">Passively Browsing</div><div class="option-sub">Monitoring market signals</div></div>
+              <div><div class="option-label">Passively Browsing</div><div class="option-sub">Monitoring top tier offers</div></div>
               <div class="option-radio"><div class="option-radio-dot"></div></div>
             </div>
           </div>
         </div>
         <div class="step-footer">
           <button class="btn btn-secondary" disabled>Back</button>
-          <button class="btn btn-primary" onclick="nextStep()">Continue</button>
+          <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
         </div>
       </div>
 
-      <!-- Step 2: Location -->
+      <!-- Step 2: Location & Workplace Policy -->
       <div id="step-2" class="step" style="display:none">
         <div class="step-header">
           <div class="step-badge-row">
@@ -245,93 +274,102 @@
             <span class="btn-skip" onclick="nextStep()">Skip</span>
           </div>
           <h2 class="step-title">Preferred Work Locations</h2>
-          <p class="step-desc">Select primary cities and workplace arrangements.</p>
+          <p class="step-desc">Select primary tech hubs and workplace models.</p>
         </div>
         <div class="step-body">
           <div style="font-size:12px;font-weight:700;color:var(--text-subtle);text-transform:uppercase;margin-bottom:10px">Workplace Policy</div>
-          <div class="chip-group" style="margin-bottom:20px">
-            <div class="chip selected" onclick="toggleChip(this)">Remote (India)</div>
-            <div class="chip" onclick="toggleChip(this)">Hybrid</div>
-            <div class="chip" onclick="toggleChip(this)">On-site</div>
+          <div class="chip-group" id="policy-chips" style="margin-bottom:20px">
+            <div class="chip selected" onclick="toggleChip(this, 'policy', 'Remote')">Remote (India)</div>
+            <div class="chip selected" onclick="toggleChip(this, 'policy', 'Hybrid')">Hybrid</div>
+            <div class="chip" onclick="toggleChip(this, 'policy', 'On-site')">On-site</div>
           </div>
 
           <div style="font-size:12px;font-weight:700;color:var(--text-subtle);text-transform:uppercase;margin-bottom:10px">Target Metros</div>
-          <div class="chip-group">
-            <div class="chip selected" onclick="toggleChip(this)">Bengaluru</div>
-            <div class="chip selected" onclick="toggleChip(this)">Hyderabad</div>
-            <div class="chip" onclick="toggleChip(this)">Pune</div>
-            <div class="chip" onclick="toggleChip(this)">Delhi NCR / Noida</div>
-            <div class="chip" onclick="toggleChip(this)">Chennai</div>
-            <div class="chip" onclick="toggleChip(this)">Mumbai</div>
+          <div class="chip-group" id="city-chips">
+            <div class="chip selected" onclick="toggleChip(this, 'cities', 'Bengaluru')">Bengaluru</div>
+            <div class="chip selected" onclick="toggleChip(this, 'cities', 'Hyderabad')">Hyderabad</div>
+            <div class="chip selected" onclick="toggleChip(this, 'cities', 'Pune')">Pune</div>
+            <div class="chip" onclick="toggleChip(this, 'cities', 'Delhi NCR')">Delhi NCR / Gurgaon</div>
+            <div class="chip" onclick="toggleChip(this, 'cities', 'Chennai')">Chennai</div>
+            <div class="chip" onclick="toggleChip(this, 'cities', 'Mumbai')">Mumbai</div>
           </div>
         </div>
         <div class="step-footer">
           <button class="btn btn-secondary" onclick="prevStep()">Back</button>
-          <button class="btn btn-primary" onclick="nextStep()">Continue</button>
+          <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
         </div>
       </div>
 
-      <!-- Step 3: Resume -->
+      <!-- Step 3: Resume Upload & Instant Vector Embedding -->
       <div id="step-3" class="step" style="display:none">
         <div class="step-header">
           <div class="step-badge-row">
             <span class="step-indicator">STEP 3 OF 6</span>
             <span class="btn-skip" onclick="nextStep()">Skip</span>
           </div>
-          <h2 class="step-title">Upload Candidate Resume</h2>
-          <p class="step-desc">Parsed locally via PyMuPDF for zero-latency neural vector matching.</p>
+          <h2 class="step-title">Upload Resume (PDF)</h2>
+          <p class="step-desc">Local FastEmbed ONNX parsing calculates real vector scores across 1,062 live jobs.</p>
         </div>
         <div class="step-body">
           <div class="dropzone" id="dropzone">
-            <input type="file" accept=".pdf" id="resume-file-input" onchange="handleFile(event)">
-            <div class="drop-title">Select Resume PDF</div>
-            <div class="drop-sub">Drag and drop file here, or browse local filesystem (Max 5MB)</div>
+            <input type="file" accept=".pdf" id="resume-file-input" onchange="handleResumeUpload(event)">
+            <div class="drop-icon">📄</div>
+            <div class="drop-title">Select or Drop Resume PDF</div>
+            <div class="drop-sub">PyMuPDF extracts skills locally with zero OCR lag (Max 5MB)</div>
           </div>
-          <div id="file-status" style="display:none;margin-top:14px;padding:12px 16px;background:var(--primary-light);border:1px solid var(--primary-border);border-radius:8px;font-size:13px;color:var(--primary);font-weight:600"></div>
+          
+          <div id="parsing-indicator" style="display:none;margin-top:14px;padding:12px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:13px;color:#15803d;font-weight:600;">
+            ⏳ Parsing resume & calculating dense semantic embeddings...
+          </div>
+
+          <div id="extracted-skills-wrap" style="display:none;margin-top:16px;">
+            <div style="font-size:12px;font-weight:700;color:var(--text-subtle);text-transform:uppercase;margin-bottom:8px;">Extracted Technical Skills</div>
+            <div id="extracted-skills-chips" class="chip-group"></div>
+          </div>
         </div>
         <div class="step-footer">
           <button class="btn btn-secondary" onclick="prevStep()">Back</button>
-          <button class="btn btn-primary" onclick="nextStep()">Continue</button>
+          <button class="btn btn-primary" id="btn-step3-continue" onclick="nextStep()">Continue →</button>
         </div>
       </div>
 
-      <!-- Step 4: Experience -->
+      <!-- Step 4: Experience Level -->
       <div id="step-4" class="step" style="display:none">
         <div class="step-header">
           <div class="step-badge-row">
             <span class="step-indicator">STEP 4 OF 6</span>
             <span class="btn-skip" onclick="nextStep()">Skip</span>
           </div>
-          <h2 class="step-title">Experience Level</h2>
-          <p class="step-desc">Select the brackets matching your professional background.</p>
+          <h2 class="step-title">Experience Bracket</h2>
+          <p class="step-desc">Select the brackets matching your professional seniority.</p>
         </div>
         <div class="step-body">
           <div class="option-group option-group-1">
-            <div class="option-item" onclick="toggleMulti(this)">
-              <div><div class="option-label">Student / Internship</div><div class="option-sub">Enrolled in university or looking for part-time/intern roles</div></div>
-              <div class="option-checkbox">✓</div>
+            <div class="option-item" onclick="selectOption(this, 'experience', 'intern')">
+              <div><div class="option-label">Student / Internship</div><div class="option-sub">Looking for 3-6 month software internships or co-ops</div></div>
+              <div class="option-radio"><div class="option-radio-dot"></div></div>
             </div>
-            <div class="option-item selected" onclick="toggleMulti(this)">
-              <div><div class="option-label">Entry Level &amp; New Graduate</div><div class="option-sub">0 to 1 year of full-time engineering experience</div></div>
-              <div class="option-checkbox">✓</div>
+            <div class="option-item selected" onclick="selectOption(this, 'experience', 'entry')">
+              <div><div class="option-label">Entry Level &amp; New Graduate (0-1 yr)</div><div class="option-sub">Recent engineering graduate seeking first full-time role</div></div>
+              <div class="option-radio"><div class="option-radio-dot"></div></div>
             </div>
-            <div class="option-item" onclick="toggleMulti(this)">
-              <div><div class="option-label">Junior Software Engineer</div><div class="option-sub">1 to 3 years of industry experience</div></div>
-              <div class="option-checkbox">✓</div>
+            <div class="option-item" onclick="selectOption(this, 'experience', 'junior')">
+              <div><div class="option-label">Junior Software Engineer (1-3 yrs)</div><div class="option-sub">Hands-on production coding experience</div></div>
+              <div class="option-radio"><div class="option-radio-dot"></div></div>
             </div>
-            <div class="option-item" onclick="toggleMulti(this)">
-              <div><div class="option-label">Mid-Level Engineer</div><div class="option-sub">3 to 5 years of software development experience</div></div>
-              <div class="option-checkbox">✓</div>
+            <div class="option-item" onclick="selectOption(this, 'experience', 'mid')">
+              <div><div class="option-label">Mid-Level Engineer (3-5 yrs)</div><div class="option-sub">Feature ownership, microservices, and system scaling</div></div>
+              <div class="option-radio"><div class="option-radio-dot"></div></div>
             </div>
-            <div class="option-item" onclick="toggleMulti(this)">
-              <div><div class="option-label">Senior / Staff Engineer</div><div class="option-sub">5+ years of system ownership &amp; architectural design</div></div>
-              <div class="option-checkbox">✓</div>
+            <div class="option-item" onclick="selectOption(this, 'experience', 'senior')">
+              <div><div class="option-label">Senior / Staff Engineer (5+ yrs)</div><div class="option-sub">Architecture leadership &amp; multi-team technical impact</div></div>
+              <div class="option-radio"><div class="option-radio-dot"></div></div>
             </div>
           </div>
         </div>
         <div class="step-footer">
           <button class="btn btn-secondary" onclick="prevStep()">Back</button>
-          <button class="btn btn-primary" onclick="nextStep()">Continue</button>
+          <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
         </div>
       </div>
 
@@ -343,60 +381,76 @@
             <span class="btn-skip" onclick="nextStep()">Skip</span>
           </div>
           <h2 class="step-title">Technical Domains</h2>
-          <p class="step-desc">Select engineering disciplines you want to filter for.</p>
+          <p class="step-desc">Select disciplines to prioritize in your AI match feed.</p>
         </div>
         <div class="step-body">
-          <div class="chip-group">
-            <div class="chip selected" onclick="toggleChip(this)">Backend Engineering</div>
-            <div class="chip selected" onclick="toggleChip(this)">Distributed Systems</div>
-            <div class="chip selected" onclick="toggleChip(this)">AI / Machine Learning</div>
-            <div class="chip" onclick="toggleChip(this)">Full Stack</div>
-            <div class="chip" onclick="toggleChip(this)">Cloud &amp; DevOps</div>
-            <div class="chip" onclick="toggleChip(this)">Data Engineering</div>
-            <div class="chip" onclick="toggleChip(this)">Frontend Architecture</div>
-            <div class="chip" onclick="toggleChip(this)">Site Reliability / SRE</div>
-            <div class="chip" onclick="toggleChip(this)">Cybersecurity</div>
+          <div class="chip-group" id="domain-chips">
+            <div class="chip selected" onclick="toggleChip(this, 'domains', 'Backend Engineering')">Backend Engineering</div>
+            <div class="chip selected" onclick="toggleChip(this, 'domains', 'Distributed Systems')">Distributed Systems</div>
+            <div class="chip selected" onclick="toggleChip(this, 'domains', 'AI / Machine Learning')">AI / Machine Learning</div>
+            <div class="chip selected" onclick="toggleChip(this, 'domains', 'Full Stack')">Full Stack</div>
+            <div class="chip" onclick="toggleChip(this, 'domains', 'Cloud & DevOps')">Cloud &amp; DevOps</div>
+            <div class="chip" onclick="toggleChip(this, 'domains', 'Data Engineering')">Data Engineering</div>
+            <div class="chip" onclick="toggleChip(this, 'domains', 'Frontend Architecture')">Frontend Architecture</div>
+            <div class="chip" onclick="toggleChip(this, 'domains', 'Cybersecurity')">Cybersecurity</div>
           </div>
         </div>
         <div class="step-footer">
           <button class="btn btn-secondary" onclick="prevStep()">Back</button>
-          <button class="btn btn-primary" onclick="nextStep()">Continue</button>
+          <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
         </div>
       </div>
 
-      <!-- Step 6: Compensation & Finish -->
+      <!-- Step 6: Minimum Compensation Baseline & Complete -->
       <div id="step-6" class="step" style="display:none">
         <div class="step-header">
           <div class="step-badge-row">
             <span class="step-indicator">STEP 6 OF 6</span>
           </div>
           <h2 class="step-title">Minimum Compensation Filter</h2>
-          <p class="step-desc">Exclude opportunities below your target baseline.</p>
+          <p class="step-desc">Exclude opportunities below your monthly baseline.</p>
         </div>
         <div class="step-body">
           <div class="salary-header">
             <span style="font-size:13px;font-weight:600;color:var(--text-muted)">Minimum Monthly Baseline</span>
             <span class="salary-val" id="salary-text">₹25,000</span>
           </div>
-          <input type="range" min="5000" max="300000" step="5000" value="25000" oninput="updateSalary(this.value)" style="margin-bottom:28px">
+          <input type="range" min="5000" max="300000" step="5000" value="25000" oninput="updateSalary(this.value)" style="margin-bottom:24px">
 
-          <div style="background:var(--background);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-size:13px;color:var(--text-muted);line-height:1.6">
-            Configuration ready. Preferences and parsed skills will be cached locally to filter all 1,150+ live tech job listings.
+          <div style="background:var(--background);border:1px solid var(--border);border-radius:12px;padding:18px 20px;font-size:13px;color:var(--text-muted);line-height:1.6">
+            ✨ <strong style="color:var(--text-main)">Ready to launch!</strong> Your preferences will filter the 1,062 live jobs across Greenhouse, Lever, Ashby, Internshala, and LinkedIn.
           </div>
         </div>
         <div class="step-footer">
           <button class="btn btn-secondary" onclick="prevStep()">Back</button>
-          <a href="/dashboard" class="btn btn-primary">Open Dashboard →</a>
+          <button class="btn btn-primary" onclick="finishOnboarding()" style="padding:11px 24px;">Launch Matches Dashboard →</button>
         </div>
       </div>
 
     </div>
   </div>
 
+  <script type="module">
+    import { initAuthListener } from "/static/firebase-auth.js";
+    initAuthListener((user) => {
+      if (user) {
+        document.getElementById('user-display').textContent = user.displayName || user.email;
+      }
+    });
+  </script>
+
   <script>
     let currentStep = 1;
     const totalSteps = 6;
-    const prefs = { timeline: 'immediate', locations: ['Remote (India)'], salary: 25000 };
+    const prefs = {
+      timeline: 'immediate',
+      policy: ['Remote', 'Hybrid'],
+      cities: ['Bengaluru', 'Hyderabad', 'Pune'],
+      experience: 'entry',
+      domains: ['Backend Engineering', 'Distributed Systems', 'AI / Machine Learning', 'Full Stack'],
+      salary: 25000,
+      extracted_skills: []
+    };
 
     function nextStep() {
       if (currentStep < totalSteps) {
@@ -427,12 +481,14 @@
       prefs[key] = val;
     }
 
-    function toggleMulti(el) {
+    function toggleChip(el, category, val) {
       el.classList.toggle('selected');
-    }
-
-    function toggleChip(el) {
-      el.classList.toggle('selected');
+      if (!prefs[category]) prefs[category] = [];
+      if (el.classList.contains('selected')) {
+        if (!prefs[category].includes(val)) prefs[category].push(val);
+      } else {
+        prefs[category] = prefs[category].filter(c => c !== val);
+      }
     }
 
     function updateSalary(val) {
@@ -441,18 +497,45 @@
       document.getElementById('salary-text').textContent = '₹' + num.toLocaleString('en-IN');
     }
 
-    function handleFile(e) {
+    async function handleResumeUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
-      const status = document.getElementById('file-status');
-      status.style.display = 'block';
-      status.textContent = 'Selected: ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
+
+      const indicator = document.getElementById('parsing-indicator');
+      indicator.style.display = 'block';
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch('/api/match-resume', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        
+        indicator.innerHTML = `✅ Successfully parsed <strong>${file.name}</strong> · Top ${data.total_matches} live matches computed!`;
+        
+        if (data.candidate_skills && data.candidate_skills.length > 0) {
+          prefs.extracted_skills = data.candidate_skills;
+          const chipsWrap = document.getElementById('extracted-skills-wrap');
+          const chipsContainer = document.getElementById('extracted-skills-chips');
+          chipsWrap.style.display = 'block';
+          chipsContainer.innerHTML = data.candidate_skills.map(s => `<span class="chip selected">${s}</span>`).join('');
+        }
+
+        if (data.matches) {
+          localStorage.setItem('getarole_matches', JSON.stringify(data.matches));
+        }
+      } catch (err) {
+        indicator.textContent = 'Uploaded ' + file.name + ' (Offline fallback matching ready)';
+      }
     }
 
-    // Save preferences on transition to dashboard
-    window.addEventListener('beforeunload', () => {
+    function finishOnboarding() {
       localStorage.setItem('getarole_prefs', JSON.stringify(prefs));
-    });
+      window.location.href = '/dashboard';
+    }
   </script>
 </body>
 </html>

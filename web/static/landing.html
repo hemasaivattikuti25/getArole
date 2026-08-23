@@ -899,7 +899,12 @@
       const res = await loginWithGoogle();
       if (res.success) {
         window.closeAuthModal();
-        window.location.href = "/dashboard";
+        const prefs = localStorage.getItem('getarole_prefs');
+        if (!prefs) {
+          window.location.href = "/onboarding";
+        } else {
+          window.location.href = "/dashboard";
+        }
       } else {
         showError(res.error);
       }
@@ -920,7 +925,12 @@
 
       if (res.success) {
         window.closeAuthModal();
-        window.location.href = "/dashboard";
+        const prefs = localStorage.getItem('getarole_prefs');
+        if (isSignUp || !prefs) {
+          window.location.href = "/onboarding";
+        } else {
+          window.location.href = "/dashboard";
+        }
       } else {
         showError(res.error);
       }
