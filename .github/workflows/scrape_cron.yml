@@ -1,0 +1,33 @@
+name: 30-Minute Job Scraper Cron
+
+on:
+  schedule:
+    # Runs every 30 minutes (UTC)
+    - cron: '*/30 * * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  scrape-and-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run 30-Minute Scraper & Supabase Sync
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://tgmhtlqcjgcjedlnthfk.supabase.co' }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY || 'sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn' }}
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+        run: |
+          python run_cron.py

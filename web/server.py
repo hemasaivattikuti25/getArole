@@ -72,11 +72,41 @@ def load_cached_jobs() -> List[JobListing]:
     except Exception as e:
         print(f"[Server] Supabase job fetch fallback: {e}")
 
-    return []
+async def periodic_scraper_loop():
+    """Background worker that continuously scrapes all job portals every 30 minutes."""
+    # Small initial delay so startup completes smoothly
+    await asyncio.sleep(10)
+    while True:
+        try:
+            print("[Auto-Cron] 🔄 Starting scheduled 30-minute career gateway sync...")
+            jobs = await AGGREGATOR.aggregate_all()
+            if jobs:
+                AGGREGATOR.cached_jobs = jobs
+                for save_path in [SAVED_JOBS_FILE, TMP_JOBS_FILE]:
+                    try:
+                        with open(save_path, "w", encoding="utf-8") as f:
+                            json.dump([j.model_dump() for j in jobs], f, indent=2)
+                    except Exception:
+                        pass
+                
+                # Sync to Supabase PostgreSQL
+                try:
+                    supabase = get_supabase_service()
+                    if supabase.is_connected():
+                        await supabase.upsert_jobs_bulk(jobs)
+                        print(f"[Auto-Cron] ✅ Successfully synced {len(jobs)} live jobs to Supabase.")
+                except Exception as e:
+                    print(f"[Auto-Cron] Supabase sync notice: {e}")
+        except Exception as err:
+            print(f"[Auto-Cron] Periodic scrape error: {err}")
+
+        # Wait 30 minutes (1800 seconds) before next automated run
+        await asyncio.sleep(1800)
 
 @app.on_event("startup")
 async def startup_event():
     load_cached_jobs()
+    asyncio.create_task(periodic_scraper_loop())
 
 class GenerateRequest(BaseModel):
     job_id: str

@@ -499,13 +499,16 @@
 
       <!-- Active Career Ingestion Gateways -->
       <div style="background:white; border:1.5px solid var(--border); border-radius:16px; padding:24px;">
-        <h3 style="font-size:16px; font-weight:800; color:var(--text-main); margin-bottom:14px;">Live Ingestion Feeds (100% Direct APIs)</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h3 style="font-size:16px; font-weight:800; color:var(--text-main);">Live Ingestion Feeds (100% Direct APIs)</h3>
+          <span style="font-size:12.5px; font-weight:700; color:var(--primary); background:var(--primary-light); border:1px solid var(--primary-border); padding:4px 10px; border-radius:6px;">🟢 Automated 30-Min Cron Active</span>
+        </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <span class="tag-chip remote" style="font-size:13px; padding:6px 14px;">● Greenhouse (761 live roles)</span>
-          <span class="tag-chip batch" style="font-size:13px; padding:6px 14px;">● Ashby Gateway (249 live roles)</span>
-          <span class="tag-chip" style="font-size:13px; padding:6px 14px;">● LinkedIn Curated Tech</span>
-          <span class="tag-chip" style="font-size:13px; padding:6px 14px;">● Lever Ingestion</span>
-          <span class="tag-chip" style="font-size:13px; padding:6px 14px;">● Internshala Tier-1</span>
+          <span class="tag-chip remote" id="feed-count-greenhouse" style="font-size:13px; padding:6px 14px;">● Greenhouse</span>
+          <span class="tag-chip batch" id="feed-count-ashby" style="font-size:13px; padding:6px 14px;">● Ashby Gateway</span>
+          <span class="tag-chip" id="feed-count-linkedin" style="font-size:13px; padding:6px 14px;">● LinkedIn Tech</span>
+          <span class="tag-chip" id="feed-count-lever" style="font-size:13px; padding:6px 14px;">● Lever Ingestion</span>
+          <span class="tag-chip" id="feed-count-internshala" style="font-size:13px; padding:6px 14px;">● Internshala Tier-1</span>
         </div>
       </div>
 
@@ -976,6 +979,24 @@
       document.getElementById('home-matches-count').textContent = matchedJobs.length;
       document.getElementById('home-saved-count').textContent = tracker.saved.length;
       document.getElementById('home-applied-count').textContent = tracker.applied.length;
+
+      // Platform counts
+      const ghCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('greenhouse')).length;
+      const ashbyCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('ashby')).length;
+      const liCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('linkedin')).length;
+      const leverCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('lever')).length;
+      const internCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('internshala')).length;
+
+      const ghEl = document.getElementById('feed-count-greenhouse');
+      if (ghEl) ghEl.textContent = `● Greenhouse (${ghCount} live roles)`;
+      const ashEl = document.getElementById('feed-count-ashby');
+      if (ashEl) ashEl.textContent = `● Ashby Gateway (${ashbyCount} live roles)`;
+      const liEl = document.getElementById('feed-count-linkedin');
+      if (liEl) liEl.textContent = `● LinkedIn (${liCount} roles)`;
+      const levEl = document.getElementById('feed-count-lever');
+      if (levEl) levEl.textContent = `● Lever (${leverCount} roles)`;
+      const intEl = document.getElementById('feed-count-internshala');
+      if (intEl) intEl.textContent = `● Internshala (${internCount} roles)`;
 
       const grid = document.getElementById('home-matches-preview-grid');
       grid.innerHTML = matchedJobs.slice(0, 6).map(j => `
