@@ -1069,20 +1069,39 @@ async function aiGenerateCoverLetter() {
         candidate_skills: allSkills
       })
     });
-    const d = await r.json();
-    if (d.cover_letter) {
-      document.getElementById('fcl-text').value = d.cover_letter;
-      if (!R.cover_letter) R.cover_letter = {};
-      R.cover_letter.body = d.cover_letter;
-      R.cover_letter.company = comp;
-      R.cover_letter.role = role;
-      rp(); ss();
-      gS('cl-body');
-      toast(`Cover Letter tailored for ${comp}!`);
-      return;
+    
+    const reader = r.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    document.getElementById('fcl-text').value = "";
+    
+    if (!R.cover_letter) R.cover_letter = {};
+    R.cover_letter.company = comp;
+    R.cover_letter.role = role;
+    
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, {stream: true});
+      const lines = chunk.split('\n');
+      for (const line of lines) {
+        if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+          try {
+            const parsed = JSON.parse(line.substring(6));
+            if (parsed.content) {
+              document.getElementById('fcl-text').value += parsed.content;
+              R.cover_letter.body = document.getElementById('fcl-text').value;
+              rp(); // Re-render preview live
+            }
+          } catch(e) {}
+        }
+      }
     }
+    ss();
+    gS('cl-body');
+    toast(`Cover Letter tailored for ${comp}!`);
   } catch(e){
     console.error(e);
+    toast('Error generating cover letter.');
   }
 }
 

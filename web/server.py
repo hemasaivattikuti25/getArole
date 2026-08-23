@@ -5,7 +5,7 @@ import shutil
 from typing import List, Optional, Dict, Any
 from fastapi import FastAPI, UploadFile, File, Form, Query, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -506,20 +506,26 @@ Letter Structure:
 Tone: Professional, persuasive, crisp, tailored to the specific role and company. Zero filler or generic clichés. Return ONLY the letter text."""
 
     try:
-        letter = await llm.generate_text(prompt, max_tokens=700)
-        return {"cover_letter": letter.strip()}
+        async def event_generator():
+            try:
+                async for chunk in llm.a_stream_chat(
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.3,
+                    max_tokens=700
+                ):
+                    yield f"data: {json.dumps({'content': chunk})}\n\n"
+                yield "data: [DONE]\n\n"
+            except Exception as e:
+                print(f"[CoverLetter Streaming] Error: {e}")
+                # Optional fallback if it fails mid-stream
+                yield f"data: {json.dumps({'error': str(e)})}\n\n"
+                yield "data: [DONE]\n\n"
+                
+        return StreamingResponse(event_generator(), media_type="text/event-stream")
+        
     except Exception as e:
-        print(f"[CoverLetter] Fallback used: {e}")
-        fallback = f"""Dear Hiring Team at {req.company_name},
-
-I am writing to express my strong enthusiasm for the {req.role_title} position at {req.company_name}. With a proven track record in delivering high-impact projects, solving complex problems, and driving measurable results, I am eager to bring my expertise to your organization.
-
-Throughout my experience, I have focused on building scalable, reliable solutions and optimizing performance to meet demanding objectives. My core competencies directly align with the challenges and opportunities at {req.company_name}, and I pride myself on collaborating effectively with cross-functional teams to execute mission-critical goals.
-
-{req.company_name}'s dedication to innovation and excellence strongly resonates with my professional journey. I welcome the opportunity to discuss how my background and skills can contribute immediately to your team's success.
-
-Sincerely,
-{req.candidate_name}"""
+        print(f"[CoverLetter Setup] Fallback used: {e}")
+        fallback = f"Dear Hiring Team at {req.company_name},\n\nI am writing to express my strong enthusiasm for the {req.role_title} position at {req.company_name}."
         return {"cover_letter": fallback}
 
 

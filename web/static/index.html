@@ -524,18 +524,6 @@
           </div>
           <div id="col-applied" style="display:flex; flex-direction:column; gap:8px;"></div>
         </div>
-        <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:16px;">
-          <div style="font-size:14px; font-weight:800; color:#d97706; margin-bottom:12px; display:flex; justify-content:space-between;">
-            <span>🤝 Interviewing</span> <span class="nav-badge" style="background:#d97706" id="count-interview">0</span>
-          </div>
-          <div id="col-interview" style="display:flex; flex-direction:column; gap:8px;"></div>
-        </div>
-        <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:16px;">
-          <div style="font-size:14px; font-weight:800; color:var(--primary); margin-bottom:12px; display:flex; justify-content:space-between;">
-            <span>🎉 Offer Received</span> <span class="nav-badge" style="background:var(--primary)" id="count-offer">0</span>
-          </div>
-          <div id="col-offer" style="display:flex; flex-direction:column; gap:8px;"></div>
-        </div>
       </div>
 
       <!-- Top AI Matches Preview Section -->
@@ -600,25 +588,6 @@
       </div>
     </div>
 
-    <!-- 4. AI TAILOR & DOCUMENTS VIEW -->
-    <div id="view-tailor" class="page-view" style="padding: 28px 24px;">
-      <div style="max-width:860px; margin:0 auto; background:white; border:1px solid var(--border); border-radius:16px; padding:32px;">
-        <h2 style="font-size:24px; font-weight:800; color:var(--text-main); margin-bottom:6px;">70B Parameter ATS Resume & Cover Letter Tailor</h2>
-        <p style="font-size:14px; color:var(--text-muted); margin-bottom:24px;">Generate personalized ATS highlights and tailored cover letters using NVIDIA NIM Llama 3.1 70B.</p>
-        
-        <div style="margin-bottom:20px;">
-          <label style="font-size:13px; font-weight:700; color:var(--text-main); display:block; margin-bottom:6px;">Target Role Description</label>
-          <textarea id="tailor-jd-input" placeholder="Paste target Job Description here..." style="width:100%; height:120px; padding:12px; border-radius:8px; border:1.5px solid var(--border); font-size:13.5px; font-family:inherit; outline:none;"></textarea>
-        </div>
-
-        <button class="btn-apply-primary" onclick="runLlamaTailor()" style="padding:11px 24px; margin-bottom:24px;">Generate ATS Cover Letter via 70B</button>
-
-        <div id="tailor-output-wrap" style="display:none; background:var(--background); border:1px solid var(--border); border-radius:10px; padding:20px;">
-          <div style="font-size:13px; font-weight:700; color:var(--primary); margin-bottom:10px;">Generated Output (NVIDIA NIM 70B):</div>
-          <div id="tailor-output-text" style="font-size:14px; color:var(--text-main); line-height:1.7; white-space:pre-wrap;"></div>
-        </div>
-      </div>
-    </div>
   </main>
 
   <div id="toast"></div>
@@ -1082,30 +1051,16 @@
 
       document.getElementById('col-saved').innerHTML = getCards(tracker.saved) || '<div style="font-size:12px; color:var(--text-subtle)">No saved roles yet.</div>';
       document.getElementById('col-applied').innerHTML = getCards(tracker.applied) || '<div style="font-size:12px; color:var(--text-subtle)">No applied roles yet.</div>';
-      document.getElementById('col-interview').innerHTML = getCards(tracker.interview) || '<div style="font-size:12px; color:var(--text-subtle)">No interviews yet.</div>';
-      document.getElementById('col-offer').innerHTML = getCards(tracker.offer) || '<div style="font-size:12px; color:var(--text-subtle)">No offers yet.</div>';
 
       document.getElementById('count-saved').textContent = tracker.saved.length;
       document.getElementById('count-applied').textContent = tracker.applied.length;
-      document.getElementById('count-interview').textContent = tracker.interview.length;
-      document.getElementById('count-offer').textContent = tracker.offer.length;
     }
 
     function openTailorWithJob(jobId) {
-      const job = allJobs.find(j => j.id === jobId);
-      if (job) {
-        document.getElementById('tailor-jd-input').value = `${job.title} at ${job.company}\n\n${job.description}`;
-      }
-      showTab('tailor');
+      window.location.href = '/resume-builder';
     }
 
     async function runLlamaTailor() {
-      const jd = document.getElementById('tailor-jd-input').value;
-      if (!jd) { toast('Please paste a Job Description.'); return; }
-      
-      toast('Generating ATS Cover Letter with Llama 3.1 70B...');
-      try {
-        const res = await fetch('/api/generate-ai-doc', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

@@ -34,6 +34,31 @@ class NvidiaLLMService:
             data = resp.json()
             return data["choices"][0]["message"]["content"].strip()
 
+    async def a_stream_chat(self, messages: List[Dict[str, str]], temperature: float = 0.2, max_tokens: int = 800):
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "stream": True
+        }
+        async with httpx.AsyncClient(timeout=45.0) as client:
+            async with client.stream("POST", f"{self.base_url}/chat/completions", headers=headers, json=payload) as resp:
+                resp.raise_for_status()
+                async for line in resp.aiter_lines():
+                    if line.startswith("data: ") and line != "data: [DONE]":
+                        try:
+                            data = json.loads(line[6:])
+                            content = data["choices"][0]["delta"].get("content")
+                            if content:
+                                yield content
+                        except Exception:
+                            continue
+
     def call_chat_sync(self, messages: List[Dict[str, str]], temperature: float = 0.2, max_tokens: int = 800) -> str:
         headers = {
             "Authorization": f"Bearer {self.api_key}",
