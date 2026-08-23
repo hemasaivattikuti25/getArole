@@ -1,9 +1,9 @@
-name: 30-Minute Job Scraper Cron
+name: 3-Hour Job Scraper Cron
 
 on:
   schedule:
-    # Runs every 30 minutes (UTC)
-    - cron: '*/30 * * * *'
+    # Runs every 3 hours (UTC)
+    - cron: '0 */3 * * *'
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
 jobs:
