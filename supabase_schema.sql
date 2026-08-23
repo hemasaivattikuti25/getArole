@@ -1,5 +1,5 @@
 -- ==============================================================================
--- getAjob (getArole AI) — Production Supabase Schema with pgvector
+-- getArole AI — Production Supabase Schema with pgvector
 -- Run this script in your Supabase SQL Editor: https://supabase.com/dashboard/project/_/sql
 -- ==============================================================================
 

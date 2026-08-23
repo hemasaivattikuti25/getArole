@@ -111,8 +111,8 @@ Directly queries public career APIs and job boards in real time without stale da
 
 ### 1. Clone & Setup
 ```bash
-git clone https://github.com/hemasaivattikuti25/getAjob.git
-cd getAjob
+git clone https://github.com/hemasaivattikuti25/getarole.git
+cd getarole
 
 python3 -m venv venv
 source venv/bin/activate
