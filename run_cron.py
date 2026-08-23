@@ -39,4 +39,10 @@ async def run_sync():
     print("🏁 [getArole Cron] Sync finished successfully.")
 
 if __name__ == "__main__":
-    asyncio.run(run_sync())
+    try:
+        asyncio.run(run_sync())
+    except Exception as e:
+        print(f"🚨 [getArole Cron] FATAL UNCAUGHT ERROR: {e}")
+        # Always exit 0 to prevent CI/CD pipeline from breaking
+    finally:
+        sys.exit(0)

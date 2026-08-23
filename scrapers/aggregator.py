@@ -7,6 +7,7 @@ from .lever import scrape_all_lever_jobs
 from .ashby import scrape_all_ashby_jobs
 from .internshala import scrape_all_internshala_jobs
 from .linkedin import scrape_all_linkedin_jobs
+from .unstop import fetch_unstop_jobs
 
 class JobAggregator:
     def __init__(self):
@@ -36,7 +37,8 @@ class JobAggregator:
         include_lever: bool = True,
         include_ashby: bool = True,
         include_internshala: bool = True,
-        include_linkedin: bool = True
+        include_linkedin: bool = True,
+        include_unstop: bool = True
     ) -> List[JobListing]:
         tasks = []
         if include_greenhouse:
@@ -49,6 +51,8 @@ class JobAggregator:
             tasks.append(self._run_with_retries(scrape_all_internshala_jobs, "Internshala Scraper"))
         if include_linkedin:
             tasks.append(self._run_with_retries(scrape_all_linkedin_jobs, "LinkedIn Scraper"))
+        if include_unstop:
+            tasks.append(self._run_with_retries(fetch_unstop_jobs, "Unstop Scraper"))
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
         
