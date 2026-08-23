@@ -1,0 +1,41 @@
+name: Daily Enterprise Job Scraper
+
+on:
+  schedule:
+    # Runs at 1:00 AM IST (19:30 UTC)
+    - cron: '30 19 * * *'
+  workflow_dispatch:
+    # Allows manual triggering from the GitHub Actions tab
+
+jobs:
+  scrape-and-sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd cron_scraper
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Playwright Browsers
+        run: |
+          cd cron_scraper
+          playwright install chromium --with-deps
+
+      - name: Run Scraper & Supabase Sync Engine
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          cd cron_scraper
+          python main.py

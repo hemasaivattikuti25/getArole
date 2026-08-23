@@ -136,3 +136,6 @@ BEGIN
   LIMIT match_count;
 END;
 $$;
+
+-- Add last_seen_at for dead job pruning
+ALTER TABLE public.jobs ADD COLUMN IF NOT EXISTS last_seen_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now());

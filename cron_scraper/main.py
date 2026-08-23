@@ -53,20 +53,31 @@ async def run_scrapers():
         print(f"Failed to connect to Supabase: {e}")
         return
 
-    # TODO: Upsert jobs into Supabase
+    # Upsert jobs into Supabase
     print("Upserting jobs to database...")
+    successful_upserts = 0
     for job in all_jobs:
-        # We will add a 'last_seen_at' timestamp before upserting
-        job_data = job.model_dump()
-        job_data["last_seen_at"] = start_time.isoformat()
-        
-        # Example upsert logic (assuming a 'jobs' table and 'id' as primary key)
-        # supabase.table("jobs").upsert(job_data, on_conflict="id").execute()
+        try:
+            job_data = job.model_dump() if hasattr(job, 'model_dump') else job
+            job_data["last_seen_at"] = start_time.isoformat()
+            
+            # The 'id' column in Supabase is the primary key (usually URL or hash)
+            supabase.table("jobs").upsert(job_data, on_conflict="id").execute()
+            successful_upserts += 1
+        except Exception as e:
+            print(f"Error upserting job {job_data.get('title', 'Unknown')}: {e}")
+            
+    print(f"Successfully upserted {successful_upserts}/{len(all_jobs)} jobs.")
     
-    # TODO: Prune Dead Jobs
+    # Prune Dead Jobs
     print("Pruning dead jobs...")
-    # Any job where last_seen_at < start_time is dead (was not seen in this scrape)
-    # supabase.table("jobs").delete().lt("last_seen_at", start_time.isoformat()).execute()
+    try:
+        # Any job where last_seen_at < start_time is dead (was not seen in this scrape)
+        res = supabase.table("jobs").delete().lt("last_seen_at", start_time.isoformat()).execute()
+        deleted_count = len(res.data) if hasattr(res, 'data') else 0
+        print(f"Pruned {deleted_count} dead jobs.")
+    except Exception as e:
+        print(f"Error pruning jobs: {e}")
 
     print(f"[{datetime.now(timezone.utc).isoformat()}] Enterprise Scrape Job Completed Successfully.")
 
