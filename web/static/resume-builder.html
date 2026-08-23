@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>getArole — ATS Resume Architect (Overleaf / LaTeX Standard)</title>
-  <meta name="description" content="Official single-template ATS LaTeX-grade resume builder synchronized directly with your candidate profile.">
+  <title>getArole — ATS Resume & Academic CV Architect</title>
+  <meta name="description" content="Official Overleaf / LaTeX ATS Resume & Multi-Page Academic CV Builder synchronized directly with candidate profile data.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -31,7 +31,10 @@
     .back:hover{color:var(--pr);border-color:var(--prb);background:var(--prl);}
     .dv{width:1px;height:24px;background:var(--bd);}
     
-    .template-badge{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;color:#0f172a;background:#f1f5f9;border:1px solid var(--bd);padding:5px 12px;border-radius:8px;}
+    /* Mode Toggle Switcher (Resume vs CV) */
+    .mode-switch{display:flex;align-items:center;gap:3px;background:var(--bg);padding:4px;border-radius:10px;border:1px solid var(--bd);}
+    .btn-mode{padding:6px 14px;border-radius:7px;font-size:12.5px;font-weight:700;color:var(--txm);background:none;border:none;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;}
+    .btn-mode.active{background:var(--sf);color:var(--pr);box-shadow:0 1px 4px rgba(0,0,0,.08);font-weight:800;}
     
     /* Sync Status & Action Buttons */
     .tbr{display:flex;align-items:center;gap:10px;margin-left:auto;}
@@ -53,6 +56,8 @@
     .sic{font-size:15px;width:18px;text-align:center;}
     .dot{width:7px;height:7px;border-radius:50%;background:var(--bd);margin-left:auto;flex-shrink:0;transition:background .3s;}
     .dot.done{background:var(--pr);}
+    .cv-only{display:none;}
+    .mode-cv-active .cv-only{display:flex;}
 
     /* Editor Column */
     .ep{border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden;background:var(--sf);}
@@ -107,33 +112,35 @@
     /* ═══════ PREVIEW PANEL ═══════ */
     .pv{background:#525659;overflow-y:auto;padding:24px;display:flex;flex-direction:column;align-items:center;}
     .pvl{font-size:11px;font-weight:800;color:#e2e8f0;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;align-self:flex-start;display:flex;align-items:center;gap:8px;}
-    .a4w{width:100%;display:flex;justify-content:center;}
-    #rp{width:794px;min-height:1123px;background:#fff;box-shadow:0 6px 30px rgba(0,0,0,.4);transform-origin:top center;flex-shrink:0;}
+    .a4w{width:100%;display:flex;flex-direction:column;align-items:center;gap:24px;}
+    .a4-page{width:794px;min-height:1123px;background:#fff;box-shadow:0 6px 30px rgba(0,0,0,.4);transform-origin:top center;flex-shrink:0;position:relative;}
 
     @media print{
       @page{size:A4;margin:0;}
       body>*{display:none!important;}
       #pw{display:block!important;position:fixed;top:0;left:0;width:210mm;min-height:297mm;z-index:99999;background:#fff;}
+      .a4-page{box-shadow:none!important;margin:0!important;page-break-after:always!important;}
     }
 
     /* ═════════════════════════════════════════════════════════════════
-       EXACT OVERLEAF / LATEX ATS TEMPLATE (MATCHING USER'S PDF)
+       EXACT OVERLEAF / LATEX ATS MASTER RESUME & ACADEMIC CV STYLES
        Typography: Times New Roman / Computer Modern Serif
     ═════════════════════════════════════════════════════════════════ */
-    .latex-resume{
+    .latex-doc{
       font-family: 'Times New Roman', 'CMU Serif', 'Latin Modern Roman', 'Liberation Serif', Times, serif;
       color: #000;
-      padding: 40px 48px;
-      font-size: 11pt;
+      padding: 38px 46px;
+      font-size: 10.5pt;
       line-height: 1.25;
       background: #fff;
     }
-    .latex-resume a{color: #000; text-decoration: none;}
-    .latex-resume a:hover{text-decoration: underline;}
+    .latex-doc a{color: #000; text-decoration: none;}
+    .latex-doc a:hover{text-decoration: underline;}
 
     /* Header */
     .lr-header{text-align: center; margin-bottom: 12px;}
-    .lr-name{font-size: 22pt; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 4px;}
+    .lr-name{font-size: 22pt; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 3px;}
+    .lr-subhead{font-size: 11pt; font-style: italic; color: #333; margin-bottom: 3px;}
     .lr-contacts{font-size: 9.5pt; color: #222; margin-top: 3px;}
     .lr-contacts span{margin: 0 4px;}
 
@@ -149,7 +156,7 @@
       margin-bottom: 5px;
     }
 
-    /* Summary */
+    /* Summary & Text blocks */
     .lr-summary-text{
       font-size: 9.5pt;
       line-height: 1.35;
@@ -178,6 +185,12 @@
 
     /* Achievements & Certifications lines */
     .lr-single-line{display: flex; justify-content: space-between; font-size: 9.3pt; line-height: 1.35; margin-bottom: 2px;}
+    
+    /* CV Specific Formats */
+    .lr-pub-item{margin-bottom: 6px; font-size: 9.3pt; line-height: 1.35; text-align: justify;}
+    .lr-pub-title{font-weight: bold; color: #000;}
+    .lr-pub-authors{font-style: normal; color: #222;}
+    .lr-pub-venue{font-style: italic; color: #333;}
   </style>
 </head>
 <body>
@@ -191,8 +204,14 @@
   </a>
   <div class="dv"></div>
   
-  <div class="template-badge">
-    <span>📄</span> Overleaf / LaTeX ATS Master Template
+  <!-- Mode Switcher -->
+  <div class="mode-switch">
+    <button class="btn-mode active" id="btn-mode-resume" onclick="switchDocMode('resume')">
+      <span>📄</span> 1-Page ATS Resume
+    </button>
+    <button class="btn-mode" id="btn-mode-cv" onclick="switchDocMode('cv')">
+      <span>📚</span> Academic &amp; Research CV
+    </button>
   </div>
 
   <div class="tbr">
@@ -208,12 +227,12 @@
 </header>
 
 <!-- ════════ THREE COLUMN LAYOUT ════════ -->
-<div class="ly">
+<div class="ly" id="app-layout">
   <!-- 1. SECTIONS SIDEBAR -->
   <aside class="sn">
-    <div class="snl">Resume Sections</div>
-    <div class="si active" id="nav-header"  onclick="gS('header')"><span class="sic">👤</span>1. Header & Info<span class="dot done" id="dot-header"></span></div>
-    <div class="si"        id="nav-summary" onclick="gS('summary')"><span class="sic">📝</span>2. Summary<span class="dot done" id="dot-summary"></span></div>
+    <div class="snl">Core Sections</div>
+    <div class="si active" id="nav-header"  onclick="gS('header')"><span class="sic">👤</span>1. Header &amp; Info<span class="dot done" id="dot-header"></span></div>
+    <div class="si"        id="nav-summary" onclick="gS('summary')"><span class="sic">📝</span>2. Summary / Bio<span class="dot done" id="dot-summary"></span></div>
     <div class="si"        id="nav-skills"  onclick="gS('skills')"><span class="sic">⚡</span>3. Technical Skills<span class="dot done" id="dot-skills"></span></div>
     <div class="si"        id="nav-exp"     onclick="gS('exp')"><span class="sic">💼</span>4. Experience<span class="dot done" id="dot-exp"></span></div>
     <div class="si"        id="nav-proj"    onclick="gS('proj')"><span class="sic">🚀</span>5. Projects<span class="dot done" id="dot-proj"></span></div>
@@ -221,6 +240,12 @@
     <div class="si"        id="nav-certs"   onclick="gS('certs')"><span class="sic">🏆</span>7. Certifications<span class="dot done" id="dot-certs"></span></div>
     <div class="si"        id="nav-edu"     onclick="gS('edu')"><span class="sic">🎓</span>8. Education<span class="dot done" id="dot-edu"></span></div>
     
+    <div class="snl cv-only" style="margin-top:8px;">Academic &amp; Research CV</div>
+    <div class="si cv-only" id="nav-research" onclick="gS('research')"><span class="sic">🔬</span>Research Interests<span class="dot done" id="dot-research"></span></div>
+    <div class="si cv-only" id="nav-pubs"     onclick="gS('pubs')"><span class="sic">📚</span>Publications &amp; Papers<span class="dot done" id="dot-pubs"></span></div>
+    <div class="si cv-only" id="nav-patents"  onclick="gS('patents')"><span class="sic">💡</span>Patents &amp; Innovations<span class="dot done" id="dot-patents"></span></div>
+    <div class="si cv-only" id="nav-talks"    onclick="gS('talks')"><span class="sic">🎤</span>Conferences &amp; Talks<span class="dot done" id="dot-talks"></span></div>
+
     <div class="snl" style="margin-top:8px;">AI Optimizers</div>
     <div class="si" id="nav-ats"    onclick="gS('ats')"><span class="sic">📊</span>ATS Check</div>
     <div class="si" id="nav-tailor" onclick="gS('tailor')"><span class="sic">✨</span>Job Tailor</div>
@@ -230,8 +255,8 @@
   <div class="ep">
     <div class="eh">
       <div>
-        <h2 id="ed-t">Header & Contact Info</h2>
-        <p id="ed-s">Personal links & contact details</p>
+        <h2 id="ed-t">Header &amp; Contact Info</h2>
+        <p id="ed-s">Personal links &amp; contact details</p>
       </div>
       <span style="font-size:11px;font-weight:700;color:var(--txs);background:var(--bg);padding:3px 8px;border-radius:6px;" id="asv">✓ Saved</span>
     </div>
@@ -240,6 +265,7 @@
       <!-- 1. HEADER & INFO -->
       <div class="pn active" id="panel-header">
         <div class="fg"><label>Full Name</label><input class="fi" id="ffn" placeholder="Hemasai Vattikuti" oninput="ud('header','name',this.value)"></div>
+        <div class="fg"><label>Academic / Professional Subtitle</label><input class="fi" id="fstt" placeholder="Applied AI Researcher & Systems Engineer" oninput="ud('header','title',this.value)"></div>
         <div class="fr2">
           <div class="fg"><label>Phone Number</label><input class="fi" id="fph" placeholder="+91 79937 40469" oninput="ud('header','phone',this.value)"></div>
           <div class="fg"><label>Email Address</label><input class="fi" id="fem" type="email" placeholder="hemasai@example.com" oninput="ud('header','email',this.value)"></div>
@@ -248,16 +274,19 @@
           <div class="fg"><label>LinkedIn Handle / URL</label><input class="fi" id="fli" placeholder="linkedin.com/in/hemasai" oninput="ud('header','linkedin',this.value)"></div>
           <div class="fg"><label>GitHub Handle / URL</label><input class="fi" id="fgh" placeholder="github.com/hemasaivattikuti25" oninput="ud('header','github',this.value)"></div>
         </div>
-        <div class="fg"><label>Personal Portfolio / Website</label><input class="fi" id="fpo" placeholder="mithra-lifeos.com" oninput="ud('header','portfolio',this.value)"></div>
+        <div class="fr2">
+          <div class="fg"><label>Personal Website</label><input class="fi" id="fpo" placeholder="mithra-lifeos.com" oninput="ud('header','portfolio',this.value)"></div>
+          <div class="fg"><label>Google Scholar / ORCID</label><input class="fi" id="fsc" placeholder="scholar.google.com/..." oninput="ud('header','scholar',this.value)"></div>
+        </div>
       </div>
 
       <!-- 2. SUMMARY -->
       <div class="pn" id="panel-summary">
         <div class="fg">
-          <label>Summary Statement</label>
+          <label>Summary Statement / Academic Bio</label>
           <textarea class="ft" id="fsu" rows="4" style="min-height:95px;" placeholder="Backend Applied AI Engineer building scalable, high-availability distributed systems..." oninput="ud('summary','text',this.value)"></textarea>
         </div>
-        <button class="bto" style="align-self:flex-start;" onclick="genSum()">✨ AI Enhance Summary</button>
+        <button class="bto" style="align-self:flex-start;" onclick="genSum()">✨ AI Enhance Statement</button>
       </div>
 
       <!-- 3. TECHNICAL SKILLS -->
@@ -267,7 +296,7 @@
         <div class="fg"><label>Backend</label><input class="fi" id="fsb" placeholder="FastAPI, REST APIs, JWT Authentication, RBAC, Rate Limiting, Async Programming, Docker" oninput="ud('skills','backend',this.value)"></div>
         <div class="fg"><label>Databases</label><input class="fi" id="fsd" placeholder="PostgreSQL, MongoDB (Replica Sets, Failover), Supabase, pgvector, Qdrant" oninput="ud('skills','databases',this.value)"></div>
         <div class="fg"><label>Systems</label><input class="fi" id="fss" placeholder="Distributed Systems, High Availability, Row-Level Security, Zero-Trust Architecture" oninput="ud('skills','systems',this.value)"></div>
-        <div class="fg"><label>Tools & Frameworks</label><input class="fi" id="fst" placeholder="Git, React.js, Next.js, Vercel, Google Cloud" oninput="ud('skills','tools',this.value)"></div>
+        <div class="fg"><label>Tools &amp; Frameworks</label><input class="fi" id="fst" placeholder="Git, React.js, Next.js, Vercel, Google Cloud" oninput="ud('skills','tools',this.value)"></div>
       </div>
 
       <!-- 4. EXPERIENCE -->
@@ -300,6 +329,32 @@
         <button class="bad" onclick="addEdu()">+ Add Education</button>
       </div>
 
+      <!-- CV: RESEARCH INTERESTS -->
+      <div class="pn" id="panel-research">
+        <div class="fg">
+          <label>Core Research Areas (Comma separated)</label>
+          <input class="fi" id="fri" placeholder="Distributed Fault-Tolerant Systems, Large Language Models, Vector Information Retrieval (RAG), High-Availability DBs" oninput="ud('research_interests','areas',this.value)">
+        </div>
+      </div>
+
+      <!-- CV: PUBLICATIONS -->
+      <div class="pn" id="panel-pubs">
+        <div id="pub-cont"></div>
+        <button class="bad" onclick="addPub()">+ Add Publication / Paper</button>
+      </div>
+
+      <!-- CV: PATENTS & INNOVATIONS -->
+      <div class="pn" id="panel-patents">
+        <div id="pat-cont"></div>
+        <button class="bad" onclick="addPatent()">+ Add Patent / Architecture Proposal</button>
+      </div>
+
+      <!-- CV: TALKS & CONFERENCES -->
+      <div class="pn" id="panel-talks">
+        <div id="talk-cont"></div>
+        <button class="bad" onclick="addTalk()">+ Add Conference / Workshop Presentation</button>
+      </div>
+
       <!-- AI: ATS CHECK -->
       <div class="pn" id="panel-ats">
         <div class="ac">
@@ -319,7 +374,7 @@
       <div class="pn" id="panel-tailor">
         <div class="fg">
           <label>Target Job Description</label>
-          <textarea class="ft" id="fjd" rows="8" style="min-height:140px;" placeholder="Paste the target JD to automatically match keywords & tailor your resume..."></textarea>
+          <textarea class="ft" id="fjd" rows="8" style="min-height:140px;" placeholder="Paste the target JD to automatically match keywords &amp; tailor your resume..."></textarea>
         </div>
         <button class="btp" onclick="tailorR()">✨ Tailor Resume to this JD</button>
         <div id="tout" style="display:none;background:var(--prl);border:1px solid var(--prb);border-radius:8px;padding:14px;font-size:12.5px;color:var(--tx);line-height:1.6;"></div>
@@ -330,10 +385,10 @@
   <!-- 3. LIVE PREVIEW COLUMN -->
   <div class="pv">
     <div class="pvl">
-      <span>📄</span> <span>Overleaf / LaTeX ATS Master Template</span> &mdash; Live A4 Preview
+      <span>📄</span> <span id="doc-mode-label">Overleaf / LaTeX Master Resume</span> &mdash; Live A4 Preview
     </div>
     <div class="a4w">
-      <div id="rp"></div>
+      <div class="a4-page" id="rp"></div>
     </div>
   </div>
 </div>
@@ -343,19 +398,26 @@
 
 <script>
 /* ═════════════════════════════════════════════════════════════════
-   HEMASAI VATTIKUTI MASTER DATA MODEL (100% MATCHING USER'S RESUME)
+   HEMASAI VATTIKUTI MASTER DATA MODEL (RESUME & COMPREHENSIVE CV)
 ═════════════════════════════════════════════════════════════════ */
+let docMode = 'resume'; // 'resume' (1-Page ATS) | 'cv' (Multi-Page Academic CV)
+
 let R = {
   header: {
     name: 'Hemasai Vattikuti',
+    title: 'Applied AI Researcher & Systems Engineer',
     phone: '+91 79937 40469',
     email: 'Email',
     linkedin: 'LinkedIn',
     github: 'GitHub',
-    portfolio: 'mithra-lifeos.com'
+    portfolio: 'mithra-lifeos.com',
+    scholar: ''
   },
   summary: {
     text: 'Backend Applied AI Engineer building scalable, high-availability distributed systems and production LLM infrastructure — from mission-critical defense systems to AI products serving real users.'
+  },
+  research_interests: {
+    areas: 'Distributed Fault-Tolerant Systems, Large Language Models, Vector Information Retrieval (RAG), High-Availability Database Replications'
   },
   skills: {
     languages: 'Python, Java, SQL',
@@ -414,6 +476,29 @@ let R = {
       ]
     }
   ],
+  publications: [
+    {
+      title: 'Sub-10s Automatic Failover & High-Availability Topology for Mission-Critical Defense Asset Management',
+      authors: 'Hemasai Vattikuti, Scientist E (DRDL DRDO)',
+      venue: 'Defence Distributed Systems Technical Report / Preprint',
+      year: '2025',
+      link: 'mithra-lifeos.com/research/failover'
+    }
+  ],
+  patents: [
+    {
+      title: 'Zero-Trust Scoped Multi-Tenant Vector Retrieval Architecture for Dynamic Campus Knowledge Bases',
+      status: 'Technical Architecture Proposal',
+      year: '2026'
+    }
+  ],
+  talks: [
+    {
+      title: 'Building Agentic RAG Systems with Qdrant & FastAPI',
+      event: 'Google Developer Student Clubs (GDSC) Tech Talk · VIT-AP',
+      date: 'Oct 2025'
+    }
+  ],
   achievements: [
     { text: '4th Place — Google Cloud Hackathon (GoogleDevs Sprint 2K25) · VIT-AP · 486 participants', date: 'Mar 2025' },
     { text: '7th Place — Simverse Hackathon · VIT-AP University · 200+ participants', date: 'Jan 2026' },
@@ -434,7 +519,7 @@ let R = {
   ]
 };
 
-// ── Auto-Sync from candidate profile or fallback ──
+// ── Auto-Sync from candidate profile ──
 function loadDataFromProfile() {
   const profileRaw = localStorage.getItem('getarole_profile');
   const resumeSaved = localStorage.getItem('getarole_resume_v2');
@@ -462,12 +547,15 @@ function loadDataFromProfile() {
 function populateFormFields() {
   const h = R.header;
   sv('ffn', h.name);
+  sv('fstt', h.title);
   sv('fph', h.phone);
   sv('fem', h.email);
   sv('fli', h.linkedin);
   sv('fgh', h.github);
   sv('fpo', h.portfolio);
+  sv('fsc', h.scholar);
   sv('fsu', R.summary.text);
+  sv('fri', R.research_interests?.areas);
 
   const sk = R.skills;
   sv('fsl', sk.languages);
@@ -487,6 +575,13 @@ function populateFormFields() {
   R.certifications.forEach((_, i) => rCert(i));
   document.getElementById('edc').innerHTML = '';
   R.education.forEach((_, i) => rEdu(i));
+  
+  document.getElementById('pub-cont').innerHTML = '';
+  (R.publications||[]).forEach((_, i) => rPub(i));
+  document.getElementById('pat-cont').innerHTML = '';
+  (R.patents||[]).forEach((_, i) => rPatent(i));
+  document.getElementById('talk-cont').innerHTML = '';
+  (R.talks||[]).forEach((_, i) => rTalk(i));
 }
 
 function sv(id, v) { const e = document.getElementById(id); if(e) e.value = v || ''; }
@@ -500,7 +595,29 @@ function resyncFromProfile() {
 }
 
 /* ═════════════════════════════════════════════════════════════════
-   RENDER EXACT MASTER OVERLEAF/LATEX TEMPLATE
+   DOCUMENT MODE SWITCHER (1-Page Resume vs Academic Multi-Page CV)
+═════════════════════════════════════════════════════════════════ */
+function switchDocMode(mode) {
+  docMode = mode;
+  document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active'));
+  const layout = document.getElementById('app-layout');
+  
+  if (mode === 'resume') {
+    document.getElementById('btn-mode-resume').classList.add('active');
+    document.getElementById('doc-mode-label').textContent = 'Overleaf / LaTeX Master Resume (1-Page ATS)';
+    layout.classList.remove('mode-cv-active');
+  } else {
+    document.getElementById('btn-mode-cv').classList.add('active');
+    document.getElementById('doc-mode-label').textContent = 'Academic & Research Curriculum Vitae (Multi-Page CV)';
+    layout.classList.add('mode-cv-active');
+  }
+  
+  rp();
+  toast(`Switched to ${mode === 'resume' ? '1-Page ATS Resume' : 'Academic CV'}`);
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   RENDER OVERLEAF/LATEX TEMPLATE (RESUME & CV MODES)
 ═════════════════════════════════════════════════════════════════ */
 function rp() {
   const container = document.getElementById('rp');
@@ -511,7 +628,8 @@ function rp() {
     h.email && `<a href="mailto:${h.email}">Email</a>`,
     h.linkedin && `<a href="${h.linkedin.startsWith('http')?h.linkedin:'https://'+h.linkedin}" target="_blank">LinkedIn</a>`,
     h.github && `<a href="${h.github.startsWith('http')?h.github:'https://'+h.github}" target="_blank">GitHub</a>`,
-    h.portfolio && `<a href="${h.portfolio.startsWith('http')?h.portfolio:'https://'+h.portfolio}" target="_blank">${h.portfolio.replace(/^https?:\/\//,'')}</a>`
+    h.portfolio && `<a href="${h.portfolio.startsWith('http')?h.portfolio:'https://'+h.portfolio}" target="_blank">${h.portfolio.replace(/^https?:\/\//,'')}</a>`,
+    (docMode === 'cv' && h.scholar) && `<a href="${h.scholar}" target="_blank">Google Scholar</a>`
   ].filter(Boolean);
 
   const expHtml = R.experience.map(e => `
@@ -571,19 +689,51 @@ function rp() {
     </div>
   `).join('');
 
+  // CV Specific Sections
+  const pubHtml = (R.publications||[]).map((p, idx) => `
+    <div class="lr-pub-item">
+      [${idx+1}] <span class="lr-pub-authors">${p.authors}</span>, 
+      "<span class="lr-pub-title">${p.title}</span>", 
+      <span class="lr-pub-venue">${p.venue}</span>, ${p.year}. 
+      ${p.link ? `<a href="${p.link}" target="_blank" style="color:#059669;">[Link]</a>` : ''}
+    </div>
+  `).join('');
+
+  const patentHtml = (R.patents||[]).map(pt => `
+    <div class="lr-single-line">
+      <span><strong>${pt.title}</strong> — <em>${pt.status}</em></span>
+      <span class="lr-date">${pt.year}</span>
+    </div>
+  `).join('');
+
+  const talkHtml = (R.talks||[]).map(t => `
+    <div class="lr-single-line">
+      <span><strong>"${t.title}"</strong> — <em>${t.event}</em></span>
+      <span class="lr-date">${t.date}</span>
+    </div>
+  `).join('');
+
   container.innerHTML = `
-    <div class="latex-resume">
+    <div class="latex-doc">
       <!-- 1. Header -->
       <div class="lr-header">
         <div class="lr-name">${h.name}</div>
+        ${docMode === 'cv' && h.title ? `<div class="lr-subhead">${h.title}</div>` : ''}
         <div class="lr-contacts">${contacts.join(' | ')}</div>
       </div>
 
-      <!-- 2. SUMMARY -->
+      <!-- 2. SUMMARY / BIO -->
       ${R.summary.text ? `
       <div class="lr-sec">
-        <div class="lr-sec-title">SUMMARY</div>
+        <div class="lr-sec-title">${docMode === 'cv' ? 'BIOGRAPHY & EXECUTIVE SUMMARY' : 'SUMMARY'}</div>
         <div class="lr-summary-text">${R.summary.text}</div>
+      </div>` : ''}
+
+      <!-- CV: RESEARCH INTERESTS -->
+      ${docMode === 'cv' && R.research_interests?.areas ? `
+      <div class="lr-sec">
+        <div class="lr-sec-title">RESEARCH INTERESTS</div>
+        <div class="lr-summary-text"><strong>Core Areas:</strong> ${R.research_interests.areas}</div>
       </div>` : ''}
 
       <!-- 3. TECHNICAL SKILLS -->
@@ -601,27 +751,48 @@ function rp() {
 
       <!-- 4. EXPERIENCE -->
       <div class="lr-sec">
-        <div class="lr-sec-title">EXPERIENCE</div>
+        <div class="lr-sec-title">${docMode === 'cv' ? 'RESEARCH & INDUSTRY EXPERIENCE' : 'EXPERIENCE'}</div>
         ${expHtml}
       </div>
 
       <!-- 5. PROJECTS -->
       <div class="lr-sec">
-        <div class="lr-sec-title">PROJECTS</div>
+        <div class="lr-sec-title">${docMode === 'cv' ? 'KEY RESEARCH & SOFTWARE BUILDS' : 'PROJECTS'}</div>
         ${projHtml}
       </div>
+
+      <!-- CV: PUBLICATIONS -->
+      ${docMode === 'cv' && (R.publications||[]).length > 0 ? `
+      <div class="lr-sec">
+        <div class="lr-sec-title">PUBLICATIONS &amp; WORKING PAPERS</div>
+        ${pubHtml}
+      </div>` : ''}
+
+      <!-- CV: PATENTS -->
+      ${docMode === 'cv' && (R.patents||[]).length > 0 ? `
+      <div class="lr-sec">
+        <div class="lr-sec-title">PATENTS &amp; ARCHITECTURAL PROPOSALS</div>
+        ${patentHtml}
+      </div>` : ''}
+
+      <!-- CV: TALKS -->
+      ${docMode === 'cv' && (R.talks||[]).length > 0 ? `
+      <div class="lr-sec">
+        <div class="lr-sec-title">CONFERENCE PRESENTATIONS &amp; TALKS</div>
+        ${talkHtml}
+      </div>` : ''}
 
       <!-- 6. ACHIEVEMENTS -->
       ${R.achievements.length > 0 ? `
       <div class="lr-sec">
-        <div class="lr-sec-title">ACHIEVEMENTS</div>
+        <div class="lr-sec-title">ACHIEVEMENTS &amp; HONORS</div>
         ${achieveHtml}
       </div>` : ''}
 
       <!-- 7. CERTIFICATIONS -->
       ${R.certifications.length > 0 ? `
       <div class="lr-sec">
-        <div class="lr-sec-title">CERTIFICATIONS</div>
+        <div class="lr-sec-title">CERTIFICATIONS &amp; CREDENTIALS</div>
         ${certsHtml}
       </div>` : ''}
 
@@ -639,7 +810,6 @@ function rp() {
 
 function formatBulletBold(str) {
   if (!str) return '';
-  // Auto-bold key technical terms & numbers if not already formatted
   return str
     .replace(/(3-node MongoDB Replica Set|automatic PRIMARY election|sub-10s failover|FastAPI backend with JWT authentication, RBAC, and rate limiting|Dockerized full stack|LangChain, Llama-3, and Gemini models|900\+ registered users|zero-trust architecture|Retrieval-Augmented Generation \(RAG\)|768-dimensional Gemini embeddings|Qdrant vector database|1490\+ production queries|4th Place|7th Place|GSSoC 2025)/g, '<strong>$1</strong>');
 }
@@ -680,7 +850,7 @@ ${(p.bullets||[]).map(b => `  \\resumeItem{${b}}`).join('\n')}
   `).join('\n');
 
   const tex = `%-------------------------
-% Overleaf / LaTeX ATS Resume Source
+% Overleaf / LaTeX ATS ${docMode === 'cv' ? 'Academic CV' : 'Resume'} Source
 % Candidate: ${h.name}
 %------------------------
 \\documentclass[letterpaper,10pt]{article}
@@ -701,11 +871,14 @@ ${(p.bullets||[]).map(b => `  \\resumeItem{${b}}`).join('\n')}
 \\begin{document}
 \\begin{center}
   {\\Huge\\scshape\\textbf{${h.name}}}\\\\[3pt]
+  ${docMode === 'cv' && h.title ? `{\\small\\emph{${h.title}}}\\\\[2pt]` : ''}
   \\small ${h.phone} $|$ \\href{mailto:${h.email}}{Email} $|$ \\href{${h.linkedin}}{LinkedIn} $|$ \\href{${h.github}}{GitHub} $|$ \\href{https://${h.portfolio}}{${h.portfolio}}
 \\end{center}
 
 \\section{SUMMARY}
 ${R.summary.text}
+
+${docMode === 'cv' && R.research_interests?.areas ? `\\section{RESEARCH INTERESTS}\n\\textbf{Core Areas}: ${R.research_interests.areas}\n` : ''}
 
 \\section{TECHNICAL SKILLS}
 \\begin{itemize}[leftmargin=0.15in,label={}]
@@ -729,6 +902,8 @@ ${expTex}
 ${projTex}
 \\resumeSubHeadingListEnd
 
+${docMode === 'cv' && (R.publications||[]).length ? `\\section{PUBLICATIONS}\n\\begin{enumerate}[leftmargin=0.2in]\n${R.publications.map(p => `  \\item ${p.authors}, ``\\textbf{${p.title}}'', \\emph{${p.venue}}, ${p.year}.`).join('\n')}\n\\end{enumerate}\n` : ''}
+
 \\section{ACHIEVEMENTS}
 \\resumeItemListStart
 ${R.achievements.map(a => `  \\resumeItem{${a.text} \\hfill \\emph{${a.date}}}`).join('\n')}
@@ -750,9 +925,9 @@ ${R.education.map(e => `\\resumeSubheading{${e.school}}{${e.dates}}{${e.degree}}
   const blob = new Blob([tex], { type: 'text/plain' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `${h.name.replace(/\s+/g,'_')}_resume.tex`;
+  a.download = `${h.name.replace(/\s+/g,'_')}_${docMode}.tex`;
   a.click();
-  toast('📄 LaTeX source downloaded!');
+  toast(`📄 LaTeX ${docMode === 'cv' ? 'CV' : 'Resume'} source downloaded!`);
 }
 
 /* ═════════════════════════════════════════════════════════════════
@@ -763,6 +938,7 @@ function ud(s, k, v) {
   if (s === 'header') R.header[k] = v;
   if (s === 'summary') R.summary[k] = v;
   if (s === 'skills') R.skills[k] = v;
+  if (s === 'research_interests') { if(!R.research_interests) R.research_interests={}; R.research_interests[k] = v; }
   rp(); ss(); uAts();
 }
 function uad(s, i, k, v) { if(R[s][i]) R[s][i][k] = v; rp(); ss(); }
@@ -777,14 +953,18 @@ function ss() {
 }
 
 const SM = {
-  header: { t: '1. Header & Info', s: 'Synced with your candidate profile' },
-  summary: { t: '2. Summary', s: 'Target applied AI & systems engineer summary' },
+  header: { t: '1. Header & Info', s: 'Personal details and web handles' },
+  summary: { t: '2. Summary / Bio', s: 'Target applied AI & systems engineer statement' },
   skills: { t: '3. Technical Skills', s: 'Languages, AI/LLMs, Backend, DBs, Systems & Tools' },
   exp: { t: '4. Experience', s: 'DRDO, Embrizon and key industry internships' },
   proj: { t: '5. Projects', s: 'Mithra Life OS, VITAP-UniOS and featured builds' },
   achieve: { t: '6. Achievements', s: 'Hackathons and open source recognition' },
   certs: { t: '7. Certifications', s: 'Vanderbilt, Stanford & DeepLearning.AI' },
   edu: { t: '8. Education', s: 'VIT-AP B.Tech CSE & Coursework' },
+  research: { t: 'Research Interests', s: 'Core academic research pillars' },
+  pubs: { t: 'Publications & Papers', s: 'Peer-reviewed papers, preprints, and reports' },
+  patents: { t: 'Patents & Proposals', s: 'Innovations and system architecture proposals' },
+  talks: { t: 'Conferences & Talks', s: 'Presentations, workshops, and guest lectures' },
   ats: { t: 'ATS Check', s: 'Verified ATS-compliant LaTeX typography' },
   tailor: { t: 'AI Job Tailor', s: 'Tailor resume for target company job descriptions' }
 };
@@ -921,6 +1101,65 @@ function rEdu(i) {
   `;
 }
 
+/* CV Helpers */
+function addPub() { if(!R.publications) R.publications=[]; R.publications.push({ title:'', authors:'Hemasai Vattikuti', venue:'', year:'2025', link:'' }); rPub(R.publications.length - 1); ss(); }
+function rmPub(i) { R.publications.splice(i, 1); document.getElementById('pub-cont').innerHTML = ''; R.publications.forEach((_, j) => rPub(j)); rp(); ss(); }
+function rPub(i) {
+  let c = document.getElementById('pub-cont');
+  const id = 'pubc' + i;
+  if (!document.getElementById(id)) { const d = document.createElement('div'); d.id = id; c.appendChild(d); }
+  const p = R.publications[i];
+  document.getElementById(id).className = 'fc';
+  document.getElementById(id).innerHTML = `
+    <div class="fch"><div class="fct">Publication ${i+1}</div><button class="brm" onclick="rmPub(${i})">✕</button></div>
+    <div class="fg"><label>Paper Title</label><input class="fi" value="${esc(p.title)}" placeholder="Sub-10s Automatic Failover & High-Availability Topology..." oninput="uad('publications',${i},'title',this.value)"></div>
+    <div class="fr2">
+      <div class="fg"><label>Authors</label><input class="fi" value="${esc(p.authors)}" placeholder="Hemasai Vattikuti, Scientist E" oninput="uad('publications',${i},'authors',this.value)"></div>
+      <div class="fg"><label>Year</label><input class="fi" value="${esc(p.year)}" placeholder="2025" oninput="uad('publications',${i},'year',this.value)"></div>
+    </div>
+    <div class="fr2">
+      <div class="fg"><label>Journal / Conference / Venue</label><input class="fi" value="${esc(p.venue)}" placeholder="IEEE / Springer / Technical Report" oninput="uad('publications',${i},'venue',this.value)"></div>
+      <div class="fg"><label>DOI / Paper Link</label><input class="fi" value="${esc(p.link)}" placeholder="https://..." oninput="uad('publications',${i},'link',this.value)"></div>
+    </div>
+  `;
+}
+
+function addPatent() { if(!R.patents) R.patents=[]; R.patents.push({ title:'', status:'Technical Architecture Proposal', year:'2026' }); rPatent(R.patents.length - 1); ss(); }
+function rmPatent(i) { R.patents.splice(i, 1); document.getElementById('pat-cont').innerHTML = ''; R.patents.forEach((_, j) => rPatent(j)); rp(); ss(); }
+function rPatent(i) {
+  let c = document.getElementById('pat-cont');
+  const id = 'patc' + i;
+  if (!document.getElementById(id)) { const d = document.createElement('div'); d.id = id; c.appendChild(d); }
+  const pt = R.patents[i];
+  document.getElementById(id).className = 'fc';
+  document.getElementById(id).innerHTML = `
+    <div class="fch"><div class="fct">Patent / Proposal ${i+1}</div><button class="brm" onclick="rmPatent(${i})">✕</button></div>
+    <div class="fg"><label>Title</label><input class="fi" value="${esc(pt.title)}" placeholder="Zero-Trust Scoped Multi-Tenant Vector Retrieval Architecture..." oninput="uad('patents',${i},'title',this.value)"></div>
+    <div class="fr2">
+      <div class="fg"><label>Status / Filing No.</label><input class="fi" value="${esc(pt.status)}" placeholder="Technical Architecture Proposal" oninput="uad('patents',${i},'status',this.value)"></div>
+      <div class="fg"><label>Year</label><input class="fi" value="${esc(pt.year)}" placeholder="2026" oninput="uad('patents',${i},'year',this.value)"></div>
+    </div>
+  `;
+}
+
+function addTalk() { if(!R.talks) R.talks=[]; R.talks.push({ title:'', event:'', date:'' }); rTalk(R.talks.length - 1); ss(); }
+function rmTalk(i) { R.talks.splice(i, 1); document.getElementById('talk-cont').innerHTML = ''; R.talks.forEach((_, j) => rTalk(j)); rp(); ss(); }
+function rTalk(i) {
+  let c = document.getElementById('talk-cont');
+  const id = 'talkc' + i;
+  if (!document.getElementById(id)) { const d = document.createElement('div'); d.id = id; c.appendChild(d); }
+  const t = R.talks[i];
+  document.getElementById(id).className = 'fc';
+  document.getElementById(id).innerHTML = `
+    <div class="fch"><div class="fct">Talk / Presentation ${i+1}</div><button class="brm" onclick="rmTalk(${i})">✕</button></div>
+    <div class="fg"><label>Presentation Title</label><input class="fi" value="${esc(t.title)}" placeholder="Building Agentic RAG Systems with Qdrant & FastAPI" oninput="uad('talks',${i},'title',this.value)"></div>
+    <div class="fr2">
+      <div class="fg"><label>Conference / Venue</label><input class="fi" value="${esc(t.event)}" placeholder="GDSC Tech Talk · VIT-AP" oninput="uad('talks',${i},'event',this.value)"></div>
+      <div class="fg"><label>Date</label><input class="fi" value="${esc(t.date)}" placeholder="Oct 2025" oninput="uad('talks',${i},'date',this.value)"></div>
+    </div>
+  `;
+}
+
 function addBl(s, i) { R[s][i].bullets.push(''); if(s === 'experience') rExp(i); if(s === 'projects') rProj(i); rp(); }
 function rmBl(s, i, bi) { R[s][i].bullets.splice(bi, 1); if(s === 'experience') rExp(i); if(s === 'projects') rProj(i); rp(); ss(); }
 
@@ -954,7 +1193,7 @@ async function genSum() {
   document.getElementById('fsu').value = text;
   R.summary.text = text;
   rp(); ss();
-  toast('✨ Summary optimized!');
+  toast('✨ Statement updated!');
 }
 
 async function tailorR() {
@@ -998,7 +1237,11 @@ function uDots() {
     proj: true,
     achieve: true,
     certs: true,
-    edu: true
+    edu: true,
+    research: true,
+    pubs: true,
+    patents: true,
+    talks: true
   };
   for (const [k, v] of Object.entries(ch)) {
     const d = document.getElementById('dot-' + k);
