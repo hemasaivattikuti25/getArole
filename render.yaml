@@ -1,0 +1,13 @@
+services:
+  - type: cron
+    name: getarole-enterprise-scraper
+    env: python
+    region: singapore # Closest to India for faster network to Indian IT portals
+    schedule: "30 19 * * *" # 1:00 AM IST (19:30 UTC)
+    buildCommand: "cd render_cron && pip install -r requirements.txt && playwright install chromium"
+    startCommand: "cd render_cron && python main.py"
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
