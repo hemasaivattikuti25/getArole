@@ -1,5 +1,5 @@
 import os
-import fitz  # PyMuPDF
+import pymupdf as fitz  # PyMuPDF
 import numpy as np
 from typing import List, Tuple, Dict, Any
 from fastembed import TextEmbedding
@@ -8,7 +8,11 @@ from .models import JobListing, CandidateProfile
 class ResumeMatcher:
     def __init__(self, model_name: str = "BAAI/bge-small-en-v1.5"):
         # Fast, lightweight ONNX embedding model (runs completely local on CPU)
-        self.embed_model = TextEmbedding(model_name=model_name)
+        cache_dir = os.environ.get("FASTEMBED_CACHE_DIR", "/tmp/fastembed_cache")
+        try:
+            self.embed_model = TextEmbedding(model_name=model_name, cache_dir=cache_dir)
+        except Exception:
+            self.embed_model = TextEmbedding(model_name=model_name)
 
     def extract_text_from_pdf(self, pdf_path: str) -> str:
         if not os.path.exists(pdf_path):

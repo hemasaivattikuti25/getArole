@@ -12,6 +12,13 @@ from pydantic import BaseModel, Field
 from scrapers.models import JobListing, CandidateProfile
 from scrapers.aggregator import JobAggregator
 from scrapers.matcher import ResumeMatcher
+from services.llm_service import get_llm_service
+
+# Dynamic Directory Paths (Works locally and on Vercel/Render Linux containers)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+STATIC_DIR = os.path.join(BASE_DIR, "web", "static")
+SAVED_JOBS_FILE = os.path.join(BASE_DIR, "scraped_jobs.json")
+TMP_JOBS_FILE = "/tmp/scraped_jobs.json"
 
 app = FastAPI(
     title="getArole — Smart Resume Screener & Job Discovery Engine",
@@ -29,7 +36,6 @@ app.add_middleware(
 
 AGGREGATOR = JobAggregator()
 MATCHER: Optional[ResumeMatcher] = None
-SAVED_JOBS_FILE = "/Users/sai2005/Downloads/gitprojects/job_finder/scraped_jobs.json"
 
 def get_matcher() -> ResumeMatcher:
     global MATCHER
@@ -38,15 +44,19 @@ def get_matcher() -> ResumeMatcher:
     return MATCHER
 
 def load_cached_jobs() -> List[JobListing]:
-    if os.path.exists(SAVED_JOBS_FILE):
-        try:
-            with open(SAVED_JOBS_FILE, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                jobs = [JobListing(**item) for item in data]
-                AGGREGATOR.cached_jobs = jobs
-                return jobs
-        except Exception:
-            pass
+    # Check project directory first, then /tmp
+    target_files = [SAVED_JOBS_FILE, TMP_JOBS_FILE]
+    for fp in target_files:
+        if os.path.exists(fp):
+            try:
+                with open(fp, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    jobs = [JobListing(**item) for item in data]
+                    if jobs:
+                        AGGREGATOR.cached_jobs = jobs
+                        return jobs
+            except Exception:
+                pass
     return []
 
 @app.on_event("startup")
@@ -58,14 +68,13 @@ class GenerateRequest(BaseModel):
     resume_text: str
     doc_type: str = "both"
     api_key: Optional[str] = None
-    provider: str = "nvidia"
 
 class ScreeningResult(BaseModel):
     candidate_name: str
     file_name: str
-    score_10: float = Field(..., description="Calibrated fit score on a 1-10 scale")
-    verdict: str = Field(..., description="Shortlisted, Review, or Reject")
-    rubric_breakdown: dict = Field(default_factory=dict)
+    score_10: float
+    verdict: str
+    rubric_breakdown: dict
     strengths: List[str] = Field(default_factory=list)
     missing_skills: List[str] = Field(default_factory=list)
     justification: str = ""
@@ -89,8 +98,15 @@ async def trigger_scrape(
         include_linkedin=include_linkedin
     )
     AGGREGATOR.cached_jobs = jobs
-    with open(SAVED_JOBS_FILE, "w", encoding="utf-8") as f:
-        json.dump([j.model_dump(mode="json") for j in jobs], f, indent=2)
+    
+    # Save to local file or /tmp
+    for save_path in [SAVED_JOBS_FILE, TMP_JOBS_FILE]:
+        try:
+            with open(save_path, "w", encoding="utf-8") as f:
+                json.dump([j.model_dump(mode="json") for j in jobs], f, indent=2)
+            break
+        except Exception:
+            continue
 
     # Sync to Supabase in background
     supabase_synced = 0
@@ -152,7 +168,7 @@ async def match_resume(
     resume_content = ""
     
     if file and file.filename:
-        temp_path = f"/tmp/{file.filename}"
+        temp_path = f"/tmp/upload_{file.filename}"
         with open(temp_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
         try:
@@ -163,31 +179,18 @@ async def match_resume(
     elif raw_text:
         resume_content = raw_text
     else:
-        default_pdf = "/Users/sai2005/Downloads/gitprojects/job_finder/sairesume.pdf"
-        if os.path.exists(default_pdf):
-            resume_content = matcher.extract_text_from_pdf(default_pdf)
-        else:
-            raise HTTPException(status_code=400, detail="Please upload a resume PDF or provide text")
-
+        raise HTTPException(status_code=400, detail="Must provide either a PDF resume file or raw text.")
+        
     if not AGGREGATOR.cached_jobs:
         load_cached_jobs()
-
+        
     ranked_jobs = matcher.rank_jobs_by_fit(resume_content, AGGREGATOR.cached_jobs)
     
-    with open(SAVED_JOBS_FILE, "w", encoding="utf-8") as f:
-        json.dump([j.model_dump(mode="json") for j in ranked_jobs], f, indent=2)
-        
     return {
-        "status": "success",
-        "total_matched": len(ranked_jobs),
-        "top_matches": [j.model_dump() for j in ranked_jobs[:25]],
-        "all_jobs": [j.model_dump() for j in ranked_jobs]
+        "candidate_skills": matcher.parse_profile(temp_path if file else "").skills if file else [],
+        "total_matches": len(ranked_jobs),
+        "matches": [j.model_dump() for j in ranked_jobs]
     }
-
-# =========================================================================
-# RECRUITER SMART RESUME SCREENER ENDPOINT (3-STAGE HYBRID PIPELINE)
-# =========================================================================
-from services.llm_service import get_llm_service
 
 @app.post("/api/recruiter/screen")
 async def screen_resumes_for_jd(
@@ -279,7 +282,6 @@ async def screen_resumes_for_jd(
 async def generate_ai_doc(req: GenerateRequest):
     job = next((j for j in AGGREGATOR.cached_jobs if j.id == req.job_id), None)
     if not job:
-        # If job not in cached jobs, create minimal placeholder from ID or description
         job_title = "Software Engineer"
         job_company = "Target Company"
         job_desc = "Technical role requiring software engineering, problem solving, and architecture design."
@@ -297,13 +299,12 @@ async def generate_ai_doc(req: GenerateRequest):
     )
     return {"status": "success", "content": content, "provider": "NVIDIA NIM (Llama 3.1 70B)"}
 
-static_dir = "/Users/sai2005/Downloads/gitprojects/job_finder/web/static"
-if os.path.exists(static_dir):
-    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+if os.path.exists(STATIC_DIR):
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_landing():
-    landing_file = "/Users/sai2005/Downloads/gitprojects/job_finder/web/static/landing.html"
+    landing_file = os.path.join(STATIC_DIR, "landing.html")
     if os.path.exists(landing_file):
         with open(landing_file, "r", encoding="utf-8") as f:
             return f.read()
@@ -311,7 +312,7 @@ async def serve_landing():
 
 @app.get("/onboarding", response_class=HTMLResponse)
 async def serve_onboarding():
-    ob_file = "/Users/sai2005/Downloads/gitprojects/job_finder/web/static/onboarding.html"
+    ob_file = os.path.join(STATIC_DIR, "onboarding.html")
     if os.path.exists(ob_file):
         with open(ob_file, "r", encoding="utf-8") as f:
             return f.read()
@@ -319,7 +320,7 @@ async def serve_onboarding():
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def serve_dashboard():
-    index_file = "/Users/sai2005/Downloads/gitprojects/job_finder/web/static/index.html"
+    index_file = os.path.join(STATIC_DIR, "index.html")
     if os.path.exists(index_file):
         with open(index_file, "r", encoding="utf-8") as f:
             return f.read()

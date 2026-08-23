@@ -9,7 +9,12 @@ class EmbeddingService:
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(EmbeddingService, cls).__new__(cls)
-            cls._instance.model = TextEmbedding(model_name=settings.EMBEDDING_MODEL_NAME)
+            import os
+            cache_dir = os.environ.get("FASTEMBED_CACHE_DIR", "/tmp/fastembed_cache")
+            try:
+                cls._instance.model = TextEmbedding(model_name=settings.EMBEDDING_MODEL_NAME, cache_dir=cache_dir)
+            except Exception:
+                cls._instance.model = TextEmbedding(model_name=settings.EMBEDDING_MODEL_NAME)
         return cls._instance
 
     def embed_texts(self, texts: List[str]) -> List[np.ndarray]:
