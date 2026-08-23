@@ -1300,17 +1300,16 @@
       }
     });
 
-    function openReferralSearch(companyName, type) {
-      const decodedComp = decodeURIComponent(companyName).trim();
-      let keywords = \`"\${decodedComp}"\`;
-      
+    function openReferralSearch(companyStr, type) {
+      const decodedComp = decodeURIComponent(companyStr).trim();
+      let keywords = `"${decodedComp}"`;
       if (type === 'hr') {
-        keywords += ' (HR OR Recruiter OR "Talent Acquisition" OR "Human Resources")';
-      } else if (type === 'eng') {
-        keywords += ' ("Software Engineer" OR Developer OR Manager OR "Data Scientist")';
+        keywords += ' AND (HR OR Human Resources OR Recruiter OR Talent)';
+      } else if (type === 'peer') {
+        keywords += ' AND (Engineer OR Developer OR Software)';
       }
       
-      const linkedInUrl = \`https://www.linkedin.com/search/results/people/?keywords=\${encodeURIComponent(keywords)}\`;
+      const linkedInUrl = `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(keywords)}`;
       window.open(linkedInUrl, '_blank');
     }
 
