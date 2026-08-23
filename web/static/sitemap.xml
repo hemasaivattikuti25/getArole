@@ -1,33 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://getarole.in/</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://getarole.in/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://getarole.in/" />
+    <image:image>
+      <image:loc>https://getarole.in/og-image.png</image:loc>
+      <image:title>getArole — India's #1 AI Job Discovery Engine</image:title>
+      <image:caption>Autonomous AI-powered job discovery and resume matching platform for engineers</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://getarole.in/logo.png</image:loc>
+      <image:title>getArole Official Brand Logo</image:title>
+    </image:image>
   </url>
   <url>
-    <loc>https://getarole.in/landing.html</loc>
+    <loc>https://getarole.in/dashboard/</loc>
     <lastmod>2026-08-24</lastmod>
-    <changefreq>weekly</changefreq>
+    <changefreq>hourly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://getarole.in/index.html</loc>
+    <loc>https://getarole.in/onboarding/</loc>
     <lastmod>2026-08-24</lastmod>
-    <changefreq>daily</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://getarole.in/resume-builder.html</loc>
+    <loc>https://getarole.in/resume-builder/</loc>
     <lastmod>2026-08-24</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://getarole.in/onboarding.html</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.8</priority>
   </url>
 </urlset>
