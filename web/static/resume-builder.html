@@ -14,7 +14,7 @@
       --pr:#059669;--prh:#047857;--prl:#ecfdf5;--prb:#a7f3d0;
       --sf:#fff;--bg:#f8fafc;--bd:#e2e8f0;--bds:#cbd5e1;
       --tx:#0f172a;--txm:#475569;--txs:#94a3b8;
-      --nh:60px;--sw:200px;--ew:420px;
+      --nh:60px;--sw:210px;--ew:420px;
     }
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);height:100vh;display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased;}
@@ -122,54 +122,75 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
-       FORMAT 1: REVERSE-CHRONOLOGICAL (Traditional Recruiter Standard)
-       Focus: Work History first in reverse chronological order
+       FORMAT 1: REVERSE-CHRONOLOGICAL
+       Exact Sequence:
+       1. Header & Info
+       2. Summary
+       3. Skills & Domains
+       4. Experience
+       5. Education
+       6. Projects
+       7. Certifications & Achievements
     ═════════════════════════════════════════════════════════════════ */
-    .format-chrono{font-family:'Inter',-apple-system,sans-serif;color:#1e293b;padding:48px 52px;font-size:13px;background:#fff;}
+    .format-chrono{font-family:'Inter',-apple-system,sans-serif;color:#1e293b;padding:46px 50px;font-size:13px;background:#fff;}
     .format-chrono .r-name{font-family:'Outfit',sans-serif;font-size:30px;font-weight:900;color:#0f172a;letter-spacing:-.03em;}
     .format-chrono .r-title{font-size:14px;font-weight:700;color:#059669;margin:3px 0 10px;}
     .format-chrono .r-contacts{font-size:11.5px;color:#475569;display:flex;flex-wrap:wrap;gap:10px;padding-bottom:12px;border-bottom:2px solid #0f172a;margin-bottom:18px;}
     .format-chrono .r-contacts a{color:#059669;text-decoration:none;font-weight:600;}
-    .format-chrono .r-sec{margin-bottom:18px;}
-    .format-chrono .r-sec-title{font-family:'Outfit',sans-serif;font-size:11.5px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px;padding-bottom:4px;border-bottom:1.5px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;}
-    .format-chrono .r-item{margin-bottom:14px;}
+    .format-chrono .r-sec{margin-bottom:17px;}
+    .format-chrono .r-sec-title{font-family:'Outfit',sans-serif;font-size:11.5px;font-weight:900;color:#0f172a;text-transform:uppercase;letter-spacing:.12em;margin-bottom:9px;padding-bottom:4px;border-bottom:1.5px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;}
+    .format-chrono .r-item{margin-bottom:13px;}
     .format-chrono .r-item-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px;}
     .format-chrono .r-org{font-size:13.5px;font-weight:800;color:#0f172a;}
     .format-chrono .r-dates{font-size:11.5px;color:#64748b;font-weight:700;}
-    .format-chrono .r-role{font-size:12.5px;font-weight:600;color:#059669;margin-bottom:5px;}
+    .format-chrono .r-role{font-size:12.5px;font-weight:600;color:#059669;margin-bottom:4px;}
     .format-chrono .r-bullets{padding-left:16px;margin:0;}
     .format-chrono .r-bullets li{font-size:12px;line-height:1.55;color:#334155;margin-bottom:3px;}
     .format-chrono .r-skills-grid{display:flex;flex-wrap:wrap;gap:6px;}
     .format-chrono .r-skill-tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:4px;background:#f8fafc;border:1px solid #e2e8f0;color:#1e293b;}
-    .format-chrono .r-edu-grid{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+    .format-chrono .r-edu-grid{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px;}
 
     /* ═════════════════════════════════════════════════════════════════
        FORMAT 2: FUNCTIONAL (Skills-Based)
-       Focus: Grouped Skill Competencies & Project Achievements at top
+       Exact Sequence:
+       1. Header & Info
+       2. Summary
+       3. Skills & Domains (Core Pillars)
+       4. Experience (Career History)
+       5. Education
+       6. Projects
+       7. Certifications & Achievements
     ═════════════════════════════════════════════════════════════════ */
-    .format-functional{font-family:'Inter',-apple-system,sans-serif;color:#1e293b;padding:48px 52px;font-size:13px;background:#fff;}
-    .format-functional .r-name{font-family:'Outfit',sans-serif;font-size:32px;font-weight:900;color:#047857;letter-spacing:-.03em;text-align:center;}
+    .format-functional{font-family:'Inter',-apple-system,sans-serif;color:#1e293b;padding:46px 50px;font-size:13px;background:#fff;}
+    .format-functional .r-name{font-family:'Outfit',sans-serif;font-size:31px;font-weight:900;color:#047857;letter-spacing:-.03em;text-align:center;}
     .format-functional .r-title{font-size:14.5px;font-weight:700;color:#334155;text-align:center;margin:4px 0 10px;}
-    .format-functional .r-contacts{font-size:11.5px;color:#64748b;display:flex;justify-content:center;flex-wrap:wrap;gap:12px;padding-bottom:14px;border-bottom:1.5px solid #a7f3d0;margin-bottom:20px;}
+    .format-functional .r-contacts{font-size:11.5px;color:#64748b;display:flex;justify-content:center;flex-wrap:wrap;gap:12px;padding-bottom:14px;border-bottom:1.5px solid #a7f3d0;margin-bottom:18px;}
     .format-functional .r-contacts a{color:#047857;text-decoration:none;}
-    .format-functional .r-sec{margin-bottom:18px;}
-    .format-functional .r-sec-title{font-family:'Outfit',sans-serif;font-size:11px;font-weight:900;color:#047857;text-transform:uppercase;letter-spacing:.12em;background:#ecfdf5;padding:4px 10px;border-radius:4px;margin-bottom:12px;border-left:4px solid #059669;}
-    .format-functional .r-competency-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px 14px;margin-bottom:10px;}
-    .format-functional .r-comp-title{font-size:13px;font-weight:800;color:#0f172a;margin-bottom:4px;}
+    .format-functional .r-sec{margin-bottom:17px;}
+    .format-functional .r-sec-title{font-family:'Outfit',sans-serif;font-size:11px;font-weight:900;color:#047857;text-transform:uppercase;letter-spacing:.12em;background:#ecfdf5;padding:4px 10px;border-radius:4px;margin-bottom:10px;border-left:4px solid #059669;}
+    .format-functional .r-competency-card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:11px 13px;margin-bottom:9px;}
+    .format-functional .r-comp-title{font-size:13px;font-weight:800;color:#0f172a;margin-bottom:3px;}
     .format-functional .r-comp-desc{font-size:12px;color:#475569;line-height:1.55;}
     .format-functional .r-work-history-row{display:flex;justify-content:space-between;font-size:12.5px;padding:4px 0;border-bottom:1px dashed #e2e8f0;}
 
     /* ═════════════════════════════════════════════════════════════════
        FORMAT 3: COMBINATION (Hybrid)
-       Focus: Executive Summary + Core Competencies Matrix + Experience Trajectory
+       Exact Sequence:
+       1. Header & Info
+       2. Summary
+       3. Skills & Domains (4-Box Grid Matrix)
+       4. Experience
+       5. Education
+       6. Projects
+       7. Certifications & Achievements
     ═════════════════════════════════════════════════════════════════ */
-    .format-combo{font-family:'Inter',-apple-system,sans-serif;color:#1e293b;padding:44px 50px;font-size:13px;background:#fff;}
-    .format-combo-header{background:linear-gradient(135deg,#064e3b 0%,#047857 100%);color:white;padding:26px 32px;border-radius:12px;margin-bottom:22px;}
+    .format-combo{font-family:'Inter',-apple-system,sans-serif;color:#1e293b;padding:42px 48px;font-size:13px;background:#fff;}
+    .format-combo-header{background:linear-gradient(135deg,#064e3b 0%,#047857 100%);color:white;padding:24px 30px;border-radius:12px;margin-bottom:20px;}
     .format-combo .r-name{font-family:'Outfit',sans-serif;font-size:28px;font-weight:900;color:#fff;letter-spacing:-.02em;}
     .format-combo .r-title{font-size:13.5px;font-weight:600;color:#a7f3d0;margin:3px 0 10px;}
     .format-combo .r-contacts{font-size:11.5px;color:rgba(255,255,255,0.85);display:flex;flex-wrap:wrap;gap:12px;}
     .format-combo .r-contacts a{color:#6ee7b7;text-decoration:none;}
-    .format-combo .r-sec{margin-bottom:18px;}
+    .format-combo .r-sec{margin-bottom:17px;}
     .format-combo .r-sec-title{font-family:'Outfit',sans-serif;font-size:11.5px;font-weight:900;color:#047857;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
     .format-combo .r-sec-title::after{content:'';flex:1;height:1.5px;background:#a7f3d0;}
     .format-combo .r-skills-matrix{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#f8fafc;padding:12px;border-radius:8px;border:1px solid #e2e8f0;margin-bottom:12px;}
@@ -217,22 +238,23 @@
 
 <!-- ════════ THREE COLUMN LAYOUT ════════ -->
 <div class="ly">
-  <!-- 1. SECTIONS SIDEBAR -->
+  <!-- 1. SECTIONS SIDEBAR (EXACT REQUESTED ORDER) -->
   <aside class="sn">
     <div class="snl">Resume Sections</div>
-    <div class="si active" id="nav-header"  onclick="gS('header')"><span class="sic">👤</span>Header & Info<span class="dot done" id="dot-header"></span></div>
-    <div class="si"        id="nav-summary" onclick="gS('summary')"><span class="sic">📝</span>Summary<span class="dot" id="dot-summary"></span></div>
-    <div class="si"        id="nav-exp"     onclick="gS('exp')"><span class="sic">💼</span>Experience<span class="dot" id="dot-exp"></span></div>
-    <div class="si"        id="nav-edu"     onclick="gS('edu')"><span class="sic">🎓</span>Education<span class="dot" id="dot-edu"></span></div>
-    <div class="si"        id="nav-proj"    onclick="gS('proj')"><span class="sic">🚀</span>Projects<span class="dot" id="dot-proj"></span></div>
-    <div class="si"        id="nav-skills"  onclick="gS('skills')"><span class="sic">⚡</span>Skills & Domains<span class="dot" id="dot-skills"></span></div>
-    <div class="si"        id="nav-certs"   onclick="gS('certs')"><span class="sic">🏆</span>Certifications<span class="dot" id="dot-certs"></span></div>
+    <div class="si active" id="nav-header"  onclick="gS('header')"><span class="sic">👤</span>1. Header & Info<span class="dot done" id="dot-header"></span></div>
+    <div class="si"        id="nav-summary" onclick="gS('summary')"><span class="sic">📝</span>2. Summary<span class="dot" id="dot-summary"></span></div>
+    <div class="si"        id="nav-skills"  onclick="gS('skills')"><span class="sic">⚡</span>3. Skills & Domains<span class="dot" id="dot-skills"></span></div>
+    <div class="si"        id="nav-exp"     onclick="gS('exp')"><span class="sic">💼</span>4. Experience<span class="dot" id="dot-exp"></span></div>
+    <div class="si"        id="nav-edu"     onclick="gS('edu')"><span class="sic">🎓</span>5. Education<span class="dot" id="dot-edu"></span></div>
+    <div class="si"        id="nav-proj"    onclick="gS('proj')"><span class="sic">🚀</span>6. Projects<span class="dot" id="dot-proj"></span></div>
+    <div class="si"        id="nav-certs"   onclick="gS('certs')"><span class="sic">🏆</span>7. Certifications & Achievements<span class="dot" id="dot-certs"></span></div>
+    
     <div class="snl" style="margin-top:8px;">AI Optimizers</div>
     <div class="si" id="nav-ats"    onclick="gS('ats')"><span class="sic">📊</span>ATS Check</div>
     <div class="si" id="nav-tailor" onclick="gS('tailor')"><span class="sic">✨</span>Job Tailor</div>
   </aside>
 
-  <!-- 2. FORM EDITOR COLUMN -->
+  <!-- 2. FORM EDITOR COLUMN (EXACT REQUESTED ORDER) -->
   <div class="ep">
     <div class="eh">
       <div>
@@ -243,7 +265,7 @@
     </div>
 
     <div class="eb">
-      <!-- PANEL 1: HEADER -->
+      <!-- 1. HEADER & INFO -->
       <div class="pn active" id="panel-header">
         <div class="fr2">
           <div class="fg"><label>First Name</label><input class="fi" id="ffn" placeholder="Hemasai" oninput="ud('header','first_name',this.value)"></div>
@@ -264,7 +286,7 @@
         </div>
       </div>
 
-      <!-- PANEL 2: SUMMARY -->
+      <!-- 2. SUMMARY -->
       <div class="pn" id="panel-summary">
         <div class="fg">
           <label>Executive / Professional Summary</label>
@@ -273,25 +295,7 @@
         <button class="bto" style="align-self:flex-start;" onclick="genSum()">✨ AI Generate STAR Summary</button>
       </div>
 
-      <!-- PANEL 3: EXPERIENCE -->
-      <div class="pn" id="panel-exp">
-        <div id="ec"></div>
-        <button class="bad" onclick="addExp()">+ Add Work Experience</button>
-      </div>
-
-      <!-- PANEL 4: EDUCATION -->
-      <div class="pn" id="panel-edu">
-        <div id="edc"></div>
-        <button class="bad" onclick="addEdu()">+ Add Degree / School</button>
-      </div>
-
-      <!-- PANEL 5: PROJECTS -->
-      <div class="pn" id="panel-proj">
-        <div id="pc"></div>
-        <button class="bad" onclick="addProj()">+ Add Featured Project</button>
-      </div>
-
-      <!-- PANEL 6: SKILLS -->
+      <!-- 3. SKILLS & DOMAINS -->
       <div class="pn" id="panel-skills">
         <div class="fg"><label>Core Programming Languages</label><input class="fi" id="fsl" placeholder="Python, JavaScript, TypeScript, SQL" oninput="ud('skills','languages',this.value)"></div>
         <div class="fg"><label>Frameworks & Libraries</label><input class="fi" id="fsf" placeholder="React, Next.js, FastAPI, Node.js, PyTorch" oninput="ud('skills','frameworks',this.value)"></div>
@@ -299,13 +303,31 @@
         <div class="fg"><label>Core Competencies & Other</label><input class="fi" id="fso" placeholder="System Architecture, REST APIs, Microservices, Vector Search" oninput="ud('skills','other',this.value)"></div>
       </div>
 
-      <!-- PANEL 7: CERTS -->
-      <div class="pn" id="panel-certs">
-        <div id="cc"></div>
-        <button class="bad" onclick="addCert()">+ Add Certification</button>
+      <!-- 4. EXPERIENCE -->
+      <div class="pn" id="panel-exp">
+        <div id="ec"></div>
+        <button class="bad" onclick="addExp()">+ Add Work Experience</button>
       </div>
 
-      <!-- PANEL 8: ATS CHECK -->
+      <!-- 5. EDUCATION -->
+      <div class="pn" id="panel-edu">
+        <div id="edc"></div>
+        <button class="bad" onclick="addEdu()">+ Add Degree / School</button>
+      </div>
+
+      <!-- 6. PROJECTS -->
+      <div class="pn" id="panel-proj">
+        <div id="pc"></div>
+        <button class="bad" onclick="addProj()">+ Add Featured Project</button>
+      </div>
+
+      <!-- 7. CERTIFICATIONS & ACHIEVEMENTS -->
+      <div class="pn" id="panel-certs">
+        <div id="cc"></div>
+        <button class="bad" onclick="addCert()">+ Add Certification / Achievement</button>
+      </div>
+
+      <!-- AI: ATS CHECK -->
       <div class="pn" id="panel-ats">
         <div class="ac">
           <div class="ach">
@@ -320,7 +342,7 @@
         </div>
       </div>
 
-      <!-- PANEL 9: JOB TAILOR -->
+      <!-- AI: JOB TAILOR -->
       <div class="pn" id="panel-tailor">
         <div class="fg">
           <label>Target Job Description</label>
@@ -348,17 +370,17 @@
 
 <script>
 /* ═════════════════════════════════════════════════════════════════
-   STATE & DATA MODEL (PULLED FROM CANDIDATE PROFILE)
+   STATE & DATA MODEL (PULLED DIRECTLY FROM CANDIDATE PROFILE)
 ═════════════════════════════════════════════════════════════════ */
 let currentFormat = 'chrono'; // 'chrono' | 'functional' | 'combo'
 
 let R = {
   header: { first_name:'', last_name:'', title:'', email:'', phone:'', location:'', linkedin:'', github:'', portfolio:'' },
   summary: { text:'' },
+  skills: { languages:'', frameworks:'', tools:'', other:'' },
   experience: [],
   education: [],
   projects: [],
-  skills: { languages:'', frameworks:'', tools:'', other:'' },
   certifications: []
 };
 
@@ -398,13 +420,13 @@ function loadDataFromProfile() {
     portfolio: (prof.links && prof.links.portfolio) || ''
   };
 
-  // Populate Skills from profile
+  // Populate Skills & Domains from profile
   const pSkills = Array.isArray(prof.skills) ? prof.skills : [];
   if (pSkills.length > 0) {
     R.skills.languages = pSkills.slice(0, 5).join(', ');
     R.skills.frameworks = pSkills.slice(5, 10).join(', ');
     R.skills.tools = pSkills.slice(10, 15).join(', ');
-    R.skills.other = pSkills.slice(15).join(', ') || 'System Design, REST APIs, CI/CD';
+    R.skills.other = pSkills.slice(15).join(', ') || 'System Architecture, REST APIs, Microservices, Vector Search';
   } else {
     R.skills = {
       languages: 'Python, TypeScript, JavaScript, SQL',
@@ -414,28 +436,8 @@ function loadDataFromProfile() {
     };
   }
 
-  // Populate Education from profile
-  if (prof.education && (prof.education.school || prof.education.major)) {
-    R.education = [{
-      school: prof.education.school || 'University',
-      degree: prof.education.degree || 'Bachelor of Technology',
-      major: prof.education.major || 'Computer Science',
-      gpa: prof.education.gpa || '8.8 / 10',
-      startDate: prof.education.startYear || '2021',
-      endDate: prof.education.endYear || '2025',
-      honors: 'Academic Excellence Award, Dean\'s List'
-    }];
-  } else {
-    R.education = [{
-      school: 'National Institute of Technology',
-      degree: 'B.Tech',
-      major: 'Computer Science & Engineering',
-      gpa: '8.9 / 10',
-      startDate: '2021',
-      endDate: '2025',
-      honors: 'Dean\'s Merit Scholar'
-    }];
-  }
+  // Populate Summary
+  R.summary.text = `Innovative and results-oriented ${R.header.title} with solid experience in building scalable cloud software, responsive web architectures, and AI vector matching systems. Proficient in ${R.skills.languages || 'Python and TypeScript'} with a track record of driving measurable business impact.`;
 
   // Populate Experience from profile
   if (prof.experience && prof.experience.company) {
@@ -481,6 +483,29 @@ function loadDataFromProfile() {
     ];
   }
 
+  // Populate Education from profile
+  if (prof.education && (prof.education.school || prof.education.major)) {
+    R.education = [{
+      school: prof.education.school || 'University',
+      degree: prof.education.degree || 'Bachelor of Technology',
+      major: prof.education.major || 'Computer Science',
+      gpa: prof.education.gpa || '8.8 / 10',
+      startDate: prof.education.startYear || '2021',
+      endDate: prof.education.endYear || '2025',
+      honors: 'Academic Excellence Award, Dean\'s List'
+    }];
+  } else {
+    R.education = [{
+      school: 'National Institute of Technology',
+      degree: 'B.Tech',
+      major: 'Computer Science & Engineering',
+      gpa: '8.9 / 10',
+      startDate: '2021',
+      endDate: '2025',
+      honors: 'Dean\'s Merit Scholar'
+    }];
+  }
+
   // Projects
   R.projects = [
     {
@@ -502,14 +527,12 @@ function loadDataFromProfile() {
     }
   ];
 
-  // Certifications
+  // Certifications & Achievements
   R.certifications = [
     { name: 'AWS Certified Solutions Architect', issuer: 'Amazon Web Services', date: '2024', link: 'aws.amazon.com' },
-    { name: 'Meta Full-Stack Engineer Certificate', issuer: 'Meta', date: '2023', link: 'coursera.org' }
+    { name: 'Meta Full-Stack Engineer Certificate', issuer: 'Meta', date: '2023', link: 'coursera.org' },
+    { name: 'Smart India Hackathon Finalist', issuer: 'Govt. of India', date: '2023', link: '' }
   ];
-
-  // Summary
-  R.summary.text = `Innovative and results-oriented ${R.header.title} with solid experience in building scalable cloud software, responsive web architectures, and AI vector matching systems. Proficient in ${R.skills.languages || 'Python and TypeScript'} with a track record of driving measurable business impact.`;
 
   // Merge any saved draft edits
   if (resumeSaved) {
@@ -574,7 +597,14 @@ function switchFormat(fmt) {
 }
 
 /* ═════════════════════════════════════════════════════════════════
-   RENDER FORMATS (1. Chronological, 2. Functional, 3. Combination)
+   RENDER FORMATS (STRICT ORDER):
+   1. Header & Info
+   2. Summary
+   3. Skills & Domains
+   4. Experience
+   5. Education
+   6. Projects
+   7. Certifications & Achievements
 ═════════════════════════════════════════════════════════════════ */
 function rp() {
   const container = document.getElementById('rp');
@@ -668,37 +698,57 @@ function renderReverseChronological() {
 
   const skTags = allSkList().map(s => `<span class="r-skill-tag">${s}</span>`).join('');
 
+  const certsHtml = R.certifications.map(c => `
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:#334155;margin-bottom:4px;">
+      <span><strong>${c.name}</strong> ${c.issuer ? `· ${c.issuer}` : ''}</span>
+      <span style="color:#64748b;font-weight:600;">${c.date || ''}</span>
+    </div>
+  `).join('');
+
   return `
     <div class="format-chrono">
+      <!-- 1. Header & Info -->
       <div class="r-name">${h.name}</div>
       <div class="r-title">${h.title}</div>
       <div class="r-contacts">${cp.join(' · ')}</div>
 
+      <!-- 2. Summary -->
       ${R.summary.text ? `
         <div class="r-sec">
           <div class="r-sec-title"><span>Professional Summary</span></div>
           <p style="font-size:12px;line-height:1.65;color:#334155;">${R.summary.text}</p>
         </div>` : ''}
 
+      <!-- 3. Skills & Domains -->
       <div class="r-sec">
-        <div class="r-sec-title"><span>Work Experience (Reverse-Chronological)</span></div>
+        <div class="r-sec-title"><span>Technical Skills &amp; Domains</span></div>
+        <div class="r-skills-grid">${skTags}</div>
+      </div>
+
+      <!-- 4. Experience -->
+      <div class="r-sec">
+        <div class="r-sec-title"><span>Work Experience</span></div>
         ${expHtml || '<div style="font-size:12px;color:#94a3b8;">No experience added yet.</div>'}
       </div>
 
+      <!-- 5. Education -->
       <div class="r-sec">
         <div class="r-sec-title"><span>Education</span></div>
         ${eduHtml}
       </div>
 
+      <!-- 6. Projects -->
       <div class="r-sec">
         <div class="r-sec-title"><span>Key Engineering Projects</span></div>
         ${projHtml}
       </div>
 
-      <div class="r-sec">
-        <div class="r-sec-title"><span>Technical Skills &amp; Competencies</span></div>
-        <div class="r-skills-grid">${skTags}</div>
-      </div>
+      <!-- 7. Certifications & Achievements -->
+      ${R.certifications.length > 0 ? `
+        <div class="r-sec">
+          <div class="r-sec-title"><span>Certifications &amp; Achievements</span></div>
+          ${certsHtml}
+        </div>` : ''}
     </div>
   `;
 }
@@ -718,7 +768,7 @@ function renderFunctional() {
     <div class="r-competency-card">
       <div class="r-comp-title">🛠️ Software Architecture & Full-Stack Development</div>
       <div class="r-comp-desc">
-        Specialized in ${R.skills.languages || 'modern programming languages'} and scalable architectures. 
+        Specialized in ${R.skills.languages || 'modern programming languages'} and ${R.skills.frameworks || 'web frameworks'}. 
         Engineered responsive web applications and high-throughput backend APIs with robust performance standards.
       </div>
     </div>
@@ -750,35 +800,48 @@ function renderFunctional() {
 
   return `
     <div class="format-functional">
+      <!-- 1. Header & Info -->
       <div class="r-name">${h.name}</div>
       <div class="r-title">${h.title}</div>
       <div class="r-contacts">${cp.join(' · ')}</div>
 
+      <!-- 2. Summary -->
       ${R.summary.text ? `
         <div class="r-sec">
-          <div class="r-sec-title">Core Qualifications</div>
+          <div class="r-sec-title">Core Summary &amp; Qualifications</div>
           <p style="font-size:12px;line-height:1.65;color:#334155;">${R.summary.text}</p>
         </div>` : ''}
 
+      <!-- 3. Skills & Domains -->
       <div class="r-sec">
-        <div class="r-sec-title">Functional Skill Domains &amp; Competencies</div>
+        <div class="r-sec-title">Functional Skills &amp; Domain Competencies</div>
         ${compCards}
       </div>
 
+      <!-- 4. Experience -->
+      <div class="r-sec">
+        <div class="r-sec-title">Career Experience</div>
+        ${briefHistory}
+      </div>
+
+      <!-- 5. Education -->
+      <div class="r-sec">
+        <div class="r-sec-title">Education</div>
+        ${R.education.map(e => `<div style="font-size:12px;color:#334155;"><strong>${e.school}</strong> — ${e.degree} in ${e.major} (${e.startDate}–${e.endDate})</div>`).join('')}
+      </div>
+
+      <!-- 6. Projects -->
       <div class="r-sec">
         <div class="r-sec-title">Key Projects &amp; Capabilities</div>
         ${projHtml}
       </div>
 
-      <div class="r-sec">
-        <div class="r-sec-title">Career History</div>
-        ${briefHistory}
-      </div>
-
-      <div class="r-sec">
-        <div class="r-sec-title">Education &amp; Credentials</div>
-        ${R.education.map(e => `<div style="font-size:12px;color:#334155;"><strong>${e.school}</strong> — ${e.degree} in ${e.major} (${e.startDate}–${e.endDate})</div>`).join('')}
-      </div>
+      <!-- 7. Certifications & Achievements -->
+      ${R.certifications.length > 0 ? `
+        <div class="r-sec">
+          <div class="r-sec-title">Certifications &amp; Achievements</div>
+          ${R.certifications.map(c => `<div style="font-size:12px;color:#334155;margin-bottom:3px;"><strong>${c.name}</strong> ${c.issuer ? `· ${c.issuer}` : ''} (${c.date || ''})</div>`).join('')}
+        </div>` : ''}
     </div>
   `;
 }
@@ -795,7 +858,7 @@ function renderCombination() {
   ].filter(Boolean);
 
   const expHtml = R.experience.map(e => `
-    <div style="margin-bottom:14px;">
+    <div style="margin-bottom:13px;">
       <div style="display:flex;justify-content:space-between;align-items:baseline;">
         <span style="font-size:13.5px;font-weight:800;color:#0f172a;">${e.company}</span>
         <span style="font-size:11.5px;color:#64748b;font-weight:700;">${e.startDate} – ${e.endDate}</span>
@@ -807,20 +870,23 @@ function renderCombination() {
 
   return `
     <div class="format-combo">
+      <!-- 1. Header & Info -->
       <div class="format-combo-header">
         <div class="r-name">${h.name}</div>
         <div class="r-title">${h.title}</div>
         <div class="r-contacts">${cp.join(' · ')}</div>
       </div>
 
+      <!-- 2. Summary -->
       ${R.summary.text ? `
         <div class="r-sec">
           <div class="r-sec-title">Executive Summary</div>
           <p style="font-size:12.5px;line-height:1.65;color:#334155;">${R.summary.text}</p>
         </div>` : ''}
 
+      <!-- 3. Skills & Domains (4-Box Grid Matrix) -->
       <div class="r-sec">
-        <div class="r-sec-title">Core Competencies &amp; Technical Matrix</div>
+        <div class="r-sec-title">Skills &amp; Technical Domains</div>
         <div class="r-skills-matrix">
           <div>
             <div class="r-matrix-category">Languages &amp; Core</div>
@@ -841,30 +907,45 @@ function renderCombination() {
         </div>
       </div>
 
+      <!-- 4. Experience -->
       <div class="r-sec">
         <div class="r-sec-title">Professional Experience</div>
         ${expHtml}
       </div>
 
+      <!-- 5. Education -->
       <div class="r-sec">
-        <div class="r-sec-title">Selected Projects</div>
+        <div class="r-sec-title">Education</div>
+        ${R.education.map(e => `
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:#334155;margin-bottom:4px;">
+            <div><strong>${e.school}</strong> &mdash; ${e.degree} in ${e.major}</div>
+            <div>${e.startDate} – ${e.endDate}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- 6. Projects -->
+      <div class="r-sec">
+        <div class="r-sec-title">Featured Projects</div>
         ${R.projects.map(p => `
-          <div style="margin-bottom:10px;">
+          <div style="margin-bottom:9px;">
             <div style="font-size:13px;font-weight:800;color:#0f172a;">${p.name} <span style="font-size:11px;color:#047857;font-weight:600;">(${p.stack})</span></div>
             ${bls(p.bullets, 'r-bullets')}
           </div>
         `).join('')}
       </div>
 
-      <div class="r-sec">
-        <div class="r-sec-title">Education &amp; Honors</div>
-        ${R.education.map(e => `
-          <div style="display:flex;justify-content:space-between;font-size:12px;color:#334155;">
-            <div><strong>${e.school}</strong> &mdash; ${e.degree} in ${e.major}</div>
-            <div>${e.startDate} – ${e.endDate}</div>
-          </div>
-        `).join('')}
-      </div>
+      <!-- 7. Certifications & Achievements -->
+      ${R.certifications.length > 0 ? `
+        <div class="r-sec">
+          <div class="r-sec-title">Certifications &amp; Achievements</div>
+          ${R.certifications.map(c => `
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:#334155;margin-bottom:3px;">
+              <span><strong>${c.name}</strong> ${c.issuer ? `· ${c.issuer}` : ''}</span>
+              <span style="color:#64748b;">${c.date || ''}</span>
+            </div>
+          `).join('')}
+        </div>` : ''}
     </div>
   `;
 }
@@ -915,23 +996,40 @@ ${(e.bullets||[]).filter(b=>b.trim()).map(b=>`  \\resumeItem{${b}}`).join('\n')}
   \\small ${h.phone} $|$ \\href{mailto:${h.email}}{${h.email}} $|$ \\href{https://${h.li||''}}{${h.li||''}} $|$ \\href{https://${h.gh||''}}{${h.gh||''}}
 \\end{center}
 
+% 2. Summary
 \\section{Professional Summary}
 ${R.summary.text}
 
-\\section{Technical Competencies}
+% 3. Skills & Domains
+\\section{Technical Skills \\& Domains}
 \\textbf{Languages}: ${R.skills.languages} \\\\
 \\textbf{Frameworks}: ${R.skills.frameworks} \\\\
-\\textbf{Cloud \\& Tools}: ${R.skills.tools}
+\\textbf{Cloud \\& Tools}: ${R.skills.tools} \\\\
+\\textbf{Core Competencies}: ${R.skills.other}
 
-\\section{Experience}
+% 4. Experience
+\\section{Work Experience}
 \\resumeSubHeadingListStart
 ${expTex}
 \\resumeSubHeadingListEnd
 
+% 5. Education
 \\section{Education}
 \\resumeSubHeadingListStart
 ${R.education.map(e => `\\resumeSubheading{${e.school}}{${e.startDate} -- ${e.endDate}}{${e.degree} in ${e.major}}{GPA: ${e.gpa||'N/A'}}`).join('\n')}
 \\resumeSubHeadingListEnd
+
+% 6. Projects
+\\section{Featured Projects}
+\\resumeSubHeadingListStart
+${R.projects.map(p => `\\resumeSubheading{${p.name}}{}{${p.stack}}{${p.link}}`).join('\n')}
+\\resumeSubHeadingListEnd
+
+% 7. Certifications & Achievements
+\\section{Certifications \\& Achievements}
+\\resumeItemListStart
+${R.certifications.map(c => `\\resumeItem{\\textbf{${c.name}} (${c.issuer}) -- ${c.date}}`).join('\n')}
+\\resumeItemListEnd
 
 \\end{document}`;
 
@@ -965,13 +1063,13 @@ function ss() {
 }
 
 const SM = {
-  header: { t: 'Header & Contact Info', s: 'Synced with your candidate profile' },
-  summary: { t: 'Executive Summary', s: 'High-impact summary of career achievements' },
-  exp: { t: 'Work Experience', s: 'Action-driven bullet points using STAR format' },
-  edu: { t: 'Education', s: 'Degrees, majors, GPA and awards' },
-  proj: { t: 'Key Projects', s: 'High-impact builds and open-source contributions' },
-  skills: { t: 'Skills & Competencies', s: 'Grouped technical matrix' },
-  certs: { t: 'Certifications', s: 'Verified industry licenses and courses' },
+  header: { t: '1. Header & Info', s: 'Synced with your candidate profile' },
+  summary: { t: '2. Professional Summary', s: 'High-impact summary of career achievements' },
+  skills: { t: '3. Skills & Domains', s: 'Grouped technical domain matrix' },
+  exp: { t: '4. Work Experience', s: 'Action-driven bullet points using STAR format' },
+  edu: { t: '5. Education', s: 'Degrees, majors, GPA and awards' },
+  proj: { t: '6. Key Projects', s: 'High-impact builds and open-source contributions' },
+  certs: { t: '7. Certifications & Achievements', s: 'Verified industry licenses and awards' },
   ats: { t: 'ATS Check', s: 'Verification score for recruiter ATS algorithms' },
   tailor: { t: 'AI Job Tailor', s: 'Tailor resume for target company job descriptions' }
 };
@@ -1086,10 +1184,10 @@ function rCert(i) {
   const ct = R.certifications[i];
   document.getElementById(id).className = 'fc';
   document.getElementById(id).innerHTML = `
-    <div class="fch"><div class="fct">Certification ${i+1}</div><button class="brm" onclick="rmCert(${i})">✕</button></div>
+    <div class="fch"><div class="fct">Certification / Achievement ${i+1}</div><button class="brm" onclick="rmCert(${i})">✕</button></div>
     <div class="fr2">
-      <div class="fg"><label>Certification</label><input class="fi" value="${esc(ct.name)}" placeholder="AWS Solutions Architect" oninput="uad('certifications',${i},'name',this.value)"></div>
-      <div class="fg"><label>Issuer</label><input class="fi" value="${esc(ct.issuer)}" placeholder="Amazon Web Services" oninput="uad('certifications',${i},'issuer',this.value)"></div>
+      <div class="fg"><label>Certification or Award Name</label><input class="fi" value="${esc(ct.name)}" placeholder="AWS Solutions Architect / Hackathon Winner" oninput="uad('certifications',${i},'name',this.value)"></div>
+      <div class="fg"><label>Issuer / Organization</label><input class="fi" value="${esc(ct.issuer)}" placeholder="Amazon Web Services" oninput="uad('certifications',${i},'issuer',this.value)"></div>
     </div>
   `;
 }
@@ -1163,9 +1261,9 @@ function uAts() {
   if (h.location) sc += 5;
   if (h.linkedin || h.github) sc += 10;
   if (R.summary.text && R.summary.text.length > 50) sc += 15; else tips.push('⚠️ Add a 2-3 sentence executive summary');
-  if (R.experience.length > 0) sc += 20; else tips.push('❌ Add work experience');
+  if (R.skills.languages || R.skills.frameworks) sc += 15; else tips.push('❌ Add technical skills');
+  if (R.experience.length > 0) sc += 15; else tips.push('❌ Add work experience');
   if (R.education.length > 0) sc += 10;
-  if (R.skills.languages || R.skills.frameworks) sc += 15;
   sc = Math.min(100, sc);
   
   const col = sc >= 80 ? 'var(--pr)' : sc >= 50 ? '#f59e0b' : '#ef4444';
@@ -1185,10 +1283,10 @@ function uDots() {
   const ch = {
     header: R.header.first_name && R.header.email,
     summary: R.summary.text && R.summary.text.length > 20,
+    skills: R.skills.languages || R.skills.frameworks,
     exp: R.experience.length > 0,
     edu: R.education.length > 0,
     proj: R.projects.length > 0,
-    skills: R.skills.languages || R.skills.frameworks,
     certs: R.certifications.length > 0
   };
   for (const [k, v] of Object.entries(ch)) {
