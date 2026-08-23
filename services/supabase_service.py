@@ -11,22 +11,27 @@ class SupabaseService:
     def __init__(self):
         self.url = os.getenv("SUPABASE_URL", "https://tgmhtlqcjgcjedlnthfk.supabase.co")
         self.key = os.getenv("SUPABASE_KEY", "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn")
-        self.client: Optional[Client] = None
+        self.client: Optional[Any] = None
         
-        if self.url and self.key:
+    async def _get_client(self):
+        if not self.client and self.url and self.key:
+            from supabase import create_async_client
             try:
-                self.client = create_client(self.url, self.key)
+                self.client = await create_async_client(self.url, self.key)
             except Exception as e:
-                print(f"[Supabase] Warning: Could not initialize Supabase client: {e}")
+                print(f"[Supabase] Warning: Could not initialize Async Supabase client: {e}")
+        return self.client
 
     def is_connected(self) -> bool:
-        return self.client is not None
+        # Note: Since client is initialized lazily, this returns True optimistically if credentials exist.
+        return bool(self.url and self.key)
 
     async def upsert_jobs_bulk(self, jobs: List[JobListing]) -> int:
         """
-        Batches and upserts job listings into Supabase public.jobs table.
+        Batches and upserts job listings into Supabase public.jobs table asynchronously.
         """
-        if not self.client or not jobs:
+        client = await self._get_client()
+        if not client or not jobs:
             return 0
 
         records = []
@@ -52,29 +57,28 @@ class SupabaseService:
         for i in range(0, len(records), batch_size):
             batch = records[i:i + batch_size]
             try:
-                self.client.table("jobs").upsert(batch, on_conflict="id").execute()
+                await client.table("jobs").upsert(batch, on_conflict="id").execute()
                 inserted_count += len(batch)
             except Exception as e:
                 print(f"[Supabase] Batch upsert error (batch {i//batch_size + 1}): {e}")
-                break
+                # Don't break on a single batch failure to ensure partial successes
+                continue
 
         return inserted_count
 
     async def fetch_jobs(self, limit: int = 100, city: Optional[str] = None, workplace_type: Optional[str] = None) -> List[Dict[str, Any]]:
-        """
-        Fetches live jobs directly from Supabase with optional filters.
-        """
-        if not self.client:
+        client = await self._get_client()
+        if not client:
             return []
 
         try:
-            query = self.client.table("jobs").select("*").limit(limit)
+            query = client.table("jobs").select("*").limit(limit)
             if city:
                 query = query.ilike("city", f"%{city}%")
             if workplace_type:
                 query = query.ilike("workplace_type", f"%{workplace_type}%")
                 
-            res = query.execute()
+            res = await query.execute()
             return res.data or []
         except Exception as e:
             print(f"[Supabase] Fetch error: {e}")
@@ -87,15 +91,12 @@ class SupabaseService:
         job_id: str,
         report: CandidateScreeningReport
     ) -> bool:
-        """
-        Records candidate screening result and 70B evaluation in Supabase.
-        """
-        if not self.client:
+        client = await self._get_client()
+        if not client:
             return False
 
         try:
-            # 1. Insert candidate
-            cand_res = self.client.table("candidates").insert({
+            cand_res = await client.table("candidates").insert({
                 "name": candidate_name,
                 "skills": report.extracted_skills,
                 "raw_resume_text": resume_text[:5000]
@@ -103,8 +104,7 @@ class SupabaseService:
             
             cand_id = cand_res.data[0]["id"] if cand_res.data else None
 
-            # 2. Insert evaluation
-            self.client.table("match_evaluations").insert({
+            await client.table("match_evaluations").insert({
                 "candidate_id": cand_id,
                 "job_id": job_id,
                 "fit_score_percent": float(report.score_10 * 10),
@@ -125,10 +125,8 @@ class SupabaseService:
             return False
 
     async def upsert_candidate_profile(self, profile_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """
-        Saves or updates complete candidate profile in Supabase candidates table.
-        """
-        if not self.client:
+        client = await self._get_client()
+        if not client:
             return None
 
         try:
@@ -139,21 +137,19 @@ class SupabaseService:
                 "education": str(profile_data.get("education") or ""),
                 "raw_resume_text": profile_data.get("raw_resume_text") or "",
             }
-            res = self.client.table("candidates").insert(record).execute()
+            res = await client.table("candidates").insert(record).execute()
             return res.data[0] if res.data else record
         except Exception as e:
             print(f"[Supabase] Candidate upsert error: {e}")
             return None
 
     async def fetch_all_candidates(self, limit: int = 100) -> List[Dict[str, Any]]:
-        """
-        Retrieves all candidate profiles from Supabase.
-        """
-        if not self.client:
+        client = await self._get_client()
+        if not client:
             return []
 
         try:
-            res = self.client.table("candidates").select("*").order("created_at", desc=True).limit(limit).execute()
+            res = await client.table("candidates").select("*").order("created_at", desc=True).limit(limit).execute()
             return res.data or []
         except Exception as e:
             print(f"[Supabase] Fetch candidates error: {e}")

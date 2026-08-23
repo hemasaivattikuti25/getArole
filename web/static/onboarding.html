@@ -246,7 +246,7 @@
           <label class="form-label">Upload your resume</label>
           <div class="dropzone-box">
             <input type="file" accept=".pdf,.doc,.docx" onchange="handleResumeFile(event)">
-            <div style="font-size:24px; margin-bottom:8px;">📄</div>
+            <div style="font-size:24px; margin-bottom:8px;"></div>
             <div style="font-size:14px; font-weight:700; color:var(--text-main); margin-bottom:4px;">Upload Resume (PDF, DOC, DOCX up to 5MB)</div>
             <div style="font-size:12.5px; color:var(--text-muted);">We parse your skills locally with PyMuPDF for sub-15ms vector match scoring.</div>
           </div>
@@ -317,7 +317,7 @@
       <!-- ══════════════ STEP 3: EXPERIENCE ══════════════ -->
       <section id="step-view-3" class="step-section" style="display:none;">
         <div class="step-header">
-          <div class="founder-note">💼 Work History</div>
+          <div class="founder-note">Work History</div>
           <h1 class="step-h1">Now, let's show off your work experience</h1>
           <p class="step-subtitle">The more detailed the information you provide, the better 70B AI can tailor your future resumes and applications!</p>
         </div>
@@ -439,7 +439,7 @@
       <!-- ══════════════ STEP 6: SKILLS ══════════════ -->
       <section id="step-view-6" class="step-section" style="display:none;">
         <div class="step-header">
-          <div class="founder-note">⚡ Technical Arsenal</div>
+          <div class="founder-note">Technical Arsenal</div>
           <h1 class="step-h1">Let's not forget to show off your skills too.</h1>
           <p class="step-subtitle">We'll use this information to calculate dense vector similarity across 1,062 tech jobs!</p>
         </div>
@@ -461,7 +461,7 @@
       <!-- ══════════════ STEP 7: PERSONAL ══════════════ -->
       <section id="step-view-7" class="step-section" style="display:none;">
         <div class="step-header">
-          <div class="founder-note">📍 Location & Contact</div>
+          <div class="founder-note">Location & Contact</div>
           <h1 class="step-h1">Almost there! A few last questions.</h1>
           <p class="step-subtitle">Your contact info will be used when generating tailored job applications.</p>
         </div>
@@ -633,7 +633,7 @@
       try {
         const res = await fetch('/api/match-resume', { method: 'POST', body: formData });
         const data = await res.json();
-        badge.textContent = `✅ ${file.name} parsed successfully · Top ${data.total_matches} jobs ranked!`;
+        badge.textContent = `${file.name} parsed successfully · Top ${data.total_matches} jobs ranked!`;
         
         if (data.candidate_skills) {
           data.candidate_skills.forEach(s => selectedSkills.add(s));
@@ -643,7 +643,7 @@
           localStorage.setItem('getarole_matches', JSON.stringify(data.matches));
         }
       } catch (err) {
-        badge.textContent = `✅ ${file.name} loaded.`;
+        badge.textContent = `${file.name} loaded.`;
       }
     }
 

@@ -12,6 +12,24 @@ class JobAggregator:
     def __init__(self):
         self.cached_jobs: List[JobListing] = []
 
+    async def _run_with_retries(self, scraper_func, name: str, max_retries: int = 3, base_delay: float = 2.0) -> List[JobListing]:
+        """Runs an async scraper function with exponential backoff retries."""
+        for attempt in range(1, max_retries + 1):
+            try:
+                print(f"[Aggregator] Starting {name} (Attempt {attempt}/{max_retries})...")
+                results = await scraper_func()
+                print(f"[Aggregator] ✅ {name} completed successfully. Found {len(results)} jobs.")
+                return results
+            except Exception as e:
+                print(f"[Aggregator] ⚠️ {name} failed on attempt {attempt}: {type(e).__name__} - {e}")
+                if attempt < max_retries:
+                    delay = base_delay * (2 ** (attempt - 1))
+                    print(f"[Aggregator] Retrying {name} in {delay} seconds...")
+                    await asyncio.sleep(delay)
+                else:
+                    print(f"[Aggregator] ❌ {name} exhausted all retries. Skipping.")
+        return []
+
     async def aggregate_all(
         self,
         include_greenhouse: bool = True,
@@ -22,15 +40,15 @@ class JobAggregator:
     ) -> List[JobListing]:
         tasks = []
         if include_greenhouse:
-            tasks.append(scrape_all_greenhouse_jobs())
+            tasks.append(self._run_with_retries(scrape_all_greenhouse_jobs, "Greenhouse Scraper"))
         if include_lever:
-            tasks.append(scrape_all_lever_jobs())
+            tasks.append(self._run_with_retries(scrape_all_lever_jobs, "Lever Scraper"))
         if include_ashby:
-            tasks.append(scrape_all_ashby_jobs())
+            tasks.append(self._run_with_retries(scrape_all_ashby_jobs, "Ashby Scraper"))
         if include_internshala:
-            tasks.append(scrape_all_internshala_jobs())
+            tasks.append(self._run_with_retries(scrape_all_internshala_jobs, "Internshala Scraper"))
         if include_linkedin:
-            tasks.append(scrape_all_linkedin_jobs())
+            tasks.append(self._run_with_retries(scrape_all_linkedin_jobs, "LinkedIn Scraper"))
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
         
@@ -38,6 +56,8 @@ class JobAggregator:
         for res in results:
             if isinstance(res, list):
                 all_raw_jobs.extend(res)
+            elif isinstance(res, Exception):
+                print(f"[Aggregator] Unhandled Exception during gather: {res}")
 
         # Deduplicate based on lowercase title + company
         seen = set()

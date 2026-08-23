@@ -252,6 +252,8 @@ async def screen_resumes_for_jd(
     # Target JD Embedding
     jd_emb = list(matcher.embed_model.embed([job_description[:1500]]))[0]
     
+    from services.agent import ApplicationAgent
+
     for upload in files:
         temp_path = f"/tmp/screening_{upload.filename}"
         with open(temp_path, "wb") as buf:
@@ -266,21 +268,20 @@ async def screen_resumes_for_jd(
             sim = matcher.compute_similarity(jd_emb, res_emb)
             vector_10 = round(max(1.0, min(10.0, ((sim - 0.25) / 0.65) * 10)), 1)
             
-            # Stage 2: Real Llama 3.1 70B Semantic Evaluation
+            # Stage 2: Real Llama 3.1 70B Semantic Evaluation using ApplicationAgent
             first_line = resume_text.strip().split("\n")[0].strip()
             cand_name = first_line if len(first_line) < 35 and len(first_line) > 2 else upload.filename.replace(".pdf", "")
             
-            llm_eval = await llm_service.a_evaluate_candidate_match(
-                resume_text=resume_text,
+            agent = ApplicationAgent(name=cand_name, resume_text=resume_text, skills=candidate_profile.skills)
+            report = await agent.match_against(
                 job_title="Target Position",
                 company="Hiring Team",
                 job_description=job_description
             )
             
-            llm_10 = float(llm_eval.get("score_10", vector_10))
-            final_10 = round(0.35 * vector_10 + 0.65 * llm_10, 1)
+            final_10 = round(0.35 * vector_10 + 0.65 * report.score_10, 1)
             
-            verdict_raw = llm_eval.get("verdict", "Review")
+            verdict_raw = report.verdict
             if "shortlist" in verdict_raw.lower():
                 verdict = "Shortlisted ✅"
             elif "reject" in verdict_raw.lower() or "unmatch" in verdict_raw.lower():
@@ -288,23 +289,15 @@ async def screen_resumes_for_jd(
             else:
                 verdict = "Review / Follow-up ⚠️"
                 
-            rubric_raw = llm_eval.get("rubric_breakdown", {})
-            rubric = {
-                "technical_skills": float(rubric_raw.get("technical_skills", final_10)),
-                "experience_relevance": float(rubric_raw.get("experience_relevance", final_10)),
-                "domain_knowledge": float(rubric_raw.get("domain_knowledge", final_10)),
-                "prerequisites_met": float(rubric_raw.get("prerequisites_met", final_10))
-            }
-                
             results.append(ScreeningResult(
                 candidate_name=cand_name,
                 file_name=upload.filename,
                 score_10=final_10,
                 verdict=verdict,
-                rubric_breakdown=rubric,
-                strengths=llm_eval.get("strengths", candidate_profile.skills[:4]),
-                missing_skills=llm_eval.get("missing_skills", []),
-                justification=llm_eval.get("justification", f"Calibrated 70B evaluation: {final_10}/10 fit for position."),
+                rubric_breakdown=report.rubric_breakdown.model_dump(),
+                strengths=report.strengths or candidate_profile.skills[:4],
+                missing_skills=report.missing_skills,
+                justification=report.justification,
                 extracted_skills=candidate_profile.skills,
                 raw_summary=resume_text[:300] + "..."
             ))
@@ -335,9 +328,9 @@ async def generate_ai_doc(req: GenerateRequest):
         job_company = job.company
         job_desc = job.description
 
-    llm_service = get_llm_service()
-    content = await llm_service.a_generate_tailored_application(
-        resume_text=req.resume_text,
+    from services.agent import ApplicationAgent
+    agent = ApplicationAgent(name="Candidate", resume_text=req.resume_text)
+    content = await agent.generate_application(
         job_title=job_title,
         company=job_company,
         job_description=job_desc

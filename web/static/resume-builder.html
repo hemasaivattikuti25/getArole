@@ -208,21 +208,21 @@
   <!-- 2 Options Switcher -->
   <div class="mode-switch">
     <button class="btn-mode active" id="btn-mode-resume" onclick="switchDocMode('resume')">
-      <span>📄</span> 1-Page ATS Resume
+      1-Page ATS Resume
     </button>
     <button class="btn-mode" id="btn-mode-cl" onclick="switchDocMode('cover_letter')">
-      <span>✉️</span> Tailored Cover Letter
+      Tailored Cover Letter
     </button>
   </div>
 
   <div class="tbr">
     <div class="profile-synced-badge" id="profile-sync-indicator" title="Connected to your candidate profile">
-      <span>🟢</span> Profile Synced
+      Profile Synced
     </div>
     <button class="bto" onclick="resyncFromProfile()" title="Reload fresh data from candidate profile">
-      <span>🔄</span> Re-Sync Profile
+      Re-Sync Profile
     </button>
-    <button class="btp" onclick="exportPDF()">🖨️ Export PDF</button>
+    <button class="btp" onclick="exportPDF()">Export PDF</button>
   </div>
 </header>
 
@@ -232,11 +232,11 @@
   <aside class="sn">
     <!-- RESUME SECTIONS -->
     <div class="snl resume-only">Resume Sections</div>
-    <div class="si active resume-only" id="nav-header"  onclick="gS('header')"><span class="sic">👤</span>1. Header &amp; Info<span class="dot done" id="dot-header"></span></div>
+    <div class="si active resume-only" id="nav-header"  onclick="gS('header')"><span class="sic"></span>1. Header &amp; Info<span class="dot done" id="dot-header"></span></div>
     <div class="si resume-only"        id="nav-summary" onclick="gS('summary')"><span class="sic">📝</span>2. Summary<span class="dot done" id="dot-summary"></span></div>
-    <div class="si resume-only"        id="nav-skills"  onclick="gS('skills')"><span class="sic">⚡</span>3. Technical Skills<span class="dot done" id="dot-skills"></span></div>
-    <div class="si resume-only"        id="nav-exp"     onclick="gS('exp')"><span class="sic">💼</span>4. Experience<span class="dot done" id="dot-exp"></span></div>
-    <div class="si resume-only"        id="nav-proj"    onclick="gS('proj')"><span class="sic">🚀</span>5. Projects<span class="dot done" id="dot-proj"></span></div>
+    <div class="si resume-only"        id="nav-skills"  onclick="gS('skills')"><span class="sic"></span>3. Technical Skills<span class="dot done" id="dot-skills"></span></div>
+    <div class="si resume-only"        id="nav-exp"     onclick="gS('exp')"><span class="sic"></span>4. Experience<span class="dot done" id="dot-exp"></span></div>
+    <div class="si resume-only"        id="nav-proj"    onclick="gS('proj')"><span class="sic"></span>5. Projects<span class="dot done" id="dot-proj"></span></div>
     <div class="si resume-only"        id="nav-achieve" onclick="gS('achieve')"><span class="sic">🏅</span>6. Achievements<span class="dot done" id="dot-achieve"></span></div>
     <div class="si resume-only"        id="nav-certs"   onclick="gS('certs')"><span class="sic">🏆</span>7. Certifications<span class="dot done" id="dot-certs"></span></div>
     <div class="si resume-only"        id="nav-edu"     onclick="gS('edu')"><span class="sic">🎓</span>8. Education<span class="dot done" id="dot-edu"></span></div>
@@ -247,8 +247,8 @@
     <div class="si cl-only"        id="nav-cl-body"   onclick="gS('cl-body')"><span class="sic">✍️</span>Letter Content<span class="dot done"></span></div>
 
     <div class="snl" style="margin-top:8px;">AI Optimizers</div>
-    <div class="si" id="nav-ats"    onclick="gS('ats')"><span class="sic">📊</span>ATS Check</div>
-    <div class="si" id="nav-tailor" onclick="gS('tailor')"><span class="sic">✨</span>AI Job Matcher</div>
+    <div class="si" id="nav-ats"    onclick="gS('ats')"><span class="sic"></span>ATS Check</div>
+    <div class="si" id="nav-tailor" onclick="gS('tailor')"><span class="sic"></span>AI Job Matcher</div>
   </aside>
 
   <!-- 2. FORM EDITOR COLUMN -->
@@ -282,7 +282,7 @@
           <label>Summary Statement</label>
           <textarea class="ft" id="fsu" rows="4" style="min-height:95px;" placeholder="Backend Applied AI Engineer building scalable, high-availability distributed systems..." oninput="ud('summary','text',this.value)"></textarea>
         </div>
-        <button class="bto" style="align-self:flex-start;" onclick="genSum()">✨ AI Enhance Summary</button>
+        <button class="bto" style="align-self:flex-start;" onclick="genSum()">AI Enhance Summary</button>
       </div>
 
       <!-- 3. TECHNICAL SKILLS -->
@@ -339,7 +339,7 @@
           <label>Job Description / Key Requirements (Optional for AI)</label>
           <textarea class="ft" id="fcl-jd" rows="4" style="min-height:90px;" placeholder="Paste job description snippets to tailor letter..." oninput="udCL('jd',this.value)"></textarea>
         </div>
-        <button class="btp" onclick="aiGenerateCoverLetter()">✨ AI Generate Tailored Cover Letter</button>
+        <button class="btp" onclick="aiGenerateCoverLetter()">AI Generate Tailored Cover Letter</button>
       </div>
 
       <!-- CL: LETTER BODY CONTENT -->
@@ -348,7 +348,7 @@
           <label>Cover Letter Text</label>
           <textarea class="ft" id="fcl-text" rows="14" style="min-height:280px;font-size:13px;line-height:1.6;" oninput="udCL('body',this.value)"></textarea>
         </div>
-        <button class="bto" onclick="aiGenerateCoverLetter()">✨ Regenerate with AI</button>
+        <button class="bto" onclick="aiGenerateCoverLetter()">Regenerate with AI</button>
       </div>
 
       <!-- AI: ATS CHECK -->
@@ -356,7 +356,7 @@
         <div class="ac">
           <div class="ach">
             <div>
-              <div style="font-size:14px;font-weight:800;">📊 ATS Parse Compatibility</div>
+              <div style="font-size:14px;font-weight:800;">ATS Parse Compatibility</div>
               <div style="font-size:12px;color:var(--txm);margin-top:2px;">Scored for Applicant Tracking System parsers</div>
             </div>
             <div class="acn" id="ats-n">100%</div>
@@ -372,7 +372,7 @@
           <label>Target Job Description</label>
           <textarea class="ft" id="fjd" rows="8" style="min-height:140px;" placeholder="Paste the target JD to automatically match keywords &amp; tailor your resume..."></textarea>
         </div>
-        <button class="btp" onclick="tailorR()">✨ Tailor Resume to this JD</button>
+        <button class="btp" onclick="tailorR()">Tailor Resume to this JD</button>
         <div id="tout" style="display:none;background:var(--prl);border:1px solid var(--prb);border-radius:8px;padding:14px;font-size:12.5px;color:var(--tx);line-height:1.6;"></div>
       </div>
     </div>
@@ -381,7 +381,7 @@
   <!-- 3. LIVE PREVIEW COLUMN -->
   <div class="pv">
     <div class="pvl">
-      <span>📄</span> <span id="doc-mode-label">1-Page ATS Resume</span> &mdash; Live A4 Preview
+      <span></span> <span id="doc-mode-label">1-Page ATS Resume</span> &mdash; Live A4 Preview
     </div>
     <div class="a4w">
       <div id="rp"></div>
@@ -575,7 +575,7 @@ function resyncFromProfile() {
   loadDataFromProfile();
   populateFormFields();
   rp();
-  toast('🔄 Synced fresh data from your profile!');
+  toast('Synced fresh data from your profile!');
 }
 
 /* ═════════════════════════════════════════════════════════════════
@@ -810,7 +810,7 @@ function exportPDF() {
     </body></html>
   `);
   w.document.close();
-  toast('🖨️ Print dialog opened — Save as PDF');
+  toast('Print dialog opened — Save as PDF');
 }
 
 /* ═════════════════════════════════════════════════════════════════
@@ -890,7 +890,7 @@ function rExp(i) {
       <div class="bls">${(e.bullets||[]).map((b, bi) => `
         <div class="blr">
           <input value="${esc(b)}" placeholder="Architected / Delivered / Optimized..." oninput="ubl('experience',${i},${bi},this.value)">
-          <button class="bai" onclick="enhB('experience',${i},${bi})">✨ AI</button>
+          <button class="bai" onclick="enhB('experience',${i},${bi})">AI</button>
           <button class="bri" onclick="rmBl('experience',${i},${bi})">✕</button>
         </div>`).join('')}
       </div>
@@ -923,7 +923,7 @@ function rProj(i) {
       <div class="bls">${(p.bullets||[]).map((b, bi) => `
         <div class="blr">
           <input value="${esc(b)}" placeholder="Engineered / Scaled / Implemented..." oninput="ubl('projects',${i},${bi},this.value)">
-          <button class="bai" onclick="enhB('projects',${i},${bi})">✨ AI</button>
+          <button class="bai" onclick="enhB('projects',${i},${bi})">AI</button>
           <button class="bri" onclick="rmBl('projects',${i},${bi})">✕</button>
         </div>`).join('')}
       </div>
@@ -993,7 +993,7 @@ function rmBl(s, i, bi) { R[s][i].bullets.splice(bi, 1); if(s === 'experience') 
 async function enhB(s, i, bi) {
   const cur = R[s][i].bullets[bi];
   if (!cur || cur.trim().length < 5) { toast('Write a bullet point first'); return; }
-  toast('✨ AI enhancing with STAR format...');
+  toast('AI enhancing with STAR format...');
   try {
     const r = await fetch('/api/enhance-bullet', {
       method: 'POST',
@@ -1014,11 +1014,11 @@ async function enhB(s, i, bi) {
   if (s === 'experience') rExp(i);
   if (s === 'projects') rProj(i);
   rp(); ss();
-  toast('✨ Bullet enhanced!');
+  toast('Bullet enhanced!');
 }
 
 async function genSum() {
-  toast('✨ AI generating executive summary...');
+  toast('AI generating executive summary...');
   const expContext = (R.experience || []).map(e => `${e.company} (${e.title})`).join(', ');
   const projContext = (R.projects || []).map(p => p.name).join(', ');
   const allSkills = Object.values(R.skills || {}).filter(Boolean).join(', ');
@@ -1037,7 +1037,7 @@ async function genSum() {
       document.getElementById('fsu').value = d.enhanced;
       R.summary.text = d.enhanced;
       rp(); ss();
-      toast('✨ Summary updated with AI!');
+      toast('Summary updated with AI!');
       return;
     }
   } catch(e){}
@@ -1051,7 +1051,7 @@ async function aiGenerateCoverLetter() {
   const expContext = (R.experience || []).map(e => `${e.company}: ${e.title} - ${(e.bullets||[]).join('; ')}`).join('\n');
   const allSkills = Object.values(R.skills || {}).filter(Boolean).join(', ');
 
-  toast(`✨ AI generating tailored cover letter for ${comp}...`);
+  toast(`AI generating tailored cover letter for ${comp}...`);
   
   try {
     const r = await fetch('/api/generate-cover-letter', {
@@ -1078,7 +1078,7 @@ async function aiGenerateCoverLetter() {
       R.cover_letter.role = role;
       rp(); ss();
       gS('cl-body');
-      toast(`✅ Cover Letter tailored for ${comp}!`);
+      toast(`Cover Letter tailored for ${comp}!`);
       return;
     }
   } catch(e){
@@ -1091,7 +1091,7 @@ async function tailorR() {
   if (!jd) { toast('Paste a target JD first'); return; }
   const out = document.getElementById('tout');
   out.style.display = 'block';
-  out.innerHTML = '<span style="color:var(--pr)">✨ Matching keywords against candidate profile &amp; skills...</span>';
+  out.innerHTML = '<span style="color:var(--pr)">Matching keywords against candidate profile &amp; skills...</span>';
   
   const allSkills = Object.values(R.skills || {}).filter(Boolean).join(', ');
   const expContext = (R.experience || []).map(e => `${e.company} (${e.title})`).join(', ');
@@ -1106,9 +1106,9 @@ async function tailorR() {
       })
     });
     const d = await r.json();
-    out.innerHTML = `<strong>✅ Tailored Summary for Target Role:</strong><br><br>${d.enhanced || 'Updated summary ready.'}<br><br><em style="color:var(--txs);">Click to copy or paste directly into your summary field.</em>`;
+    out.innerHTML = `<strong>Tailored Summary for Target Role:</strong><br><br>${d.enhanced || 'Updated summary ready.'}<br><br><em style="color:var(--txs);">Click to copy or paste directly into your summary field.</em>`;
   } catch(e) {
-    out.innerHTML = `<strong>✅ Resume Tailoring Analysis:</strong><br><br>Analyzed against target job requirements. Review your skills and summary to match key terms.`;
+    out.innerHTML = `<strong>Resume Tailoring Analysis:</strong><br><br>Analyzed against target job requirements. Review your skills and summary to match key terms.`;
   }
 }
 
@@ -1120,7 +1120,7 @@ function uAts() {
   document.getElementById('ats-b').style.width = '100%';
   const te = document.getElementById('ats-t');
   if (te) {
-    te.innerHTML = '<div class="ats-tip">✅ 100% ATS-Compliant: Standard Overleaf/LaTeX typography, clear hierarchy, and ATS-parseable single-column layout.</div>';
+    te.innerHTML = '<div class="ats-tip">100% ATS-Compliant: Standard Overleaf/LaTeX typography, clear hierarchy, and ATS-parseable single-column layout.</div>';
   }
 }
 

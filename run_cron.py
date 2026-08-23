@@ -26,7 +26,7 @@ async def run_sync():
         # 1. Save local snapshot
         import json
         with open(os.path.join(BASE_DIR, "scraped_jobs.json"), "w", encoding="utf-8") as f:
-            json.dump([j.model_dump() for j in jobs], f, indent=2)
+            json.dump([j.model_dump(mode="json") for j in jobs], f, indent=2)
 
         # 2. Push to Supabase PostgreSQL
         supabase = get_supabase_service()
