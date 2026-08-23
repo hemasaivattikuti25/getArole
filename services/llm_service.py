@@ -148,6 +148,16 @@ Tone: Professional, confident, specific, no generic buzzwords."""
         except Exception as e:
             return f"Error generating application: {str(e)}"
 
+    async def generate_text(self, prompt: str, max_tokens: int = 600) -> str:
+        """
+        Generic text generation with NVIDIA Llama 3.1 70B.
+        """
+        return await self.a_call_chat(
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3,
+            max_tokens=max_tokens
+        )
+
     def evaluate_candidate_match(self, *args, **kwargs):
         import asyncio
         return asyncio.run(self.a_evaluate_candidate_match(*args, **kwargs))

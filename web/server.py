@@ -460,6 +460,58 @@ Rewritten bullet (return ONLY the bullet, no explanation, no prefix):"""
         s = s.rstrip(".") + ", improving team efficiency by 20%+."
     return {"enhanced": s, "original": bullet}
 
+class CoverLetterRequest(BaseModel):
+    company_name: str
+    role_title: str
+    job_description: str = ""
+    candidate_summary: str = ""
+    candidate_name: str = "Hemasai Vattikuti"
+    candidate_email: str = ""
+    candidate_phone: str = ""
+
+@app.post("/api/generate-cover-letter")
+async def generate_cover_letter_api(req: CoverLetterRequest):
+    """
+    Generates a personalized, professional 3-paragraph Cover Letter using NVIDIA Llama 3.1 70B.
+    """
+    llm = get_llm_service()
+    prompt = f"""You are an elite career strategist. Write a compelling, tailored, high-signal 3-paragraph Cover Letter for {req.candidate_name} applying for the {req.role_title} position at {req.company_name}.
+
+CANDIDATE BACKGROUND:
+{req.candidate_summary or "Backend Applied AI Engineer building scalable, high-availability distributed systems (DRDO, LangChain, RAG pipelines, FastAPI, PostgreSQL, MongoDB, Qdrant)."}
+
+JOB DETAILS:
+Company: {req.company_name}
+Role: {req.role_title}
+Job Description: {req.job_description[:1000] if req.job_description else "Building scalable systems and AI infrastructure."}
+
+Structure:
+- Salutation: Dear Hiring Manager, (or Dear {req.company_name} Team,)
+- Paragraph 1: Strong opening hook explaining excitement for {req.company_name} and applying for {req.role_title}.
+- Paragraph 2: Direct connection of candidate's proven experience (DRDO defense asset management, sub-10s MongoDB failover, production RAG pipelines with Qdrant/pgvector) to the company's technical mission.
+- Paragraph 3: Confident closing, value proposition, and polite call to action for an interview.
+- Sign-off: Sincerely, {req.candidate_name}
+
+Tone: Confident, specific, professional, zero filler or generic clichés. Return ONLY the letter text."""
+
+    try:
+        letter = await llm.generate_text(prompt, max_tokens=700)
+        return {"cover_letter": letter.strip()}
+    except Exception as e:
+        print(f"[CoverLetter] Fallback used: {e}")
+        fallback = f"""Dear Hiring Team at {req.company_name},
+
+I am writing to express my strong interest in the {req.role_title} role at {req.company_name}. With hands-on experience engineering high-availability distributed systems at DRDO and developing production-grade RAG & AI microservices, I am eager to contribute immediately to your engineering goals.
+
+At the Defence Research and Development Laboratory (DRDL - DRDO), I architected a 3-node MongoDB Replica Set achieving sub-10s automatic failover for a mission-critical defense asset management system, complemented by a production-grade FastAPI backend with zero-trust RBAC and rate limiting. Additionally, I built and scaled platforms like Mithra Life OS and VITAP-UniOS, serving thousands of queries using Qdrant vector retrieval and PostgreSQL Row-Level Security.
+
+I am excited by the technical vision of {req.company_name} and look forward to discussing how my experience in backend systems and applied AI can drive measurable impact for your team.
+
+Sincerely,
+{req.candidate_name}"""
+        return {"cover_letter": fallback}
+
+
 if os.path.exists(STATIC_DIR):
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
