@@ -91,9 +91,21 @@ async def trigger_scrape(
     AGGREGATOR.cached_jobs = jobs
     with open(SAVED_JOBS_FILE, "w", encoding="utf-8") as f:
         json.dump([j.model_dump(mode="json") for j in jobs], f, indent=2)
+
+    # Sync to Supabase in background
+    supabase_synced = 0
+    try:
+        from services.supabase_service import get_supabase_service
+        supabase = get_supabase_service()
+        if supabase.is_connected():
+            supabase_synced = await supabase.upsert_jobs_bulk(jobs)
+    except Exception as e:
+        print(f"[Server] Supabase sync notice: {e}")
+
     return {
         "status": "success",
         "total_scraped": len(jobs),
+        "supabase_synced": supabase_synced,
         "platforms": {
             "greenhouse": sum(1 for j in jobs if j.platform == "Greenhouse"),
             "lever": sum(1 for j in jobs if j.platform == "Lever"),
