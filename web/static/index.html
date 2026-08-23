@@ -389,18 +389,18 @@
         </a>
 
         <nav class="nav-tabs">
-          <a class="nav-tab active" onclick="showTab('home')" id="tab-btn-home">Home</a>
+          <a class="nav-tab active" onclick="showTab('home')" id="tab-btn-home">Overview</a>
           <a class="nav-tab" onclick="showTab('matches')" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
-          <a class="nav-tab" onclick="showTab('jobs')" id="tab-btn-jobs">Job Explorer</a>
-          <a class="nav-tab" onclick="showTab('tracker')" id="tab-btn-tracker">Job Tracker</a>
-          <a class="nav-tab" onclick="showTab('tailor')" id="tab-btn-tailor">AI Tailor</a>
-          <a class="nav-tab" href="/resume-builder" id="tab-btn-resume">Resume Builder</a>
+          <a class="nav-tab" onclick="showTab('jobs')" id="tab-btn-jobs">Explore</a>
+          <a class="nav-tab" onclick="showTab('tracker')" id="tab-btn-tracker">Pipeline</a>
+          <a class="nav-tab" onclick="showTab('tailor')" id="tab-btn-tailor">Synthesis</a>
+          <a class="nav-tab" href="/resume-builder" id="tab-btn-resume">Resume</a>
         </nav>
       </div>
 
       <div class="header-actions">
         <button class="btn-refresh" id="btn-refresh-scrape" onclick="triggerScrape()">
-          Refresh Feeds
+          Sync
         </button>
 
         <div class="user-profile-btn" onclick="toggleUserDropdown()">
@@ -409,9 +409,9 @@
           <span style="font-size: 10px; color: var(--text-subtle)">▼</span>
 
           <div class="user-dropdown" id="user-dropdown">
-            <a href="/onboarding" class="dropdown-item">Profile (8-Stage Builder)</a>
-            <a href="#" onclick="openCandidateDatabaseModal()" class="dropdown-item">Candidate Resumes &amp; Data</a>
-            <a href="#" onclick="openPreferencesModal()" class="dropdown-item">Search Preferences</a>
+            <a href="/onboarding" class="dropdown-item">Profile</a>
+            <a href="#" onclick="openCandidateDatabaseModal()" class="dropdown-item">Database</a>
+            <a href="#" onclick="openPreferencesModal()" class="dropdown-item">Settings</a>
             <div style="height:1px; background:var(--border); margin:4px 0;"></div>
             <a href="#" onclick="handleLogout()" class="dropdown-item" style="color:#ef4444">Sign Out</a>
           </div>
@@ -429,14 +429,14 @@
       </div>
 
       <div class="filter-pills-row">
-        <button class="filter-pill" id="pill-remote"    onclick="togglePillFilter('remote')">Remote Only</button>
+        <button class="filter-pill" id="pill-remote"    onclick="togglePillFilter('remote')">Remote</button>
         <button class="filter-pill" id="pill-bengaluru" onclick="togglePillFilter('bengaluru')">Bengaluru</button>
         <button class="filter-pill" id="pill-hyderabad" onclick="togglePillFilter('hyderabad')">Hyderabad</button>
         <button class="filter-pill" id="pill-intern"    onclick="togglePillFilter('internship')">Internships</button>
         <button class="filter-pill" id="pill-fulltime"  onclick="togglePillFilter('fulltime')">Full-Time</button>
-        <button class="filter-pill" id="pill-parttime"  onclick="togglePillFilter('parttime')" style="border-color:#7c3aed;color:#7c3aed;">Part-Time / Fractional</button>
+        <button class="filter-pill" id="pill-parttime"  onclick="togglePillFilter('parttime')" style="border-color:#7c3aed;color:#7c3aed;">Contract</button>
         <button class="btn-clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
-        <a href="/resume-builder" style="margin-left:auto;padding:6px 14px;border-radius:8px;background:linear-gradient(135deg,#059669,#10b981);color:white;font-size:12.5px;font-weight:800;text-decoration:none;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(5,150,105,.2);">Build Resume</a>
+        <a href="/resume-builder" style="margin-left:auto;padding:6px 14px;border-radius:8px;background:linear-gradient(135deg,#059669,#10b981);color:white;font-size:12.5px;font-weight:800;text-decoration:none;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(5,150,105,.2);">Resume</a>
       </div>
     </div>
   </div>

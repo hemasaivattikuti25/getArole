@@ -282,7 +282,7 @@
           <label>Summary Statement</label>
           <textarea class="ft" id="fsu" rows="4" style="min-height:95px;" placeholder="Backend Applied AI Engineer building scalable, high-availability distributed systems..." oninput="ud('summary','text',this.value)"></textarea>
         </div>
-        <button class="bto" style="align-self:flex-start;" onclick="genSum()">AI Enhance Summary</button>
+        <button class="bto" style="align-self:flex-start;" onclick="genSum()">Synthesize Summary</button>
       </div>
 
       <!-- 3. TECHNICAL SKILLS -->
@@ -339,7 +339,7 @@
           <label>Job Description / Key Requirements (Optional for AI)</label>
           <textarea class="ft" id="fcl-jd" rows="4" style="min-height:90px;" placeholder="Paste job description snippets to tailor letter..." oninput="udCL('jd',this.value)"></textarea>
         </div>
-        <button class="btp" onclick="aiGenerateCoverLetter()">AI Generate Tailored Cover Letter</button>
+        <button class="btp" onclick="aiGenerateCoverLetter()">Generate Cover Letter</button>
       </div>
 
       <!-- CL: LETTER BODY CONTENT -->
@@ -348,7 +348,7 @@
           <label>Cover Letter Text</label>
           <textarea class="ft" id="fcl-text" rows="14" style="min-height:280px;font-size:13px;line-height:1.6;" oninput="udCL('body',this.value)"></textarea>
         </div>
-        <button class="bto" onclick="aiGenerateCoverLetter()">Regenerate with AI</button>
+        <button class="bto" onclick="aiGenerateCoverLetter()">Regenerate</button>
       </div>
 
       <!-- AI: ATS CHECK -->
@@ -372,7 +372,7 @@
           <label>Target Job Description</label>
           <textarea class="ft" id="fjd" rows="8" style="min-height:140px;" placeholder="Paste the target JD to automatically match keywords &amp; tailor your resume..."></textarea>
         </div>
-        <button class="btp" onclick="tailorR()">Tailor Resume to this JD</button>
+        <button class="btp" onclick="tailorR()">Tailor to JD</button>
         <div id="tout" style="display:none;background:var(--prl);border:1px solid var(--prb);border-radius:8px;padding:14px;font-size:12.5px;color:var(--tx);line-height:1.6;"></div>
       </div>
     </div>
