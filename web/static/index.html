@@ -476,7 +476,7 @@
       <!-- Quick Metrics Grid -->
       <div class="stats-cards-grid">
         <div class="stat-metric-card">
-          <div class="stat-metric-icon"></div>
+          <div class="stat-metric-icon">💼</div>
           <div>
             <div class="stat-metric-num" id="home-total-jobs">1,062</div>
             <div class="stat-metric-label">Live Active Jobs</div>
@@ -497,7 +497,7 @@
           </div>
         </div>
         <div class="stat-metric-card">
-          <div class="stat-metric-icon"></div>
+          <div class="stat-metric-icon">✅</div>
           <div>
             <div class="stat-metric-num" id="home-applied-count">0</div>
             <div class="stat-metric-label">Applications Sent</div>
@@ -505,25 +505,7 @@
         </div>
       </div>
 
-      <!-- Application Tracker (Moved from Pipeline Page) -->
-      <div style="margin-bottom: 48px; margin-top: 48px;">
-        <h2 style="font-size:24px; font-weight:800; color:var(--text-main); margin-bottom:4px;">Application Tracker</h2>
-        <p style="font-size:14px; color:var(--text-muted)">Manage your application pipeline from saved opportunities to official offers.</p>
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:18px; margin-bottom: 48px;">
-        <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:16px;">
-          <div style="font-size:14px; font-weight:800; color:var(--text-main); margin-bottom:12px; display:flex; justify-content:space-between;">
-            <span>🔖 Saved</span> <span class="nav-badge" id="count-saved">0</span>
-          </div>
-          <div id="col-saved" style="display:flex; flex-direction:column; gap:8px;"></div>
-        </div>
-        <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:16px;">
-          <div style="font-size:14px; font-weight:800; color:#2563eb; margin-bottom:12px; display:flex; justify-content:space-between;">
-            <span>Applied</span> <span class="nav-badge" style="background:#2563eb" id="count-applied">0</span>
-          </div>
-          <div id="col-applied" style="display:flex; flex-direction:column; gap:8px;"></div>
-        </div>
-      </div>
+
 
       <!-- Top AI Matches Preview Section -->
       <div style="margin-bottom: 32px;">
@@ -1037,22 +1019,8 @@
     }
 
     function renderTracker() {
-      const getCards = (ids) => ids.map(id => {
-        const j = allJobs.find(x => x.id === id);
-        if (!j) return '';
-        return `
-          <div style="background:var(--background); border:1px solid var(--border); border-radius:8px; padding:12px; font-size:13px; cursor:pointer;" onclick="showTab('jobs'); selectJob('${j.id}')">
-            <div style="font-weight:800; color:var(--text-main); margin-bottom:2px;">${j.title}</div>
-            <div style="color:var(--text-muted); font-size:12px;">${j.company} · ${j.location || 'India'}</div>
-          </div>
-        `;
-      }).join('');
-
-      document.getElementById('col-saved').innerHTML = getCards(tracker.saved) || '<div style="font-size:12px; color:var(--text-subtle)">No saved roles yet.</div>';
-      document.getElementById('col-applied').innerHTML = getCards(tracker.applied) || '<div style="font-size:12px; color:var(--text-subtle)">No applied roles yet.</div>';
-
-      document.getElementById('count-saved').textContent = tracker.saved.length;
-      document.getElementById('count-applied').textContent = tracker.applied.length;
+      document.getElementById('home-saved-count').textContent = tracker.saved.length;
+      document.getElementById('home-applied-count').textContent = tracker.applied.length;
     }
 
     function openTailorWithJob(jobId) {
