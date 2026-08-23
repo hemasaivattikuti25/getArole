@@ -381,7 +381,7 @@
   <!-- 3. LIVE PREVIEW COLUMN -->
   <div class="pv">
     <div class="pvl">
-      <span>📄</span> <span id="doc-mode-label">Overleaf / LaTeX Master ATS Resume</span> &mdash; Live A4 Preview
+      <span>📄</span> <span id="doc-mode-label">1-Page ATS Resume</span> &mdash; Live A4 Preview
     </div>
     <div class="a4w">
       <div id="rp"></div>
@@ -588,12 +588,12 @@ function switchDocMode(mode) {
   
   if (mode === 'resume') {
     document.getElementById('btn-mode-resume').classList.add('active');
-    document.getElementById('doc-mode-label').textContent = 'Overleaf / LaTeX Master ATS Resume (1-Page)';
+    document.getElementById('doc-mode-label').textContent = '1-Page ATS Resume';
     layout.classList.remove('mode-cl-active');
     gS('header');
   } else {
     document.getElementById('btn-mode-cl').classList.add('active');
-    document.getElementById('doc-mode-label').textContent = 'Tailored Cover Letter (Official Overleaf Format)';
+    document.getElementById('doc-mode-label').textContent = 'Tailored Cover Letter';
     layout.classList.add('mode-cl-active');
     gS('cl-target');
   }
