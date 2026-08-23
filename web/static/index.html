@@ -473,6 +473,43 @@
         <a href="/onboarding" class="btn-hero-action">Search Preferences →</a>
       </div>
 
+      <!-- Application Tracker Pipeline (Professional UI) -->
+      <div style="margin-bottom: 36px; background: white; border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <div>
+            <h2 style="font-size: 20px; font-weight: 800; color: var(--text-main); display:flex; align-items:center; gap:8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              Application Tracker
+            </h2>
+            <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 4px;">Manage your pipeline from saved opportunities to sent applications.</p>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <!-- Saved Column -->
+          <div style="background: var(--background); border: 1px solid var(--border); border-radius: 12px; padding: 16px;">
+            <h3 style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display:flex; align-items:center; justify-content:space-between;">
+              <span>🔖 Saved</span>
+              <span id="tracker-saved-count" style="background:var(--border-strong); color:white; padding:2px 8px; border-radius:10px; font-size:11px;">0</span>
+            </h3>
+            <div id="tracker-saved-list" style="display:flex; flex-direction:column; gap:8px; min-height: 100px; color: var(--text-subtle); font-size: 13px; justify-content:center; align-items:center;">
+              No saved opportunities yet.
+            </div>
+          </div>
+
+          <!-- Applied Column -->
+          <div style="background: var(--background); border: 1px solid var(--border); border-radius: 12px; padding: 16px;">
+            <h3 style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display:flex; align-items:center; justify-content:space-between;">
+              <span>✅ Applied</span>
+              <span id="tracker-applied-count" style="background:var(--primary); color:white; padding:2px 8px; border-radius:10px; font-size:11px;">0</span>
+            </h3>
+            <div id="tracker-applied-list" style="display:flex; flex-direction:column; gap:8px; min-height: 100px; color: var(--text-subtle); font-size: 13px; justify-content:center; align-items:center;">
+              No applications sent yet.
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Quick Metrics Grid -->
       <div style="margin-top: 32px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
         <h2 style="font-size: 20px; font-weight: 800; color: var(--text-main);">Performance Metrics</h2>
@@ -959,8 +996,7 @@
     function renderHomeView() {
       document.getElementById('home-total-jobs').textContent = allJobs.length.toLocaleString('en-IN');
       document.getElementById('home-matches-count').textContent = matchedJobs.length;
-      document.getElementById('home-saved-count').textContent = tracker.saved.length;
-      document.getElementById('home-applied-count').textContent = tracker.applied.length;
+      renderTracker();
 
       // Platform counts
       const ghCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('greenhouse')).length;
@@ -1029,8 +1065,40 @@
     }
 
     function renderTracker() {
-      document.getElementById('home-saved-count').textContent = tracker.saved.length;
-      document.getElementById('home-applied-count').textContent = tracker.applied.length;
+      // Update new tracker UI badges
+      const savedEl = document.getElementById('tracker-saved-count');
+      const appliedEl = document.getElementById('tracker-applied-count');
+      if (savedEl) savedEl.textContent = tracker.saved.length;
+      if (appliedEl) appliedEl.textContent = tracker.applied.length;
+
+      // Update hero metrics
+      const heroSavedEl = document.getElementById('home-saved-count');
+      const heroAppliedEl = document.getElementById('home-applied-count');
+      if (heroSavedEl) heroSavedEl.textContent = tracker.saved.length;
+      if (heroAppliedEl) heroAppliedEl.textContent = tracker.applied.length;
+
+      const buildList = (jobIds) => {
+        if (!jobIds || jobIds.length === 0) return `<div style="padding:16px;text-align:center;color:var(--text-subtle);">No jobs in this stage.</div>`;
+        return jobIds.map(id => {
+          const job = allJobs.find(j => j.id === id);
+          if (!job) return '';
+          return `
+            <div style="padding:10px; background:white; border:1px solid var(--border); border-radius:8px; display:flex; justify-content:space-between; align-items:center; width:100%; text-align:left;">
+              <div style="flex:1; overflow:hidden;">
+                <div style="font-size:13px; font-weight:700; color:var(--text-main); margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${job.title}</div>
+                <div style="font-size:12px; color:var(--text-muted);">${job.company}</div>
+              </div>
+              <button onclick="showTab('jobs'); setTimeout(() => selectJob('${job.id}'), 100)" style="background:var(--primary-light); color:var(--primary); border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11px; font-weight:700; margin-left:12px;">View</button>
+            </div>
+          `;
+        }).join('');
+      };
+
+      const savedListEl = document.getElementById('tracker-saved-list');
+      const appliedListEl = document.getElementById('tracker-applied-list');
+      
+      if (savedListEl) savedListEl.innerHTML = buildList(tracker.saved);
+      if (appliedListEl) appliedListEl.innerHTML = buildList(tracker.applied);
     }
 
     function openTailorWithJob(jobId) {
