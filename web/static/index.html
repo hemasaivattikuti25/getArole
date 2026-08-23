@@ -409,6 +409,7 @@
 
           <div class="user-dropdown" id="user-dropdown">
             <a href="/onboarding" class="dropdown-item">👤 Profile (8-Stage Builder)</a>
+            <a href="#" onclick="openCandidateDatabaseModal()" class="dropdown-item">👥 Candidate Resumes &amp; Data</a>
             <a href="/onboarding" class="dropdown-item">⚙️ Search Preferences</a>
             <a href="/" class="dropdown-item">🏠 Landing Page</a>
             <div style="height:1px; background:var(--border); margin:4px 0;"></div>
@@ -1044,6 +1045,119 @@
       }
     }
 
+    /* ════════════════════ CANDIDATE DIRECTORY & RESUME VIEWER ════════════════════ */
+    async function openCandidateDatabaseModal() {
+      const modal = document.getElementById('candidate-modal');
+      modal.style.display = 'flex';
+      
+      const listWrap = document.getElementById('cand-modal-list');
+      listWrap.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-subtle);font-size:13px;">Fetching candidate records...</div>';
+
+      try {
+        const res = await fetch('/api/candidates');
+        const data = await res.json();
+        candidatesList = data.candidates || [];
+        
+        const localProf = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+        if (localProf.name || localProf.firstName) {
+          if (!candidatesList.some(c => c.email === localProf.email)) {
+            candidatesList.unshift(localProf);
+          }
+        }
+
+        renderCandidateModalList();
+        if (candidatesList.length > 0) {
+          selectCandidateInModal(0);
+        }
+      } catch (e) {
+        listWrap.innerHTML = '<div style="padding:20px;text-align:center;color:#ef4444;font-size:13px;">Error loading candidate records.</div>';
+      }
+    }
+
+    function closeCandidateDatabaseModal() {
+      document.getElementById('candidate-modal').style.display = 'none';
+    }
+
+    function renderCandidateModalList() {
+      const listWrap = document.getElementById('cand-modal-list');
+      if (candidatesList.length === 0) {
+        listWrap.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-subtle);font-size:13px;">No candidate profiles recorded yet.</div>';
+        return;
+      }
+
+      listWrap.innerHTML = candidatesList.map((c, idx) => {
+        const name = c.name || `${c.firstName || ''} ${c.lastName || ''}`.trim() || c.email || 'Candidate';
+        const initial = name ? name[0].toUpperCase() : 'C';
+        const skillsCount = (c.skills || []).length;
+        const isSel = idx === selectedCandIndex;
+
+        return `
+          <div onclick="selectCandidateInModal(${idx})" style="background:${isSel ? 'var(--primary-light)' : 'white'}; border:1.5px solid ${isSel ? 'var(--primary)' : 'var(--border)'}; border-radius:10px; padding:12px; cursor:pointer; transition:all 0.15s;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+              <div style="width:28px; height:28px; border-radius:50%; background:var(--primary); color:white; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px;">${initial}</div>
+              <div>
+                <div style="font-size:13.5px; font-weight:800; color:var(--text-main);">${name}</div>
+                <div style="font-size:11.5px; color:var(--text-muted);">${c.email || 'Email on file'}</div>
+              </div>
+            </div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag-chip" style="font-size:11px; padding:2px 6px;">📍 ${c.city || 'India'}</span>
+              <span class="tag-chip" style="font-size:11px; padding:2px 6px; background:#eff6ff; color:#1d4ed8;">⚡ ${skillsCount} Skills</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectCandidateInModal(idx) {
+      selectedCandIndex = idx;
+      renderCandidateModalList();
+      const cand = candidatesList[idx];
+      const detailWrap = document.getElementById('cand-modal-detail');
+
+      const name = cand.name || `${cand.firstName || ''} ${cand.lastName || ''}`.trim() || cand.email || 'Candidate Profile';
+      const skills = cand.skills || [];
+      const edu = typeof cand.education === 'object' ? `${cand.education.degree || ''} at ${cand.education.school || ''}` : (cand.education || 'CS Degree');
+      const exp = typeof cand.experience === 'object' ? `${cand.experience.title || ''} (${cand.experience.company || ''})` : (cand.experience || 'Software Engineering Experience');
+      const resumeText = cand.raw_resume_text || 'Resume data missing.';
+
+      detailWrap.innerHTML = `
+        <div style="border-bottom:1px solid var(--border); padding-bottom:18px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <h1 style="font-size:22px; font-weight:800; color:var(--text-main); margin-bottom:4px;">${name}</h1>
+            <div style="font-size:13.5px; color:var(--text-muted); display:flex; gap:12px;">
+              <span>✉️ ${cand.email || 'No email provided'}</span>
+              <span>📞 ${cand.phone || 'Phone verified'}</span>
+              <span>📍 ${cand.city || 'India'}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="meta-grid" style="margin-bottom:20px;">
+          <div class="meta-item">
+            <div class="meta-label">Education</div>
+            <div class="meta-val">${edu}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Experience</div>
+            <div class="meta-val">${exp}</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <div style="font-size:13px; font-weight:800; color:var(--text-main); margin-bottom:8px;">Validated Skills</div>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;">
+            ${skills.map(s => `<span class="tag-chip match-score-chip">${s}</span>`).join('') || '<span style="color:var(--text-subtle);font-size:13px;">No skills specified</span>'}
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size:13px; font-weight:800; color:var(--text-main); margin-bottom:8px;">Extracted Resume Text</div>
+          <div style="background:var(--background); border:1.5px solid var(--border); border-radius:10px; padding:16px; font-family:'JetBrains Mono', monospace; font-size:12.5px; line-height:1.6; color:#334155; max-height:280px; overflow-y:auto; white-space:pre-wrap;">${escapeHTML(resumeText)}</div>
+        </div>
+      `;
+    }
+
     async function triggerScrape() {
       const btn = document.getElementById('btn-refresh-scrape');
       btn.disabled = true;
@@ -1065,7 +1179,6 @@
     function formatJobDescription(raw) {
       if (!raw) return '<p>Full technical details and responsibilities available on the verified employer portal.</p>';
       
-      // Clean unwanted scripts/styles and unescape common HTML entities
       let cleaned = raw
         .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
         .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
@@ -1075,12 +1188,10 @@
         .replace(/&quot;/g, '"')
         .replace(/&#39;/g, "'");
 
-      // If it has HTML tags (e.g. from Greenhouse, Ashby, Lever), strip dangerous attributes and return clean HTML
       if (/<[a-z][\s\S]*>/i.test(cleaned)) {
         return cleaned;
       }
 
-      // If plain text with linebreaks, wrap into formatted paragraphs
       return cleaned.split(/\n\n+/).map(para => `<p>${para.replace(/\n/g, '<br>')}</p>`).join('');
     }
 
@@ -1090,7 +1201,6 @@
       }[tag] || tag));
     }
 
-    // Initialize platform
     (function init() {
       loadJobs();
     })();

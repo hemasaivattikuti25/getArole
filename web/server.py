@@ -2,8 +2,8 @@ import asyncio
 import json
 import os
 import shutil
-from typing import List, Optional
-from fastapi import FastAPI, UploadFile, File, Form, Query, HTTPException
+from typing import List, Optional, Dict, Any
+from fastapi import FastAPI, UploadFile, File, Form, Query, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -13,6 +13,7 @@ from scrapers.models import JobListing, CandidateProfile
 from scrapers.aggregator import JobAggregator
 from scrapers.matcher import ResumeMatcher
 from services.llm_service import get_llm_service
+from services.supabase_service import get_supabase_service
 
 # Dynamic Directory Paths (Works locally and on Vercel/Render Linux containers)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -312,6 +313,70 @@ async def generate_ai_doc(req: GenerateRequest):
         job_description=job_desc
     )
     return {"status": "success", "content": content, "provider": "NVIDIA NIM (Llama 3.1 70B)"}
+
+@app.post("/api/candidate/profile")
+async def save_candidate_profile_endpoint(profile: Dict[str, Any] = Body(...)):
+    """
+    Saves candidate personal details, skills, education, and raw resume text into Supabase & local storage.
+    """
+    # 1. Save to Supabase
+    supabase = get_supabase_service()
+    supa_record = await supabase.upsert_candidate_profile(profile)
+
+    # 2. Save locally for instant access
+    cand_file = os.path.join(BASE_DIR, "candidates.json")
+    tmp_cand_file = "/tmp/candidates.json"
+    candidates = []
+    
+    if os.path.exists(cand_file):
+        try:
+            with open(cand_file, "r", encoding="utf-8") as f:
+                candidates = json.load(f)
+        except Exception:
+            candidates = []
+
+    # Upsert by email/name
+    cand_id = profile.get("email") or profile.get("name") or "candidate"
+    candidates = [c for c in candidates if (c.get("email") != cand_id and c.get("name") != cand_id)]
+    candidates.insert(0, profile)
+
+    for fp in [cand_file, tmp_cand_file]:
+        try:
+            with open(fp, "w", encoding="utf-8") as f:
+                json.dump(candidates, f, indent=2)
+        except Exception:
+            pass
+
+    return {
+        "status": "success",
+        "message": "Candidate profile and resume stored successfully.",
+        "candidate": supa_record or profile
+    }
+
+@app.get("/api/candidates")
+async def get_all_candidates():
+    """
+    Returns all registered candidate profiles and their full resume data.
+    """
+    supabase = get_supabase_service()
+    candidates = await supabase.fetch_all_candidates()
+    
+    if not candidates:
+        cand_file = os.path.join(BASE_DIR, "candidates.json")
+        for fp in [cand_file, "/tmp/candidates.json"]:
+            if os.path.exists(fp):
+                try:
+                    with open(fp, "r", encoding="utf-8") as f:
+                        candidates = json.load(f)
+                        if candidates:
+                            break
+                except Exception:
+                    pass
+
+    return {
+        "total_candidates": len(candidates),
+        "candidates": candidates
+    }
 
 if os.path.exists(STATIC_DIR):
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")

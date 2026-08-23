@@ -647,11 +647,27 @@
       }
     }
 
-    function finishProfile() {
+    async function finishProfile() {
       saveStepData(8);
       userProfile.skills = Array.from(selectedSkills);
+      const authUser = JSON.parse(localStorage.getItem('getarole_user') || '{}');
+      userProfile.email = authUser.email || '';
+      userProfile.firebase_uid = authUser.uid || '';
+      userProfile.name = `${userProfile.firstName || ''} ${userProfile.lastName || ''}`.trim() || authUser.displayName || 'Candidate';
+      
       localStorage.setItem('getarole_profile', JSON.stringify(userProfile));
       
+      // Auto-Sync Candidate & Resume to Supabase & Backend
+      try {
+        await fetch('/api/candidate/profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(userProfile)
+        });
+      } catch (e) {
+        console.warn('Profile sync notice:', e);
+      }
+
       // Save global prefs
       localStorage.setItem('getarole_prefs', JSON.stringify({
         completed: true,

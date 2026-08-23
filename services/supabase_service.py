@@ -119,11 +119,45 @@ class SupabaseService:
                 "missing_skills": report.missing_skills,
                 "justification": report.justification
             }).execute()
-
             return True
         except Exception as e:
             print(f"[Supabase] Screening log error: {e}")
             return False
+
+    async def upsert_candidate_profile(self, profile_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """
+        Saves or updates complete candidate profile in Supabase candidates table.
+        """
+        if not self.client:
+            return None
+
+        try:
+            record = {
+                "name": profile_data.get("name") or f"{profile_data.get('firstName', '')} {profile_data.get('lastName', '')}".strip() or "Candidate",
+                "email": profile_data.get("email"),
+                "skills": profile_data.get("skills") or [],
+                "education": str(profile_data.get("education") or ""),
+                "raw_resume_text": profile_data.get("raw_resume_text") or "",
+            }
+            res = self.client.table("candidates").insert(record).execute()
+            return res.data[0] if res.data else record
+        except Exception as e:
+            print(f"[Supabase] Candidate upsert error: {e}")
+            return None
+
+    async def fetch_all_candidates(self, limit: int = 100) -> List[Dict[str, Any]]:
+        """
+        Retrieves all candidate profiles from Supabase.
+        """
+        if not self.client:
+            return []
+
+        try:
+            res = self.client.table("candidates").select("*").order("created_at", desc=True).limit(limit).execute()
+            return res.data or []
+        except Exception as e:
+            print(f"[Supabase] Fetch candidates error: {e}")
+            return []
 
 # Global Singleton
 _supabase_service: Optional[SupabaseService] = None
