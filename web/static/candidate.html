@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Candidate Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #059669;
+      --bg: #f9fafb;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background-color: var(--bg); color: var(--text-main); padding: 40px 20px; line-height: 1.6; }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--surface);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .header {
+      padding: 40px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+      background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+    }
+    .header h1 { font-size: 32px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
+    .header p { font-size: 16px; color: var(--text-muted); }
+    .content { padding: 40px; }
+    .section-title {
+      font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--primary); font-weight: 700; margin-bottom: 16px; margin-top: 32px;
+    }
+    .section-title:first-child { margin-top: 0; }
+    
+    .skills-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill-chip {
+      background: var(--bg); border: 1px solid var(--border);
+      padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+      color: var(--text-main);
+    }
+    
+    .resume-box {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px; font-size: 14.5px; color: var(--text-main);
+      white-space: pre-wrap; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    
+    .loading { text-align: center; padding: 100px; color: var(--text-muted); }
+    .error { text-align: center; padding: 100px; color: #ef4444; font-weight: 600; }
+    
+    .watermark {
+      text-align: center; padding: 20px; color: var(--text-muted); font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="profile-container">
+    <div class="loading">Securely loading candidate profile...</div>
+  </div>
+
+  <div class="watermark">Hosted securely via getArole</div>
+
+  <script>
+    async function loadCandidate() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const candId = urlParams.get('id');
+      const container = document.getElementById('profile-container');
+      
+      if (!candId) {
+        container.innerHTML = '<div class="error">Invalid URL. No candidate ID provided.</div>';
+        return;
+      }
+      
+      try {
+        const res = await fetch(`/api/candidate/${candId}`);
+        if (!res.ok) throw new Error('Candidate not found');
+        const data = await res.json();
+        const cand = data.candidate;
+        
+        let skillsHtml = '<p style="color:var(--text-muted);font-size:14px;">No specific skills extracted.</p>';
+        if (cand.skills && cand.skills.length > 0) {
+            skillsHtml = '<div class="skills-grid">' + cand.skills.map(s => `<span class="skill-chip">${s}</span>`).join('') + '</div>';
+        }
+        
+        container.innerHTML = `
+          <div class="header">
+            <h1>${cand.name || 'Anonymous Candidate'}</h1>
+            <p>${cand.email ? 'Contact: ' + cand.email : 'Contact hidden for privacy'}</p>
+          </div>
+          <div class="content">
+            <div class="section-title">Verified Skills</div>
+            ${skillsHtml}
+            
+            <div class="section-title">Resume Summary</div>
+            <div class="resume-box">${cand.raw_resume_text || 'No resume text provided.'}</div>
+          </div>
+        `;
+      } catch(e) {
+        container.innerHTML = '<div class="error">Could not load candidate profile. It may have been removed or the link is invalid.</div>';
+      }
+    }
+    
+    loadCandidate();
+  </script>
+</body>
+</html>

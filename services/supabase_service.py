@@ -154,6 +154,18 @@ class SupabaseService:
         except Exception as e:
             print(f"[Supabase] Fetch candidates error: {e}")
             return []
+            
+    async def fetch_candidate(self, cand_id: str) -> Optional[Dict[str, Any]]:
+        client = await self._get_client()
+        if not client:
+            return None
+
+        try:
+            res = await client.table("candidates").select("*").eq("id", cand_id).limit(1).execute()
+            return res.data[0] if res.data else None
+        except Exception as e:
+            print(f"[Supabase] Fetch candidate error: {e}")
+            return None
 
 # Global Singleton
 _supabase_service: Optional[SupabaseService] = None

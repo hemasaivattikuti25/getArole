@@ -401,6 +401,18 @@ async def get_all_candidates():
         "candidates": candidates
     }
 
+@app.get("/api/candidate/{cand_id}")
+async def get_candidate_by_id(cand_id: str):
+    """
+    Returns a single candidate by UUID for public sharing.
+    """
+    supabase = get_supabase_service()
+    candidate = await supabase.fetch_candidate(cand_id)
+    if not candidate:
+        raise HTTPException(status_code=404, detail="Candidate not found")
+    
+    return {"candidate": candidate}
+
 # ── Resume Builder page ──────────────────────────────────────────────────────
 @app.get("/resume-builder", response_class=HTMLResponse)
 async def serve_resume_builder():
@@ -521,6 +533,11 @@ async def serve_landing():
         with open(landing_file, "r", encoding="utf-8") as f:
             return f.read()
     return "<h1>getArole — Starting Up</h1>"
+
+@app.get("/candidate", response_class=HTMLResponse)
+async def serve_candidate():
+    with open(os.path.join(STATIC_DIR, "candidate.html"), "r", encoding="utf-8") as f:
+        return f.read()
 
 @app.get("/onboarding", response_class=HTMLResponse)
 async def serve_onboarding():
