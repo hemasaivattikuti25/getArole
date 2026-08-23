@@ -622,7 +622,7 @@
 
   <!-- ════════════════════ LOGIC & DATA ENGINE ════════════════════ -->
   <script type="module">
-    import { initAuthListener, logoutUser } from "/static/firebase-auth.js";
+    import { initAuthListener, logoutUser } from "./firebase-auth.js";
 
     initAuthListener((user) => {
       if (user) {
