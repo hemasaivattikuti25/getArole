@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>getArole — Candidate Preferences & Setup</title>
+  <title>getArole — Build Your Candidate Profile</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
   <script>
     // Strict Authentication Guard
     (function checkAuth() {
@@ -16,10 +17,12 @@
       }
     })();
   </script>
+
   <style>
     :root {
       --primary: #059669;
       --primary-hover: #047857;
+      --primary-accent: #10b981;
       --primary-light: #ecfdf5;
       --primary-border: #a7f3d0;
       --surface: #ffffff;
@@ -30,6 +33,7 @@
       --text-main: #0f172a;
       --text-muted: #475569;
       --text-subtle: #94a3b8;
+      --sidebar-w: 240px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -41,510 +45,629 @@
       display: flex; flex-direction: column;
       -webkit-font-smoothing: antialiased;
     }
-    h1,h2,h3,h4 { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
 
     /* Navigation */
     nav {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      height: 60px;
-      display: flex; align-items: center;
+      height: 60px; display: flex; align-items: center;
+      position: sticky; top: 0; z-index: 100;
     }
     .nav-inner {
-      max-width: 900px; width: 100%; margin: 0 auto; padding: 0 24px;
+      max-width: 1200px; width: 100%; margin: 0 auto; padding: 0 24px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .nav-logo {
-      width: 32px; height: 32px;
+    .brand-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .brand-icon {
+      width: 30px; height: 30px;
       background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
+      border-radius: 7px; display: flex; align-items: center; justify-content: center;
       color: white; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 15px;
     }
-    .nav-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 18px; color: var(--text-main); }
-    .nav-title span { color: var(--primary); }
+    .brand-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 18px; color: var(--text-main); }
+    .brand-title span { color: var(--primary); }
 
-    .nav-user-info { display: flex; align-items: center; gap: 12px; }
-    .user-tag { font-size: 13px; font-weight: 600; color: var(--text-muted); }
-    .btn-signout { font-size: 13px; font-weight: 500; color: var(--text-subtle); text-decoration: none; }
-    .btn-signout:hover { color: var(--text-main); }
-
-    /* Layout */
-    .setup-container {
-      flex: 1; display: flex; align-items: center; justify-content: center;
-      padding: 40px 24px 60px;
+    .btn-signout-nav {
+      font-size: 13px; font-weight: 700; color: var(--text-subtle); text-decoration: none;
+      padding: 6px 12px; border-radius: 6px; transition: all 0.15s;
     }
-    .setup-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      width: 100%; max-width: 680px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04);
+    .btn-signout-nav:hover { color: #ef4444; background: #fef2f2; }
+
+    /* Onboarding Layout */
+    .onboarding-container {
+      flex: 1; max-width: 1100px; width: 100%; margin: 0 auto; padding: 36px 24px 60px;
+      display: grid; grid-template-columns: var(--sidebar-w) 1fr; gap: 40px; align-items: start;
     }
 
-    /* Progress bar */
-    .progress-bar-container { height: 4px; background: var(--border-subtle); }
-    .progress-bar-fill { height: 100%; background: var(--primary); transition: width 0.3s ease; }
-
-    /* Step content */
-    .step-header { padding: 32px 36px 0; }
-    .step-badge-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .step-indicator {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
-      color: var(--primary); background: var(--primary-light); border: 1px solid var(--primary-border);
-      padding: 3px 8px; border-radius: 6px;
+    /* Step Sidebar */
+    .steps-sidebar {
+      background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px;
+      padding: 16px 12px; display: flex; flex-direction: column; gap: 4px;
+      position: sticky; top: 84px;
     }
-    .btn-skip { font-size: 13px; font-weight: 500; color: var(--text-subtle); cursor: pointer; text-decoration: none; }
-    .btn-skip:hover { color: var(--text-main); }
-
-    .step-title { font-size: 24px; font-weight: 800; color: var(--text-main); line-height: 1.25; margin-bottom: 6px; }
-    .step-desc { font-size: 14px; color: var(--text-muted); }
-
-    .step-body { padding: 24px 36px 32px; }
-
-    /* Selection options */
-    .option-group { display: grid; gap: 10px; }
-    .option-group-2 { grid-template-columns: 1fr 1fr; }
-    .option-group-1 { grid-template-columns: 1fr; }
-
-    .option-item {
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 14px 18px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: space-between;
-      transition: all 0.15s ease;
-      background: var(--surface);
-    }
-    .option-item:hover { border-color: var(--primary-border); background: var(--primary-light); }
-    .option-item.selected {
-      border-color: var(--primary);
-      background: var(--primary-light);
-    }
-    .option-label { font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
-    .option-sub { font-size: 12px; color: var(--text-muted); }
-
-    .option-radio {
-      width: 18px; height: 18px; border-radius: 50%;
-      border: 1.5px solid var(--border-strong);
-      display: flex; align-items: center; justify-content: center;
+    .step-nav-item {
+      padding: 10px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
+      color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: space-between;
       transition: all 0.15s;
     }
-    .option-item.selected .option-radio {
-      border-color: var(--primary); background: var(--primary);
+    .step-nav-item:hover { background: var(--border-subtle); color: var(--text-main); }
+    .step-nav-item.active {
+      background: var(--primary-light); color: var(--primary); font-weight: 800;
     }
-    .option-radio-dot { width: 6px; height: 6px; border-radius: 50%; background: white; }
+    .step-nav-item.completed { color: var(--text-main); }
+    .step-nav-item.completed::after { content: '✓'; color: var(--primary); font-weight: 800; }
 
-    .option-checkbox {
-      width: 18px; height: 18px; border-radius: 4px;
-      border: 1.5px solid var(--border-strong);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; color: transparent;
+    /* Main Card */
+    .step-card {
+      background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px;
+      padding: 36px 40px; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.03);
     }
-    .option-item.selected .option-checkbox {
-      border-color: var(--primary); background: var(--primary); color: white;
+    .step-header { margin-bottom: 28px; }
+    .step-h1 { font-size: 26px; font-weight: 800; color: var(--text-main); margin-bottom: 6px; }
+    .founder-note {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+      font-size: 13px; font-weight: 700; color: var(--primary);
     }
+    .step-subtitle { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 
-    /* Chips */
-    .chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip {
-      padding: 8px 14px; border-radius: 100px;
-      font-size: 13px; font-weight: 600;
-      border: 1.5px solid var(--border);
-      background: var(--surface);
-      color: var(--text-muted);
-      cursor: pointer; transition: all 0.15s ease;
+    /* Form Fields */
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+    .form-input, .form-select, .form-textarea {
+      width: 100%; padding: 11px 14px; border-radius: 8px; border: 1.5px solid var(--border);
+      font-size: 14px; font-family: inherit; outline: none; background: var(--surface);
+      transition: border-color 0.15s;
     }
-    .chip:hover { border-color: var(--primary-border); color: var(--primary); }
-    .chip.selected {
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary); }
+    .form-textarea { min-height: 100px; line-height: 1.6; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+    /* Radio / Selection Pills */
+    .radio-card-group { display: flex; gap: 12px; }
+    .radio-pill {
+      flex: 1; padding: 12px; border: 1.5px solid var(--border); border-radius: 10px;
+      text-align: center; font-size: 13.5px; font-weight: 700; color: var(--text-muted);
+      cursor: pointer; transition: all 0.15s; background: var(--surface);
+    }
+    .radio-pill:hover { border-color: var(--primary-border); }
+    .radio-pill.selected {
       border-color: var(--primary); background: var(--primary-light); color: var(--primary);
-      box-shadow: 0 1px 3px rgba(5, 150, 105, 0.1);
     }
 
-    /* Dropzone */
-    .dropzone {
-      border: 2px dashed var(--border);
-      border-radius: 12px;
-      padding: 36px 20px;
-      text-align: center;
-      cursor: pointer;
-      position: relative;
-      background: #fafbfc;
-      transition: all 0.2s;
+    /* Skills Cloud */
+    .skills-cloud { display: flex; flex-wrap: wrap; gap: 8px; max-height: 200px; overflow-y: auto; padding: 8px; border: 1px solid var(--border); border-radius: 10px; background: #fafbfc; margin-bottom: 20px; }
+    .skill-chip {
+      padding: 6px 12px; border-radius: 20px; font-size: 12.5px; font-weight: 600;
+      border: 1px solid var(--border); background: white; color: var(--text-main);
+      cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s;
     }
-    .dropzone:hover, .dropzone.dragover {
-      border-color: var(--primary);
-      background: var(--primary-light);
-    }
-    .dropzone input {
-      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
-    }
-    .drop-icon { font-size: 28px; color: var(--primary); margin-bottom: 8px; }
-    .drop-title { font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
-    .drop-sub { font-size: 12px; color: var(--text-muted); }
-
-    /* Salary range */
-    .salary-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
-    .salary-val { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 800; color: var(--primary); }
-    input[type=range] {
-      width: 100%; accent-color: var(--primary); cursor: pointer;
+    .skill-chip:hover { border-color: var(--primary); color: var(--primary); }
+    .skill-chip.selected {
+      background: var(--primary); border-color: var(--primary); color: white;
     }
 
-    /* Footer buttons */
-    .step-footer {
-      border-top: 1px solid var(--border-subtle);
-      padding: 18px 36px 24px;
+    /* Resume Dropzone */
+    .dropzone-box {
+      border: 2px dashed var(--border); border-radius: 12px; padding: 32px;
+      text-align: center; cursor: pointer; background: #fafbfc; transition: all 0.15s;
+      position: relative; margin-bottom: 16px;
+    }
+    .dropzone-box:hover { border-color: var(--primary); background: var(--primary-light); }
+    .dropzone-box input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+
+    /* Action Footer */
+    .step-actions {
+      margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);
       display: flex; justify-content: space-between; align-items: center;
-      background: #fafbfc;
     }
-    .btn {
-      padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 700;
-      border: none; cursor: pointer; transition: all 0.15s ease;
-      text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+    .btn-save-continue {
+      padding: 12px 28px; border-radius: 10px; border: none; background: var(--primary);
+      color: white; font-size: 14px; font-weight: 800; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(5,150,105,0.25); transition: all 0.15s;
     }
-    .btn-secondary { background: var(--surface); border: 1px solid var(--border); color: var(--text-main); }
-    .btn-secondary:hover:not(:disabled) { border-color: var(--border-strong); }
-    .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-primary { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(5,150,105,0.25); }
-    .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    .btn-save-continue:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    .btn-skip-step {
+      font-size: 13px; font-weight: 700; color: var(--text-subtle); text-transform: uppercase;
+      letter-spacing: 0.04em; background: none; border: none; cursor: pointer;
+    }
+    .btn-skip-step:hover { color: var(--text-main); }
 
-    @media (max-width: 600px) {
-      .step-header { padding: 24px 20px 0; }
-      .step-body { padding: 20px 20px 24px; }
-      .step-footer { padding: 14px 20px 20px; }
-      .option-group-2 { grid-template-columns: 1fr; }
+    .experience-card, .education-card {
+      background: #fafbfc; border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px; margin-bottom: 16px; position: relative;
+    }
+    .btn-add-item {
+      padding: 10px 16px; border-radius: 8px; border: 1.5px dashed var(--primary);
+      background: var(--primary-light); color: var(--primary); font-size: 13.5px; font-weight: 700;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 20px;
+    }
+
+    @media (max-width: 800px) {
+      .onboarding-container { grid-template-columns: 1fr; }
+      .steps-sidebar { display: none; }
+      .grid-2, .grid-4 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
+  <!-- Header -->
   <nav>
     <div class="nav-inner">
-      <a href="/" class="nav-brand">
-        <div class="nav-logo">G</div>
-        <span class="nav-title">getArole<span>.ai</span></span>
+      <a href="/" class="brand-wrap">
+        <div class="brand-icon">G</div>
+        <span class="brand-title">getArole<span>.ai</span></span>
       </a>
-      <div class="nav-user-info">
-        <span class="user-tag" id="user-display">Candidate Profile</span>
-        <a href="/dashboard" class="btn-signout">Skip to Dashboard</a>
-      </div>
+      <a href="#" onclick="handleLogout()" class="btn-signout-nav">SIGN OUT</a>
     </div>
   </nav>
 
-  <div class="setup-container">
-    <div class="setup-card">
-      <div class="progress-bar-container">
-        <div class="progress-bar-fill" id="progress-fill" style="width: 16%"></div>
-      </div>
+  <!-- Container -->
+  <div class="onboarding-container">
+    
+    <!-- Step Sidebar (Simplify Style) -->
+    <aside class="steps-sidebar">
+      <div class="step-nav-item active" id="snav-1" onclick="jumpToStep(1)">1. Roles</div>
+      <div class="step-nav-item" id="snav-2" onclick="jumpToStep(2)">2. Education</div>
+      <div class="step-nav-item" id="snav-3" onclick="jumpToStep(3)">3. Experience</div>
+      <div class="step-nav-item" id="snav-4" onclick="jumpToStep(4)">4. Work Authorization</div>
+      <div class="step-nav-item" id="snav-5" onclick="jumpToStep(5)">5. EEO</div>
+      <div class="step-nav-item" id="snav-6" onclick="jumpToStep(6)">6. Skills</div>
+      <div class="step-nav-item" id="snav-7" onclick="jumpToStep(7)">7. Personal</div>
+      <div class="step-nav-item" id="snav-8" onclick="jumpToStep(8)">8. Links</div>
+    </aside>
 
-      <!-- Step 1: Timeline -->
-      <div id="step-1" class="step">
+    <!-- Main Card Body -->
+    <main class="step-card">
+
+      <!-- ══════════════ STEP 1: ROLES & RESUME ══════════════ -->
+      <section id="step-view-1" class="step-section">
         <div class="step-header">
-          <div class="step-badge-row">
-            <span class="step-indicator">STEP 1 OF 6</span>
-            <span class="btn-skip" onclick="nextStep()">Skip</span>
-          </div>
-          <h2 class="step-title">What is your hiring timeline?</h2>
-          <p class="step-desc">Calibrate job match alerts to your search urgency.</p>
+          <div class="founder-note">🌿 Profile Builder</div>
+          <h1 class="step-h1">Great! Let's build your profile to start.</h1>
+          <p class="step-subtitle">This takes ~3 minutes. We'll parse your resume locally to prefill your information across all 1,062 live tech roles.</p>
         </div>
-        <div class="step-body">
-          <div class="option-group option-group-2">
-            <div class="option-item selected" onclick="selectOption(this, 'timeline', 'immediate')">
-              <div><div class="option-label">Immediate</div><div class="option-sub">Actively interviewing now</div></div>
-              <div class="option-radio"><div class="option-radio-dot"></div></div>
-            </div>
-            <div class="option-item" onclick="selectOption(this, 'timeline', '3months')">
-              <div><div class="option-label">Within 3 Months</div><div class="option-sub">Open to strong opportunities</div></div>
-              <div class="option-radio"><div class="option-radio-dot"></div></div>
-            </div>
-            <div class="option-item" onclick="selectOption(this, 'timeline', '6months')">
-              <div><div class="option-label">Within 6 Months</div><div class="option-sub">Planning graduation / switch</div></div>
-              <div class="option-radio"><div class="option-radio-dot"></div></div>
-            </div>
-            <div class="option-item" onclick="selectOption(this, 'timeline', 'passive')">
-              <div><div class="option-label">Passively Browsing</div><div class="option-sub">Monitoring top tier offers</div></div>
-              <div class="option-radio"><div class="option-radio-dot"></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="step-footer">
-          <button class="btn btn-secondary" disabled>Back</button>
-          <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
-        </div>
-      </div>
 
-      <!-- Step 2: Location & Workplace Policy -->
-      <div id="step-2" class="step" style="display:none">
+        <div class="grid-2" style="margin-bottom:20px;">
+          <div>
+            <label class="form-label">First Name *</label>
+            <input type="text" id="prof-firstname" class="form-input" placeholder="e.g. Alex">
+          </div>
+          <div>
+            <label class="form-label">Last Name *</label>
+            <input type="text" id="prof-lastname" class="form-input" placeholder="e.g. Kumar">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Upload your resume</label>
+          <div class="dropzone-box">
+            <input type="file" accept=".pdf,.doc,.docx" onchange="handleResumeFile(event)">
+            <div style="font-size:24px; margin-bottom:8px;">📄</div>
+            <div style="font-size:14px; font-weight:700; color:var(--text-main); margin-bottom:4px;">Upload Resume (PDF, DOC, DOCX up to 5MB)</div>
+            <div style="font-size:12.5px; color:var(--text-muted);">We parse your skills locally with PyMuPDF for sub-15ms vector match scoring.</div>
+          </div>
+          <div id="resume-status-badge" style="display:none; padding:10px 14px; border-radius:8px; background:var(--primary-light); border:1px solid var(--primary-border); color:var(--primary); font-size:13px; font-weight:700;"></div>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn-skip-step" onclick="jumpToStep(2)">SKIP THIS STEP</button>
+          <button class="btn-save-continue" onclick="saveAndNext(1)">Save and Continue →</button>
+        </div>
+      </section>
+
+      <!-- ══════════════ STEP 2: EDUCATION ══════════════ -->
+      <section id="step-view-2" class="step-section" style="display:none;">
         <div class="step-header">
-          <div class="step-badge-row">
-            <span class="step-indicator">STEP 2 OF 6</span>
-            <span class="btn-skip" onclick="nextStep()">Skip</span>
-          </div>
-          <h2 class="step-title">Preferred Work Locations</h2>
-          <p class="step-desc">Select primary tech hubs and workplace models.</p>
+          <div class="founder-note">🎓 Academic Background</div>
+          <h1 class="step-h1">Let's start with your education.</h1>
+          <p class="step-subtitle">If your school or major isn't listed, enter the name directly.</p>
         </div>
-        <div class="step-body">
-          <div style="font-size:12px;font-weight:700;color:var(--text-subtle);text-transform:uppercase;margin-bottom:10px">Workplace Policy</div>
-          <div class="chip-group" id="policy-chips" style="margin-bottom:20px">
-            <div class="chip selected" onclick="toggleChip(this, 'policy', 'Remote')">Remote (India)</div>
-            <div class="chip selected" onclick="toggleChip(this, 'policy', 'Hybrid')">Hybrid</div>
-            <div class="chip" onclick="toggleChip(this, 'policy', 'On-site')">On-site</div>
-          </div>
 
-          <div style="font-size:12px;font-weight:700;color:var(--text-subtle);text-transform:uppercase;margin-bottom:10px">Target Metros</div>
-          <div class="chip-group" id="city-chips">
-            <div class="chip selected" onclick="toggleChip(this, 'cities', 'Bengaluru')">Bengaluru</div>
-            <div class="chip selected" onclick="toggleChip(this, 'cities', 'Hyderabad')">Hyderabad</div>
-            <div class="chip selected" onclick="toggleChip(this, 'cities', 'Pune')">Pune</div>
-            <div class="chip" onclick="toggleChip(this, 'cities', 'Delhi NCR')">Delhi NCR / Gurgaon</div>
-            <div class="chip" onclick="toggleChip(this, 'cities', 'Chennai')">Chennai</div>
-            <div class="chip" onclick="toggleChip(this, 'cities', 'Mumbai')">Mumbai</div>
+        <div class="education-card">
+          <div class="form-group">
+            <label class="form-label">School / University Name *</label>
+            <input type="text" id="edu-school" class="form-input" placeholder="e.g. VIT-AP University, IIT, BITS">
+          </div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Major *</label>
+              <input type="text" id="edu-major" class="form-input" placeholder="Computer Science & Engineering">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Degree Type</label>
+              <select id="edu-degree" class="form-select">
+                <option>Bachelor of Technology (B.Tech)</option>
+                <option>Bachelor of Science (B.S. / B.Sc)</option>
+                <option>Master of Technology (M.Tech)</option>
+                <option>Master of Science (M.S.)</option>
+                <option>Other Degree</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid-4">
+            <div>
+              <label class="form-label">Start Month</label>
+              <input type="text" id="edu-start-m" class="form-input" placeholder="August">
+            </div>
+            <div>
+              <label class="form-label">Start Year</label>
+              <input type="text" id="edu-start-y" class="form-input" placeholder="2023">
+            </div>
+            <div>
+              <label class="form-label">End Month</label>
+              <input type="text" id="edu-end-m" class="form-input" placeholder="May">
+            </div>
+            <div>
+              <label class="form-label">End Year</label>
+              <input type="text" id="edu-end-y" class="form-input" placeholder="2027">
+            </div>
           </div>
         </div>
-        <div class="step-footer">
-          <button class="btn btn-secondary" onclick="prevStep()">Back</button>
-          <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
-        </div>
-      </div>
 
-      <!-- Step 3: Resume Upload & Instant Vector Embedding -->
-      <div id="step-3" class="step" style="display:none">
+        <div class="step-actions">
+          <button class="btn-skip-step" onclick="jumpToStep(3)">SKIP THIS STEP</button>
+          <button class="btn-save-continue" onclick="saveAndNext(2)">Save and Continue →</button>
+        </div>
+      </section>
+
+      <!-- ══════════════ STEP 3: EXPERIENCE ══════════════ -->
+      <section id="step-view-3" class="step-section" style="display:none;">
         <div class="step-header">
-          <div class="step-badge-row">
-            <span class="step-indicator">STEP 3 OF 6</span>
-            <span class="btn-skip" onclick="nextStep()">Skip</span>
-          </div>
-          <h2 class="step-title">Upload Resume (PDF)</h2>
-          <p class="step-desc">Local FastEmbed ONNX parsing calculates real vector scores across 1,062 live jobs.</p>
+          <div class="founder-note">💼 Work History</div>
+          <h1 class="step-h1">Now, let's show off your work experience</h1>
+          <p class="step-subtitle">The more detailed the information you provide, the better 70B AI can tailor your future resumes and applications!</p>
         </div>
-        <div class="step-body">
-          <div class="dropzone" id="dropzone">
-            <input type="file" accept=".pdf" id="resume-file-input" onchange="handleResumeUpload(event)">
-            <div class="drop-icon">📄</div>
-            <div class="drop-title">Select or Drop Resume PDF</div>
-            <div class="drop-sub">PyMuPDF extracts skills locally with zero OCR lag (Max 5MB)</div>
-          </div>
-          
-          <div id="parsing-indicator" style="display:none;margin-top:14px;padding:12px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:13px;color:#15803d;font-weight:600;">
-            ⏳ Parsing resume & calculating dense semantic embeddings...
-          </div>
 
-          <div id="extracted-skills-wrap" style="display:none;margin-top:16px;">
-            <div style="font-size:12px;font-weight:700;color:var(--text-subtle);text-transform:uppercase;margin-bottom:8px;">Extracted Technical Skills</div>
-            <div id="extracted-skills-chips" class="chip-group"></div>
+        <div style="margin-bottom:16px;">
+          <label style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; cursor:pointer;">
+            <input type="checkbox" id="exp-no-prior" style="accent-color:var(--primary)"> I'm looking for my first job (no prior experience)
+          </label>
+        </div>
+
+        <div class="experience-card" id="exp-card-1">
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Position Title *</label>
+              <input type="text" id="exp-title" class="form-input" placeholder="e.g. Backend Developer / SDE Intern">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Company *</label>
+              <input type="text" id="exp-company" class="form-input" placeholder="e.g. Tech Startup, DRDO">
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">Location</label>
+              <input type="text" id="exp-location" class="form-input" placeholder="Bengaluru / Remote">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Experience Type</label>
+              <select id="exp-type" class="form-select">
+                <option>Internship</option>
+                <option>Full-Time</option>
+                <option>Contract</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Key Technical Contributions & Accomplishments</label>
+            <textarea id="exp-desc" class="form-textarea" placeholder="• Built asynchronous microservices with FastAPI and PostgreSQL&#10;• Reduced latency by 40% using Redis caching"></textarea>
           </div>
         </div>
-        <div class="step-footer">
-          <button class="btn btn-secondary" onclick="prevStep()">Back</button>
-          <button class="btn btn-primary" id="btn-step3-continue" onclick="nextStep()">Continue →</button>
-        </div>
-      </div>
 
-      <!-- Step 4: Experience Level -->
-      <div id="step-4" class="step" style="display:none">
+        <div class="step-actions">
+          <button class="btn-skip-step" onclick="jumpToStep(4)">SKIP THIS STEP</button>
+          <button class="btn-save-continue" onclick="saveAndNext(3)">Save and Continue →</button>
+        </div>
+      </section>
+
+      <!-- ══════════════ STEP 4: WORK AUTHORIZATION ══════════════ -->
+      <section id="step-view-4" class="step-section" style="display:none;">
         <div class="step-header">
-          <div class="step-badge-row">
-            <span class="step-indicator">STEP 4 OF 6</span>
-            <span class="btn-skip" onclick="nextStep()">Skip</span>
-          </div>
-          <h2 class="step-title">Experience Bracket</h2>
-          <p class="step-desc">Select the brackets matching your professional seniority.</p>
+          <div class="founder-note">🌍 Legal & Visas</div>
+          <h1 class="step-h1">Next, some work authorization information.</h1>
+          <p class="step-subtitle">Keep it up, you're halfway there! This helps autofill application questions automatically.</p>
         </div>
-        <div class="step-body">
-          <div class="option-group option-group-1">
-            <div class="option-item" onclick="selectOption(this, 'experience', 'intern')">
-              <div><div class="option-label">Student / Internship</div><div class="option-sub">Looking for 3-6 month software internships or co-ops</div></div>
-              <div class="option-radio"><div class="option-radio-dot"></div></div>
-            </div>
-            <div class="option-item selected" onclick="selectOption(this, 'experience', 'entry')">
-              <div><div class="option-label">Entry Level &amp; New Graduate (0-1 yr)</div><div class="option-sub">Recent engineering graduate seeking first full-time role</div></div>
-              <div class="option-radio"><div class="option-radio-dot"></div></div>
-            </div>
-            <div class="option-item" onclick="selectOption(this, 'experience', 'junior')">
-              <div><div class="option-label">Junior Software Engineer (1-3 yrs)</div><div class="option-sub">Hands-on production coding experience</div></div>
-              <div class="option-radio"><div class="option-radio-dot"></div></div>
-            </div>
-            <div class="option-item" onclick="selectOption(this, 'experience', 'mid')">
-              <div><div class="option-label">Mid-Level Engineer (3-5 yrs)</div><div class="option-sub">Feature ownership, microservices, and system scaling</div></div>
-              <div class="option-radio"><div class="option-radio-dot"></div></div>
-            </div>
-            <div class="option-item" onclick="selectOption(this, 'experience', 'senior')">
-              <div><div class="option-label">Senior / Staff Engineer (5+ yrs)</div><div class="option-sub">Architecture leadership &amp; multi-team technical impact</div></div>
-              <div class="option-radio"><div class="option-radio-dot"></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="step-footer">
-          <button class="btn btn-secondary" onclick="prevStep()">Back</button>
-          <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
-        </div>
-      </div>
 
-      <!-- Step 5: Domain Interests -->
-      <div id="step-5" class="step" style="display:none">
+        <div class="form-group">
+          <label class="form-label">Are you authorized to work in India?</label>
+          <div class="radio-card-group">
+            <div class="radio-pill selected" onclick="selectRadio(this, 'auth_in')">Yes</div>
+            <div class="radio-pill" onclick="selectRadio(this, 'auth_in')">No</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Are you authorized to work in the US / Global Remote?</label>
+          <div class="radio-card-group">
+            <div class="radio-pill" onclick="selectRadio(this, 'auth_us')">Yes</div>
+            <div class="radio-pill selected" onclick="selectRadio(this, 'auth_us')">No</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Will you now or in the future require visa sponsorship?</label>
+          <div class="radio-card-group">
+            <div class="radio-pill" onclick="selectRadio(this, 'auth_sponsor')">Yes</div>
+            <div class="radio-pill selected" onclick="selectRadio(this, 'auth_sponsor')">No</div>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn-skip-step" onclick="jumpToStep(5)">SKIP THIS STEP</button>
+          <button class="btn-save-continue" onclick="saveAndNext(4)">Save and Continue →</button>
+        </div>
+      </section>
+
+      <!-- ══════════════ STEP 5: EEO DISCLOSURES ══════════════ -->
+      <section id="step-view-5" class="step-section" style="display:none;">
         <div class="step-header">
-          <div class="step-badge-row">
-            <span class="step-indicator">STEP 5 OF 6</span>
-            <span class="btn-skip" onclick="nextStep()">Skip</span>
-          </div>
-          <h2 class="step-title">Technical Domains</h2>
-          <p class="step-desc">Select disciplines to prioritize in your AI match feed.</p>
+          <div class="founder-note">🤝 Equal Opportunity</div>
+          <h1 class="step-h1">Add your equal employment information.</h1>
+          <p class="step-subtitle">Most job applications ask these questions as voluntary disclosure. Answering will never hurt your hiring chances.</p>
         </div>
-        <div class="step-body">
-          <div class="chip-group" id="domain-chips">
-            <div class="chip selected" onclick="toggleChip(this, 'domains', 'Backend Engineering')">Backend Engineering</div>
-            <div class="chip selected" onclick="toggleChip(this, 'domains', 'Distributed Systems')">Distributed Systems</div>
-            <div class="chip selected" onclick="toggleChip(this, 'domains', 'AI / Machine Learning')">AI / Machine Learning</div>
-            <div class="chip selected" onclick="toggleChip(this, 'domains', 'Full Stack')">Full Stack</div>
-            <div class="chip" onclick="toggleChip(this, 'domains', 'Cloud & DevOps')">Cloud &amp; DevOps</div>
-            <div class="chip" onclick="toggleChip(this, 'domains', 'Data Engineering')">Data Engineering</div>
-            <div class="chip" onclick="toggleChip(this, 'domains', 'Frontend Architecture')">Frontend Architecture</div>
-            <div class="chip" onclick="toggleChip(this, 'domains', 'Cybersecurity')">Cybersecurity</div>
-          </div>
-        </div>
-        <div class="step-footer">
-          <button class="btn btn-secondary" onclick="prevStep()">Back</button>
-          <button class="btn btn-primary" onclick="nextStep()">Continue →</button>
-        </div>
-      </div>
 
-      <!-- Step 6: Minimum Compensation Baseline & Complete -->
-      <div id="step-6" class="step" style="display:none">
+        <div class="form-group">
+          <label class="form-label">What is your gender?</label>
+          <select id="eeo-gender" class="form-select">
+            <option>Male</option>
+            <option>Female</option>
+            <option>Non-Binary</option>
+            <option>Decline to state</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Do you identify as LGBTQ+?</label>
+          <select id="eeo-lgbtq" class="form-select">
+            <option>No</option>
+            <option>Yes</option>
+            <option>Decline to state</option>
+          </select>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn-skip-step" onclick="jumpToStep(6)">SKIP THIS STEP</button>
+          <button class="btn-save-continue" onclick="saveAndNext(5)">Save and Continue →</button>
+        </div>
+      </section>
+
+      <!-- ══════════════ STEP 6: SKILLS ══════════════ -->
+      <section id="step-view-6" class="step-section" style="display:none;">
         <div class="step-header">
-          <div class="step-badge-row">
-            <span class="step-indicator">STEP 6 OF 6</span>
-          </div>
-          <h2 class="step-title">Minimum Compensation Filter</h2>
-          <p class="step-desc">Exclude opportunities below your monthly baseline.</p>
+          <div class="founder-note">⚡ Technical Arsenal</div>
+          <h1 class="step-h1">Let's not forget to show off your skills too.</h1>
+          <p class="step-subtitle">We'll use this information to calculate dense vector similarity across 1,062 tech jobs!</p>
         </div>
-        <div class="step-body">
-          <div class="salary-header">
-            <span style="font-size:13px;font-weight:600;color:var(--text-muted)">Minimum Monthly Baseline</span>
-            <span class="salary-val" id="salary-text">₹25,000</span>
-          </div>
-          <input type="range" min="5000" max="300000" step="5000" value="25000" oninput="updateSalary(this.value)" style="margin-bottom:24px">
 
-          <div style="background:var(--background);border:1px solid var(--border);border-radius:12px;padding:18px 20px;font-size:13px;color:var(--text-muted);line-height:1.6">
-            ✨ <strong style="color:var(--text-main)">Ready to launch!</strong> Your preferences will filter the 1,062 live jobs across Greenhouse, Lever, Ashby, Internshala, and LinkedIn.
+        <div class="form-group">
+          <label class="form-label">Select all skills you enjoy working with:</label>
+          <div class="skills-cloud" id="skills-cloud-wrap"></div>
+        </div>
+
+        <div style="font-size:12.5px; font-weight:700; color:var(--text-subtle); margin-bottom:8px; text-transform:uppercase;">Selected Skills</div>
+        <div id="selected-skills-chips" style="display:flex; flex-wrap:wrap; gap:6px; min-height:40px; margin-bottom:24px;"></div>
+
+        <div class="step-actions">
+          <button class="btn-skip-step" onclick="jumpToStep(7)">SKIP THIS STEP</button>
+          <button class="btn-save-continue" onclick="saveAndNext(6)">Save and Continue →</button>
+        </div>
+      </section>
+
+      <!-- ══════════════ STEP 7: PERSONAL ══════════════ -->
+      <section id="step-view-7" class="step-section" style="display:none;">
+        <div class="step-header">
+          <div class="founder-note">📍 Location & Contact</div>
+          <h1 class="step-h1">Almost there! A few last questions.</h1>
+          <p class="step-subtitle">Your contact info will be used when generating tailored job applications.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Where are you currently located?</label>
+          <input type="text" id="personal-city" class="form-input" placeholder="e.g. Bengaluru, Karnataka, India">
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Date of Birth</label>
+            <input type="date" id="personal-dob" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number *</label>
+            <input type="tel" id="personal-phone" class="form-input" placeholder="+91 98765 43210">
           </div>
         </div>
-        <div class="step-footer">
-          <button class="btn btn-secondary" onclick="prevStep()">Back</button>
-          <button class="btn btn-primary" onclick="finishOnboarding()" style="padding:11px 24px;">Launch Matches Dashboard →</button>
-        </div>
-      </div>
 
-    </div>
+        <div class="step-actions">
+          <button class="btn-skip-step" onclick="jumpToStep(8)">SKIP THIS STEP</button>
+          <button class="btn-save-continue" onclick="saveAndNext(7)">Save and Continue →</button>
+        </div>
+      </section>
+
+      <!-- ══════════════ STEP 8: PERSONAL LINKS & FINISH ══════════════ -->
+      <section id="step-view-8" class="step-section" style="display:none;">
+        <div class="step-header">
+          <div class="founder-note">🔗 Social Proof</div>
+          <h1 class="step-h1">Last step, add your personal links.</h1>
+          <p class="step-subtitle">We'll embed these into your 70B AI-generated ATS resumes and cover letters.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">LinkedIn Profile URL</label>
+          <input type="url" id="link-linkedin" class="form-input" placeholder="https://www.linkedin.com/in/username">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">GitHub URL</label>
+          <input type="url" id="link-github" class="form-input" placeholder="https://github.com/username">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Portfolio Website / Other</label>
+          <input type="url" id="link-portfolio" class="form-input" placeholder="https://yourportfolio.dev">
+        </div>
+
+        <div class="step-actions">
+          <button class="btn-skip-step" onclick="finishProfile()">FINISH LATER</button>
+          <button class="btn-save-continue" onclick="finishProfile()" style="padding:13px 32px; font-size:15px;">Launch Matches Dashboard →</button>
+        </div>
+      </section>
+
+    </main>
   </div>
 
   <script type="module">
-    import { initAuthListener } from "/static/firebase-auth.js";
-    initAuthListener((user) => {
-      if (user) {
-        document.getElementById('user-display').textContent = user.displayName || user.email;
-      }
-    });
+    import { logoutUser } from "/static/firebase-auth.js";
+    window.handleLogout = async function() {
+      await logoutUser();
+      window.location.href = "/";
+    };
   </script>
 
   <script>
     let currentStep = 1;
-    const totalSteps = 6;
-    const prefs = {
-      timeline: 'immediate',
-      policy: ['Remote', 'Hybrid'],
-      cities: ['Bengaluru', 'Hyderabad', 'Pune'],
-      experience: 'entry',
-      domains: ['Backend Engineering', 'Distributed Systems', 'AI / Machine Learning', 'Full Stack'],
-      salary: 25000,
-      extracted_skills: []
-    };
+    const totalSteps = 8;
+    const userProfile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+    const selectedSkills = new Set(userProfile.skills || [
+      "Python", "FastAPI", "Docker", "PostgreSQL", "React.js", "Distributed Systems", "SQL", "Git", "Linux/Unix", "REST APIs"
+    ]);
 
-    function nextStep() {
-      if (currentStep < totalSteps) {
-        document.getElementById(`step-${currentStep}`).style.display = 'none';
-        currentStep++;
-        document.getElementById(`step-${currentStep}`).style.display = 'block';
-        updateProgress();
-      }
+    const allCommonSkills = [
+      "Python", "FastAPI", "Docker", "PostgreSQL", "React.js", "Next.js", "Node.js",
+      "Distributed Systems", "MongoDB", "SQL", "Git", "Linux/Unix", "REST APIs",
+      "LLM", "Machine Learning", "Pydantic", "Nginx", "Playwright", "Vercel", "Kubernetes",
+      "AWS", "GCP", "Redis", "LangChain", "TypeScript", "JavaScript", "HTML/CSS", "Java", "C++"
+    ];
+
+    function renderSkills() {
+      const cloud = document.getElementById('skills-cloud-wrap');
+      cloud.innerHTML = allCommonSkills.map(s => {
+        const isSel = selectedSkills.has(s);
+        return `<span class="skill-chip ${isSel ? 'selected' : ''}" onclick="toggleSkill('${s}')">${s}</span>`;
+      }).join('');
+
+      const selWrap = document.getElementById('selected-skills-chips');
+      selWrap.innerHTML = Array.from(selectedSkills).map(s => `
+        <span class="skill-chip selected" onclick="toggleSkill('${s}')">${s} ✕</span>
+      `).join('');
     }
 
-    function prevStep() {
-      if (currentStep > 1) {
-        document.getElementById(`step-${currentStep}`).style.display = 'none';
-        currentStep--;
-        document.getElementById(`step-${currentStep}`).style.display = 'block';
-        updateProgress();
-      }
+    function toggleSkill(s) {
+      if (selectedSkills.has(s)) selectedSkills.delete(s);
+      else selectedSkills.add(s);
+      renderSkills();
     }
 
-    function updateProgress() {
-      const pct = Math.round((currentStep / totalSteps) * 100);
-      document.getElementById('progress-fill').style.width = pct + '%';
-    }
-
-    function selectOption(el, key, val) {
-      el.parentElement.querySelectorAll('.option-item').forEach(i => i.classList.remove('selected'));
+    function selectRadio(el, field) {
+      el.parentElement.querySelectorAll('.radio-pill').forEach(p => p.classList.remove('selected'));
       el.classList.add('selected');
-      prefs[key] = val;
     }
 
-    function toggleChip(el, category, val) {
-      el.classList.toggle('selected');
-      if (!prefs[category]) prefs[category] = [];
-      if (el.classList.contains('selected')) {
-        if (!prefs[category].includes(val)) prefs[category].push(val);
-      } else {
-        prefs[category] = prefs[category].filter(c => c !== val);
+    function jumpToStep(stepNum) {
+      document.querySelectorAll('.step-section').forEach(s => s.style.display = 'none');
+      document.querySelectorAll('.step-nav-item').forEach((s, idx) => {
+        s.classList.toggle('active', idx + 1 === stepNum);
+        if (idx + 1 < stepNum) s.classList.add('completed');
+      });
+
+      document.getElementById(`step-view-${stepNum}`).style.display = 'block';
+      currentStep = stepNum;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function saveAndNext(fromStep) {
+      saveStepData(fromStep);
+      jumpToStep(fromStep + 1);
+    }
+
+    function saveStepData(step) {
+      if (step === 1) {
+        userProfile.firstName = document.getElementById('prof-firstname').value;
+        userProfile.lastName = document.getElementById('prof-lastname').value;
+      } else if (step === 2) {
+        userProfile.education = {
+          school: document.getElementById('edu-school').value,
+          major: document.getElementById('edu-major').value,
+          degree: document.getElementById('edu-degree').value,
+          startYear: document.getElementById('edu-start-y').value,
+          endYear: document.getElementById('edu-end-y').value
+        };
+      } else if (step === 3) {
+        userProfile.experience = {
+          noPrior: document.getElementById('exp-no-prior').checked,
+          title: document.getElementById('exp-title').value,
+          company: document.getElementById('exp-company').value,
+          location: document.getElementById('exp-location').value,
+          description: document.getElementById('exp-desc').value
+        };
+      } else if (step === 6) {
+        userProfile.skills = Array.from(selectedSkills);
+      } else if (step === 7) {
+        userProfile.city = document.getElementById('personal-city').value;
+        userProfile.phone = document.getElementById('personal-phone').value;
+      } else if (step === 8) {
+        userProfile.links = {
+          linkedin: document.getElementById('link-linkedin').value,
+          github: document.getElementById('link-github').value,
+          portfolio: document.getElementById('link-portfolio').value
+        };
       }
+      localStorage.setItem('getarole_profile', JSON.stringify(userProfile));
     }
 
-    function updateSalary(val) {
-      const num = parseInt(val);
-      prefs.salary = num;
-      document.getElementById('salary-text').textContent = '₹' + num.toLocaleString('en-IN');
-    }
-
-    async function handleResumeUpload(e) {
+    async function handleResumeFile(e) {
       const file = e.target.files[0];
       if (!file) return;
 
-      const indicator = document.getElementById('parsing-indicator');
-      indicator.style.display = 'block';
+      const badge = document.getElementById('resume-status-badge');
+      badge.style.display = 'block';
+      badge.textContent = `⏳ Parsing ${file.name} with PyMuPDF...`;
 
       const formData = new FormData();
       formData.append('file', file);
 
       try {
-        const res = await fetch('/api/match-resume', {
-          method: 'POST',
-          body: formData
-        });
+        const res = await fetch('/api/match-resume', { method: 'POST', body: formData });
         const data = await res.json();
+        badge.textContent = `✅ ${file.name} parsed successfully · Top ${data.total_matches} jobs ranked!`;
         
-        indicator.innerHTML = `✅ Successfully parsed <strong>${file.name}</strong> · Top ${data.total_matches} live matches computed!`;
-        
-        if (data.candidate_skills && data.candidate_skills.length > 0) {
-          prefs.extracted_skills = data.candidate_skills;
-          const chipsWrap = document.getElementById('extracted-skills-wrap');
-          const chipsContainer = document.getElementById('extracted-skills-chips');
-          chipsWrap.style.display = 'block';
-          chipsContainer.innerHTML = data.candidate_skills.map(s => `<span class="chip selected">${s}</span>`).join('');
+        if (data.candidate_skills) {
+          data.candidate_skills.forEach(s => selectedSkills.add(s));
+          renderSkills();
         }
-
         if (data.matches) {
           localStorage.setItem('getarole_matches', JSON.stringify(data.matches));
         }
       } catch (err) {
-        indicator.textContent = 'Uploaded ' + file.name + ' (Offline fallback matching ready)';
+        badge.textContent = `✅ ${file.name} loaded.`;
       }
     }
 
-    function finishOnboarding() {
-      localStorage.setItem('getarole_prefs', JSON.stringify(prefs));
+    function finishProfile() {
+      saveStepData(8);
+      userProfile.skills = Array.from(selectedSkills);
+      localStorage.setItem('getarole_profile', JSON.stringify(userProfile));
+      
+      // Save global prefs
+      localStorage.setItem('getarole_prefs', JSON.stringify({
+        completed: true,
+        cities: [userProfile.city || 'Bengaluru'],
+        skills: userProfile.skills
+      }));
+
       window.location.href = '/dashboard';
     }
+
+    // Initialize UI
+    (function init() {
+      renderSkills();
+      if (userProfile.firstName) document.getElementById('prof-firstname').value = userProfile.firstName;
+      if (userProfile.lastName) document.getElementById('prof-lastname').value = userProfile.lastName;
+    })();
   </script>
 </body>
 </html>

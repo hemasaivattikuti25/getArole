@@ -389,9 +389,9 @@
         </a>
 
         <nav class="nav-tabs">
-          <a class="nav-tab" onclick="showTab('home')" id="tab-btn-home">🏠 Home</a>
-          <a class="nav-tab active" onclick="showTab('jobs')" id="tab-btn-jobs">💼 Job Explorer</a>
+          <a class="nav-tab active" onclick="showTab('home')" id="tab-btn-home">🏠 Home</a>
           <a class="nav-tab" onclick="showTab('matches')" id="tab-btn-matches">🤍 Matches <span class="nav-badge" id="nav-match-count">0</span></a>
+          <a class="nav-tab" onclick="showTab('jobs')" id="tab-btn-jobs">💼 Job Explorer</a>
           <a class="nav-tab" onclick="showTab('tracker')" id="tab-btn-tracker">⏱️ Job Tracker</a>
           <a class="nav-tab" onclick="showTab('tailor')" id="tab-btn-tailor">📄 AI Tailor</a>
         </nav>
@@ -408,7 +408,8 @@
           <span style="font-size: 10px; color: var(--text-subtle)">▼</span>
 
           <div class="user-dropdown" id="user-dropdown">
-            <a href="/onboarding" class="dropdown-item">⚙️ Edit Preferences</a>
+            <a href="/onboarding" class="dropdown-item">👤 Profile (8-Stage Builder)</a>
+            <a href="/onboarding" class="dropdown-item">⚙️ Search Preferences</a>
             <a href="/" class="dropdown-item">🏠 Landing Page</a>
             <div style="height:1px; background:var(--border); margin:4px 0;"></div>
             <a href="#" onclick="handleLogout()" class="dropdown-item" style="color:#ef4444">🚪 Sign Out</a>
@@ -419,7 +420,7 @@
   </header>
 
   <!-- ════════════════════ FILTER & SEARCH BAR ════════════════════ -->
-  <div class="filter-bar" id="filter-bar">
+  <div class="filter-bar" id="filter-bar" style="display:none;">
     <div class="filter-inner">
       <div class="search-input-wrap">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -440,7 +441,7 @@
   <!-- ════════════════════ MAIN CONTENT ════════════════════ -->
   <main>
     <!-- 0. HOME VIEW -->
-    <div id="view-home" class="page-view" style="padding: 32px 24px;">
+    <div id="view-home" class="page-view active" style="padding: 32px 24px;">
       
       <!-- Welcome Hero Banner -->
       <div class="home-hero-card">
@@ -510,7 +511,7 @@
     </div>
 
     <!-- 1. JOBS EXPLORER VIEW (SPLIT PANE) -->
-    <div id="view-jobs" class="page-view active">
+    <div id="view-jobs" class="page-view">
       <div class="jobs-split-container">
         
         <!-- Left Column: Job Feed List -->
