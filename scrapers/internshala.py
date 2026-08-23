@@ -44,7 +44,7 @@ async def scrape_internshala_category(client: httpx.AsyncClient, category: str, 
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "Accept-Language": "en-US,en;q=0.9",
         }
-        response = await client.get(url, headers=headers, timeout=12.0)
+        response = await client.get(url, headers=headers, timeout=4.0)
         if response.status_code != 200:
             return listings
         
