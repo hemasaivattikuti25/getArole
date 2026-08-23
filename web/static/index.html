@@ -473,22 +473,11 @@
         <a href="/onboarding" class="btn-hero-action">Search Preferences →</a>
       </div>
 
-      <!-- Top AI Matches Preview Section (Moved to top & upgraded styling) -->
-      <div style="margin-bottom: 40px; background: linear-gradient(145deg, #ffffff, #f8fafc); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
-          <div>
-            <h2 style="font-size:22px; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
-              ✨ Top AI Recommended Opportunities
-            </h2>
-            <p style="font-size:14px; color:var(--text-muted); margin-top:4px;">
-              Calibrated by dense semantic vector similarity to your profile.
-            </p>
-          </div>
-          <button class="btn-refresh" onclick="showTab('matches')" style="padding: 10px 20px; background: var(--primary-light); color: var(--primary-hover); border: 1px solid var(--primary-border);">
-            View All Matches →
-          </button>
-        </div>
-        <div id="home-matches-preview-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px;"></div>
+      <!-- Motivational Quote -->
+      <div style="margin: 32px 0 24px 0; padding: 16px; background: linear-gradient(135deg, rgba(5,150,105,0.05), transparent); border-left: 4px solid var(--primary); border-radius: 8px;">
+        <p style="font-size: 15px; font-style: italic; color: var(--text-main); font-weight: 500; margin: 0;">
+          "The future depends on what you do today." — Mahatma Gandhi
+        </p>
       </div>
 
       <!-- Quick Metrics Grid -->
@@ -524,6 +513,24 @@
       </div>
 
 
+
+      <!-- Top AI Matches Preview Section -->
+      <div style="margin-bottom: 40px; background: linear-gradient(145deg, #ffffff, #f8fafc); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+          <div>
+            <h2 style="font-size:22px; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
+              ✨ Top AI Recommended Opportunities
+            </h2>
+            <p style="font-size:14px; color:var(--text-muted); margin-top:4px;">
+              Calibrated by dense semantic vector similarity to your profile.
+            </p>
+          </div>
+          <button class="btn-refresh" onclick="showTab('matches')" style="padding: 10px 20px; background: var(--primary-light); color: var(--primary-hover); border: 1px solid var(--primary-border);">
+            View All Matches →
+          </button>
+        </div>
+        <div id="home-matches-preview-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px;"></div>
+      </div>
 
     </div>
 
