@@ -408,6 +408,58 @@ async def get_all_candidates():
         "candidates": candidates
     }
 
+# ── Resume Builder page ──────────────────────────────────────────────────────
+@app.get("/resume-builder", response_class=HTMLResponse)
+async def serve_resume_builder():
+    rb_file = os.path.join(STATIC_DIR, "resume-builder.html")
+    if os.path.exists(rb_file):
+        with open(rb_file, "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h1>Resume Builder — Starting Up</h1>"
+
+# ── AI Bullet Enhancer ───────────────────────────────────────────────────────
+class BulletEnhanceRequest(BaseModel):
+    bullet: str
+    context: str = ""
+
+@app.post("/api/enhance-bullet")
+async def enhance_bullet(req: BulletEnhanceRequest):
+    """
+    Rewrites a resume bullet point using STAR format (Situation, Task, Action, Result).
+    Uses the configured LLM service (Gemini Flash). Falls back to rule-based enhancement.
+    """
+    bullet = req.bullet.strip()
+    context = req.context.strip()
+
+    # Try LLM service first
+    try:
+        llm = get_llm_service()
+        prompt = f"""You are an expert resume coach. Rewrite the following resume bullet point to use the STAR format (Situation → Task → Action → Result). 
+Make it concise (max 20 words), start with a strong action verb, and add a quantified impact if possible.
+Context: {context}
+Original bullet: {bullet}
+Rewritten bullet (return ONLY the bullet, no explanation, no prefix):"""
+        enhanced = await llm.generate_text(prompt, max_tokens=120)
+        enhanced = enhanced.strip().lstrip("•-–—").strip()
+        return {"enhanced": enhanced, "original": bullet}
+    except Exception as e:
+        print(f"[BulletEnhancer] LLM unavailable, using rule-based fallback: {e}")
+
+    # Rule-based fallback
+    s = bullet.strip()
+    if s:
+        s = s[0].upper() + s[1:]
+    weak_starts = ["worked on", "helped with", "assisted in", "responsible for", "was involved in", "did", "made"]
+    strong_starts = ["Engineered", "Architected", "Delivered", "Built", "Designed", "Optimised", "Led"]
+    import random
+    for w in weak_starts:
+        if s.lower().startswith(w):
+            s = random.choice(strong_starts) + " " + s[len(w):].lstrip()
+            break
+    if not any(c.isdigit() for c in s) and len(s) > 20:
+        s = s.rstrip(".") + ", improving team efficiency by 20%+."
+    return {"enhanced": s, "original": bullet}
+
 if os.path.exists(STATIC_DIR):
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 

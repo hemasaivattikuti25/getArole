@@ -394,6 +394,7 @@
           <a class="nav-tab" onclick="showTab('jobs')" id="tab-btn-jobs">💼 Job Explorer</a>
           <a class="nav-tab" onclick="showTab('tracker')" id="tab-btn-tracker">⏱️ Job Tracker</a>
           <a class="nav-tab" onclick="showTab('tailor')" id="tab-btn-tailor">📄 AI Tailor</a>
+          <a class="nav-tab" href="/resume-builder" id="tab-btn-resume">✏️ Resume Builder</a>
         </nav>
       </div>
 
@@ -429,12 +430,14 @@
       </div>
 
       <div class="filter-pills-row">
-        <button class="filter-pill" id="pill-remote" onclick="togglePillFilter('remote')">📍 Remote Only</button>
+        <button class="filter-pill" id="pill-remote"    onclick="togglePillFilter('remote')">📍 Remote Only</button>
         <button class="filter-pill" id="pill-bengaluru" onclick="togglePillFilter('bengaluru')">🏢 Bengaluru</button>
         <button class="filter-pill" id="pill-hyderabad" onclick="togglePillFilter('hyderabad')">🏢 Hyderabad</button>
-        <button class="filter-pill" id="pill-intern" onclick="togglePillFilter('internship')">💼 Internships</button>
-        <button class="filter-pill" id="pill-fulltime" onclick="togglePillFilter('fulltime')">💼 Full-Time</button>
+        <button class="filter-pill" id="pill-intern"    onclick="togglePillFilter('internship')">💼 Internships</button>
+        <button class="filter-pill" id="pill-fulltime"  onclick="togglePillFilter('fulltime')">💼 Full-Time</button>
+        <button class="filter-pill" id="pill-parttime"  onclick="togglePillFilter('parttime')" style="border-color:#7c3aed;color:#7c3aed;">⏱️ Part-Time / Fractional</button>
         <button class="btn-clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
+        <a href="/resume-builder" style="margin-left:auto;padding:6px 14px;border-radius:8px;background:linear-gradient(135deg,#059669,#10b981);color:white;font-size:12.5px;font-weight:800;text-decoration:none;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(5,150,105,.2);">✏️ Build Resume</a>
       </div>
     </div>
   </div>
@@ -756,7 +759,8 @@
         'bengaluru': 'pill-bengaluru',
         'hyderabad': 'pill-hyderabad',
         'internship': 'pill-intern',
-        'fulltime': 'pill-fulltime'
+        'fulltime': 'pill-fulltime',
+        'parttime': 'pill-parttime'
       };
       const btn = document.getElementById(pillMap[filterKey]);
       if (activePills.has(filterKey)) {
@@ -790,6 +794,10 @@
         if (activePills.has('hyderabad') && !(j.location || '').toLowerCase().includes('hyderabad') && !(j.city || '').toLowerCase().includes('hyderabad')) pillMatch = false;
         if (activePills.has('internship') && !(j.employment_type || '').toLowerCase().includes('intern')) pillMatch = false;
         if (activePills.has('fulltime') && !(j.employment_type || '').toLowerCase().includes('full')) pillMatch = false;
+        if (activePills.has('parttime')) {
+          const pt = `${j.employment_type || ''} ${j.title || ''} ${j.description || ''}`.toLowerCase();
+          if (!pt.includes('part') && !pt.includes('contract') && !pt.includes('freelance') && !pt.includes('fractional')) pillMatch = false;
+        }
 
         return textMatch && pillMatch;
       });
