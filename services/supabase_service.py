@@ -2,7 +2,8 @@ import os
 from typing import List, Dict, Any, Optional
 from dotenv import load_dotenv
 from supabase import create_client, Client
-from domain.models import JobListing, CandidateProfile, CandidateScreeningReport
+from scrapers.models import JobListing, CandidateProfile
+from domain.models import CandidateScreeningReport
 
 load_dotenv()
 
