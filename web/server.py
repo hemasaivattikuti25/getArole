@@ -44,7 +44,7 @@ def get_matcher() -> ResumeMatcher:
     return MATCHER
 
 def load_cached_jobs() -> List[JobListing]:
-    # Check project directory first, then /tmp
+    # 1. Check project directory first, then /tmp
     target_files = [SAVED_JOBS_FILE, TMP_JOBS_FILE]
     for fp in target_files:
         if os.path.exists(fp):
@@ -57,6 +57,20 @@ def load_cached_jobs() -> List[JobListing]:
                         return jobs
             except Exception:
                 pass
+
+    # 2. Fallback to Supabase cloud PostgreSQL
+    try:
+        from services.supabase_service import get_supabase_service
+        supabase = get_supabase_service()
+        if supabase.is_connected() and supabase.client:
+            res = supabase.client.table("jobs").select("*").limit(2000).execute()
+            if res.data:
+                jobs = [JobListing(**item) for item in res.data]
+                AGGREGATOR.cached_jobs = jobs
+                return jobs
+    except Exception as e:
+        print(f"[Server] Supabase job fetch fallback: {e}")
+
     return []
 
 @app.on_event("startup")

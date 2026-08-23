@@ -674,6 +674,12 @@
     }
 
     async function loadJobs() {
+      const feed = document.getElementById('job-feed-list');
+      feed.innerHTML = `
+        <div style="padding:40px 20px; text-align:center; color:var(--text-subtle); font-size:13.5px; font-weight:600;">
+          ⏳ Loading live verified career listings...
+        </div>`;
+
       try {
         const res = await fetch('/api/jobs');
         const data = await res.json();
@@ -693,7 +699,11 @@
         updateCounts();
         renderHomeView();
       } catch (e) {
-        toast('Error connecting to job backend.');
+        feed.innerHTML = `
+          <div style="padding:40px 20px; text-align:center; color:#ef4444; font-size:13.5px; font-weight:600;">
+            ⚠️ Could not load jobs. <button class="btn-refresh" onclick="loadJobs()" style="margin:12px auto;">Try Again</button>
+          </div>`;
+        toast('Error loading jobs from backend.');
       }
     }
 
