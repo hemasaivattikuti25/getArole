@@ -1060,22 +1060,6 @@
       window.location.href = '/resume-builder';
     }
 
-    async function runLlamaTailor() {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            job_id: selectedJobId || 'custom_job',
-            resume_text: 'Experienced software engineer skilled in Python, FastAPI, Docker, and distributed architectures.'
-          })
-        });
-        const data = await res.json();
-        document.getElementById('tailor-output-wrap').style.display = 'block';
-        document.getElementById('tailor-output-text').textContent = data.content || 'Generated ATS application package ready.';
-      } catch (e) {
-        toast('Error generating ATS document.');
-      }
-    }
-
     /* ════════════════════ CANDIDATE DIRECTORY & RESUME VIEWER ════════════════════ */
     async function openCandidateDatabaseModal() {
       const modal = document.getElementById('candidate-modal');
