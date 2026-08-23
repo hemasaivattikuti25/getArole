@@ -1,0 +1,30 @@
+# https://getarole.in robots.txt
+# Allow all search engines and AI crawlers to index everything
+
+User-agent: *
+Allow: /
+
+# AI Answer Engine Crawlers (AEO - Answer Engine Optimization)
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Sitemap location
+Sitemap: https://getarole.in/sitemap.xml
