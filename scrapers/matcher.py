@@ -27,17 +27,37 @@ class ResumeMatcher:
     def parse_profile(self, pdf_path: str) -> CandidateProfile:
         text = self.extract_text_from_pdf(pdf_path)
         
-        # Heuristic extraction of common skills
+        # Global multi-domain skill taxonomy (Backend, Frontend, AI/ML, Cloud/DevOps, Mobile, Data, Systems)
         common_tech_skills = [
-            "python", "fastapi", "flask", "django", "javascript", "typescript",
-            "react", "next.js", "node.js", "sql", "postgresql", "mongodb",
-            "redis", "qdrant", "docker", "kubernetes", "aws", "gcp", "azure",
-            "git", "linux", "onnx", "fastembed", "rag", "langchain", "llamaindex",
-            "machine learning", "deep learning", "nlp", "rest api", "graphql", "jwt"
+            # Languages
+            "python", "java", "c++", "c#", "c", "rust", "golang", "go", "typescript", "javascript",
+            "kotlin", "swift", "php", "ruby", "scala", "sql", "r", "dart", "bash", "shell",
+            # Frontend & Mobile
+            "react", "react.js", "next.js", "vue", "vue.js", "angular", "svelte", "react native",
+            "flutter", "ios", "android", "tailwind css", "tailwind", "html5", "css3", "redux", "webpack", "vite",
+            # Backend & APIs
+            "fastapi", "flask", "django", "node.js", "express", "express.js", "spring boot", "spring",
+            "asp.net", ".net", "nest.js", "graphql", "rest api", "restful apis", "grpc", "microservices",
+            # AI, ML, Data & LLMs
+            "pytorch", "tensorflow", "keras", "scikit-learn", "langchain", "llamaindex", "rag",
+            "hugging face", "transformers", "nlp", "computer vision", "llm", "large language models",
+            "pandas", "numpy", "apache spark", "spark", "kafka", "apache kafka", "airflow", "snowflake", "databricks",
+            # Databases & Vector DBs
+            "postgresql", "postgres", "mysql", "mongodb", "redis", "cassandra", "dynamodb",
+            "qdrant", "pinecone", "milvus", "chromadb", "pgvector", "elasticsearch", "supabase", "sqlite",
+            # Cloud, DevOps & Infrastructure
+            "aws", "amazon web services", "gcp", "google cloud", "azure", "docker", "kubernetes", "k8s",
+            "terraform", "ansible", "ci/cd", "github actions", "gitlab ci", "linux", "nginx", "prometheus", "grafana",
+            # Architecture & Security
+            "distributed systems", "high availability", "system design", "zero-trust", "jwt", "oauth",
+            "cybersecurity", "rbac", "agile", "scrum", "git", "unit testing"
         ]
         
         lower_text = text.lower()
         extracted_skills = [s for s in common_tech_skills if s in lower_text]
+        
+        # Deduplicate and sort
+        extracted_skills = sorted(list(set(extracted_skills)))
         
         return CandidateProfile(
             name="Candidate",

@@ -780,8 +780,18 @@ function rp() {
 
 function formatBulletBold(str) {
   if (!str) return '';
-  return str
-    .replace(/(3-node MongoDB Replica Set|automatic PRIMARY election|sub-10s failover|FastAPI backend with JWT authentication, RBAC, and rate limiting|Dockerized full stack|LangChain, Llama-3, and Gemini models|900\+ registered users|zero-trust architecture|Retrieval-Augmented Generation \(RAG\)|768-dimensional Gemini embeddings|Qdrant vector database|1490\+ production queries|4th Place|7th Place|GSSoC 2025|DRDL – DRDO|Defence Research and Development Laboratory)/g, '<strong>$1</strong>');
+  // Convert markdown **text** to <strong>text</strong>
+  let out = str.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  
+  // Universal metric and action highlighting: numbers with units (e.g., 99.9%, 10x, $5M, 1500+, 3-node, sub-10s)
+  // if not already inside a strong tag
+  if (!out.includes('<strong>')) {
+    out = out.replace(/\b(\d+(?:\.\d+)?(?:%|x|\+|k|M|B|s|ms)?|\$\d+(?:\.\d+)?[kMB]?)\b/gi, (match) => {
+      if (match.length > 1) return `<strong>${match}</strong>`;
+      return match;
+    });
+  }
+  return out;
 }
 
 /* ═════════════════════════════════════════════════════════════════
@@ -831,13 +841,13 @@ function ss() {
 
 const SM = {
   header: { t: '1. Header & Info', s: 'Personal details and web handles' },
-  summary: { t: '2. Summary', s: 'Target applied AI & systems engineer statement' },
-  skills: { t: '3. Technical Skills', s: 'Languages, AI/LLMs, Backend, DBs, Systems & Tools' },
-  exp: { t: '4. Experience', s: 'DRDO, Embrizon and key industry internships' },
-  proj: { t: '5. Projects', s: 'Mithra Life OS, VITAP-UniOS and featured builds' },
-  achieve: { t: '6. Achievements', s: 'Hackathons and open source recognition' },
-  certs: { t: '7. Certifications', s: 'Vanderbilt, Stanford & DeepLearning.AI' },
-  edu: { t: '8. Education', s: 'VIT-AP B.Tech CSE & Coursework' },
+  summary: { t: '2. Summary', s: 'Professional executive statement' },
+  skills: { t: '3. Technical Skills', s: 'Categorized technical domains & core competencies' },
+  exp: { t: '4. Experience', s: 'Work history, roles and quantifiable impact' },
+  proj: { t: '5. Projects', s: 'Featured builds, repositories and products' },
+  achieve: { t: '6. Achievements', s: 'Awards, competitions and open source' },
+  certs: { t: '7. Certifications', s: 'Professional credentials and accreditations' },
+  edu: { t: '8. Education', s: 'Degrees, institutions & academic coursework' },
   'cl-target': { t: 'Target Role & Company', s: 'Specify recipient company, title and job description' },
   'cl-body': { t: 'Cover Letter Text', s: 'High-impact 3-paragraph tailored cover letter' },
   ats: { t: 'ATS Check', s: 'Verified ATS-compliant LaTeX typography' },
@@ -871,15 +881,15 @@ function rExp(i) {
   document.getElementById(id).innerHTML = `
     <div class="fch"><div class="fct">Experience ${i+1}</div><button class="brm" onclick="rmExp(${i})">✕ Remove</button></div>
     <div class="fr2">
-      <div class="fg"><label>Organization</label><input class="fi" value="${esc(e.company)}" placeholder="Defence Research and Development Laboratory (DRDL – DRDO)" oninput="uad('experience',${i},'company',this.value)"></div>
-      <div class="fg"><label>Dates</label><input class="fi" value="${esc(e.dates)}" placeholder="Aug – Nov 2025" oninput="uad('experience',${i},'dates',this.value)"></div>
+      <div class="fg"><label>Organization / Company</label><input class="fi" value="${esc(e.company)}" placeholder="Company Name" oninput="uad('experience',${i},'company',this.value)"></div>
+      <div class="fg"><label>Dates</label><input class="fi" value="${esc(e.dates)}" placeholder="Month Year – Present" oninput="uad('experience',${i},'dates',this.value)"></div>
     </div>
-    <div class="fg"><label>Role & Subline</label><input class="fi" value="${esc(e.title)}" placeholder="Project Intern · Backend & Distributed Systems · Hyderabad, India" oninput="uad('experience',${i},'title',this.value)"></div>
+    <div class="fg"><label>Role & Subline</label><input class="fi" value="${esc(e.title)}" placeholder="Job Title · Department / Focus · Location" oninput="uad('experience',${i},'title',this.value)"></div>
     <div class="fg">
       <label>Key Accomplishments</label>
       <div class="bls">${(e.bullets||[]).map((b, bi) => `
         <div class="blr">
-          <input value="${esc(b)}" placeholder="Architected a 3-node MongoDB Replica Set..." oninput="ubl('experience',${i},${bi},this.value)">
+          <input value="${esc(b)}" placeholder="Architected / Delivered / Optimized..." oninput="ubl('experience',${i},${bi},this.value)">
           <button class="bai" onclick="enhB('experience',${i},${bi})">✨ AI</button>
           <button class="bri" onclick="rmBl('experience',${i},${bi})">✕</button>
         </div>`).join('')}
@@ -900,19 +910,19 @@ function rProj(i) {
   document.getElementById(id).innerHTML = `
     <div class="fch"><div class="fct">Project ${i+1}</div><button class="brm" onclick="rmProj(${i})">✕</button></div>
     <div class="fr2">
-      <div class="fg"><label>Project Name</label><input class="fi" value="${esc(p.name)}" placeholder="Mithra Life OS" oninput="uad('projects',${i},'name',this.value)"></div>
-      <div class="fg"><label>Dates</label><input class="fi" value="${esc(p.dates)}" placeholder="2025 – Present" oninput="uad('projects',${i},'dates',this.value)"></div>
+      <div class="fg"><label>Project Name</label><input class="fi" value="${esc(p.name)}" placeholder="Project Name" oninput="uad('projects',${i},'name',this.value)"></div>
+      <div class="fg"><label>Dates</label><input class="fi" value="${esc(p.dates)}" placeholder="Year – Present" oninput="uad('projects',${i},'dates',this.value)"></div>
     </div>
     <div class="fr2">
-      <div class="fg"><label>Live URL</label><input class="fi" value="${esc(p.liveLink)}" placeholder="https://mithra-lifeos.com" oninput="uad('projects',${i},'liveLink',this.value)"></div>
+      <div class="fg"><label>Live URL</label><input class="fi" value="${esc(p.liveLink)}" placeholder="https://..." oninput="uad('projects',${i},'liveLink',this.value)"></div>
       <div class="fg"><label>GitHub URL</label><input class="fi" value="${esc(p.githubLink)}" placeholder="https://github.com/..." oninput="uad('projects',${i},'githubLink',this.value)"></div>
     </div>
-    <div class="fg"><label>Tech Stack Subline</label><input class="fi" value="${esc(p.stack)}" placeholder="React · FastAPI · Supabase · PostgreSQL..." oninput="uad('projects',${i},'stack',this.value)"></div>
+    <div class="fg"><label>Tech Stack Subline</label><input class="fi" value="${esc(p.stack)}" placeholder="Technologies · Frameworks · Tools" oninput="uad('projects',${i},'stack',this.value)"></div>
     <div class="fg">
       <label>Impact Bullet Points</label>
       <div class="bls">${(p.bullets||[]).map((b, bi) => `
         <div class="blr">
-          <input value="${esc(b)}" placeholder="Deployed full-stack AI platform serving 900+ registered users..." oninput="ubl('projects',${i},${bi},this.value)">
+          <input value="${esc(b)}" placeholder="Engineered / Scaled / Implemented..." oninput="ubl('projects',${i},${bi},this.value)">
           <button class="bai" onclick="enhB('projects',${i},${bi})">✨ AI</button>
           <button class="bri" onclick="rmBl('projects',${i},${bi})">✕</button>
         </div>`).join('')}
@@ -933,8 +943,8 @@ function rAchieve(i) {
   document.getElementById(id).innerHTML = `
     <div class="fch"><div class="fct">Achievement ${i+1}</div><button class="brm" onclick="rmAchieve(${i})">✕</button></div>
     <div class="fr2">
-      <div class="fg"><label>Achievement Description</label><input class="fi" value="${esc(a.text)}" placeholder="4th Place — Google Cloud Hackathon · VIT-AP · 486 participants" oninput="uad('achievements',${i},'text',this.value)"></div>
-      <div class="fg"><label>Date</label><input class="fi" value="${esc(a.date)}" placeholder="Mar 2025" oninput="uad('achievements',${i},'date',this.value)"></div>
+      <div class="fg"><label>Achievement Description</label><input class="fi" value="${esc(a.text)}" placeholder="Award / Competition / Honor" oninput="uad('achievements',${i},'text',this.value)"></div>
+      <div class="fg"><label>Date</label><input class="fi" value="${esc(a.date)}" placeholder="Month Year" oninput="uad('achievements',${i},'date',this.value)"></div>
     </div>
   `;
 }
@@ -950,10 +960,10 @@ function rCert(i) {
   document.getElementById(id).innerHTML = `
     <div class="fch"><div class="fct">Certification ${i+1}</div><button class="brm" onclick="rmCert(${i})">✕</button></div>
     <div class="fr2">
-      <div class="fg"><label>Certification Name</label><input class="fi" value="${esc(ct.name)}" placeholder="AI Agents and Agentic AI with Python" oninput="uad('certifications',${i},'name',this.value)"></div>
-      <div class="fg"><label>Issuer</label><input class="fi" value="${esc(ct.issuer)}" placeholder="Vanderbilt University (Coursera)" oninput="uad('certifications',${i},'issuer',this.value)"></div>
+      <div class="fg"><label>Certification Name</label><input class="fi" value="${esc(ct.name)}" placeholder="Credential / Certification Name" oninput="uad('certifications',${i},'name',this.value)"></div>
+      <div class="fg"><label>Issuer</label><input class="fi" value="${esc(ct.issuer)}" placeholder="Issuing Organization" oninput="uad('certifications',${i},'issuer',this.value)"></div>
     </div>
-    <div class="fg"><label>Date</label><input class="fi" value="${esc(ct.date)}" placeholder="Oct 2025" oninput="uad('certifications',${i},'date',this.value)"></div>
+    <div class="fg"><label>Date</label><input class="fi" value="${esc(ct.date)}" placeholder="Month Year" oninput="uad('certifications',${i},'date',this.value)"></div>
   `;
 }
 
@@ -968,11 +978,11 @@ function rEdu(i) {
   document.getElementById(id).innerHTML = `
     <div class="fch"><div class="fct">Education ${i+1}</div><button class="brm" onclick="rmEdu(${i})">✕</button></div>
     <div class="fr2">
-      <div class="fg"><label>School / University</label><input class="fi" value="${esc(e.school)}" placeholder="Vellore Institute of Technology – Andhra Pradesh (VIT-AP)" oninput="uad('education',${i},'school',this.value)"></div>
-      <div class="fg"><label>Dates</label><input class="fi" value="${esc(e.dates)}" placeholder="2023 – 2027" oninput="uad('education',${i},'dates',this.value)"></div>
+      <div class="fg"><label>School / University</label><input class="fi" value="${esc(e.school)}" placeholder="University / College Name" oninput="uad('education',${i},'school',this.value)"></div>
+      <div class="fg"><label>Dates</label><input class="fi" value="${esc(e.dates)}" placeholder="Year – Year" oninput="uad('education',${i},'dates',this.value)"></div>
     </div>
-    <div class="fg"><label>Degree & Location</label><input class="fi" value="${esc(e.degree)}" placeholder="B.Tech, Computer Science and Engineering · Amaravati, AP" oninput="uad('education',${i},'degree',this.value)"></div>
-    <div class="fg"><label>Coursework</label><input class="fi" value="${esc(e.coursework)}" placeholder="Data Structures & Algorithms, Machine Learning, NLP, DBMS..." oninput="uad('education',${i},'coursework',this.value)"></div>
+    <div class="fg"><label>Degree & Location</label><input class="fi" value="${esc(e.degree)}" placeholder="Degree / Major · Location" oninput="uad('education',${i},'degree',this.value)"></div>
+    <div class="fg"><label>Coursework / Honors</label><input class="fi" value="${esc(e.coursework)}" placeholder="Key Courses, Honors, GPA..." oninput="uad('education',${i},'coursework',this.value)"></div>
   `;
 }
 
@@ -988,14 +998,17 @@ async function enhB(s, i, bi) {
     const r = await fetch('/api/enhance-bullet', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ bullet: cur, context: `${R[s][i].company || R[s][i].name || ''} ${R[s][i].title || ''}` })
+      body: JSON.stringify({
+        bullet: cur,
+        context: `${R[s][i].company || R[s][i].name || ''} ${R[s][i].title || ''}`
+      })
     });
     const d = await r.json();
     R[s][i].bullets[bi] = d.enhanced || cur;
   } catch(e) {
     let t = cur.trim();
     t = t.charAt(0).toUpperCase() + t.slice(1);
-    if (!/\d/.test(t) && t.length > 20) t = t.replace(/\.?$/, ', improving throughput by 35%+.');
+    if (!/\d/.test(t) && t.length > 20) t = t.replace(/\.?$/, ', improving efficiency by 25%+.');
     R[s][i].bullets[bi] = t;
   }
   if (s === 'experience') rExp(i);
@@ -1006,13 +1019,17 @@ async function enhB(s, i, bi) {
 
 async function genSum() {
   toast('✨ AI generating executive summary...');
+  const expContext = (R.experience || []).map(e => `${e.company} (${e.title})`).join(', ');
+  const projContext = (R.projects || []).map(p => p.name).join(', ');
+  const allSkills = Object.values(R.skills || {}).filter(Boolean).join(', ');
+
   try {
     const r = await fetch('/api/enhance-bullet', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        bullet: R.summary.text,
-        context: 'Backend Applied AI Engineer, DRDO Project Intern, Mithra Life OS, FastAPI, MongoDB failover, LangChain, Qdrant'
+        bullet: R.summary.text || 'Experienced software professional with proven technical background.',
+        context: `Candidate Name: ${R.header.name}. Experience: ${expContext}. Projects: ${projContext}. Skills: ${allSkills}.`
       })
     });
     const d = await r.json();
@@ -1024,19 +1041,15 @@ async function genSum() {
       return;
     }
   } catch(e){}
-
-  const text = `Backend Applied AI Engineer building scalable, high-availability distributed systems and production LLM infrastructure — from mission-critical defense systems to AI products serving real users.`;
-  document.getElementById('fsu').value = text;
-  R.summary.text = text;
-  rp(); ss();
-  toast('✨ Summary refreshed!');
 }
 
 async function aiGenerateCoverLetter() {
-  const cl = R.cover_letter || {};
-  const comp = document.getElementById('fcl-comp').value.trim() || 'Google';
-  const role = document.getElementById('fcl-role').value.trim() || 'Applied AI Systems Engineer';
+  const comp = document.getElementById('fcl-comp').value.trim() || 'Target Organization';
+  const role = document.getElementById('fcl-role').value.trim() || 'Software Engineer';
   const jd = document.getElementById('fcl-jd').value.trim();
+
+  const expContext = (R.experience || []).map(e => `${e.company}: ${e.title} - ${(e.bullets||[]).join('; ')}`).join('\n');
+  const allSkills = Object.values(R.skills || {}).filter(Boolean).join(', ');
 
   toast(`✨ AI generating tailored cover letter for ${comp}...`);
   
@@ -1049,14 +1062,17 @@ async function aiGenerateCoverLetter() {
         role_title: role,
         job_description: jd,
         candidate_summary: R.summary.text,
-        candidate_name: R.header.name,
-        candidate_email: R.header.email,
-        candidate_phone: R.header.phone
+        candidate_name: R.header.name || 'Candidate',
+        candidate_email: R.header.email || '',
+        candidate_phone: R.header.phone || '',
+        candidate_experience: expContext,
+        candidate_skills: allSkills
       })
     });
     const d = await r.json();
     if (d.cover_letter) {
       document.getElementById('fcl-text').value = d.cover_letter;
+      if (!R.cover_letter) R.cover_letter = {};
       R.cover_letter.body = d.cover_letter;
       R.cover_letter.company = comp;
       R.cover_letter.role = role;
@@ -1075,18 +1091,24 @@ async function tailorR() {
   if (!jd) { toast('Paste a target JD first'); return; }
   const out = document.getElementById('tout');
   out.style.display = 'block';
-  out.innerHTML = '<span style="color:var(--pr)">✨ Matching keywords against DRDO & Applied AI profile...</span>';
+  out.innerHTML = '<span style="color:var(--pr)">✨ Matching keywords against candidate profile &amp; skills...</span>';
   
+  const allSkills = Object.values(R.skills || {}).filter(Boolean).join(', ');
+  const expContext = (R.experience || []).map(e => `${e.company} (${e.title})`).join(', ');
+
   try {
     const r = await fetch('/api/enhance-bullet', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ bullet: R.summary.text, context: jd.slice(0, 1000) })
+      body: JSON.stringify({
+        bullet: R.summary.text || 'Experienced professional targeting this role.',
+        context: `Target Job Description:\n${jd.slice(0, 1200)}\n\nCandidate Skills:\n${allSkills}\nExperience:\n${expContext}`
+      })
     });
     const d = await r.json();
     out.innerHTML = `<strong>✅ Tailored Summary for Target Role:</strong><br><br>${d.enhanced || 'Updated summary ready.'}<br><br><em style="color:var(--txs);">Click to copy or paste directly into your summary field.</em>`;
   } catch(e) {
-    out.innerHTML = `<strong>✅ Matched Keywords:</strong><br><br>FastAPI, Distributed Systems, MongoDB Failover, RAG Pipelines, Qdrant, Zero-Trust Architecture.`;
+    out.innerHTML = `<strong>✅ Resume Tailoring Analysis:</strong><br><br>Analyzed against target job requirements. Review your skills and summary to match key terms.`;
   }
 }
 

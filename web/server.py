@@ -465,34 +465,40 @@ class CoverLetterRequest(BaseModel):
     role_title: str
     job_description: str = ""
     candidate_summary: str = ""
-    candidate_name: str = "Hemasai Vattikuti"
+    candidate_name: str = "Candidate"
     candidate_email: str = ""
     candidate_phone: str = ""
+    candidate_experience: str = ""
+    candidate_skills: str = ""
 
 @app.post("/api/generate-cover-letter")
 async def generate_cover_letter_api(req: CoverLetterRequest):
     """
-    Generates a personalized, professional 3-paragraph Cover Letter using NVIDIA Llama 3.1 70B.
+    Generates a personalized, professional 3-paragraph Cover Letter using NVIDIA Llama 3.1 70B
+    for any candidate and any role worldwide.
     """
     llm = get_llm_service()
-    prompt = f"""You are an elite career strategist. Write a compelling, tailored, high-signal 3-paragraph Cover Letter for {req.candidate_name} applying for the {req.role_title} position at {req.company_name}.
+    prompt = f"""You are an elite career strategist and executive recruiter. Write a compelling, tailored, high-signal 3-paragraph Cover Letter for {req.candidate_name} applying for the {req.role_title} position at {req.company_name}.
 
-CANDIDATE BACKGROUND:
-{req.candidate_summary or "Backend Applied AI Engineer building scalable, high-availability distributed systems (DRDO, LangChain, RAG pipelines, FastAPI, PostgreSQL, MongoDB, Qdrant)."}
+CANDIDATE PROFILE:
+Name: {req.candidate_name}
+Summary / Background: {req.candidate_summary or "Experienced professional with proven track record in executing high-impact technical initiatives, building reliable solutions, and driving team success."}
+Skills & Competencies: {req.candidate_skills or "System architecture, modern engineering practices, problem solving, cross-functional collaboration"}
+Key Experience Context: {req.candidate_experience[:600] if req.candidate_experience else "Hands-on delivery in production environments, measurable performance improvements, and end-to-end project execution."}
 
-JOB DETAILS:
+TARGET ROLE & COMPANY:
 Company: {req.company_name}
-Role: {req.role_title}
-Job Description: {req.job_description[:1000] if req.job_description else "Building scalable systems and AI infrastructure."}
+Role Title: {req.role_title}
+Job Requirements / Description: {req.job_description[:1000] if req.job_description else "Looking for a high-performing professional to drive key projects and contribute to team goals."}
 
-Structure:
-- Salutation: Dear Hiring Manager, (or Dear {req.company_name} Team,)
-- Paragraph 1: Strong opening hook explaining excitement for {req.company_name} and applying for {req.role_title}.
-- Paragraph 2: Direct connection of candidate's proven experience (DRDO defense asset management, sub-10s MongoDB failover, production RAG pipelines with Qdrant/pgvector) to the company's technical mission.
-- Paragraph 3: Confident closing, value proposition, and polite call to action for an interview.
-- Sign-off: Sincerely, {req.candidate_name}
+Letter Structure:
+- Salutation: Dear {req.company_name} Hiring Team, (or Dear Hiring Manager,)
+- Paragraph 1 (Opening): Express enthusiasm for {req.company_name} and applying for {req.role_title}, highlighting overarching value proposition.
+- Paragraph 2 (Evidence & Alignment): Connect candidate's specific background, skills, and past accomplishments directly to the technical/business needs of {req.company_name}.
+- Paragraph 3 (Closing & Call to Action): Reiterate commitment, culture alignment, and polite call to action for an interview.
+- Sign-off: Sincerely,\n{req.candidate_name}
 
-Tone: Confident, specific, professional, zero filler or generic clichés. Return ONLY the letter text."""
+Tone: Professional, persuasive, crisp, tailored to the specific role and company. Zero filler or generic clichés. Return ONLY the letter text."""
 
     try:
         letter = await llm.generate_text(prompt, max_tokens=700)
@@ -501,11 +507,11 @@ Tone: Confident, specific, professional, zero filler or generic clichés. Return
         print(f"[CoverLetter] Fallback used: {e}")
         fallback = f"""Dear Hiring Team at {req.company_name},
 
-I am writing to express my strong interest in the {req.role_title} role at {req.company_name}. With hands-on experience engineering high-availability distributed systems at DRDO and developing production-grade RAG & AI microservices, I am eager to contribute immediately to your engineering goals.
+I am writing to express my strong enthusiasm for the {req.role_title} position at {req.company_name}. With a proven track record in delivering high-impact projects, solving complex problems, and driving measurable results, I am eager to bring my expertise to your organization.
 
-At the Defence Research and Development Laboratory (DRDL - DRDO), I architected a 3-node MongoDB Replica Set achieving sub-10s automatic failover for a mission-critical defense asset management system, complemented by a production-grade FastAPI backend with zero-trust RBAC and rate limiting. Additionally, I built and scaled platforms like Mithra Life OS and VITAP-UniOS, serving thousands of queries using Qdrant vector retrieval and PostgreSQL Row-Level Security.
+Throughout my experience, I have focused on building scalable, reliable solutions and optimizing performance to meet demanding objectives. My core competencies directly align with the challenges and opportunities at {req.company_name}, and I pride myself on collaborating effectively with cross-functional teams to execute mission-critical goals.
 
-I am excited by the technical vision of {req.company_name} and look forward to discussing how my experience in backend systems and applied AI can drive measurable impact for your team.
+{req.company_name}'s dedication to innovation and excellence strongly resonates with my professional journey. I welcome the opportunity to discuss how my background and skills can contribute immediately to your team's success.
 
 Sincerely,
 {req.candidate_name}"""
