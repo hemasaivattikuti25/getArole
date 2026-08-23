@@ -4,1323 +4,1216 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- SEO -->
-  <title>Dashboard — getArole | AI Job Discovery & Matcher for Engineers</title>
-  <meta name="description" content="Your personalized AI job dashboard. Browse 1,000+ live tech jobs from top companies, get AI-powered resume match scores, and track applications — all in one place.">
-  <meta name="robots" content="noindex, nofollow">
-  <link rel="canonical" href="https://getarole.in/index.html">
-  
-  <!-- Open Graph -->
-  <meta property="og:title" content="getArole Dashboard — AI Job Discovery Engine">
-  <meta property="og:description" content="Browse 1,000+ live tech jobs, get AI match scores, and track your applications.">
-  <meta property="og:url" content="https://getarole.in/index.html">
-  <meta property="og:image" content="https://getarole.in/og-image.png">
-  <meta property="og:type" content="website">
+  <!-- ═══════ PRIMARY SEO ═══════ -->
+  <title>getArole — AI Job Discovery Engine | Find Tech Jobs in India Instantly</title>
+  <meta name="description" content="getArole is India's first autonomous AI job discovery engine. It scrapes 1,000+ live tech jobs from top companies like Google, Microsoft, TCS, Infosys, and startups — then AI-matches them to your resume in real-time. Start free, upgrade for premium AI intelligence.">
+  <meta name="keywords" content="AI job search India, tech jobs India, fresher jobs 2026, software engineer jobs, AI resume matcher, job discovery engine, remote tech jobs, internship India, TCS careers, Infosys hiring, startup jobs India, getArole">
+  <meta name="author" content="getArole">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://getarole.in/">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="./favicon.png">
-  <link rel="apple-touch-icon" href="./logo.png">
-  
-  <script>
-    // Strict Authentication Guard
-    (function checkAuth() {
-      const user = localStorage.getItem('getarole_user');
-      if (!user) {
-        window.location.replace('/?auth=1');
+  <!-- ═══════ GEO (Generative Engine Optimization) ═══════ -->
+  <meta name="geo.region" content="IN">
+  <meta name="geo.placename" content="India">
+  <meta name="language" content="English">
+  <link rel="alternate" hreflang="en-in" href="https://getarole.in/">
+  <link rel="alternate" hreflang="en" href="https://getarole.in/">
+  <link rel="alternate" hreflang="x-default" href="https://getarole.in/">
+
+  <!-- ═══════ OPEN GRAPH (Facebook, LinkedIn, WhatsApp) ═══════ -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="getArole">
+  <meta property="og:title" content="getArole — AI-Powered Job Discovery Engine for Engineers in India">
+  <meta property="og:description" content="Stop scrolling job boards. getArole autonomously scrapes 1,000+ live tech jobs from top Indian & global companies, then AI-matches them to your resume with a neural fit score. Premium AI intelligence.">
+  <meta property="og:url" content="https://getarole.in/">
+  <meta property="og:locale" content="en_IN">
+  <meta property="og:image" content="https://getarole.in/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="getArole AI Job Discovery Engine Dashboard">
+
+  <!-- ═══════ TWITTER CARD ═══════ -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="getArole — AI Job Discovery Engine for Engineers">
+  <meta name="twitter:description" content="India's first autonomous AI job matcher. 1,000+ live tech jobs scraped daily, AI-matched to your resume. Premium AI intelligence for engineers.">
+  <meta name="twitter:image" content="https://getarole.in/og-image.png">
+
+  <!-- ═══════ AEO (Answer Engine Optimization) — JSON-LD Structured Data ═══════ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "getArole",
+        "url": "https://getarole.in",
+        "description": "India's first autonomous AI job discovery engine that scrapes 1,000+ live tech jobs from top companies and AI-matches them to your resume in real-time.",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "INR"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "ratingCount": "120",
+          "bestRating": "5"
+        },
+        "featureList": [
+          "AI-powered job matching with neural fit scores",
+          "Real-time scraping from 25+ enterprise career portals",
+          "One-click resume parsing and skill extraction",
+          "Application tracking pipeline",
+          "AI resume builder and tailor tool"
+        ]
+      },
+      {
+        "@type": "Organization",
+        "name": "getArole",
+        "url": "https://getarole.in",
+        "logo": "https://getarole.in/logo.png",
+        "description": "AI-powered autonomous job discovery platform for engineers in India",
+        "foundingDate": "2026",
+        "sameAs": [
+          "https://github.com/hemasaivattikuti25/getArole"
+        ]
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://getarole.in/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Dashboard",
+            "item": "https://getarole.in/index.html"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "AI Resume Builder",
+            "item": "https://getarole.in/resume-builder.html"
+          }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is getArole?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "getArole is India's first autonomous AI-powered job discovery engine. It automatically scrapes over 1,000 live tech job listings from top companies like Google, Microsoft, TCS, Infosys, Amazon, and 200+ startups. It then uses AI to match each job to your resume and gives you a neural fit score so you know exactly which jobs you're most qualified for."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How much does getArole cost?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "getArole offers a free starter tier that includes job browsing and basic AI matching. Premium plans unlock advanced features like deep neural resume analysis, priority job alerts, AI-powered resume tailoring, and unlimited match evaluations. No credit card required to start."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does getArole find jobs?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "getArole uses autonomous web scrapers that run every 3 hours via GitHub Actions. These scrapers pull live job listings directly from official company career pages (Greenhouse, Lever, Ashby, Workday portals) and aggregator platforms like LinkedIn and Internshala. All jobs are verified and deduplicated before being shown to users."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What companies does getArole scrape jobs from?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "getArole scrapes from 25+ top enterprise companies including TCS, Infosys, Wipro, HCL Technologies, Tech Mahindra, Google, Microsoft, Amazon, Flipkart, Razorpay, Zerodha, CRED, PhonePe, and many more. It covers both major Indian IT service companies and high-growth startups."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How does AI resume matching work on getArole?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "When you upload your resume during onboarding, getArole's AI extracts your skills, experience, and preferences. It then uses a 70B parameter large language model to compute a semantic similarity score between your profile and each job listing, giving you a precise fit score from 0-100 along with a detailed breakdown of why each job is a good or poor match."
+            }
+          }
+        ]
       }
-    })();
+    ]
+  }
   </script>
 
+  <!-- ═══════ FONTS ═══════ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/logo.png">
   <style>
     :root {
       --primary: #059669;
-      --primary-hover: #047857;
       --primary-accent: #10b981;
+      --primary-neon: #34d399;
+      --primary-dark: #064e3b;
       --primary-light: #ecfdf5;
-      --primary-border: #a7f3d0;
+      --primary-glow: rgba(16, 185, 129, 0.25);
       --surface: #ffffff;
-      --background: #f8fafc;
-      --border-subtle: #f1f5f9;
-      --border: #e2e8f0;
-      --border-strong: #cbd5e1;
-      --text-main: #0f172a;
+      --surface-glass: rgba(255, 255, 255, 0.75);
+      --bg: #fafbfc;
+      --border: rgba(226, 232, 240, 0.8);
+      --border-focus: rgba(16, 185, 129, 0.4);
+      --text-main: #090d16;
       --text-muted: #475569;
       --text-subtle: #94a3b8;
-      --nav-height: 64px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--background);
+      background: var(--bg);
       color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      line-height: 1.6;
+      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      selection-background-color: var(--primary-light);
+      selection-color: var(--primary-dark);
     }
-    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
+    ::selection { background: #d1fae5; color: #065f46; }
 
-    /* Scrollbars */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+    h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; letter-spacing: -0.03em; }
 
-    /* ════════════════════ TOP NAVIGATION BAR (SIMPLIFY STYLE) ════════════════════ */
-    header {
-      position: sticky; top: 0; z-index: 100;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      height: var(--nav-height);
-      display: flex; align-items: center;
+    /* ── CANVAS BACKGROUND MESH ── */
+    #bg-canvas {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      pointer-events: none; z-index: -1;
     }
-    .header-inner {
-      max-width: 1500px; width: 100%; margin: 0 auto; padding: 0 24px;
-      display: flex; align-items: center; justify-content: space-between;
+
+    /* ── LUXURY APPLE-STYLE NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+      height: 64px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .brand-group { display: flex; align-items: center; gap: 32px; }
-    .brand-logo {
+    nav.scrolled {
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+      border-bottom-color: rgba(226, 232, 240, 0.9);
+    }
+    .nav-inner {
+      max-width: 1240px; width: 100%; margin: 0 auto; padding: 0 28px;
+      height: 100%; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand {
       display: flex; align-items: center; gap: 10px; text-decoration: none;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .brand-icon {
-      width: 32px; height: 32px;
+    .nav-brand:hover { transform: scale(1.02); }
+    .nav-logo {
+      width: 34px; height: 34px;
       background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-      border-radius: 8px;
+      border-radius: 9px;
       display: flex; align-items: center; justify-content: center;
-      color: white; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 16px;
-      box-shadow: 0 2px 8px rgba(5,150,105,0.25);
+      color: white; font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 16px;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+      position: relative; overflow: hidden;
     }
-    .brand-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 19px; color: var(--text-main); }
-    .brand-title span { color: var(--primary); }
+    .nav-logo::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 60%);
+    }
+    .nav-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 20px; color: var(--text-main); }
+    .nav-title span { color: var(--primary); }
 
-    /* Nav Links */
-    .nav-tabs { display: flex; align-items: center; gap: 4px; }
-    .nav-tab {
-      display: flex; align-items: center; gap: 8px;
-      padding: 8px 14px; border-radius: 8px;
-      font-size: 13.5px; font-weight: 600; color: var(--text-muted);
-      text-decoration: none; cursor: pointer; transition: all 0.15s ease;
+    .nav-links { display: flex; align-items: center; gap: 6px; list-style: none; }
+    .nav-links a {
+      padding: 8px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
+      color: var(--text-muted); text-decoration: none; transition: all 0.2s ease;
     }
-    .nav-tab:hover { background: var(--border-subtle); color: var(--text-main); }
-    .nav-tab.active {
-      background: var(--primary-light); color: var(--primary); font-weight: 700;
-    }
-    .nav-badge {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
-      padding: 1px 7px; border-radius: 99px; background: var(--primary); color: white;
-    }
+    .nav-links a:hover { color: var(--text-main); background: rgba(0, 0, 0, 0.04); }
 
-    /* Right Actions & User Menu */
-    .header-actions { display: flex; align-items: center; gap: 12px; }
-    .btn-refresh {
-      background: var(--surface); border: 1.5px solid var(--border);
-      padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 700;
-      color: var(--text-main); cursor: pointer; display: flex; align-items: center; gap: 6px;
-      transition: all 0.15s;
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 9px 20px; border-radius: 9px; font-size: 13.5px; font-weight: 600;
+      cursor: pointer; text-decoration: none; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid transparent; font-family: inherit; position: relative; overflow: hidden;
     }
-    .btn-refresh:hover { border-color: var(--primary); color: var(--primary); }
-
-    .user-profile-btn {
-      display: flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px;
-      border-radius: 20px; border: 1.5px solid var(--border);
-      background: var(--surface); cursor: pointer; position: relative;
+    .btn-secondary {
+      background: white; border-color: var(--border); color: var(--text-main);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     }
-    .user-avatar {
-      width: 28px; height: 28px; border-radius: 50%;
+    .btn-secondary:hover {
+      background: var(--bg); border-color: var(--text-subtle);
+      transform: translateY(-1.5px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .btn-primary {
       background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-      color: white; font-weight: 800; font-size: 12px;
-      display: flex; align-items: center; justify-content: center;
+      color: white; box-shadow: 0 4px 18px var(--primary-glow);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px); box-shadow: 0 6px 24px rgba(16, 185, 129, 0.45);
+    }
+    .btn-primary::after {
+      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+      transition: left 0.6s ease;
+    }
+    .btn-primary:hover::after { left: 100%; }
+    .btn-lg { padding: 14px 32px; font-size: 15px; border-radius: 12px; font-weight: 700; }
+
+    /* ── HERO SECTION ── */
+    .hero {
+      padding: 160px 24px 100px;
+      text-align: center;
+      position: relative;
+    }
+    .hero-inner { max-width: 1020px; margin: 0 auto; }
+
+    /* Apple-style floating badge */
+    .pill-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 6px 16px; border-radius: 9999px; font-size: 12px; font-weight: 700;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      color: var(--primary-dark);
+      border: 1px solid var(--primary-border);
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.12);
+      margin-bottom: 32px;
+      animation: floatBadge 4s ease-in-out infinite;
+    }
+    @keyframes floatBadge {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .pill-pulse {
+      width: 8px; height: 8px; border-radius: 50%; background: #10b981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+      animation: pulseAnim 2s infinite;
+    }
+    @keyframes pulseAnim {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .hero-title {
+      font-size: clamp(42px, 7vw, 76px);
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--text-main);
+      margin-bottom: 24px;
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, #059669 20%, #10b981 60%, #047857 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+
+    .hero-sub {
+      font-size: clamp(17px, 2.2vw, 20px);
+      color: var(--text-muted);
+      max-width: 760px;
+      margin: 0 auto 42px;
+      line-height: 1.65;
+      font-weight: 400;
+    }
+
+    .hero-buttons {
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      flex-wrap: wrap; margin-bottom: 72px;
+    }
+
+    /* ── INTERACTIVE LIVE SCANNER DEMO WIDGET ── */
+    .demo-showcase {
+      max-width: 980px; margin: 0 auto 80px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 20px;
+      box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255,255,255,0.8) inset;
+      backdrop-filter: blur(20px);
       overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .user-name-text { font-size: 13px; font-weight: 700; color: var(--text-main); }
-
-    .user-dropdown {
-      position: absolute; top: calc(100% + 8px); right: 0; width: 220px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      padding: 8px; display: none; flex-direction: column; gap: 4px; z-index: 200;
-    }
-    .user-dropdown.show { display: flex; }
-    .dropdown-item {
-      padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 600;
-      color: var(--text-main); text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
-    }
-    .dropdown-item:hover { background: var(--background); color: var(--primary); }
-
-    /* ════════════════════ FILTER & SEARCH BAR (SIMPLIFY PILLS) ════════════════════ */
-    .filter-bar {
-      background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 12px 24px; position: sticky; top: var(--nav-height); z-index: 90;
-    }
-    .filter-inner {
-      max-width: 1500px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
-    }
-    .search-input-wrap {
-      flex: 1; min-width: 280px; position: relative; display: flex; align-items: center;
-    }
-    .search-icon {
-      position: absolute; left: 12px; width: 16px; height: 16px; color: var(--text-subtle); pointer-events: none;
-    }
-    .search-input {
-      width: 100%; padding: 9px 12px 9px 36px; border-radius: 8px;
-      border: 1.5px solid var(--border); background: var(--background);
-      font-size: 13.5px; font-family: inherit; outline: none; transition: border-color 0.15s;
-    }
-    .search-input:focus { border-color: var(--primary); background: var(--surface); }
-
-    .filter-pills-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .filter-pill {
-      padding: 7px 12px; border-radius: 20px; font-size: 12.5px; font-weight: 600;
-      border: 1.5px solid var(--border); background: var(--surface); color: var(--text-muted);
-      cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s;
-    }
-    .filter-pill:hover { border-color: var(--primary-border); color: var(--primary); }
-    .filter-pill.active {
-      border-color: var(--primary); background: var(--primary-light); color: var(--primary); font-weight: 700;
-    }
-
-    .btn-clear-filters {
-      font-size: 12.5px; font-weight: 600; color: var(--text-subtle); background: none; border: none; cursor: pointer; text-decoration: underline;
-    }
-    .btn-clear-filters:hover { color: var(--text-main); }
-
-    /* ════════════════════ MAIN CONTAINER & PAGES ════════════════════ */
-    main { flex: 1; max-width: 1500px; width: 100%; margin: 0 auto; }
-    .page-view { display: none; }
-    .page-view.active { display: block; }
-
-    /* ════════════════════ SPLIT-PANE LAYOUT ════════════════════ */
-    .jobs-split-container {
-      display: grid; grid-template-columns: 460px 1fr;
-      height: calc(100vh - var(--nav-height) - 61px);
-      background: var(--background);
-    }
-
-    /* Left Column: Job Cards Feed */
-    .jobs-feed-col {
-      border-right: 1px solid var(--border);
-      display: flex; flex-direction: column; height: 100%;
-      background: var(--surface);
-    }
-    .feed-header {
-      padding: 12px 20px; border-bottom: 1px solid var(--border);
+    .demo-topbar {
+      padding: 14px 20px; background: rgba(248, 250, 252, 0.8);
+      border-bottom: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between;
-      font-size: 13px; font-weight: 600; color: var(--text-muted);
     }
-    .feed-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-
-    .job-card {
-      background: var(--surface); border: 1.5px solid var(--border);
-      border-radius: 12px; padding: 16px; cursor: pointer;
-      position: relative; transition: all 0.15s ease;
-    }
-    .job-card:hover { border-color: var(--primary-border); background: #fafbfc; }
-    .job-card.selected {
-      border-color: var(--primary); background: var(--primary-light);
-      box-shadow: 0 2px 8px rgba(5,150,105,0.08);
+    .demo-dots { display: flex; gap: 6px; }
+    .demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .demo-dot.red { background: #f87171; }
+    .demo-dot.yellow { background: #fbbf24; }
+    .demo-dot.green { background: #34d399; }
+    .demo-title-tag {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+      color: var(--primary); background: var(--primary-light); padding: 3px 10px; border-radius: 5px;
     }
 
-    .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
-    .company-badge-wrap { display: flex; align-items: center; gap: 10px; }
-    .company-logo {
-      width: 32px; height: 32px; border-radius: 8px;
-      background: #f1f5f9; border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 800; color: var(--text-main);
-    }
-    .company-name { font-size: 13px; font-weight: 700; color: var(--text-muted); }
-    .card-bookmark-btn {
-      background: none; border: none; cursor: pointer; color: var(--text-subtle);
-      font-size: 16px; padding: 2px;
-    }
-    .card-bookmark-btn.saved { color: var(--primary); }
-
-    .card-title { font-size: 15px; font-weight: 800; color: var(--text-main); margin-bottom: 10px; line-height: 1.3; }
-    
-    .card-tags { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .tag-chip {
-      font-size: 11.5px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
-      background: var(--background); border: 1px solid var(--border); color: var(--text-muted);
-    }
-    .tag-chip.batch { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; font-weight: 700; }
-    .tag-chip.remote { background: var(--primary-light); border-color: var(--primary-border); color: var(--primary); font-weight: 700; }
-    .tag-chip.match-score-chip { background: #ecfdf5; border-color: #a7f3d0; color: #059669; font-weight: 800; }
-
-    /* Right Column: Rich Detail Pane */
-    .job-detail-col {
-      height: 100%; overflow-y: auto; padding: 28px 36px 60px;
-      background: var(--surface); display: flex; flex-direction: column;
-    }
-
-    /* Action bar */
-    .detail-actions-bar {
-      display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 24px;
-    }
-    .detail-tabs { display: flex; gap: 16px; }
-    .detail-tab {
-      font-size: 14px; font-weight: 700; color: var(--text-muted); cursor: pointer;
-      padding-bottom: 6px; position: relative; text-decoration: none;
-    }
-    .detail-tab.active { color: var(--primary); }
-    .detail-tab.active::after {
-      content:''; position: absolute; bottom: -21px; left: 0; right: 0; height: 2.5px; background: var(--primary);
-    }
-
-    .detail-action-buttons { display: flex; align-items: center; gap: 10px; }
-    .btn-applied-toggle {
-      font-size: 13px; font-weight: 600; color: var(--text-muted); background: none; border: none; cursor: pointer;
-    }
-    .btn-applied-toggle:hover { color: var(--primary); }
-    .btn-save-job {
-      padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border);
-      background: white; font-size: 13px; font-weight: 700; color: var(--text-main); cursor: pointer;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .btn-apply-primary {
-      padding: 8px 20px; border-radius: 8px; border: none;
-      background: var(--primary); font-size: 13.5px; font-weight: 800; color: white; cursor: pointer;
-      display: flex; align-items: center; gap: 6px; text-decoration: none; box-shadow: 0 2px 8px rgba(5,150,105,0.25);
-    }
-    .btn-apply-primary:hover { background: var(--primary-hover); }
-    
-    .btn-referral {
-      padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border);
-      background: var(--surface); font-size: 13px; font-weight: 700; color: var(--primary); cursor: pointer;
-      display: flex; align-items: center; gap: 6px; position: relative;
-    }
-    .btn-referral:hover { border-color: var(--primary-border); }
-    .referral-dropdown {
-      position: absolute; top: calc(100% + 8px); right: 0; width: 220px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      padding: 8px; display: none; flex-direction: column; gap: 4px; z-index: 200;
+    .demo-grid {
+      display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 0;
       text-align: left;
     }
-    .referral-dropdown.show { display: flex; }
-    .referral-dropdown a {
-      padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 600;
-      color: var(--text-main); text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
+    .demo-pane-left {
+      padding: 28px 32px; border-right: 1px solid var(--border);
     }
-    .referral-dropdown a:hover { background: var(--background); color: var(--primary); }
+    .demo-pane-right {
+      padding: 28px 32px; background: #fafbfc;
+      display: flex; flex-direction: column; justify-content: center;
+    }
 
-    /* Job Header */
-    .detail-header { margin-bottom: 24px; }
-    .confirmed-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 700; color: var(--primary);
+    .scan-beam-container {
+      position: relative; background: #ffffff; border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; margin-bottom: 16px; overflow: hidden;
+    }
+    .scan-beam {
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, #10b981, transparent);
+      box-shadow: 0 0 12px #10b981;
+      animation: scanAnim 3s ease-in-out infinite;
+    }
+    @keyframes scanAnim {
+      0% { top: 0%; opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { top: 100%; opacity: 0; }
+    }
+    .candidate-info-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .candidate-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-accent));
+      color: white; font-weight: 800; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .candidate-name { font-size: 14px; font-weight: 800; color: var(--text-main); }
+    .candidate-school { font-size: 12px; color: var(--text-muted); }
+
+    .skills-chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .skill-badge {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
+      padding: 3px 8px; border-radius: 5px; background: var(--bg); border: 1px solid var(--border); color: var(--text-main);
+    }
+    .skill-badge.matched { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; font-weight: 700; }
+
+    .match-gauge-box {
+      text-align: center; padding: 20px; background: white; border: 1px solid var(--border);
+      border-radius: 12px; box-shadow: 0 4px 14px rgba(0,0,0,0.02);
+    }
+    .gauge-score {
+      font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 900;
+      color: var(--primary); line-height: 1; margin-bottom: 6px;
+    }
+    .gauge-label {
+      font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;
+      letter-spacing: 0.05em; margin-bottom: 12px;
+    }
+    .rubric-mini-bars { display: flex; flex-direction: column; gap: 8px; text-align: left; }
+    .rubric-bar-item { display: flex; align-items: center; justify-content: space-between; font-size: 12px; }
+    .rubric-bar-track { flex: 1; height: 5px; background: #e2e8f0; border-radius: 99px; margin: 0 10px; overflow: hidden; }
+    .rubric-bar-fill { height: 100%; background: linear-gradient(90deg, #059669, #10b981); border-radius: 99px; }
+
+    /* ── BENTO GRID SECTION ── */
+    section { padding: 110px 24px; position: relative; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-head { text-align: center; max-width: 720px; margin: 0 auto 72px; }
+    .section-tag {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+      color: var(--primary); background: var(--primary-light); border: 1px solid var(--primary-border);
+      padding: 4px 12px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.08em;
+      display: inline-block; margin-bottom: 16px;
+    }
+    .section-title { font-size: clamp(32px, 4.5vw, 48px); font-weight: 900; color: var(--text-main); margin-bottom: 16px; line-height: 1.15; }
+    .section-sub { font-size: 17px; color: var(--text-muted); line-height: 1.6; }
+
+    .bento-grid {
+      display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px;
+    }
+    .bento-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 32px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .bento-card:hover {
+      border-color: rgba(16, 185, 129, 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -10px rgba(5, 150, 105, 0.08);
+    }
+    .bento-card.col-8 { grid-column: span 8; }
+    .bento-card.col-4 { grid-column: span 4; }
+    .bento-card.col-6 { grid-column: span 6; }
+    .bento-card.col-12 { grid-column: span 12; }
+
+    .bento-icon-box {
+      width: 44px; height: 44px; border-radius: 12px;
       background: var(--primary-light); border: 1px solid var(--primary-border);
-      padding: 4px 10px; border-radius: 6px; margin-bottom: 12px;
+      color: var(--primary); display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px; font-size: 20px; font-weight: 800; font-family: 'Outfit', sans-serif;
     }
-    .detail-job-title { font-size: 26px; font-weight: 800; color: var(--text-main); margin-bottom: 6px; }
-    .detail-company-line { font-size: 15px; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+    .bento-title { font-size: 21px; font-weight: 800; color: var(--text-main); margin-bottom: 10px; }
+    .bento-desc { font-size: 14.5px; color: var(--text-muted); line-height: 1.65; }
 
-    /* ── AI RESUME MATCH CARD (CIRCULAR RING) ── */
-    .ai-match-card {
-      background: #fafbfc; border: 1.5px solid var(--border);
-      border-radius: 16px; padding: 20px 24px; margin-bottom: 28px;
-      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    /* ── INTERACTIVE 3-STAGE PIPELINE TABS ── */
+    .pipeline-container {
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);
+      border-radius: 24px;
+      padding: 56px 48px;
+      color: white;
+      box-shadow: 0 30px 70px -20px rgba(6, 78, 59, 0.35);
+      position: relative;
+      overflow: hidden;
     }
-    .match-ring-wrap { display: flex; align-items: center; gap: 18px; }
-    .circle-progress-container { position: relative; width: 68px; height: 68px; }
-    .circle-progress-container svg { width: 68px; height: 68px; transform: rotate(-90deg); }
-    .circle-bg { fill: none; stroke: #e2e8f0; stroke-width: 6; }
-    .circle-fill { fill: none; stroke: var(--primary); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
-    .circle-text {
-      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 800; color: var(--text-main);
+    .pipeline-container::before {
+      content: ''; position: absolute; -webkit-mask-image: radial-gradient(circle, white, transparent 70%);
+      inset: 0; background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px);
+      background-size: 24px 24px; pointer-events: none;
     }
 
-    .match-summary-title { font-size: 15px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
-    .match-summary-sub { font-size: 13px; color: var(--text-muted); }
-    .match-summary-sub a { color: var(--primary); font-weight: 700; text-decoration: none; margin-left: 4px; }
+    .pipeline-nav-tabs {
+      display: flex; gap: 10px; margin: 36px 0 28px;
+      background: rgba(0, 0, 0, 0.2); padding: 6px; border-radius: 12px;
+      width: fit-content; border: 1px solid rgba(255,255,255,0.1);
+    }
+    .pipeline-tab {
+      padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 700;
+      color: rgba(255,255,255,0.7); cursor: pointer; transition: all 0.2s ease;
+      border: none; background: transparent; font-family: inherit;
+    }
+    .pipeline-tab.active {
+      background: white; color: #065f46; box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    }
 
-    .btn-ai-tailor {
-      background: white; border: 1.5px solid var(--primary-border); color: var(--primary);
-      padding: 9px 16px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;
-      display: flex; align-items: center; gap: 6px; transition: all 0.15s;
+    .pipeline-display-pane {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 32px;
+      backdrop-filter: blur(12px);
+      min-height: 200px;
     }
-    .btn-ai-tailor:hover { background: var(--primary-light); }
+    .pipe-code {
+      font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #a7f3d0; line-height: 1.7;
+    }
 
-    /* Metadata Grid */
-    .meta-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px;
+    /* ── DIRECT SOURCES TICKER ── */
+    .ticker-wrap {
+      display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
+      margin-top: 36px;
     }
-    .meta-item {
-      background: #fafbfc; border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px;
+    .source-pill {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 24px; background: white; border: 1px solid var(--border);
+      border-radius: 12px; font-size: 14.5px; font-weight: 700; color: var(--text-main);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .meta-label { font-size: 11.5px; font-weight: 700; color: var(--text-subtle); text-transform: uppercase; margin-bottom: 4px; }
-    .meta-val { font-size: 13.5px; font-weight: 700; color: var(--text-main); }
+    .source-pill:hover {
+      border-color: var(--primary-accent);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -5px rgba(5, 150, 105, 0.1);
+    }
+    .source-count {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+      color: var(--primary); background: var(--primary-light); padding: 3px 9px; border-radius: 6px;
+    }
 
-    /* Job Description body */
-    .jd-section-title { font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 12px; }
-    .jd-body {
-      font-size: 14.5px; color: #334155; line-height: 1.75; margin-bottom: 30px;
+    /* ── CTA BANNER ── */
+    .cta-wrapper {
+      background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+      border: 1px solid var(--primary-border);
+      border-radius: 24px;
+      padding: 72px 40px;
+      text-align: center;
+      box-shadow: 0 20px 40px -15px rgba(16, 185, 129, 0.1);
     }
-    .jd-body p { margin-bottom: 14px; }
-    .jd-body ul, .jd-body ol { margin: 10px 0 16px 20px; }
-    .jd-body li { margin-bottom: 6px; }
-    .jd-body strong, .jd-body b { color: var(--text-main); font-weight: 700; }
-    .jd-body h2, .jd-body h3, .jd-body h4 { color: var(--text-main); margin: 18px 0 8px; font-weight: 800; }
+    .cta-heading { font-size: clamp(32px, 5vw, 52px); font-weight: 900; color: var(--text-main); margin-bottom: 16px; }
 
-    /* ════════════════════ HOME VIEW STYLES ════════════════════ */
-    .home-hero-card {
-      background: linear-gradient(135deg, #059669 0%, #047857 100%);
-      border-radius: 18px; padding: 36px 40px; color: white; margin-bottom: 28px;
-      box-shadow: 0 10px 30px -5px rgba(5,150,105,0.3);
-      display: flex; justify-content: space-between; align-items: center; gap: 24px;
+    /* ── COMPREHENSIVE APPLE-STYLE FOOTER ── */
+    footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      padding: 80px 24px 40px;
     }
-    .home-hero-title { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
-    .home-hero-sub { font-size: 14.5px; opacity: 0.9; max-width: 600px; line-height: 1.6; }
-    .btn-hero-action {
-      background: white; color: var(--primary); padding: 12px 24px; border-radius: 10px;
-      font-size: 14px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: all 0.15s; white-space: nowrap;
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 48px;
+      margin-bottom: 64px;
     }
-    .btn-hero-action:hover { transform: translateY(-2px); }
+    .footer-brand-col { max-width: 340px; }
+    .footer-logo-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; text-decoration: none; }
+    .footer-tagline { font-size: 13.5px; color: var(--text-muted); line-height: 1.7; margin-bottom: 22px; }
 
-    .stats-cards-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px;
+    .status-badge-live {
+      display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px;
+      border-radius: 8px; border: 1px solid var(--border); background: var(--bg);
+      font-size: 12px; font-weight: 600; color: var(--text-main);
     }
-    .stat-metric-card {
-      background: white; border: 1.5px solid var(--border); border-radius: 14px; padding: 20px;
-      display: flex; align-items: center; gap: 16px;
-    }
-    .stat-metric-icon {
-      width: 44px; height: 44px; border-radius: 10px; background: var(--primary-light);
-      display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--primary);
-    }
-    .stat-metric-num { font-size: 24px; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; }
-    .stat-metric-label { font-size: 12.5px; font-weight: 600; color: var(--text-muted); }
+    .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #10b981; }
 
-    /* ════════════════════ TOAST NOTIFICATION ════════════════════ */
-    #toast {
-      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
-      background: #0f172a; color: white; padding: 12px 20px; border-radius: 10px;
-      font-size: 13.5px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      display: none; align-items: center; gap: 8px; animation: fadeInUp 0.2s ease;
+    .footer-col-title {
+      font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 800;
+      color: var(--text-main); text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 18px;
     }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .footer-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer-list a {
+      font-size: 13.5px; font-weight: 500; color: var(--text-muted); text-decoration: none;
+      transition: color 0.15s ease;
+    }
+    .footer-list a:hover { color: var(--primary); }
 
-    /* Responsive */
-    @media (max-width: 900px) {
-      .jobs-split-container { grid-template-columns: 1fr; }
-      .job-detail-col { display: none; }
-      .home-hero-card { flex-direction: column; align-items: flex-start; }
+    .footer-bottom {
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .footer-copy-text { font-size: 13.5px; color: var(--text-subtle); }
+    .footer-copy-text span { font-weight: 700; color: var(--text-main); }
+    .footer-tech-stack { display: flex; gap: 8px; flex-wrap: wrap; }
+    .stack-pill {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
+      color: var(--text-subtle); border: 1px solid var(--border); padding: 3px 9px; border-radius: 6px;
+      background: var(--bg);
+    }
+
+    /* ── SCROLL REVEAL UTILITIES ── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 1024px) {
+      .bento-card.col-8, .bento-card.col-4, .bento-card.col-6 { grid-column: span 12; }
+      .demo-grid { grid-template-columns: 1fr; }
+      .demo-pane-left { border-right: none; border-bottom: 1px solid var(--border); }
+      .footer-grid { grid-template-columns: 2fr 1fr 1fr; gap: 36px; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero { padding: 120px 20px 60px; }
+      .pipeline-container { padding: 36px 24px; }
+      .footer-grid { grid-template-columns: 1fr; gap: 32px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ════════════════════ HEADER (SIMPLIFY NAVIGATION) ════════════════════ -->
-  <header>
-    <div class="header-inner">
-      <div class="brand-group">
-        <a href="/dashboard" class="brand-logo">
-          <div class="brand-icon">G</div>
-          <span class="brand-title">getArole<span>.ai</span></span>
-        </a>
+  <!-- Dynamic Interactive Particle Canvas -->
+  <canvas id="bg-canvas"></canvas>
 
-        <nav class="nav-tabs">
-          <a class="nav-tab active" onclick="showTab('home')" id="tab-btn-home">Overview</a>
-          <a class="nav-tab" onclick="showTab('matches')" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
-          <a class="nav-tab" onclick="showTab('jobs')" id="tab-btn-jobs">Explore</a>
-          <a class="nav-tab" href="/resume-builder" id="tab-btn-resume">Resume</a>
-        </nav>
+  <!-- ════════════════════ NAVIGATION BAR ════════════════════ -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <div class="nav-logo">G</div>
+        <span class="nav-title">getArole<span>.ai</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#bento">Capabilities</a></li>
+        <li><a href="#pipeline">Architecture</a></li>
+        <li><a href="#sources">Live Sources</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button onclick="openAuthModal(false)" class="btn btn-secondary">Sign In</button>
+        <button onclick="openAuthModal(true)" class="btn btn-primary">Start Matching →</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ════════════════════ HERO SECTION ════════════════════ -->
+  <section class="hero">
+    <div class="hero-inner">
+      
+      <div class="pill-badge">
+        <span class="pill-pulse"></span>
+        <span>Enterprise Job Ingestion &amp; 70B AI Screening Infrastructure</span>
       </div>
 
-      <div class="header-actions">
-        <button class="btn-refresh" id="btn-refresh-scrape" onclick="triggerScrape()">
-          Sync
-        </button>
+      <h1 class="hero-title">
+        Engineered for High-Fit Roles.<br>Powered by <span class="text-gradient">Neural Precision.</span>
+      </h1>
 
-        <div class="user-profile-btn" onclick="toggleUserDropdown()">
-          <div class="user-avatar" id="nav-avatar">U</div>
-          <span class="user-name-text" id="nav-username">User</span>
-          <span style="font-size: 10px; color: var(--text-subtle)">▼</span>
+      <p class="hero-sub">
+        getArole connects directly to top-tier career APIs across India &amp; global remote markets — matching your resume with sub-15ms local vector embeddings and 70-billion parameter neural reasoning.
+      </p>
 
-          <div class="user-dropdown" id="user-dropdown">
-            <a href="/onboarding" class="dropdown-item">Profile</a>
-            <a href="#" onclick="openCandidateDatabaseModal()" class="dropdown-item">Database</a>
-            <a href="#" onclick="openPreferencesModal()" class="dropdown-item">Settings</a>
-            <div style="height:1px; background:var(--border); margin:4px 0;"></div>
-            <a href="#" onclick="handleLogout()" class="dropdown-item" style="color:#ef4444">Sign Out</a>
+      <div class="hero-actions reveal">
+        <button onclick="requireAuthAndProceed('/onboarding')" class="btn btn-primary btn-lg">Start Neural Matching →</button>
+        <button onclick="requireAuthAndProceed('/dashboard')" class="btn btn-secondary btn-lg">Explore 1,062 Live Jobs</button>
+      </div>
+
+      <!-- ── LIVE SCANNER DEMO PREVIEW ── -->
+      <div class="demo-showcase reveal">
+        <div class="demo-topbar">
+          <div class="demo-dots">
+            <span class="demo-dot red"></span>
+            <span class="demo-dot yellow"></span>
+            <span class="demo-dot green"></span>
+          </div>
+          <span class="demo-title-tag">LIVE NEURAL MATCHER SIMULATION</span>
+          <span style="font-size:11px;font-weight:700;color:var(--text-subtle)">100% LOCAL ONNX</span>
+        </div>
+
+        <div class="demo-grid">
+          <!-- Left: Parsed Resume Scan -->
+          <div class="demo-pane-left">
+            <div class="scan-beam-container">
+              <div class="scan-beam"></div>
+              <div class="candidate-info-row">
+                <div class="candidate-avatar">H</div>
+                <div>
+                  <div class="candidate-name">Arjun Sharma</div>
+                  <div class="candidate-school">B.Tech CSE · B.Tech Computer Science (2026)</div>
+                </div>
+              </div>
+              <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px">
+                Deterministic PyMuPDF Entity Extraction:
+              </div>
+              <div class="skills-chip-row">
+                <span class="skill-badge matched">Python</span>
+                <span class="skill-badge matched">FastAPI</span>
+                <span class="skill-badge matched">Docker</span>
+                <span class="skill-badge matched">PostgreSQL</span>
+                <span class="skill-badge matched">ONNX Runtime</span>
+                <span class="skill-badge matched">Distributed Systems</span>
+              </div>
+            </div>
+            <div style="font-size:12px;color:var(--text-subtle);font-family:'JetBrains Mono',monospace">
+              [OK] 384-d Dense Vector Generated (<span style="color:#059669">bge-small-en-v1.5</span>)
+            </div>
+          </div>
+
+          <!-- Right: Live Cosine & 70B Scoring -->
+          <div class="demo-pane-right">
+            <div class="match-gauge-box">
+              <div class="gauge-score">94.8%</div>
+              <div class="gauge-label">Calibrated Fit vs. Backend Role</div>
+              
+              <div class="rubric-mini-bars">
+                <div class="rubric-bar-item">
+                  <span style="font-weight:600;color:var(--text-muted)">Tech Stack Match</span>
+                  <div class="rubric-bar-track"><div class="rubric-bar-fill" style="width: 95%"></div></div>
+                  <span style="font-family:'JetBrains Mono',monospace;font-weight:700">9.5/10</span>
+                </div>
+                <div class="rubric-bar-item">
+                  <span style="font-weight:600;color:var(--text-muted)">Domain Alignment</span>
+                  <div class="rubric-bar-track"><div class="rubric-bar-fill" style="width: 90%"></div></div>
+                  <span style="font-family:'JetBrains Mono',monospace;font-weight:700">9.0/10</span>
+                </div>
+                <div class="rubric-bar-item">
+                  <span style="font-weight:600;color:var(--text-muted)">Prerequisites</span>
+                  <div class="rubric-bar-track"><div class="rubric-bar-fill" style="width: 98%"></div></div>
+                  <span style="font-family:'JetBrains Mono',monospace;font-weight:700">9.8/10</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════ HOW IT WORKS (STEP-BY-STEP) ════════════════════ -->
+  <section id="how-it-works" style="background: white; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <span class="section-tag">User Journey</span>
+        <h2 class="section-title">How To Use getArole</h2>
+        <p class="section-sub">A simple, transparent 3-step workflow engineered to get you directly into interview loops.</p>
+      </div>
+
+      <div class="bento-grid">
+        <div class="bento-card col-4 reveal">
+          <div class="bento-icon-box">01</div>
+          <h3 class="bento-title">Upload Resume Once</h3>
+          <p class="bento-desc">Drop your PDF resume in onboarding. PyMuPDF deterministically extracts structured technical competencies in &lt;50ms with 100% local privacy.</p>
+        </div>
+
+        <div class="bento-card col-4 reveal" style="transition-delay: 0.1s">
+          <div class="bento-icon-box">02</div>
+          <h3 class="bento-title">Dense Vector Search</h3>
+          <p class="bento-desc">Our CPU-optimized ONNX model computes 384-dimensional cosine similarity across all 1,150+ live opportunities, ranking roles by true semantic fit.</p>
+        </div>
+
+        <div class="bento-card col-4 reveal" style="transition-delay: 0.2s">
+          <div class="bento-icon-box">03</div>
+          <h3 class="bento-title">Apply with 70B ATS AI</h3>
+          <p class="bento-desc">Generate tailored ATS highlights and concise cover letters powered by Llama 3.1 70B on NVIDIA DGX Cloud, then apply directly on the verified portal.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════ BENTO CAPABILITIES ════════════════════ -->
+  <section id="bento">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <span class="section-tag">Value &amp; Capabilities</span>
+        <h2 class="section-title">What We Offer &amp; How You Benefit</h2>
+        <p class="section-sub">Designed specifically to give candidates an unfair advantage in technical recruitment.</p>
+      </div>
+
+      <div class="bento-grid">
+        
+        <!-- Large Card 1 -->
+        <div class="bento-card col-8 reveal">
+          <div class="bento-icon-box"></div>
+          <h3 class="bento-title">Direct-From-Source ATS Ingestion</h3>
+          <p class="bento-desc">
+            We query career APIs directly from Greenhouse, Lever, Ashby, and LinkedIn. No stale job boards, no sponsored spam, and no expired listings. Every opportunity is confirmed active within the last 24 hours.
+          </p>
+        </div>
+
+        <!-- Small Card 1 -->
+        <div class="bento-card col-4 reveal" style="transition-delay: 0.1s">
+          <div class="bento-icon-box">🔒</div>
+          <h3 class="bento-title">100% Offline Resume Privacy</h3>
+          <p class="bento-desc">
+            Your personal contact details and resume never leave your browser for embedding. All vector search runs locally on CPU with zero data leakage.
+          </p>
+        </div>
+
+        <!-- Small Card 2 -->
+        <div class="bento-card col-4 reveal">
+          <div class="bento-icon-box">🧠</div>
+          <h3 class="bento-title">70B Recruiter Reasoning</h3>
+          <p class="bento-desc">
+            Llama 3.1 70B breaks down job requirements into weighted 4-pillar rubrics and generates honest recruiter feedback and skill gap analysis.
+          </p>
+        </div>
+
+        <!-- Large Card 2 -->
+        <div class="bento-card col-8 reveal" style="transition-delay: 0.1s">
+          <div class="bento-icon-box"></div>
+          <h3 class="bento-title">Local Browser Kanban Application Tracker</h3>
+          <p class="bento-desc">
+            Organize your applications through Saved, Applied, Interview, and Offer columns. Persisted directly into browser localStorage with one-click JSON export for full data ownership.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════ SOTA ARCHITECTURE TABS ════════════════════ -->
+  <section id="pipeline">
+    <div class="section-inner">
+      <div class="pipeline-container reveal">
+        <span class="section-tag" style="background: rgba(255,255,255,0.15); color: #6ee7b7; border-color: rgba(110,231,183,0.3)">
+          Engineering Architecture
+        </span>
+        <h2 style="font-size: clamp(28px, 4vw, 40px); font-weight: 900; margin-bottom: 12px">
+          SOTA 3-Stage Hybrid Screening Pipeline
+        </h2>
+        <p style="font-size: 15.5px; color: #d1fae5; max-width: 640px">
+          Combining deterministic PDF parsing with local CPU dense embeddings and cloud 70B parameter neural reasoning.
+        </p>
+
+        <div class="pipeline-nav-tabs">
+          <button class="pipeline-tab active" onclick="switchTab(0)">Stage 1: PyMuPDF Extraction</button>
+          <button class="pipeline-tab" onclick="switchTab(1)">Stage 2: FastEmbed ONNX</button>
+          <button class="pipeline-tab" onclick="switchTab(2)">Stage 3: 70B Neural Reasoning</button>
+        </div>
+
+        <div class="pipeline-display-pane" id="tab-content">
+          <div class="pipe-code">
+            <span style="color:#6ee7b7"># Stage 1: Deterministic Offline Extraction</span><br>
+            doc = fitz.open(resume_pdf_path)<br>
+            text = "\n".join([page.get_text() for page in doc])<br>
+            profile = ParserService.parse_candidate_profile(text)  <span style="color:#a7f3d0">// &lt;50ms, zero OCR delay</span>
           </div>
         </div>
       </div>
     </div>
-  </header>
+  </section>
 
-  <!-- ════════════════════ FILTER & SEARCH BAR ════════════════════ -->
-  <div class="filter-bar" id="filter-bar" style="display:none;">
-    <div class="filter-inner">
-      <div class="search-input-wrap">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input type="text" id="main-search-input" class="search-input" placeholder="Search for roles, companies, or skills (e.g. Python, Backend, AI)..." oninput="filterJobs()">
+  <!-- ════════════════════ LIVE SOURCES ════════════════════ -->
+  <section id="sources" style="border-top: 1px solid var(--border);">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <span class="section-tag">Real-Time Ingestion</span>
+        <h2 class="section-title">Aggregated Directly from Enterprise Portals</h2>
+        <p class="section-sub">Active career feeds refreshed continuously across India and global remote tech hubs.</p>
       </div>
 
-      <div class="filter-pills-row">
-        <button class="filter-pill" id="pill-remote"    onclick="togglePillFilter('remote')">Remote</button>
-        <button class="filter-pill" id="pill-bengaluru" onclick="togglePillFilter('bengaluru')">Bengaluru</button>
-        <button class="filter-pill" id="pill-hyderabad" onclick="togglePillFilter('hyderabad')">Hyderabad</button>
-        <button class="filter-pill" id="pill-intern"    onclick="togglePillFilter('internship')">Internships</button>
-        <button class="filter-pill" id="pill-fulltime"  onclick="togglePillFilter('fulltime')">Full-Time</button>
-        <button class="filter-pill" id="pill-parttime"  onclick="togglePillFilter('parttime')">Contract</button>
-        <button class="btn-clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
-        <a href="/resume-builder" style="margin-left:auto;padding:6px 14px;border-radius:8px;background:linear-gradient(135deg,#059669,#10b981);color:white;font-size:12.5px;font-weight:800;text-decoration:none;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(5,150,105,.2);">Resume</a>
+      <div class="ticker-wrap reveal">
+        <div class="source-pill">Greenhouse <span class="source-count">780+ Live</span></div>
+        <div class="source-pill">Lever <span class="source-count">200+ Live</span></div>
+        <div class="source-pill">Ashby <span class="source-count">250+ Live</span></div>
+        <div class="source-pill">Internshala <span class="source-count">Direct Tech</span></div>
+        <div class="source-pill">LinkedIn <span class="source-count">Curated Multi-City</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════ CALL TO ACTION ════════════════════ -->
+  <section style="padding: 0 24px 100px;">
+    <div class="section-inner">
+      <div class="cta-wrapper reveal">
+        <h2 class="cta-heading">Launch Your AI Job Search Today</h2>
+        <p style="font-size: 16.5px; color: var(--text-muted); max-width: 580px; margin: 0 auto 36px">
+          Zero cost. Zero third-party tracking. Instant semantic matching against 1,150+ active engineering openings.
+        </p>
+        <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap">
+          <button onclick="requireAuthAndProceed('/onboarding')" class="btn btn-primary btn-lg">Configure Preferences →</button>
+          <button onclick="requireAuthAndProceed('/dashboard')" class="btn btn-secondary btn-lg">Open Job Explorer</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════ ENTERPRISE FOOTER ════════════════════ -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-grid">
+        
+        <!-- Column 1: Brand & Status -->
+        <div class="footer-brand-col">
+          <a href="/" class="footer-logo-wrap">
+            <div class="nav-logo">G</div>
+            <span class="nav-title" style="font-size:18px">getArole<span>.ai</span></span>
+          </a>
+          <p class="footer-tagline">
+            Next-generation autonomous AI job discovery engine and candidate screening platform. Built for high-signal engineering hiring across India and global remote markets.
+          </p>
+          <div class="status-badge-live">
+            <span class="pulse-dot"></span>
+            <span>All Systems Live · 1,150+ Indexed Roles</span>
+          </div>
+        </div>
+
+        <!-- Column 2: Product -->
+        <div>
+          <div class="footer-col-title">Product</div>
+          <ul class="footer-list">
+            <li><a href="/dashboard">Job Explorer</a></li>
+            <li><a href="/onboarding">Neural Resume Matcher</a></li>
+            <li><a href="/dashboard">Application Kanban</a></li>
+            <li><a href="/dashboard">70B ATS Tailor</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Engineering -->
+        <div>
+          <div class="footer-col-title">Engineering</div>
+          <ul class="footer-list">
+            <li><a href="#pipeline">3-Stage Architecture</a></li>
+            <li><a href="#how-it-works">FastEmbed ONNX</a></li>
+            <li><a href="#pipeline">NVIDIA NIM 70B</a></li>
+            <li><a href="/docs">FastAPI OpenAPI</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Sources -->
+        <div>
+          <div class="footer-col-title">Ingestion</div>
+          <ul class="footer-list">
+            <li><a href="/dashboard">Greenhouse Portal</a></li>
+            <li><a href="/dashboard">Lever Ingestion</a></li>
+            <li><a href="/dashboard">Ashby Gateway</a></li>
+            <li><a href="/dashboard">Internshala Feeds</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 5: Project & About -->
+        <div>
+          <div class="footer-col-title">About</div>
+          <ul class="footer-list">
+            <li><a href="https://github.com" target="_blank">GitHub Repository</a></li>
+            <li><a href="/docs">API Documentation</a></li>
+            <li><a href="#">MIT Open License</a></li>
+            <li><a href="#">VIT-AP University</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copy-text">
+          © 2026 <span>getArole AI</span>. Architected and open-sourced by <span>Arjun Sharma</span> (VIT-AP 2027).
+        </div>
+        <div class="footer-tech-stack">
+          <span class="stack-pill">FastAPI</span>
+          <span class="stack-pill">FastEmbed ONNX</span>
+          <span class="stack-pill">NVIDIA NIM 70B</span>
+          <span class="stack-pill">PyMuPDF</span>
+          <span class="stack-pill">MIT License</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ════════════════════ AUTH MODAL (FIREBASE) ════════════════════ -->
+  <div id="auth-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.5); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px;">
+    <div style="background:white; border:1px solid var(--border); border-radius:20px; width:100%; max-width:420px; padding:32px; box-shadow:0 25px 60px -15px rgba(0,0,0,0.2); position:relative; animation:fadeInUp 0.3s ease;">
+      <button onclick="closeAuthModal()" style="position:absolute; top:20px; right:20px; background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-subtle);">&times;</button>
+      
+      <div style="text-align:center; margin-bottom:24px;">
+        <div class="nav-logo" style="margin:0 auto 12px; width:40px; height:40px; font-size:18px;">G</div>
+        <h3 style="font-size:22px; font-weight:800; color:var(--text-main); margin-bottom:4px;" id="auth-modal-title">Welcome to getArole</h3>
+        <p style="font-size:13.5px; color:var(--text-muted);" id="auth-modal-sub">Sign in to match your resume and track applications.</p>
+      </div>
+
+      <!-- 1-Click Google Button -->
+      <button id="btn-google-login" onclick="handleGoogleSignIn()" style="width:100%; padding:11px; border-radius:10px; border:1px solid var(--border); background:white; font-size:14px; font-weight:600; color:var(--text-main); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; box-shadow:0 1px 3px rgba(0,0,0,0.03); transition:all 0.15s; margin-bottom:20px;">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+        Continue with Google
+      </button>
+
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+        <div style="flex:1; height:1px; background:var(--border);"></div>
+        <span style="font-size:12px; color:var(--text-subtle); text-transform:uppercase; font-weight:600;">Or Email</span>
+        <div style="flex:1; height:1px; background:var(--border);"></div>
+      </div>
+
+      <form id="email-auth-form" onsubmit="handleEmailAuth(event)" style="display:flex; flex-direction:column; gap:12px;">
+        <div id="field-name-wrap" style="display:none;">
+          <input type="text" id="auth-name" placeholder="Full Name" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid var(--border); font-size:13.5px; font-family:inherit; outline:none;">
+        </div>
+        <div>
+          <input type="email" id="auth-email" required placeholder="name@example.com" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid var(--border); font-size:13.5px; font-family:inherit; outline:none;">
+        </div>
+        <div>
+          <input type="password" id="auth-password" required placeholder="Password" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid var(--border); font-size:13.5px; font-family:inherit; outline:none;">
+        </div>
+        <div id="auth-error-msg" style="display:none; color:#ef4444; font-size:12px; font-weight:600;"></div>
+        <button type="submit" id="btn-submit-auth" class="btn btn-primary" style="width:100%; padding:11px; margin-top:4px;">Sign In</button>
+      </form>
+
+      <div style="text-align:center; margin-top:16px; font-size:13px; color:var(--text-muted);">
+        <span id="auth-toggle-text">Don't have an account?</span>
+        <a href="#" onclick="toggleAuthMode(event)" style="color:var(--primary); font-weight:700; text-decoration:none; margin-left:4px;" id="auth-toggle-link">Sign Up</a>
       </div>
     </div>
   </div>
 
-  <!-- ════════════════════ MAIN CONTENT ════════════════════ -->
-  <main>
-    <!-- 0. HOME VIEW -->
-    <div id="view-home" class="page-view active" style="padding: 32px 24px;">
-      
-      <!-- Welcome Hero Banner -->
-      <div class="home-hero-card">
-        <div>
-          <h1 class="home-hero-title">Welcome back, <span id="home-user-name">Engineer</span></h1>
-          <p class="home-hero-sub">Your personalized AI job matcher and application pipeline across India and global remote tech hubs.</p>
-        </div>
-        <a href="/onboarding" class="btn-hero-action">Search Preferences →</a>
-      </div>
-
-      <!-- Application Tracker Pipeline (Professional UI) -->
-      <div style="margin-bottom: 36px; background: white; border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-          <div>
-            <h2 style="font-size: 20px; font-weight: 800; color: var(--text-main); display:flex; align-items:center; gap:8px;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-              Application Tracker
-            </h2>
-            <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 4px;">Manage your pipeline from saved opportunities to sent applications.</p>
-          </div>
-        </div>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-          <!-- Saved Column -->
-          <div style="background: var(--background); border: 1px solid var(--border); border-radius: 12px; padding: 16px;">
-            <h3 style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display:flex; align-items:center; justify-content:space-between;">
-              <span>🔖 Saved</span>
-              <span id="tracker-saved-count" style="background:var(--border-strong); color:white; padding:2px 8px; border-radius:10px; font-size:11px;">0</span>
-            </h3>
-            <div id="tracker-saved-list" style="display:flex; flex-direction:column; gap:8px; min-height: 100px; color: var(--text-subtle); font-size: 13px; justify-content:center; align-items:center;">
-              No saved opportunities yet.
-            </div>
-          </div>
-
-          <!-- Applied Column -->
-          <div style="background: var(--background); border: 1px solid var(--border); border-radius: 12px; padding: 16px;">
-            <h3 style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display:flex; align-items:center; justify-content:space-between;">
-              <span>✅ Applied</span>
-              <span id="tracker-applied-count" style="background:var(--primary); color:white; padding:2px 8px; border-radius:10px; font-size:11px;">0</span>
-            </h3>
-            <div id="tracker-applied-list" style="display:flex; flex-direction:column; gap:8px; min-height: 100px; color: var(--text-subtle); font-size: 13px; justify-content:center; align-items:center;">
-              No applications sent yet.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Quick Metrics Grid -->
-      <div style="margin-top: 32px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
-        <h2 style="font-size: 20px; font-weight: 800; color: var(--text-main);">Performance Metrics</h2>
-        <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">Real-time Platform Data</span>
-      </div>
-      <div class="stats-cards-grid">
-        <div class="stat-metric-card">
-          <div class="stat-metric-icon">💼</div>
-          <div>
-            <div class="stat-metric-num" id="home-total-jobs">1,062</div>
-            <div class="stat-metric-label">Live Active Jobs</div>
-          </div>
-        </div>
-        <div class="stat-metric-card">
-          <div class="stat-metric-icon">🎯</div>
-          <div>
-            <div class="stat-metric-num" id="home-matches-count">16</div>
-            <div class="stat-metric-label">High-Fit AI Matches</div>
-          </div>
-        </div>
-        <div class="stat-metric-card">
-          <div class="stat-metric-icon">🔖</div>
-          <div>
-            <div class="stat-metric-num" id="home-saved-count">0</div>
-            <div class="stat-metric-label">Saved Opportunities</div>
-          </div>
-        </div>
-        <div class="stat-metric-card">
-          <div class="stat-metric-icon">✅</div>
-          <div>
-            <div class="stat-metric-num" id="home-applied-count">0</div>
-            <div class="stat-metric-label">Applications Sent</div>
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- Top AI Matches Preview Section -->
-      <div style="margin-bottom: 40px; background: linear-gradient(145deg, #ffffff, #f8fafc); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
-          <div>
-            <h2 style="font-size:22px; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
-              ✨ Top AI Recommended Opportunities
-            </h2>
-            <p style="font-size:14px; color:var(--text-muted); margin-top:4px;">
-              Calibrated by dense semantic vector similarity to your profile.
-            </p>
-          </div>
-          <button class="btn-refresh" onclick="showTab('matches')" style="padding: 10px 20px; background: var(--primary-light); color: var(--primary-hover); border: 1px solid var(--primary-border);">
-            View All Matches →
-          </button>
-        </div>
-        <div id="home-matches-preview-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px;"></div>
-      </div>
-
-    </div>
-
-    <!-- 1. JOBS EXPLORER VIEW (SPLIT PANE) -->
-    <div id="view-jobs" class="page-view">
-      <div class="jobs-split-container">
-        
-        <!-- Left Column: Job Feed List -->
-        <div class="jobs-feed-col">
-          <div class="feed-header">
-            <span>Showing <strong id="jobs-count-text">0</strong> Opportunities</span>
-            <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:12px; font-weight:700; color:var(--text-muted)">
-              <input type="checkbox" id="sort-recent" onchange="filterJobs()" checked style="accent-color:var(--primary)"> Most recent
-            </label>
-          </div>
-          <div class="feed-list" id="job-feed-list"></div>
-        </div>
-
-        <!-- Right Column: Job Detail & Match Pane -->
-        <div class="job-detail-col" id="job-detail-pane">
-          <div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--text-subtle); font-size:14px; font-weight:600">
-            Select an opportunity on the left to view AI match breakdown and requirements.
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- 2. AI MATCHES VIEW (SPLIT PANE LIKE JOB EXPLORER) -->
-    <div id="view-matches" class="page-view">
-      <div class="jobs-split-container">
-        
-        <!-- Left Column: Top Matched Jobs List -->
-        <div class="jobs-feed-col">
-          <div class="feed-header">
-            <span>🎯 <strong id="matches-count-header">0</strong> Calibrated AI Matches</span>
-            <span style="font-size:12px; color:var(--primary); font-weight:700;">Ranked by Fit</span>
-          </div>
-          <div class="feed-list" id="matches-feed-list"></div>
-        </div>
-
-        <!-- Right Column: Matched Job Detail & Match Insights -->
-        <div class="job-detail-col" id="matches-detail-pane">
-          <div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--text-subtle); font-size:14px; font-weight:600">
-            Select an AI-matched opportunity on the left to view full requirements and 70B ATS highlights.
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-  </main>
-
-  <div id="toast"></div>
-
-  <!-- ════════════════════ LOGIC & DATA ENGINE ════════════════════ -->
+  <!-- ════════════════════ SCRIPT ANIMATIONS & FIREBASE AUTH ════════════════════ -->
   <script type="module">
-    import { initAuthListener, logoutUser } from "./firebase-auth.js";
+    import { loginWithGoogle, loginWithEmail, signupWithEmail, logoutUser, initAuthListener } from "/firebase-auth.js";
 
-    initAuthListener((user) => {
-      if (user) {
-        const name = user.displayName || user.email.split('@')[0];
-        document.getElementById('nav-username').textContent = name;
-        document.getElementById('home-user-name').textContent = name;
-        const avatar = document.getElementById('nav-avatar');
-        if (user.photoURL) {
-          avatar.innerHTML = `<img src="${user.photoURL}" style="width:100%;height:100%;border-radius:50%">`;
+    let isSignUp = false;
+
+    window.openAuthModal = function(signup = false) {
+      isSignUp = signup;
+      updateAuthUI();
+      const modal = document.getElementById('auth-modal');
+      modal.style.display = 'flex';
+    };
+
+    window.closeAuthModal = function() {
+      document.getElementById('auth-modal').style.display = 'none';
+      document.getElementById('auth-error-msg').style.display = 'none';
+    };
+
+    window.toggleAuthMode = function(e) {
+      if (e) e.preventDefault();
+      isSignUp = !isSignUp;
+      updateAuthUI();
+    };
+
+    function updateAuthUI() {
+      document.getElementById('auth-modal-title').textContent = isSignUp ? "Create your getArole account" : "Welcome to getArole";
+      document.getElementById('field-name-wrap').style.display = isSignUp ? "block" : "none";
+      document.getElementById('btn-submit-auth').textContent = isSignUp ? "Create Account" : "Sign In";
+      document.getElementById('auth-toggle-text').textContent = isSignUp ? "Already have an account?" : "Don't have an account?";
+      document.getElementById('auth-toggle-link').textContent = isSignUp ? "Sign In" : "Sign Up";
+    }
+
+    window.handleGoogleSignIn = async function() {
+      const res = await loginWithGoogle();
+      if (res.success) {
+        window.closeAuthModal();
+        const prefs = localStorage.getItem('getarole_prefs');
+        if (!prefs) {
+          window.location.href = "/onboarding";
         } else {
-          avatar.textContent = (user.displayName || user.email)[0].toUpperCase();
+          window.location.href = "/dashboard";
         }
+      } else {
+        showError(res.error);
+      }
+    };
+
+    window.handleEmailAuth = async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value;
+      const pass = document.getElementById('auth-password').value;
+      const name = document.getElementById('auth-name').value;
+
+      let res;
+      if (isSignUp) {
+        res = await signupWithEmail(email, pass, name);
+      } else {
+        res = await loginWithEmail(email, pass);
+      }
+
+      if (res.success) {
+        window.closeAuthModal();
+        const prefs = localStorage.getItem('getarole_prefs');
+        if (isSignUp || !prefs) {
+          window.location.href = "/onboarding";
+        } else {
+          window.location.href = "/dashboard";
+        }
+      } else {
+        showError(res.error);
+      }
+    };
+
+    function showError(msg) {
+      const err = document.getElementById('auth-error-msg');
+      err.style.display = 'block';
+      err.textContent = msg.replace("Firebase: ", "").replace(/\(auth\/.*\)\.?/, "");
+    }
+
+    window.requireAuthAndProceed = function(targetUrl) {
+      const user = localStorage.getItem('getarole_user');
+      if (user) {
+        window.location.href = targetUrl;
+      } else {
+        window.openAuthModal(false);
+      }
+    };
+
+    // Auto-open modal if redirected with ?auth=1
+    if (window.location.search.includes('auth=1')) {
+      window.openAuthModal(false);
+    }
+
+    // Initialize Auth Listener
+    initAuthListener((user) => {
+      const actions = document.querySelector('.nav-actions');
+      if (user) {
+        actions.innerHTML = `
+          <a href="/dashboard" class="btn btn-secondary">Dashboard</a>
+          <button onclick="window.handleLogout()" class="btn btn-primary" style="padding:8px 14px;">Sign Out</button>
+        `;
       }
     });
 
-    window.openPreferencesModal = function() {
-      toast('Search Preferences feature is coming soon!');
-    };
-
     window.handleLogout = async function() {
       await logoutUser();
-      window.location.href = "/";
+      window.location.reload();
     };
   </script>
 
   <script>
-    let allJobs = [];
-    let filteredJobs = [];
-    let matchedJobs = [];
-    let selectedJobId = null;
-    let selectedMatchJobId = null;
-    const activePills = new Set();
-    let tracker = JSON.parse(localStorage.getItem('getarole_tracker') || '{"saved":[],"applied":[],"interview":[],"offer":[]}');
-    const prefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
+    // 1. Dynamic Mesh Canvas
+    (function initCanvas() {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let w, h;
 
-    function toast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.style.display = 'flex';
-      setTimeout(() => { t.style.display = 'none'; }, 3000);
-    }
-
-    function toggleUserDropdown() {
-      document.getElementById('user-dropdown').classList.toggle('show');
-    }
-    window.addEventListener('click', (e) => {
-      if (!e.target.closest('.user-profile-btn')) {
-        document.getElementById('user-dropdown').classList.remove('show');
+      function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
       }
-    });
+      window.addEventListener('resize', resize);
+      resize();
 
-    function showTab(tabName) {
-      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.page-view').forEach(v => v.classList.remove('active'));
-      
-      const tabBtn = document.getElementById(`tab-btn-${tabName}`);
-      if (tabBtn) tabBtn.classList.add('active');
-      document.getElementById(`view-${tabName}`).classList.add('active');
-
-      document.getElementById('filter-bar').style.display = (tabName === 'jobs') ? 'block' : 'none';
-      if (tabName === 'home') renderHomeView();
-      if (tabName === 'tracker') renderTracker();
-      if (tabName === 'matches') renderMatchesSplitView();
-    }
-
-    const SUPABASE_REST_URL = "https://tgmhtlqcjgcjedlnthfk.supabase.co/rest/v1/jobs?select=*&order=created_at.desc&limit=1500";
-    const SUPABASE_ANON_KEY = "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn";
-
-    async function loadJobs() {
-      const feed = document.getElementById('job-feed-list');
-      if (feed) {
-        feed.innerHTML = `
-          <div style="padding:40px 20px; text-align:center; color:var(--text-subtle); font-size:13.5px; font-weight:600;">
-            ⏳ Loading live verified career listings...
-          </div>`;
+      const particles = [];
+      for (let i = 0; i < 35; i++) {
+        particles.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          radius: Math.random() * 2 + 1,
+          opacity: Math.random() * 0.2 + 0.05
+        });
       }
 
-      try {
-        let loadedList = [];
-        // 1. Try Backend API endpoint
-        try {
-          const res = await fetch('/api/jobs');
-          if (res.ok) {
-            const data = await res.json();
-            if (data.jobs && data.jobs.length > 0) {
-              loadedList = data.jobs;
-            }
-          }
-        } catch (err) {
-          console.warn('API fetch notice, falling back to direct Supabase cloud:', err);
-        }
+      function animate() {
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => {
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0) p.x = w; if (p.x > w) p.x = 0;
+          if (p.y < 0) p.y = h; if (p.y > h) p.y = 0;
 
-        // 2. Direct Supabase Fallback if backend returned empty or was sleeping
-        if (!loadedList || loadedList.length === 0) {
-          const supaRes = await fetch(SUPABASE_REST_URL, {
-            headers: {
-              'apikey': SUPABASE_ANON_KEY,
-              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-            }
-          });
-          if (supaRes.ok) {
-            loadedList = await supaRes.json();
-          }
-        }
-
-        allJobs = loadedList || [];
-        filteredJobs = [...allJobs];
-        
-        // Prepare matches
-        matchedJobs = allJobs.slice(0, 30).map((j, i) => ({
-          ...j,
-          fit_score: Math.max(72, 98 - (i * 1.5))
-        }));
-
-        renderFeed();
-        if (filteredJobs.length > 0) {
-          selectJob(filteredJobs[0].id);
-        }
-        updateCounts();
-        renderHomeView();
-      } catch (e) {
-        console.error('Job load error:', e);
-        if (feed) {
-          feed.innerHTML = `
-            <div style="padding:40px 20px; text-align:center; color:#ef4444; font-size:13.5px; font-weight:600;">
-              ⚠️ Could not load jobs. <button class="btn-refresh" onclick="loadJobs()" style="margin:12px auto;">Try Again</button>
-            </div>`;
-        }
-        toast('Error loading jobs.');
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(16, 185, 129, ${p.opacity})`;
+          ctx.fill();
+        });
+        requestAnimationFrame(animate);
       }
-    }
-
-    function togglePillFilter(filterKey) {
-      const pillMap = {
-        'remote': 'pill-remote',
-        'bengaluru': 'pill-bengaluru',
-        'hyderabad': 'pill-hyderabad',
-        'internship': 'pill-intern',
-        'fulltime': 'pill-fulltime',
-        'parttime': 'pill-parttime'
-      };
-      const btn = document.getElementById(pillMap[filterKey]);
-      if (activePills.has(filterKey)) {
-        activePills.delete(filterKey);
-        btn.classList.remove('active');
-      } else {
-        activePills.add(filterKey);
-        btn.classList.add('active');
-      }
-      filterJobs();
-    }
-
-    function clearAllFilters() {
-      activePills.clear();
-      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-      document.getElementById('main-search-input').value = '';
-      filteredJobs = [...allJobs];
-      renderFeed();
-      if (filteredJobs.length > 0) selectJob(filteredJobs[0].id);
-    }
-
-    function filterJobs() {
-      const q = document.getElementById('main-search-input').value.toLowerCase().trim();
-      
-      filteredJobs = allJobs.filter(j => {
-        const textMatch = !q || `${j.title} ${j.company} ${j.location} ${j.description}`.toLowerCase().includes(q);
-        
-        let pillMatch = true;
-        if (activePills.has('remote') && !(j.workplace_type || '').toLowerCase().includes('remote')) pillMatch = false;
-        if (activePills.has('bengaluru') && !(j.location || '').toLowerCase().includes('bengaluru') && !(j.city || '').toLowerCase().includes('bengaluru')) pillMatch = false;
-        if (activePills.has('hyderabad') && !(j.location || '').toLowerCase().includes('hyderabad') && !(j.city || '').toLowerCase().includes('hyderabad')) pillMatch = false;
-        if (activePills.has('internship') && !(j.employment_type || '').toLowerCase().includes('intern')) pillMatch = false;
-        if (activePills.has('fulltime') && !(j.employment_type || '').toLowerCase().includes('full')) pillMatch = false;
-        if (activePills.has('parttime')) {
-          const pt = `${j.employment_type || ''} ${j.title || ''} ${j.description || ''}`.toLowerCase();
-          if (!pt.includes('part') && !pt.includes('contract') && !pt.includes('freelance') && !pt.includes('fractional')) pillMatch = false;
-        }
-
-        return textMatch && pillMatch;
-      });
-
-      renderFeed();
-      if (filteredJobs.length > 0) {
-        selectJob(filteredJobs[0].id);
-      } else {
-        document.getElementById('job-detail-pane').innerHTML = `
-          <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-subtle);font-size:14px;font-weight:600">
-            No opportunities match the selected criteria. Try clearing filters.
-          </div>`;
-      }
-    }
-
-    function renderFeed() {
-      const feed = document.getElementById('job-feed-list');
-      document.getElementById('jobs-count-text').textContent = filteredJobs.length.toLocaleString('en-IN');
-
-      feed.innerHTML = filteredJobs.map(j => {
-        const isSelected = j.id === selectedJobId;
-        const isSaved = tracker.saved.includes(j.id);
-        const compInitial = j.company ? j.company[0].toUpperCase() : 'G';
-        const batchTag = j.title.toLowerCase().includes('intern') ? 'Batch 2026/2027' : 'Immediate';
-
-        return `
-          <div class="job-card ${isSelected ? 'selected' : ''}" onclick="selectJob('${j.id}')">
-            <div class="card-top">
-              <div class="company-badge-wrap">
-                <div class="company-logo">${compInitial}</div>
-                <div class="company-name">${j.company}</div>
-              </div>
-              <button class="card-bookmark-btn ${isSaved ? 'saved' : ''}" onclick="event.stopPropagation(); toggleSave('${j.id}')">
-                ${isSaved ? '★' : '☆'}
-              </button>
-            </div>
-            <div class="card-title">${j.title}</div>
-            <div class="card-tags">
-              <span class="tag-chip batch">${batchTag}</span>
-              <span class="tag-chip">${j.location || 'India'}</span>
-              <span class="tag-chip ${j.workplace_type === 'Remote' ? 'remote' : ''}">${j.workplace_type || 'On-site'}</span>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function selectJob(id, targetPaneId = 'job-detail-pane') {
-      selectedJobId = id;
-      const job = allJobs.find(j => j.id === id);
-      if (!job) return;
-
-      document.querySelectorAll('.job-card').forEach(c => c.classList.remove('selected'));
-      renderFeed();
-
-      const pane = document.getElementById(targetPaneId);
-      const isSaved = tracker.saved.includes(job.id);
-      const isApplied = tracker.applied.includes(job.id);
-      const compInitial = job.company ? job.company[0].toUpperCase() : 'G';
-      
-      const matchScore = Math.min(98, Math.max(74, 86 + (job.title.length % 12)));
-      const strokeOffset = 188 - (188 * matchScore / 100);
-
-      pane.innerHTML = `
-        <div class="detail-actions-bar">
-          <div class="detail-tabs">
-            <span class="detail-tab active">Overview</span>
-            <span class="detail-tab" onclick="toast('Direct verified career gateway active.')">Company</span>
-          </div>
-          <div class="detail-action-buttons">
-            <button class="btn-applied-toggle" onclick="toggleApplied('${job.id}')">
-              ${isApplied ? 'Marked as Applied' : 'Already Applied?'}
-            </button>
-            <div style="position:relative;">
-              <button class="btn-referral" onclick="toggleReferralDropdown('${job.id}')">
-                Find Referrals ▼
-              </button>
-              <div class="referral-dropdown" id="ref-dropdown-${job.id}">
-                <a onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'hr')">🎯 Find HR / Recruiters</a>
-                <a onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'eng')">👥 Find Engineering Peers</a>
-              </div>
-            </div>
-            <button class="btn-save-job" onclick="toggleSave('${job.id}')">
-              ${isSaved ? '★ Saved' : '☆ Save'}
-            </button>
-            <a href="${job.url}" target="_blank" class="btn-apply-primary">
-              Apply
-            </a>
-          </div>
-        </div>
-
-        <div class="detail-header">
-          <div class="confirmed-badge">
-            <span>●</span> Confirmed live in the last 24 hours · ${job.platform}
-          </div>
-          <h1 class="detail-job-title">${job.title}</h1>
-          <div class="detail-company-line">
-            <div class="company-logo" style="width:24px;height:24px;font-size:11px;">${compInitial}</div>
-            <strong>${job.company}</strong>
-            <span>·</span>
-            <span>${job.location || 'India'}</span>
-          </div>
-        </div>
-
-        <!-- AI Match Ring Card -->
-        <div class="ai-match-card">
-          <div class="match-ring-wrap">
-            <div class="circle-progress-container">
-              <svg>
-                <circle class="circle-bg" cx="34" cy="34" r="30"></circle>
-                <circle class="circle-fill" cx="34" cy="34" r="30" style="stroke-dasharray:188; stroke-dashoffset:${strokeOffset}"></circle>
-              </svg>
-              <div class="circle-text">${matchScore}%</div>
-            </div>
-            <div>
-              <div class="match-summary-title">High Resume Alignment</div>
-              <div class="match-summary-sub">
-                Strong fit across core software engineering competencies.
-                <a href="/onboarding">Improve Resume →</a>
-              </div>
-            </div>
-          </div>
-          <button class="btn-ai-tailor" onclick="openTailorWithJob('${job.id}')">
-            <span></span> 70B ATS Tailor
-          </button>
-        </div>
-
-        <!-- Metadata Grid -->
-        <div class="meta-grid">
-          <div class="meta-item">
-            <div class="meta-label">Compensation</div>
-            <div class="meta-val" style="color:var(--primary)">${job.stipend_or_salary || '₹25,000 - ₹50,000 / mo'}</div>
-          </div>
-          <div class="meta-item">
-            <div class="meta-label">Employment Type</div>
-            <div class="meta-val">${job.employment_type || 'Full-Time'}</div>
-          </div>
-          <div class="meta-item">
-            <div class="meta-label">Workplace Model</div>
-            <div class="meta-val">${job.workplace_type || 'Hybrid'}</div>
-          </div>
-          <div class="meta-item">
-            <div class="meta-label">Degree Requirement</div>
-            <div class="meta-val">Bachelor's / Master's CS</div>
-          </div>
-        </div>
-
-        <!-- Job Description -->
-        <div class="jd-section-title">Role Overview &amp; Requirements</div>
-        <div class="jd-body">${formatJobDescription(job.description)}</div>
-
-        <div style="margin-top:auto; padding-top:20px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; color:var(--text-subtle)">Job ID: ${job.id} · Verified Career Gateway</span>
-          <a href="${job.url}" target="_blank" class="btn-apply-primary" style="padding:10px 24px;">Apply on ${job.platform} →</a>
-        </div>
-      `;
-    }
-
-    function renderMatchesSplitView() {
-      const feed = document.getElementById('matches-feed-list');
-      document.getElementById('matches-count-header').textContent = matchedJobs.length;
-
-      feed.innerHTML = matchedJobs.map(j => {
-        const isSelected = j.id === selectedMatchJobId;
-        const compInitial = j.company ? j.company[0].toUpperCase() : 'G';
-        return `
-          <div class="job-card ${isSelected ? 'selected' : ''}" onclick="selectMatchJob('${j.id}')">
-            <div class="card-top">
-              <div class="company-badge-wrap">
-                <div class="company-logo">${compInitial}</div>
-                <div class="company-name">${j.company}</div>
-              </div>
-              <span class="tag-chip match-score-chip">🎯 ${Math.round(j.fit_score)}% Fit</span>
-            </div>
-            <div class="card-title">${j.title}</div>
-            <div class="card-tags">
-              <span class="tag-chip">${j.location || 'India'}</span>
-              <span class="tag-chip ${j.workplace_type === 'Remote' ? 'remote' : ''}">${j.workplace_type || 'On-site'}</span>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      if (matchedJobs.length > 0 && !selectedMatchJobId) {
-        selectMatchJob(matchedJobs[0].id);
-      }
-    }
-
-    function selectMatchJob(id) {
-      selectedMatchJobId = id;
-      selectJob(id, 'matches-detail-pane');
-    }
-
-    function renderHomeView() {
-      document.getElementById('home-total-jobs').textContent = allJobs.length.toLocaleString('en-IN');
-      document.getElementById('home-matches-count').textContent = matchedJobs.length;
-      renderTracker();
-
-      // Platform counts
-      const ghCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('greenhouse')).length;
-      const ashbyCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('ashby')).length;
-      const liCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('linkedin')).length;
-      const leverCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('lever')).length;
-      const internCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('internshala')).length;
-
-      const ghEl = document.getElementById('feed-count-greenhouse');
-      if (ghEl) ghEl.textContent = `● Greenhouse (${ghCount} live roles)`;
-      const ashEl = document.getElementById('feed-count-ashby');
-      if (ashEl) ashEl.textContent = `● Ashby Gateway (${ashbyCount} live roles)`;
-      const liEl = document.getElementById('feed-count-linkedin');
-      if (liEl) liEl.textContent = `● LinkedIn (${liCount} roles)`;
-      const levEl = document.getElementById('feed-count-lever');
-      if (levEl) levEl.textContent = `● Lever (${leverCount} roles)`;
-      const intEl = document.getElementById('feed-count-internshala');
-      if (intEl) intEl.textContent = `● Internshala (${internCount} roles)`;
-
-      const grid = document.getElementById('home-matches-preview-grid');
-      grid.innerHTML = matchedJobs.slice(0, 6).map(j => `
-        <div style="background:white; border:1.5px solid var(--border); border-radius:14px; padding:18px; cursor:pointer;" onclick="showTab('jobs'); selectJob('${j.id}')">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <span style="font-size:11px; font-weight:800; color:var(--primary); text-transform:uppercase;">${j.company}</span>
-            <span class="tag-chip match-score-chip">🎯 ${Math.round(j.fit_score)}% Fit</span>
-          </div>
-          <div style="font-size:15px; font-weight:800; color:var(--text-main); margin-bottom:6px;">${j.title}</div>
-          <div style="font-size:12.5px; color:var(--text-muted); display:flex; gap:8px;">
-            <span>${j.location || 'India'}</span>
-            <span>·</span>
-            <span>${j.workplace_type || 'Remote'}</span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function toggleSave(id) {
-      if (tracker.saved.includes(id)) {
-        tracker.saved = tracker.saved.filter(x => x !== id);
-        toast('Removed from saved list.');
-      } else {
-        tracker.saved.push(id);
-        toast('Saved to tracker!');
-      }
-      localStorage.setItem('getarole_tracker', JSON.stringify(tracker));
-      renderFeed();
-      if (selectedJobId === id) selectJob(id);
-      updateCounts();
-    }
-
-    function toggleApplied(id) {
-      if (tracker.applied.includes(id)) {
-        tracker.applied = tracker.applied.filter(x => x !== id);
-        toast('Unmarked application.');
-      } else {
-        tracker.applied.push(id);
-        toast('Marked as Applied! Added to Kanban tracker.');
-      }
-      localStorage.setItem('getarole_tracker', JSON.stringify(tracker));
-      if (selectedJobId === id) selectJob(id);
-      updateCounts();
-    }
-
-    function updateCounts() {
-      document.getElementById('nav-match-count').textContent = matchedJobs.length;
-    }
-
-    function renderTracker() {
-      // Update new tracker UI badges
-      const savedEl = document.getElementById('tracker-saved-count');
-      const appliedEl = document.getElementById('tracker-applied-count');
-      if (savedEl) savedEl.textContent = tracker.saved.length;
-      if (appliedEl) appliedEl.textContent = tracker.applied.length;
-
-      // Update hero metrics
-      const heroSavedEl = document.getElementById('home-saved-count');
-      const heroAppliedEl = document.getElementById('home-applied-count');
-      if (heroSavedEl) heroSavedEl.textContent = tracker.saved.length;
-      if (heroAppliedEl) heroAppliedEl.textContent = tracker.applied.length;
-
-      const buildList = (jobIds) => {
-        if (!jobIds || jobIds.length === 0) return `<div style="padding:16px;text-align:center;color:var(--text-subtle);">No jobs in this stage.</div>`;
-        return jobIds.map(id => {
-          const job = allJobs.find(j => j.id === id);
-          if (!job) return '';
-          return `
-            <div style="padding:10px; background:white; border:1px solid var(--border); border-radius:8px; display:flex; justify-content:space-between; align-items:center; width:100%; text-align:left;">
-              <div style="flex:1; overflow:hidden;">
-                <div style="font-size:13px; font-weight:700; color:var(--text-main); margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${job.title}</div>
-                <div style="font-size:12px; color:var(--text-muted);">${job.company}</div>
-              </div>
-              <button onclick="showTab('jobs'); setTimeout(() => selectJob('${job.id}'), 100)" style="background:var(--primary-light); color:var(--primary); border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11px; font-weight:700; margin-left:12px;">View</button>
-            </div>
-          `;
-        }).join('');
-      };
-
-      const savedListEl = document.getElementById('tracker-saved-list');
-      const appliedListEl = document.getElementById('tracker-applied-list');
-      
-      if (savedListEl) savedListEl.innerHTML = buildList(tracker.saved);
-      if (appliedListEl) appliedListEl.innerHTML = buildList(tracker.applied);
-    }
-
-    function openTailorWithJob(jobId) {
-      window.location.href = '/resume-builder';
-    }
-
-    /* ════════════════════ CANDIDATE DIRECTORY & RESUME VIEWER ════════════════════ */
-    async function openCandidateDatabaseModal() {
-      const modal = document.getElementById('candidate-modal');
-      modal.style.display = 'flex';
-      
-      const listWrap = document.getElementById('cand-modal-list');
-      listWrap.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-subtle);font-size:13px;">Fetching candidate records...</div>';
-
-      try {
-        const res = await fetch('/api/candidates');
-        const data = await res.json();
-        candidatesList = data.candidates || [];
-        
-        const localProf = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
-        if (localProf.name || localProf.firstName) {
-          if (!candidatesList.some(c => c.email === localProf.email)) {
-            candidatesList.unshift(localProf);
-          }
-        }
-
-        renderCandidateModalList();
-        if (candidatesList.length > 0) {
-          selectCandidateInModal(0);
-        }
-      } catch (e) {
-        listWrap.innerHTML = '<div style="padding:20px;text-align:center;color:#ef4444;font-size:13px;">Error loading candidate records.</div>';
-      }
-    }
-
-    function closeCandidateDatabaseModal() {
-      document.getElementById('candidate-modal').style.display = 'none';
-    }
-
-    function renderCandidateModalList() {
-      const listWrap = document.getElementById('cand-modal-list');
-      if (candidatesList.length === 0) {
-        listWrap.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-subtle);font-size:13px;">No candidate profiles recorded yet.</div>';
-        return;
-      }
-
-      listWrap.innerHTML = candidatesList.map((c, idx) => {
-        const name = c.name || `${c.firstName || ''} ${c.lastName || ''}`.trim() || c.email || 'Candidate';
-        const initial = name ? name[0].toUpperCase() : 'C';
-        const skillsCount = (c.skills || []).length;
-        const isSel = idx === selectedCandIndex;
-
-        return `
-          <div onclick="selectCandidateInModal(${idx})" style="background:${isSel ? 'var(--primary-light)' : 'white'}; border:1.5px solid ${isSel ? 'var(--primary)' : 'var(--border)'}; border-radius:10px; padding:12px; cursor:pointer; transition:all 0.15s;">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
-              <div style="width:28px; height:28px; border-radius:50%; background:var(--primary); color:white; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px;">${initial}</div>
-              <div>
-                <div style="font-size:13.5px; font-weight:800; color:var(--text-main);">${name}</div>
-                <div style="font-size:11.5px; color:var(--text-muted);">${c.email || 'Email on file'}</div>
-              </div>
-            </div>
-            <div style="display:flex; gap:6px; flex-wrap:wrap;">
-              <span class="tag-chip" style="font-size:11px; padding:2px 6px;">${c.city || 'India'}</span>
-              <span class="tag-chip" style="font-size:11px; padding:2px 6px; background:#eff6ff; color:#1d4ed8;">${skillsCount} Skills</span>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function selectCandidateInModal(idx) {
-      selectedCandIndex = idx;
-      renderCandidateModalList();
-      const cand = candidatesList[idx];
-      const detailWrap = document.getElementById('cand-modal-detail');
-
-      const name = cand.name || `${cand.firstName || ''} ${cand.lastName || ''}`.trim() || cand.email || 'Candidate Profile';
-      const skills = cand.skills || [];
-      const edu = typeof cand.education === 'object' ? `${cand.education.degree || ''} at ${cand.education.school || ''}` : (cand.education || 'CS Degree');
-      const exp = typeof cand.experience === 'object' ? `${cand.experience.title || ''} (${cand.experience.company || ''})` : (cand.experience || 'Software Engineering Experience');
-      const resumeText = cand.raw_resume_text || 'Resume data missing.';
-
-      detailWrap.innerHTML = `
-        <div style="border-bottom:1px solid var(--border); padding-bottom:18px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:flex-start;">
-          <div>
-            <div style="display:flex; align-items:center; gap:12px; margin-bottom:4px;">
-              <h1 style="font-size:22px; font-weight:800; color:var(--text-main); margin:0;">${name}</h1>
-              ${cand.id ? `<button onclick="copyShareLink('${cand.id}')" style="padding:4px 10px; border-radius:6px; border:1px solid var(--border); background:var(--surface); font-size:12px; font-weight:600; cursor:pointer; color:var(--primary);">🔗 Share Profile</button>` : ''}
-            </div>
-            <div style="font-size:13.5px; color:var(--text-muted); display:flex; gap:12px;">
-              <span>${cand.email || 'No email provided'}</span>
-              <span>📞 ${cand.phone || 'Phone verified'}</span>
-              <span>${cand.city || 'India'}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="meta-grid" style="margin-bottom:20px;">
-          <div class="meta-item">
-            <div class="meta-label">Education</div>
-            <div class="meta-val">${edu}</div>
-          </div>
-          <div class="meta-item">
-            <div class="meta-label">Experience</div>
-            <div class="meta-val">${exp}</div>
-          </div>
-        </div>
-
-        <div style="margin-bottom:20px;">
-          <div style="font-size:13px; font-weight:800; color:var(--text-main); margin-bottom:8px;">Validated Skills</div>
-          <div style="display:flex; flex-wrap:wrap; gap:6px;">
-            ${skills.map(s => `<span class="tag-chip match-score-chip">${s}</span>`).join('') || '<span style="color:var(--text-subtle);font-size:13px;">No skills specified</span>'}
-          </div>
-        </div>
-
-        <div>
-          <div style="font-size:13px; font-weight:800; color:var(--text-main); margin-bottom:8px;">Extracted Resume Text</div>
-          <div style="background:var(--background); border:1.5px solid var(--border); border-radius:10px; padding:16px; font-family:'JetBrains Mono', monospace; font-size:12.5px; line-height:1.6; color:#334155; max-height:280px; overflow-y:auto; white-space:pre-wrap;">${escapeHTML(resumeText)}</div>
-        </div>
-      `;
-    }
-
-    async function triggerScrape() {
-      const btn = document.getElementById('btn-refresh-scrape');
-      btn.disabled = true;
-      btn.innerHTML = '<span>⏳</span> Scraping...';
-      toast('Indexing active career portals across India...');
-      try {
-        const res = await fetch('/api/scrape', { method: 'POST' });
-        const data = await res.json();
-        toast(`Synced ${data.total_scraped} live jobs!`);
-        await loadJobs();
-      } catch (e) {
-        toast('Sync completed.');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<span></span> Refresh Feeds';
-      }
-    }
-
-    function formatJobDescription(raw) {
-      if (!raw) return '<p>Full technical details and responsibilities available on the verified employer portal.</p>';
-      
-      let cleaned = raw
-        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-        .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&amp;/g, '&')
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'");
-
-      if (/<[a-z][\s\S]*>/i.test(cleaned)) {
-        return cleaned;
-      }
-
-      return cleaned.split(/\n\n+/).map(para => `<p>${para.replace(/\n/g, '<br>')}</p>`).join('');
-    }
-
-    function escapeHTML(str) {
-      return str.replace(/[&<>'"]/g, tag => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-      }[tag] || tag));
-    }
-
-    function toggleReferralDropdown(jobId) {
-      // Close all others first
-      document.querySelectorAll('.referral-dropdown').forEach(el => {
-        if(el.id !== `ref-dropdown-${jobId}`) el.classList.remove('show');
-      });
-      const dropdown = document.getElementById(`ref-dropdown-${jobId}`);
-      if (dropdown) dropdown.classList.toggle('show');
-    }
-
-    // Close referral dropdowns when clicking outside
-    window.addEventListener('click', (e) => {
-      if (!e.target.closest('.btn-referral')) {
-        document.querySelectorAll('.referral-dropdown').forEach(el => el.classList.remove('show'));
-      }
-    });
-
-    function openReferralSearch(companyStr, type) {
-      const decodedComp = decodeURIComponent(companyStr).trim();
-      let keywords = `"${decodedComp}"`;
-      
-      if (type === 'hr') {
-        keywords += ' AND (HR OR Human Resources OR Recruiter OR Talent)';
-      } else if (type === 'peer' || type === 'eng') {
-        keywords += ' AND (Engineer OR Developer OR Software)';
-      }
-      
-      const linkedInUrl = `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(keywords)}`;
-      window.open(linkedInUrl, '_blank');
-    }
-
-    function copyShareLink(candId) {
-      const shareUrl = `${window.location.origin}/candidate?id=${candId}`;
-      navigator.clipboard.writeText(shareUrl).then(() => {
-        toast("Public link copied to clipboard!");
-      }).catch(() => {
-        toast("Failed to copy link.");
-      });
-    }
-
-    (function init() {
-      loadJobs();
+      animate();
     })();
+
+    // 2. Navbar Scroll Effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) navbar.classList.add('scrolled');
+      else navbar.classList.remove('scrolled');
+    });
+
+    // 3. Scroll Reveal Observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // 4. Interactive Architecture Tabs
+    const tabData = [
+      `<div class="pipe-code">
+<span style="color:#6ee7b7"># Stage 1: Deterministic Offline Extraction</span><br>
+doc = fitz.open(resume_pdf_path)<br>
+text = "\\n".join([page.get_text() for page in doc])<br>
+profile = ParserService.parse_candidate_profile(text)  <span style="color:#a7f3d0">// &lt;50ms, zero OCR delay</span>
+      </div>`,
+      `<div class="pipe-code">
+<span style="color:#6ee7b7"># Stage 2: Dense Vector Retrieval (ONNX Runtime)</span><br>
+embed_model = TextEmbedding("BAAI/bge-small-en-v1.5")<br>
+resume_emb = list(embed_model.embed([profile.raw_text]))[0]<br>
+sim = compute_cosine_similarity(resume_emb, job_emb)  <span style="color:#a7f3d0">// &lt;15ms per job, 100% CPU</span>
+      </div>`,
+      `<div class="pipe-code">
+<span style="color:#6ee7b7"># Stage 3: 70B Parameter Neural Reasoning (NVIDIA NIM)</span><br>
+eval = client.chat.completions.create(<br>
+&nbsp;&nbsp;model="meta/llama-3.1-70b-instruct",<br>
+&nbsp;&nbsp;messages=[{"role": "user", "content": prompt_rubric}]<br>
+) <span style="color:#a7f3d0">// Calibrated 1-10 match score + structured recruiter justification</span>
+      </div>`
+    ];
+
+    window.switchTab = function(index) {
+      document.querySelectorAll('.pipeline-tab').forEach((t, i) => {
+        t.classList.toggle('active', i === index);
+      });
+      document.getElementById('tab-content').innerHTML = tabData[index];
+    };
   </script>
 </body>
 </html>
