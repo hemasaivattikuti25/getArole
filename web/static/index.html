@@ -1206,7 +1206,7 @@
           <div>
             <div style="display:flex; align-items:center; gap:12px; margin-bottom:4px;">
               <h1 style="font-size:22px; font-weight:800; color:var(--text-main); margin:0;">${name}</h1>
-              ${cand.id ? \`<button onclick="copyShareLink('\${cand.id}')" style="padding:4px 10px; border-radius:6px; border:1px solid var(--border); background:var(--surface); font-size:12px; font-weight:600; cursor:pointer; color:var(--primary);">🔗 Share Profile</button>\` : ''}
+              ${cand.id ? `<button onclick="copyShareLink('${cand.id}')" style="padding:4px 10px; border-radius:6px; border:1px solid var(--border); background:var(--surface); font-size:12px; font-weight:600; cursor:pointer; color:var(--primary);">🔗 Share Profile</button>` : ''}
             </div>
             <div style="font-size:13.5px; color:var(--text-muted); display:flex; gap:12px;">
               <span>${cand.email || 'No email provided'}</span>
@@ -1315,7 +1315,7 @@
     }
 
     function copyShareLink(candId) {
-      const shareUrl = \`\${window.location.origin}/candidate?id=\${candId}\`;
+      const shareUrl = `${window.location.origin}/candidate?id=${candId}`;
       navigator.clipboard.writeText(shareUrl).then(() => {
         toast("Public link copied to clipboard!");
       }).catch(() => {
