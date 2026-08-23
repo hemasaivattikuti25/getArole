@@ -270,6 +270,26 @@
       display: flex; align-items: center; gap: 6px; text-decoration: none; box-shadow: 0 2px 8px rgba(5,150,105,0.25);
     }
     .btn-apply-primary:hover { background: var(--primary-hover); }
+    
+    .btn-referral {
+      padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border);
+      background: var(--surface); font-size: 13px; font-weight: 700; color: var(--primary); cursor: pointer;
+      display: flex; align-items: center; gap: 6px; position: relative;
+    }
+    .btn-referral:hover { border-color: var(--primary-border); }
+    .referral-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 0; width: 220px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 8px; display: none; flex-direction: column; gap: 4px; z-index: 200;
+      text-align: left;
+    }
+    .referral-dropdown.show { display: flex; }
+    .referral-dropdown a {
+      padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 600;
+      color: var(--text-main); text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
+    }
+    .referral-dropdown a:hover { background: var(--background); color: var(--primary); }
 
     /* Job Header */
     .detail-header { margin-bottom: 24px; }
@@ -860,6 +880,15 @@
             <button class="btn-applied-toggle" onclick="toggleApplied('${job.id}')">
               ${isApplied ? 'Marked as Applied' : 'Already Applied?'}
             </button>
+            <div style="position:relative;">
+              <button class="btn-referral" onclick="toggleReferralDropdown('${job.id}')">
+                Find Referrals ▼
+              </button>
+              <div class="referral-dropdown" id="ref-dropdown-${job.id}">
+                <a onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'hr')">🎯 Find HR / Recruiters</a>
+                <a onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'eng')">👥 Find Engineering Peers</a>
+              </div>
+            </div>
             <button class="btn-save-job" onclick="toggleSave('${job.id}')">
               ${isSaved ? '★ Saved' : '☆ Save'}
             </button>
@@ -1250,6 +1279,36 @@
       return str.replace(/[&<>'"]/g, tag => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
       }[tag] || tag));
+    }
+
+    function toggleReferralDropdown(jobId) {
+      // Close all others first
+      document.querySelectorAll('.referral-dropdown').forEach(el => {
+        if(el.id !== `ref-dropdown-${jobId}`) el.classList.remove('show');
+      });
+      const dropdown = document.getElementById(`ref-dropdown-${jobId}`);
+      if (dropdown) dropdown.classList.toggle('show');
+    }
+
+    // Close referral dropdowns when clicking outside
+    window.addEventListener('click', (e) => {
+      if (!e.target.closest('.btn-referral')) {
+        document.querySelectorAll('.referral-dropdown').forEach(el => el.classList.remove('show'));
+      }
+    });
+
+    function openReferralSearch(companyName, type) {
+      const decodedComp = decodeURIComponent(companyName).trim();
+      let keywords = \`"\${decodedComp}"\`;
+      
+      if (type === 'hr') {
+        keywords += ' (HR OR Recruiter OR "Talent Acquisition" OR "Human Resources")';
+      } else if (type === 'eng') {
+        keywords += ' ("Software Engineer" OR Developer OR Manager OR "Data Scientist")';
+      }
+      
+      const linkedInUrl = \`https://www.linkedin.com/search/results/people/?keywords=\${encodeURIComponent(keywords)}\`;
+      window.open(linkedInUrl, '_blank');
     }
 
     (function init() {
