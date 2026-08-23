@@ -885,8 +885,8 @@
                 Find Referrals ▼
               </button>
               <div class="referral-dropdown" id="ref-dropdown-${job.id}">
-                <a onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'hr', '${encodeURIComponent(job.location || '')}')">🎯 Find HR / Recruiters</a>
-                <a onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'eng', '${encodeURIComponent(job.location || '')}')">👥 Find Engineering Peers</a>
+                <a onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'hr')">🎯 Find HR / Recruiters</a>
+                <a onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'eng')">👥 Find Engineering Peers</a>
               </div>
             </div>
             <button class="btn-save-job" onclick="toggleSave('${job.id}')">
@@ -1300,18 +1300,10 @@
       }
     });
 
-    function openReferralSearch(companyStr, type, locationStr) {
+    function openReferralSearch(companyStr, type) {
       const decodedComp = decodeURIComponent(companyStr).trim();
       let keywords = `"${decodedComp}"`;
       
-      if (locationStr) {
-        const decodedLoc = decodeURIComponent(locationStr).trim();
-        if (decodedLoc && !decodedLoc.toLowerCase().includes('remote')) {
-          const mainCity = decodedLoc.split(',')[0].trim();
-          keywords += ` "${mainCity}"`;
-        }
-      }
-
       if (type === 'hr') {
         keywords += ' AND (HR OR Human Resources OR Recruiter OR Talent)';
       } else if (type === 'peer' || type === 'eng') {
