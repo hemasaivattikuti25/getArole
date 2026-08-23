@@ -512,9 +512,9 @@
         getArole connects directly to top-tier career APIs across India &amp; global remote markets — matching your resume with sub-15ms local vector embeddings and 70-billion parameter neural reasoning.
       </p>
 
-      <div class="hero-buttons">
-        <a href="/onboarding" class="btn btn-primary btn-lg">Match My Resume Free →</a>
-        <a href="/dashboard" class="btn btn-secondary btn-lg">Explore 1,150+ Live Jobs</a>
+      <div class="hero-actions reveal">
+        <button onclick="requireAuthAndProceed('/onboarding')" class="btn btn-primary btn-lg">Start Neural Matching →</button>
+        <button onclick="requireAuthAndProceed('/dashboard')" class="btn btn-secondary btn-lg">Explore 1,062 Live Jobs</button>
       </div>
 
       <!-- ── LIVE SCANNER DEMO PREVIEW ── -->
@@ -731,8 +731,8 @@
           Zero cost. Zero third-party tracking. Instant semantic matching against 1,150+ active engineering openings.
         </p>
         <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap">
-          <a href="/onboarding" class="btn btn-primary btn-lg">Configure Preferences Free →</a>
-          <a href="/dashboard" class="btn btn-secondary btn-lg">Open Job Explorer</a>
+          <button onclick="requireAuthAndProceed('/onboarding')" class="btn btn-primary btn-lg">Configure Preferences Free →</button>
+          <button onclick="requireAuthAndProceed('/dashboard')" class="btn btn-secondary btn-lg">Open Job Explorer</button>
         </div>
       </div>
     </div>
@@ -940,6 +940,20 @@
       const err = document.getElementById('auth-error-msg');
       err.style.display = 'block';
       err.textContent = msg.replace("Firebase: ", "").replace(/\(auth\/.*\)\.?/, "");
+    }
+
+    window.requireAuthAndProceed = function(targetUrl) {
+      const user = localStorage.getItem('getarole_user');
+      if (user) {
+        window.location.href = targetUrl;
+      } else {
+        window.openAuthModal(false);
+      }
+    };
+
+    // Auto-open modal if redirected with ?auth=1
+    if (window.location.search.includes('auth=1')) {
+      window.openAuthModal(false);
     }
 
     // Initialize Auth Listener

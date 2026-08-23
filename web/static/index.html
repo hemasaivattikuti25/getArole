@@ -7,6 +7,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    // Strict Authentication Guard
+    (function checkAuth() {
+      const user = localStorage.getItem('getarole_user');
+      if (!user) {
+        window.location.replace('/?auth=1');
+      }
+    })();
+  </script>
   <style>
     :root {
       --primary: #059669;
@@ -288,9 +297,9 @@
         
         <div class="col-left">
           <div class="banner-card">
-            <h2 class="banner-title">Welcome, <span id="home-greeting">Candidate</span></h2>
-            <p class="banner-sub">Configure candidate preferences and evaluate active openings using local vector retrieval and 70B parameter neural reasoning.</p>
-            <a href="/onboarding" class="btn-banner">Configure Preferences</a>
+            <h2 class="banner-title">Welcome back, <span id="home-greeting">Engineer</span></h2>
+            <p class="banner-sub">Your personalized AI job matcher and application tracker across India and global remote markets.</p>
+            <a href="/onboarding" class="btn-banner">Edit Search Preferences</a>
           </div>
 
           <div class="card">
@@ -327,11 +336,11 @@
         <div class="col-right">
           <div class="card">
             <div class="card-head">
-              <span class="card-title">Candidate Profile</span>
+              <span class="card-title">Your Matching Profile</span>
               <a href="/onboarding" style="font-size:12px;font-weight:600;color:var(--primary);text-decoration:none">Edit →</a>
             </div>
             <div class="card-body">
-              <div style="font-size:14px;font-weight:700;color:var(--text-main);margin-bottom:2px" id="profile-name-display">Candidate Profile</div>
+              <div style="font-size:14px;font-weight:700;color:var(--text-main);margin-bottom:2px" id="profile-name-display">Active Search Preferences</div>
               <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px" id="profile-sub-display">Software Engineering · India</div>
               
               <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;margin-bottom:14px;">
