@@ -680,17 +680,47 @@
       if (tabName === 'matches') renderMatchesSplitView();
     }
 
+    const SUPABASE_REST_URL = "https://tgmhtlqcjgcjedlnthfk.supabase.co/rest/v1/jobs?select=*&order=created_at.desc&limit=1500";
+    const SUPABASE_ANON_KEY = "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn";
+
     async function loadJobs() {
       const feed = document.getElementById('job-feed-list');
-      feed.innerHTML = `
-        <div style="padding:40px 20px; text-align:center; color:var(--text-subtle); font-size:13.5px; font-weight:600;">
-          ⏳ Loading live verified career listings...
-        </div>`;
+      if (feed) {
+        feed.innerHTML = `
+          <div style="padding:40px 20px; text-align:center; color:var(--text-subtle); font-size:13.5px; font-weight:600;">
+            ⏳ Loading live verified career listings...
+          </div>`;
+      }
 
       try {
-        const res = await fetch('/api/jobs');
-        const data = await res.json();
-        allJobs = data.jobs || [];
+        let loadedList = [];
+        // 1. Try Backend API endpoint
+        try {
+          const res = await fetch('/api/jobs');
+          if (res.ok) {
+            const data = await res.json();
+            if (data.jobs && data.jobs.length > 0) {
+              loadedList = data.jobs;
+            }
+          }
+        } catch (err) {
+          console.warn('API fetch notice, falling back to direct Supabase cloud:', err);
+        }
+
+        // 2. Direct Supabase Fallback if backend returned empty or was sleeping
+        if (!loadedList || loadedList.length === 0) {
+          const supaRes = await fetch(SUPABASE_REST_URL, {
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+            }
+          });
+          if (supaRes.ok) {
+            loadedList = await supaRes.json();
+          }
+        }
+
+        allJobs = loadedList || [];
         filteredJobs = [...allJobs];
         
         // Prepare matches
@@ -706,11 +736,14 @@
         updateCounts();
         renderHomeView();
       } catch (e) {
-        feed.innerHTML = `
-          <div style="padding:40px 20px; text-align:center; color:#ef4444; font-size:13.5px; font-weight:600;">
-            ⚠️ Could not load jobs. <button class="btn-refresh" onclick="loadJobs()" style="margin:12px auto;">Try Again</button>
-          </div>`;
-        toast('Error loading jobs from backend.');
+        console.error('Job load error:', e);
+        if (feed) {
+          feed.innerHTML = `
+            <div style="padding:40px 20px; text-align:center; color:#ef4444; font-size:13.5px; font-weight:600;">
+              ⚠️ Could not load jobs. <button class="btn-refresh" onclick="loadJobs()" style="margin:12px auto;">Try Again</button>
+            </div>`;
+        }
+        toast('Error loading jobs.');
       }
     }
 
