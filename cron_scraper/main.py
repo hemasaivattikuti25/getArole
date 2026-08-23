@@ -7,10 +7,9 @@ from supabase import create_client, Client
 # Ensure we can import from the parent directory if needed
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Import local scraper modules (to be created)
-# from scrapers.workday import WorkdayScraper
-# from scrapers.taleo import TaleoScraper
-# from scrapers.custom_portals import CustomPortalScraper
+# Import local scraper modules
+from scrapers.workday import WorkdayScraper
+from scrapers.indian_it import IndianITScraper
 
 def get_supabase_client() -> Client:
     url = os.environ.get("SUPABASE_URL")
@@ -24,24 +23,18 @@ async def run_scrapers():
     start_time = datetime.now(timezone.utc)
     
     # Initialize scrapers
-    # workday_scraper = WorkdayScraper()
-    # taleo_scraper = TaleoScraper()
-    # custom_scraper = CustomPortalScraper()
+    workday_scraper = WorkdayScraper()
+    it_scraper = IndianITScraper()
     
     all_jobs = []
     
-    # TODO: Fetch jobs from all scrapers
-    # print("Scraping Workday portals...")
-    # workday_jobs = await workday_scraper.scrape_all()
-    # all_jobs.extend(workday_jobs)
+    print("Scraping Workday & Global Tech portals...")
+    workday_jobs = await workday_scraper.scrape_all()
+    all_jobs.extend(workday_jobs)
     
-    # print("Scraping Taleo portals...")
-    # taleo_jobs = await taleo_scraper.scrape_all()
-    # all_jobs.extend(taleo_jobs)
-    
-    # print("Scraping Custom IT portals...")
-    # custom_jobs = await custom_scraper.scrape_all()
-    # all_jobs.extend(custom_jobs)
+    print("Scraping Custom Indian IT portals...")
+    it_jobs = await it_scraper.scrape_all()
+    all_jobs.extend(it_jobs)
     
     print(f"Total jobs scraped: {len(all_jobs)}")
     
