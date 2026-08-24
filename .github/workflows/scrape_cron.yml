@@ -6,6 +6,9 @@ on:
     - cron: '0 */3 * * *'
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
+permissions:
+  contents: read
+
 jobs:
   scrape-and-sync:
     runs-on: ubuntu-latest
@@ -19,15 +22,17 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Install Dependencies
+      - name: Install Dependencies & Run Security Audit
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install pip-audit
+          pip-audit -r requirements.txt || echo "Audit advisory logged"
 
       - name: Run 30-Minute Scraper & Supabase Sync
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://tgmhtlqcjgcjedlnthfk.supabase.co' }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY || 'sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn' }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
         run: |
           python run_cron.py

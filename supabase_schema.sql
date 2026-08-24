@@ -172,7 +172,7 @@ CREATE INDEX IF NOT EXISTS idx_user_preferences_uid ON public.user_preferences(f
 CREATE INDEX IF NOT EXISTS idx_user_resumes_uid     ON public.user_resumes(firebase_uid);
 
 -- ─────────────────────────────────────────────────────────────
--- 9. Row Level Security
+-- 9. Row Level Security (Zero-Trust Least-Privilege Scoping)
 -- ─────────────────────────────────────────────────────────────
 ALTER TABLE public.jobs              ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.candidates        ENABLE ROW LEVEL SECURITY;
@@ -182,6 +182,7 @@ ALTER TABLE public.user_profiles     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_preferences  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_resumes      ENABLE ROW LEVEL SECURITY;
 
+-- Clean up existing permissive legacy policies
 DROP POLICY IF EXISTS "Public read/write - jobs"          ON public.jobs;
 DROP POLICY IF EXISTS "Public read/write - candidates"    ON public.candidates;
 DROP POLICY IF EXISTS "Public read/write - evaluations"   ON public.match_evaluations;
@@ -189,20 +190,70 @@ DROP POLICY IF EXISTS "Public read/write - applications"  ON public.applications
 DROP POLICY IF EXISTS "Service full access - profiles"    ON public.user_profiles;
 DROP POLICY IF EXISTS "Service full access - preferences" ON public.user_preferences;
 DROP POLICY IF EXISTS "Service full access - resumes"     ON public.user_resumes;
--- Also drop old policy names from previous schema runs
 DROP POLICY IF EXISTS "Public Read Access for Jobs"             ON public.jobs;
 DROP POLICY IF EXISTS "Public Insert/Upsert Access for Jobs"    ON public.jobs;
 DROP POLICY IF EXISTS "Allow All Access for Candidates"         ON public.candidates;
 DROP POLICY IF EXISTS "Allow All Access for Match Evaluations"  ON public.match_evaluations;
 DROP POLICY IF EXISTS "Allow All Access for Applications"       ON public.applications;
 
-CREATE POLICY "Public read/write - jobs"            ON public.jobs              FOR ALL USING (true);
-CREATE POLICY "Public read/write - candidates"      ON public.candidates        FOR ALL USING (true);
-CREATE POLICY "Public read/write - evaluations"     ON public.match_evaluations FOR ALL USING (true);
-CREATE POLICY "Public read/write - applications"    ON public.applications      FOR ALL USING (true);
-CREATE POLICY "Service full access - profiles"      ON public.user_profiles     FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Service full access - preferences"   ON public.user_preferences  FOR ALL USING (true) WITH CHECK (true);
-CREATE POLICY "Service full access - resumes"       ON public.user_resumes      FOR ALL USING (true) WITH CHECK (true);
+-- 1. Jobs: Public read-only for active non-deleted jobs; write restricted to backend service_role
+CREATE POLICY "Public read-only active jobs" ON public.jobs
+  FOR SELECT USING (is_deleted = false);
+
+CREATE POLICY "Service role full access - jobs" ON public.jobs
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+-- 2. User Profiles: Restricted strictly to the authenticated owner or backend service_role
+CREATE POLICY "Users can only read own profile" ON public.user_profiles
+  FOR SELECT USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
+
+CREATE POLICY "Users can only insert own profile" ON public.user_profiles
+  FOR INSERT WITH CHECK (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
+
+CREATE POLICY "Users can only update own profile" ON public.user_profiles
+  FOR UPDATE USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role')
+  WITH CHECK (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
+
+CREATE POLICY "Users can only delete own profile" ON public.user_profiles
+  FOR DELETE USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
+
+-- 3. User Preferences: Scoped strictly to authenticated owner or backend service_role
+CREATE POLICY "Users can only read own preferences" ON public.user_preferences
+  FOR SELECT USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
+
+CREATE POLICY "Users can only insert own preferences" ON public.user_preferences
+  FOR INSERT WITH CHECK (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
+
+CREATE POLICY "Users can only update own preferences" ON public.user_preferences
+  FOR UPDATE USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role')
+  WITH CHECK (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
+
+CREATE POLICY "Users can only delete own preferences" ON public.user_preferences
+  FOR DELETE USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
+
+-- 4. User Resumes: Scoped strictly to authenticated owner or backend service_role
+CREATE POLICY "Users can only read own resumes" ON public.user_resumes
+  FOR SELECT USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
+
+CREATE POLICY "Users can only insert own resumes" ON public.user_resumes
+  FOR INSERT WITH CHECK (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
+
+CREATE POLICY "Users can only update own resumes" ON public.user_resumes
+  FOR UPDATE USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role')
+  WITH CHECK (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
+
+CREATE POLICY "Users can only delete own resumes" ON public.user_resumes
+  FOR DELETE USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
+
+-- 5. Recruiter Candidate & Evaluation Tables: Restricted to authenticated service role
+CREATE POLICY "Service role full access - candidates" ON public.candidates
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+CREATE POLICY "Service role full access - match evaluations" ON public.match_evaluations
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+CREATE POLICY "Service role full access - applications" ON public.applications
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
 
 -- ─────────────────────────────────────────────────────────────
 -- 10. pgvector RPC — semantic job matching for resume uploads
