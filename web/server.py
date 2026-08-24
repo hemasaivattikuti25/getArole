@@ -459,26 +459,29 @@ Return JSON with exact keys:
   "concise": "Crisp, direct executive ATS statement (max 18 words)"
 }}"""
         resp_text = await llm.generate_text(prompt, max_tokens=300)
-        # Parse JSON from response
-        try:
-            start_idx = resp_text.find("{")
-            end_idx = resp_text.rfind("}") + 1
-            if start_idx != -1 and end_idx > start_idx:
-                parsed = json.loads(resp_text[start_idx:end_idx])
-                return {
+        parsed = NvidiaLLMService.extract_json_payload(resp_text)
+        if parsed and isinstance(parsed, dict):
+            return JSONResponse(
+                content={
                     "enhanced": parsed.get("star", star_fallback),
                     "star": parsed.get("star", star_fallback),
                     "technical": parsed.get("technical", tech_fallback),
                     "concise": parsed.get("concise", concise_fallback),
                     "original": bullet
-                }
-        except Exception:
-            pass
+                },
+                headers={"X-AI-Engine": "nvidia-nim"}
+            )
         enhanced = resp_text.strip().lstrip("•-–—").strip()
-        return {"enhanced": enhanced or star_fallback, "star": enhanced or star_fallback, "technical": tech_fallback, "concise": concise_fallback, "original": bullet}
+        return JSONResponse(
+            content={"enhanced": enhanced or star_fallback, "star": enhanced or star_fallback, "technical": tech_fallback, "concise": concise_fallback, "original": bullet},
+            headers={"X-AI-Engine": "fallback-heuristics"}
+        )
     except Exception as e:
-        print(f"[BulletEnhancer] LLM Error: {e}")
-        raise HTTPException(status_code=500, detail="AI bullet enhancement failed.")
+        print(f"[BulletEnhancer] LLM Error (falling back to heuristics): {e}")
+        return JSONResponse(
+            content={"enhanced": star_fallback, "star": star_fallback, "technical": tech_fallback, "concise": concise_fallback, "original": bullet},
+            headers={"X-AI-Engine": "fallback-heuristics"}
+        )
 
 
 class SuggestSkillsRequest(BaseModel):
@@ -1002,15 +1005,23 @@ async def parse_and_match_resume(file: UploadFile = File(...)):
     Parses an uploaded PDF / DOCX resume, extracts text and key profile fields
     (name, email, phone, headline, skills, summary, experience), and returns structured candidate profile.
     Delegates to ResumeParserService for domain processing (Single Responsibility Principle).
+    Enforces a strict 10MB upload payload ceiling to prevent memory exhaustion / OOM kills.
     """
     try:
         contents = await file.read()
+        if len(contents) > 10 * 1024 * 1024:
+            raise HTTPException(
+                status_code=413,
+                detail="Resume file size exceeds maximum allowable limit of 10MB."
+            )
         filename = file.filename or "resume.pdf"
         
         parser_service = get_resume_parser_service()
         result = await parser_service.process_resume_bytes(contents, filename)
         return JSONResponse(result)
 
+    except HTTPException:
+        raise
     except Exception as e:
         print(f"[Resume Parse Error] {e}")
         return JSONResponse(status_code=500, content={"error": f"Error parsing resume: {str(e)}"})

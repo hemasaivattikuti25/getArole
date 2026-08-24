@@ -1,3 +1,4 @@
+import asyncio
 import re
 import json
 import fitz  # PyMuPDF
@@ -260,7 +261,7 @@ Return valid JSON with exact structure:
 
     async def process_resume_bytes(self, pdf_bytes: bytes, filename: str) -> Dict[str, Any]:
         """Main orchestrator for resume parsing (<50 lines)."""
-        text, pdf_links = self.parse_pdf_bytes(pdf_bytes)
+        text, pdf_links = await asyncio.to_thread(self.parse_pdf_bytes, pdf_bytes)
 
         common_tech = [
             "python", "java", "c++", "c#", "c", "rust", "golang", "go", "typescript", "javascript",
@@ -308,7 +309,7 @@ Return valid JSON with exact structure:
         education_list = llm_parsed.get("education") or []
         projects_list = llm_parsed.get("projects") or []
 
-        fb_exp, fb_edu, fb_proj = self.parse_sections_fallback(text)
+        fb_exp, fb_edu, fb_proj = await asyncio.to_thread(self.parse_sections_fallback, text)
         if not experience_list and fb_exp: experience_list = fb_exp
         if not education_list and fb_edu: education_list = fb_edu
         if not projects_list and fb_proj: projects_list = fb_proj

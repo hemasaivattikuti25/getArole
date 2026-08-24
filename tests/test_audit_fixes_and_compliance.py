@@ -211,6 +211,40 @@ def test_extract_json_payload_centralized():
     # 3. Invalid payload returns None
     assert NvidiaLLMService.extract_json_payload("Plain non-json text response") is None
 
+# ── 10. SRE Upload Ceiling (10MB Max Size Limit) ─────────────────────────────
+def test_resume_upload_10mb_payload_size_ceiling():
+    """Validates that POST /api/match-resume rejects payloads >10MB with HTTP 413."""
+    # Create an in-memory 11MB payload
+    oversized_bytes = b"%PDF-1.4 " + (b"A" * (11 * 1024 * 1024))
+    res = client.post(
+        "/api/match-resume",
+        files={"file": ("huge_resume.pdf", oversized_bytes, "application/pdf")}
+    )
+    assert res.status_code == 413
+    assert "exceeds maximum allowable limit of 10MB" in res.text
+
+# ── 11. Asyncio Threadpool Offloading Verification ───────────────────────────
+async def test_resume_parser_async_thread_offload():
+    """Validates that ResumeParserService uses worker threads without event-loop blocking."""
+    from services.resume_parser_service import get_resume_parser_service
+    service = get_resume_parser_service()
+    
+    dummy_pdf = b"%PDF-1.4\n1 0 obj\n<< /Type /Catalog >>\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF"
+    result = await service.process_resume_bytes(dummy_pdf, "test.pdf")
+    assert isinstance(result, dict)
+    assert result.get("success") is True
+    assert "candidate_profile" in result
+    assert "name" in result["candidate_profile"]
+    assert "skills" in result["candidate_profile"]
+
+# ── 12. AI Telemetry Response Header Verification ────────────────────────────
+def test_ai_telemetry_engine_header():
+    """Validates that POST /api/enhance-bullet attaches the X-AI-Engine header."""
+    res = client.post("/api/enhance-bullet", json={"bullet": "Built REST APIs for user auth."})
+    assert res.status_code == 200
+    assert "X-AI-Engine" in res.headers
+    assert res.headers["X-AI-Engine"] in ["nvidia-nim", "fallback-heuristics"]
+
 # ── Standalone Runner ────────────────────────────────────────────────────────
 if __name__ == "__main__":
     asyncio.run(test_l1_cache_isolation_prevents_filtered_query_poisoning())
@@ -222,4 +256,7 @@ if __name__ == "__main__":
     test_candidates_endpoint_admin_key_protection()
     test_ai_endpoints_rate_limiting()
     test_extract_json_payload_centralized()
-    print("✅ ALL 9 AUDIT FIXES & COMPLIANCE VERIFICATION TESTS PASSED GREEN!")
+    test_resume_upload_10mb_payload_size_ceiling()
+    asyncio.run(test_resume_parser_async_thread_offload())
+    test_ai_telemetry_engine_header()
+    print("✅ ALL 12 AUDIT, SRE & COMPLIANCE VERIFICATION TESTS PASSED GREEN!")

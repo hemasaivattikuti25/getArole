@@ -235,7 +235,7 @@ class SupabaseService:
             return []
 
         try:
-            res = await client.table("candidates").select("*").order("created_at", desc=True).limit(limit).execute()
+            res = await client.table("candidates").select("id, name, email, skills, education, raw_resume_text, created_at").order("created_at", desc=True).limit(limit).execute()
             return res.data or []
         except Exception as e:
             print(f"[Supabase] Fetch candidates error: {e}")
@@ -247,7 +247,7 @@ class SupabaseService:
             return None
 
         try:
-            res = await client.table("candidates").select("*").eq("id", cand_id).limit(1).execute()
+            res = await client.table("candidates").select("id, name, email, skills, education, raw_resume_text, created_at").eq("id", cand_id).limit(1).execute()
             return res.data[0] if res.data else None
         except Exception as e:
             print(f"[Supabase] Fetch candidate error: {e}")
@@ -265,10 +265,14 @@ class SupabaseService:
             }
             # Map common aliases if present
             flat_profile = {**profile}
+            if "first_name" in flat_profile and "first" not in flat_profile:
+                flat_profile["first"] = flat_profile.pop("first_name")
+            if "last_name" in flat_profile and "last" not in flat_profile:
+                flat_profile["last"] = flat_profile.pop("last_name")
             if "pref" in flat_profile and "pref_name" not in flat_profile:
                 flat_profile["pref_name"] = flat_profile.pop("pref")
             if "links" in flat_profile and isinstance(flat_profile["links"], dict):
-                links = flat_profile["links"]
+                links = flat_profile.pop("links")
                 if links.get("linkedin"): flat_profile["linkedin_url"] = links["linkedin"]
                 if links.get("github"): flat_profile["github_url"] = links["github"]
                 if links.get("portfolio"): flat_profile["portfolio_url"] = links["portfolio"]
@@ -286,16 +290,25 @@ class SupabaseService:
             return None
 
     async def load_user_profile(self, firebase_uid: str) -> Optional[Dict[str, Any]]:
-        """Fetch a user's profile from user_profiles table."""
+        """Fetch a user's profile from user_profiles table using explicit column projection."""
         client = await self._get_client()
         if not client:
             return None
         try:
-            res = await client.table("user_profiles").select("*").eq("firebase_uid", firebase_uid).limit(1).execute()
+            cols = "firebase_uid, email, first, last, pref_name, suffix, phone, dob, loc, add1, add2, add3, zip, headline, linkedin_url, github_url, portfolio_url, other_url, updated_at"
+            res = await client.table("user_profiles").select(cols).eq("firebase_uid", firebase_uid).limit(1).execute()
             data = res.data[0] if res.data else None
             if data:
+                if "first" in data and "first_name" not in data:
+                    data["first_name"] = data["first"]
+                if "last" in data and "last_name" not in data:
+                    data["last_name"] = data["last"]
                 if "pref_name" in data and "pref" not in data:
                     data["pref"] = data["pref_name"]
+                if "first" in data or "last" in data:
+                    full_name = f"{data.get('first') or ''} {data.get('last') or ''}".strip()
+                    if full_name and "name" not in data:
+                        data["name"] = full_name
             return data
         except Exception as e:
             print(f"[Supabase] load_user_profile error: {e}")
@@ -328,12 +341,13 @@ class SupabaseService:
             return None
 
     async def load_user_preferences(self, firebase_uid: str) -> Optional[Dict[str, Any]]:
-        """Fetch a user's job preferences from user_preferences table."""
+        """Fetch a user's job preferences from user_preferences table using explicit column projection."""
         client = await self._get_client()
         if not client:
             return None
         try:
-            res = await client.table("user_preferences").select("*").eq("firebase_uid", firebase_uid).limit(1).execute()
+            cols = "firebase_uid, values, roles, locations, roletype, rolelevel, compsize, industries, skills_inc, salary_amt, salary_curr, status, updated_at"
+            res = await client.table("user_preferences").select(cols).eq("firebase_uid", firebase_uid).limit(1).execute()
             data = res.data[0] if res.data else None
             if data:
                 if "industries" in data and "industries_inc" not in data:
@@ -357,12 +371,13 @@ class SupabaseService:
             return None
 
     async def load_user_resume(self, firebase_uid: str) -> Optional[Dict[str, Any]]:
-        """Fetch a user's active resume from user_resumes table."""
+        """Fetch a user's active resume from user_resumes table using explicit column projection."""
         client = await self._get_client()
         if not client:
             return None
         try:
-            res = await client.table("user_resumes").select("*").eq("firebase_uid", firebase_uid).order("uploaded_at", desc=True).limit(1).execute()
+            cols = "firebase_uid, name, email, phone, headline, skills, summary, experience, education, projects, links, raw_text, sha256, uploaded_at"
+            res = await client.table("user_resumes").select(cols).eq("firebase_uid", firebase_uid).order("uploaded_at", desc=True).limit(1).execute()
             return res.data[0] if res.data else None
         except Exception as e:
             print(f"[Supabase] load_user_resume error: {e}")
