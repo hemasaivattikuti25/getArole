@@ -376,6 +376,14 @@
         <p>Type your preferred cities (e.g. Bangalore, Remote, New York).</p>
       </div>
       <input type="text" id="input-locations" class="input-field" placeholder="E.g., Remote, Hyderabad, London...">
+      <script>
+        document.getElementById('input-locations').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.loc-chip').forEach(chip => {
+                chip.style.display = chip.innerText.toLowerCase().includes(term) ? '' : 'none';
+            });
+        });
+      </script>
       <div class="skills-chip-container" style="max-height: 250px; overflow-y: auto; align-items: flex-start; justify-content: flex-start;">
         <div class="skill-chip loc-chip">Remote in India</div>
         <div class="skill-chip loc-chip">Global Remote</div>
@@ -486,7 +494,7 @@
       </div>
     </div>
 
-    <!-- Step 4: Employment Type & Size -->
+    <!-- Step 4: Employment Type -->
     <div class="wizard-step" id="step-4">
       <div class="step-header">
         <h2>What type of role?</h2>
@@ -498,8 +506,13 @@
         <div class="option-card emp-chip">Part-Time</div>
         <div class="option-card emp-chip">Contract</div>
       </div>
-      <div class="step-header" style="margin-top:24px;">
+    </div>
+
+    <!-- Step 5: Company Size -->
+    <div class="wizard-step" id="step-5">
+      <div class="step-header">
         <h2>Preferred Company Size?</h2>
+        <p>What size of company do you want to work for?</p>
       </div>
       <div class="grid-options">
         <div class="option-card size-chip">1-10</div>
@@ -511,8 +524,8 @@
       </div>
     </div>
 
-    <!-- Step 5: Industries -->
-    <div class="wizard-step" id="step-5">
+    <!-- Step 6: Industries -->
+    <div class="wizard-step" id="step-6">
       <div class="step-header">
         <h2>Any specific industries?</h2>
         <p>Select up to 3 industries you are most passionate about.</p>
@@ -522,8 +535,8 @@
       </div>
     </div>
 
-    <!-- Step 6: Skills -->
-    <div class="wizard-step" id="step-6">
+    <!-- Step 7: Skills -->
+    <div class="wizard-step" id="step-7">
       <div class="step-header">
         <h2>What are your top skills?</h2>
         <p>Add the tools and technologies you enjoy working with.</p>
@@ -541,8 +554,8 @@
       <div class="skills-chip-container" id="selected-skills-container"></div>
     </div>
 
-    <!-- Step 7: Search Status -->
-    <div class="wizard-step" id="step-7">
+    <!-- Step 8: Search Status -->
+    <div class="wizard-step" id="step-8">
       <div class="step-header">
         <h2>What's your job search status?</h2>
         <p>This helps us prioritize how many matches to send you.</p>
@@ -554,7 +567,7 @@
       </div>
     </div>
 
-    <!-- Step 8: Resume -->
+    <!-- Step 9: Resume -->
     <div class="wizard-step" id="step-8" style="text-align:center;">
       <div class="step-header">
         <h2>Final Step: Your Resume</h2>
@@ -576,8 +589,10 @@
     </div>
 
     <div class="btn-row" id="navigation-row">
-      <button class="btn btn-back" id="btn-back" onclick="prevStep()" style="visibility:hidden;">← Back</button>
-      <button class="btn btn-back" id="btn-skip" onclick="nextStep(true)">Skip</button>
+      <div class="btn-row-left">
+        <button class="btn btn-back" id="btn-back" onclick="prevStep()" style="visibility:hidden;">← Back</button>
+        <button class="btn btn-back" id="btn-skip" onclick="nextStep(true)">Skip</button>
+      </div>
       <button class="btn btn-next" id="btn-next" onclick="nextStep()">Save and Continue →</button>
     </div>
   </div>
@@ -751,13 +766,13 @@
       document.querySelectorAll('.wizard-step').forEach((el, i) => {
         el.classList.toggle('active', i + 1 === currentStep);
       });
-      const percent = Math.round((currentStep / 8) * 100);
+      const percent = Math.round((currentStep / 9) * 100);
       document.getElementById('progress').style.width = `${percent}%`;
       const pText = document.getElementById('progress-percent');
       if (pText) pText.innerText = `${percent}%`;
       document.getElementById('btn-back').style.visibility = currentStep === 1 ? 'hidden' : 'visible';
 
-      if (currentStep === 8) {
+      if (currentStep === 9) {
         document.getElementById('navigation-row').style.display = 'none';
       } else {
         document.getElementById('navigation-row').style.display = 'flex';
@@ -799,7 +814,7 @@
         if (customLoc) prefs.locations.push(...customLoc.split(',').map(x => x.trim()).filter(Boolean));
       }
 
-      if (currentStep < 8) currentStep++;
+      if (currentStep < 9) currentStep++;
       updateUI();
     }
 
