@@ -434,9 +434,7 @@
       </div>
 
       <div class="header-actions">
-        <a href="/profile" class="btn-refresh" style="background:#ffffff; border:1px solid var(--border); color:var(--text-main); font-weight:700; text-decoration:none; display:inline-flex; align-items:center;">
-          👤 Profile
-        </a>
+        
 
         <button class="btn-refresh" id="btn-refresh-scrape" onclick="triggerScrape()">
           Sync
@@ -495,43 +493,6 @@
           <p class="home-hero-sub">Your personalized AI job matcher and application pipeline across India and global remote tech hubs.</p>
         </div>
         <a href="/profile" class="btn-hero-action">My Profile & Preferences →</a>
-      </div>
-
-      <!-- Application Tracker Pipeline (Professional UI) -->
-      <div style="margin-bottom: 36px; background: white; border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-          <div>
-            <h2 style="font-size: 20px; font-weight: 800; color: var(--text-main); display:flex; align-items:center; gap:8px;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-              Application Tracker
-            </h2>
-            <p style="font-size: 13.5px; color: var(--text-muted); margin-top: 4px;">Manage your pipeline from saved opportunities to sent applications.</p>
-          </div>
-        </div>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-          <!-- Saved Column -->
-          <div style="background: var(--background); border: 1px solid var(--border); border-radius: 12px; padding: 16px;">
-            <h3 style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display:flex; align-items:center; justify-content:space-between;">
-              <span>🔖 Saved</span>
-              <span id="tracker-saved-count" style="background:var(--border-strong); color:white; padding:2px 8px; border-radius:10px; font-size:11px;">0</span>
-            </h3>
-            <div id="tracker-saved-list" style="display:flex; flex-direction:column; gap:8px; min-height: 100px; color: var(--text-subtle); font-size: 13px; justify-content:center; align-items:center;">
-              No saved opportunities yet.
-            </div>
-          </div>
-
-          <!-- Applied Column -->
-          <div style="background: var(--background); border: 1px solid var(--border); border-radius: 12px; padding: 16px;">
-            <h3 style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display:flex; align-items:center; justify-content:space-between;">
-              <span>✅ Applied</span>
-              <span id="tracker-applied-count" style="background:var(--primary); color:white; padding:2px 8px; border-radius:10px; font-size:11px;">0</span>
-            </h3>
-            <div id="tracker-applied-list" style="display:flex; flex-direction:column; gap:8px; min-height: 100px; color: var(--text-subtle); font-size: 13px; justify-content:center; align-items:center;">
-              No applications sent yet.
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Quick Metrics Grid -->
@@ -1371,7 +1332,7 @@
     }
 
     function renderHomeView() {
-      document.getElementById('home-total-jobs').textContent = allJobs.length.toLocaleString('en-IN');
+      
       document.getElementById('home-matches-count').textContent = matchedJobs.length;
       renderTracker();
 
