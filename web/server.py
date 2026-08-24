@@ -502,8 +502,8 @@ Return JSON with exact keys:
         enhanced = resp_text.strip().lstrip("•-–—").strip()
         return {"enhanced": enhanced or star_fallback, "star": enhanced or star_fallback, "technical": tech_fallback, "concise": concise_fallback, "original": bullet}
     except Exception as e:
-        print(f"[BulletEnhancer] LLM fallback used: {e}")
-        return {"enhanced": star_fallback, "star": star_fallback, "technical": tech_fallback, "concise": concise_fallback, "original": bullet}
+        print(f"[BulletEnhancer] LLM Error: {e}")
+        raise HTTPException(status_code=500, detail="AI bullet enhancement failed.")
 
 
 class SuggestSkillsRequest(BaseModel):
@@ -550,9 +550,8 @@ Return a JSON array of objects with keys 'category' and 'skills' (comma-separate
             parsed = json.loads(resp_text[start_idx:end_idx])
             return {"suggestions": parsed, "target_role": role}
     except Exception as e:
-        print(f"[SuggestSkills] LLM fallback: {e}")
-
-    return {"suggestions": missing_suggestions, "target_role": role}
+        print(f"[SuggestSkills] LLM Error: {e}")
+        raise HTTPException(status_code=500, detail="AI skill suggestion failed.")
 
 
 class GenerateSummaryRequest(BaseModel):
@@ -607,12 +606,8 @@ Return JSON:
                 "style": req.style
             }
     except Exception as e:
-        print(f"[GenerateSummary] LLM fallback: {e}")
-
-    return {
-        "summaries": [selected_fallback, fallbacks.get("general", selected_fallback)],
-        "style": req.style
-    }
+        print(f"[GenerateSummary] LLM Error: {e}")
+        raise HTTPException(status_code=500, detail="AI summary generation failed.")
 
 
 class TailorResumeRequest(BaseModel):
@@ -732,8 +727,8 @@ Return ONLY the polished letter text, maintaining complete professional structur
         polished = resp_text.strip()
         return {"polished_text": polished, "action": req.action}
     except Exception as e:
-        print(f"[PolishCoverLetter] LLM fallback: {e}")
-        return {"polished_text": text, "action": req.action, "note": "Maintained current letter format"}
+        print(f"[PolishCoverLetter] LLM Error: {e}")
+        raise HTTPException(status_code=500, detail="AI cover letter polish failed.")
 
 class CoverLetterRequest(BaseModel):
     company_name: str
@@ -798,18 +793,9 @@ Tone: Authentic, highly personalized, persuasive, crisp, tailored to the specifi
                     yield f"data: {json.dumps({'content': chunk})}\n\n"
                 yield "data: [DONE]\n\n"
             except Exception as e:
-                print(f"[CoverLetter Streaming] Fallback triggered: {e}")
-                if not streamed_any:
-                    p1 = f"Dear {req.company_name} Hiring Team,\n\nI am writing to express my enthusiastic interest in the {req.role_title} opportunity at {req.company_name}. With my background in {req.candidate_skills.split(';')[0] if req.candidate_skills else 'modern software engineering'} and a proven track record of building reliable solutions, I am eager to contribute directly to your team's technical objectives.\n\n"
-                    p2 = f"In my recent work, I have focused on solving complex problems, writing clean and maintainable code, and collaborating across teams to deliver measurable impact. I have long admired {req.company_name}'s dedication to engineering excellence and product innovation.\n\n"
-                    p3 = f"I would welcome the opportunity to discuss how my skillset and background align with {req.company_name}'s upcoming goals. Thank you for your time and consideration.\n\nSincerely,\n{req.candidate_name}"
-                    
-                    full_text = p1 + p2 + p3
-                    words = full_text.split(" ")
-                    for word in words:
-                        yield f"data: {json.dumps({'content': word + ' '})}\n\n"
-                        await asyncio.sleep(0.01)
-                yield "data: [DONE]\n\n"
+                print(f"[CoverLetter Streaming] Error: {e}")
+                import json
+                yield f"data: {json.dumps({'error': 'AI generation failed'})}\n\n"
                 
         return StreamingResponse(
             event_generator(),
@@ -822,9 +808,8 @@ Tone: Authentic, highly personalized, persuasive, crisp, tailored to the specifi
         )
         
     except Exception as e:
-        print(f"[CoverLetter Setup] Fallback used: {e}")
-        fallback = f"Dear Hiring Team at {req.company_name},\n\nI am writing to express my strong enthusiasm for the {req.role_title} position at {req.company_name}."
-        return {"cover_letter": fallback}
+        print(f"[CoverLetter Setup] Error: {e}")
+        raise HTTPException(status_code=500, detail="AI cover letter generation failed.")
 
 
 if os.path.exists(STATIC_DIR):
