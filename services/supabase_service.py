@@ -90,7 +90,7 @@ class SupabaseService:
         query_start = time.time()
         try:
             async with asyncio.timeout(2.5):  # 2.5s strict timeout
-                query = client.table("jobs").select("id,title,company,location,workplace_type,salary,apply_url,created_at,source").limit(limit)
+                query = client.table("jobs").select("id,title,company,location,city,platform,url,workplace_type,employment_type,stipend_or_salary,description,skills,created_at,updated_at").limit(limit)
                 if city:
                     query = query.ilike("city", f"%{city}%")
                 if workplace_type:
