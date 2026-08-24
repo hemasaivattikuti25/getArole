@@ -1,17 +1,19 @@
 import os
 import time
 import asyncio
+import logging
 from typing import List, Dict, Any, Optional
 from dotenv import load_dotenv
 from supabase import create_client, Client
 from scrapers.models import JobListing, CandidateProfile
 from domain.models import CandidateScreeningReport
-from core.metrics import SUPABASE_FAILURES_TOTAL, DEPENDENCY_ERRORS_TOTAL
+from core.metrics import SUPABASE_FAILURES_TOTAL, DEPENDENCY_ERRORS_TOTAL, SUPABASE_QUERY_DURATION, CACHE_OPERATIONS
 
 load_dotenv()
 
 _JOB_WRITE_THROUGH_CACHE: List[Dict[str, Any]] = []
 _CACHE_TIMESTAMP: float = 0.0
+SLOW_QUERY_THRESHOLD_MS = 200.0  # 10% of 2.0s P99 Search Latency SLO
 
 class SupabaseService:
     def __init__(self):
@@ -81,6 +83,7 @@ class SupabaseService:
         global _JOB_WRITE_THROUGH_CACHE, _CACHE_TIMESTAMP
         client = await self._get_client()
         if not client:
+            CACHE_OPERATIONS.labels(cache="supabase_jobs", operation="stale_serve").inc()
             return _JOB_WRITE_THROUGH_CACHE
 
         query_start = time.time()
@@ -93,22 +96,35 @@ class SupabaseService:
                     query = query.ilike("workplace_type", f"%{workplace_type}%")
                     
                 res = await query.execute()
-                query_duration_ms = round((time.time() - query_start) * 1000, 2)
+                duration_s = time.time() - query_start
+                query_duration_ms = round(duration_s * 1000, 2)
                 
-                # SRE Slow Query Alerting threshold (500ms)
-                if query_duration_ms > 500:
+                # Observe duration into Prometheus Histogram
+                SUPABASE_QUERY_DURATION.labels(operation="fetch_jobs").observe(duration_s)
+
+                # SRE Slow Query Alerting threshold (200ms = 10% of 2.0s P99 SLO)
+                if query_duration_ms > SLOW_QUERY_THRESHOLD_MS:
+                    slo_consumed = round((query_duration_ms / 2000.0) * 100, 1)
                     logging.getLogger("sre.database").warning(
                         "slow_database_query",
-                        extra={"table": "jobs", "duration_ms": query_duration_ms, "limit": limit}
+                        extra={
+                            "table": "jobs",
+                            "duration_ms": query_duration_ms,
+                            "threshold_ms": SLOW_QUERY_THRESHOLD_MS,
+                            "slo_budget_consumed_pct": slo_consumed,
+                            "limit": limit
+                        }
                     )
 
                 if res.data:
                     _JOB_WRITE_THROUGH_CACHE = res.data
                     _CACHE_TIMESTAMP = time.time()
+                    CACHE_OPERATIONS.labels(cache="supabase_jobs", operation="write_through_refresh").inc()
                 return res.data or _JOB_WRITE_THROUGH_CACHE
         except asyncio.TimeoutError:
             SUPABASE_FAILURES_TOTAL.labels(error_type="timeout_2.5s").inc()
             DEPENDENCY_ERRORS_TOTAL.labels(dependency="supabase", error_type="timeout").inc()
+            CACHE_OPERATIONS.labels(cache="supabase_jobs", operation="stale_serve").inc()
             logging.getLogger("sre.database").error(
                 "supabase_timeout_serving_cache",
                 extra={"cache_age_sec": round(time.time() - _CACHE_TIMESTAMP, 1), "timeout_limit_s": 2.5}
@@ -118,6 +134,7 @@ class SupabaseService:
             error_name = type(e).__name__
             SUPABASE_FAILURES_TOTAL.labels(error_type=error_name).inc()
             DEPENDENCY_ERRORS_TOTAL.labels(dependency="supabase", error_type=error_name).inc()
+            CACHE_OPERATIONS.labels(cache="supabase_jobs", operation="stale_serve").inc()
             logging.getLogger("sre.database").error(
                 "supabase_fetch_error_serving_cache",
                 extra={"error_type": error_name, "error": str(e)}

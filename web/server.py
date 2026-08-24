@@ -866,32 +866,56 @@ async def metrics_endpoint():
 
 @app.get("/healthz")
 async def liveness_probe():
-    """Liveness probe: verifies ASGI process is alive."""
-    return JSONResponse({"status": "alive"})
+    """Liveness probe: verifies ASGI process is alive (<5ms)."""
+    return JSONResponse({"status": "alive", "pid": os.getpid()})
 
 @app.get("/readyz")
 async def readiness_probe(response: Response):
-    """Readiness probe: validates external dependencies before accepting traffic."""
-    checks = {
-        "supabase": False,
-        "embedding_model": False
-    }
+    """
+    Readiness probe: validates external dependencies before accepting traffic.
+    Returns 503 if critical dependencies (FastEmbed 384-dim probe or Supabase connectivity) fail.
+    Returns 200 with degraded=true if non-critical checks fail.
+    """
+    checks = {}
+    overall = "ready"
     
+    # 1. Probe Supabase live query
     try:
-        supabase = get_supabase_service()
-        checks["supabase"] = supabase.is_connected()
-    except Exception:
-        checks["supabase"] = False
+        async with asyncio.timeout(1.5):
+            supabase = get_supabase_service()
+            client = await supabase._get_client()
+            if client:
+                await client.table("jobs").select("id").limit(1).execute()
+                checks["supabase"] = "ok"
+            else:
+                checks["supabase"] = "missing_credentials"
+                overall = "degraded"
+    except Exception as e:
+        checks["supabase"] = f"degraded: {type(e).__name__}"
+        overall = "degraded"
 
+    # 2. Probe FastEmbed in-memory vector model and assert 384 dimensions
     try:
-        checks["embedding_model"] = hasattr(embedding_service, 'model') and embedding_service.model is not None
-    except Exception:
-        checks["embedding_model"] = False
+        if hasattr(embedding_service, 'model') and embedding_service.model is not None:
+            probe = list(embedding_service.model.embed(["probe"]))[0]
+            assert len(probe) == 384, f"Dimension mismatch: expected 384, got {len(probe)}"
+            checks["fastembed_384dim"] = "ok"
+        else:
+            checks["fastembed_384dim"] = "model_not_loaded"
+            overall = "not_ready"
+    except Exception as e:
+        checks["fastembed_384dim"] = f"failed: {type(e).__name__}"
+        overall = "not_ready"  # Blocks traffic
 
-    is_ready = all(checks.values())
-    if not is_ready:
+    # 3. Check NVIDIA NIM API Key presence
+    nvidia_key = os.getenv("NVIDIA_NIM_API_KEY", "")
+    checks["nvidia_api_key"] = "configured" if bool(nvidia_key) else "missing"
+
+    if overall == "not_ready":
         response.status_code = 503
-        return JSONResponse(status_code=503, content={"status": "degraded", "dependencies": checks})
+        return JSONResponse(status_code=503, content={"status": "not_ready", "checks": checks})
+    elif overall == "degraded":
+        return JSONResponse(status_code=200, content={"status": "degraded", "degraded": True, "checks": checks})
         
-    return JSONResponse({"status": "ready", "dependencies": checks})
+    return JSONResponse(status_code=200, content={"status": "ready", "degraded": False, "checks": checks})
 

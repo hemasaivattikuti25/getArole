@@ -1,0 +1,65 @@
+# monitoring/alerts.yml
+# Production Prometheus SRE Alerting Rules for getArole Platform
+
+groups:
+  - name: getarole_slo_alerts
+    rules:
+      # 1. NVIDIA NIM LLM Rate Limit Storm
+      - alert: NvidiaLlmRateLimitStorm
+        expr: rate(llm_fallback_total{reason=~"http_429|circuit_open"}[2m]) > 5
+        for: 1m
+        labels:
+          severity: critical
+          tier: external_api
+        annotations:
+          summary: "NVIDIA LLM API rate limit storm is active (burning parse error budget)."
+          description: "Circuit breaker opened or >5 rate-limited calls/sec detected in 2m window."
+          runbook_url: "https://wiki.getarole.internal/runbooks/nvidia-nim-ratelimit"
+
+      # 2. Supabase Connection Pool Exhaustion
+      - alert: SupabaseConnectionPoolExhausted
+        expr: rate(supabase_failures_total{error_type=~"timeout.*|connection.*"}[1m]) > 0.5
+        for: 30s
+        labels:
+          severity: page
+          tier: database
+        annotations:
+          summary: "Supabase connection pool exhausted or queries timing out (>2.5s)."
+          description: "Application is actively serving stale write-through cache data."
+          runbook_url: "https://wiki.getarole.internal/runbooks/supabase-pool-exhaustion"
+
+      # 3. All Scrapers Down / Blocked
+      - alert: ScraperAllBoardsDown
+        expr: sum(rate(scraper_failure_total[15m])) > 10 and sum(rate(scraper_jobs_fetched_total[15m])) == 0
+        for: 10m
+        labels:
+          severity: warning
+          tier: scrapers
+        annotations:
+          summary: "All 6 job board scrapers are failing (freshness SLO at risk)."
+          description: "No jobs fetched across scrapers in the last 15 minutes."
+          runbook_url: "https://wiki.getarole.internal/runbooks/scrapers-mass-failure"
+
+      # 4. FastEmbed Vector Model Failure
+      - alert: EmbeddingModelFailed
+        expr: rate(embedding_fallback_total[2m]) > 1 or rate(dependency_errors_total{dependency="fastembed"}[2m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+          tier: ml_engine
+        annotations:
+          summary: "FastEmbed vector model corruption or startup probe failure."
+          description: "Vector search has fallen back to BM25 keyword matching."
+          runbook_url: "https://wiki.getarole.internal/runbooks/fastembed-model-failure"
+
+      # 5. Slow Query Budget Burn (>200ms)
+      - alert: SlowQueryBudgetBurn
+        expr: rate(supabase_query_duration_seconds_bucket{le="0.2"}[5m]) / rate(supabase_query_duration_seconds_count[5m]) < 0.90
+        for: 5m
+        labels:
+          severity: warning
+          tier: database
+        annotations:
+          summary: ">10% of Supabase queries exceed 200ms threshold (consuming >10% of 2s P99 SLO)."
+          description: "Database queries are consuming disproportionate latency budget."
+          runbook_url: "https://wiki.getarole.internal/runbooks/supabase-slow-queries"

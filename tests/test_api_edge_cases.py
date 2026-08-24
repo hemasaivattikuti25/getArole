@@ -220,3 +220,51 @@ def test_observability_middleware_request_id_and_tracing():
     res2 = client.get("/healthz", headers={"X-Request-ID": custom_trace_id})
     assert res2.status_code == 200
     assert (res2.headers.get("x-request-id") or res2.headers.get("X-Request-ID")) == custom_trace_id
+
+
+# ── 8. PII Redaction & Sensitive Field Scrubbing ──────────────────────────────
+
+def test_comprehensive_pii_redaction_and_field_blocking():
+    """Test that all 6 PII patterns and blocked fields are redacted from logs."""
+    import logging
+    from core.logging_config import PIIRedactionFilter
+
+    filt = PIIRedactionFilter()
+
+    # 1. Email Redaction
+    r1 = logging.LogRecord("test", logging.INFO, "test.py", 1, "Contact me at candidate.john.doe@company.org for details", (), None)
+    filt.filter(r1)
+    assert "***@redacted.email" in r1.msg
+    assert "candidate.john.doe@company.org" not in r1.msg
+
+    # 2. Phone Redaction
+    r2 = logging.LogRecord("test", logging.INFO, "test.py", 1, "Phone number: (415) 555-2671", (), None)
+    filt.filter(r2)
+    assert "***-PHONE-REDACTED" in r2.msg
+
+    # 3. SSN Redaction
+    r3 = logging.LogRecord("test", logging.INFO, "test.py", 1, "SSN: 123-45-6789", (), None)
+    filt.filter(r3)
+    assert "***-SSN-REDACTED" in r3.msg
+
+    # 4. LinkedIn URL Redaction
+    r4 = logging.LogRecord("test", logging.INFO, "test.py", 1, "Profile: https://www.linkedin.com/in/john-doe-tech", (), None)
+    filt.filter(r4)
+    assert "https://linkedin.com/in/[REDACTED]" in r4.msg
+
+    # 5. Street Address Redaction
+    r5 = logging.LogRecord("test", logging.INFO, "test.py", 1, "Home at 1600 Amphitheatre Parkway Boulevard", (), None)
+    filt.filter(r5)
+    assert "[ADDRESS REDACTED]" in r5.msg
+
+    # 6. Bearer Token Redaction
+    r6 = logging.LogRecord("test", logging.INFO, "test.py", 1, "Auth: Bearer secret_jwt_token_payload_xyz==", (), None)
+    filt.filter(r6)
+    assert "Bearer [REDACTED]" in r6.msg
+
+    # 7. Blocked Fields in extra dictionary
+    r7 = logging.LogRecord("test", logging.INFO, "test.py", 1, "Parsing completed", (), None)
+    r7.extra = {"resume_text": "Secret confidential experience at Apple", "user_id": "u123"}
+    filt.filter(r7)
+    assert r7.extra["resume_text"] == "[RESUME_TEXT_BLOCKED]"
+    assert r7.extra["user_id"] == "u123"

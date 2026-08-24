@@ -1,0 +1,114 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "title": "HTTP Request Rate by Endpoint",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum by (endpoint, status_code) (rate(http_request_duration_seconds_count[1m]))",
+          "legendFormat": "{{endpoint}} ({{status_code}})"
+        }
+      ]
+    },
+    {
+      "title": "P50, P95, P99 Latency by Endpoint",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum by (le, endpoint) (rate(http_request_duration_seconds_bucket[5m])))",
+          "legendFormat": "P99 - {{endpoint}}"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum by (le, endpoint) (rate(http_request_duration_seconds_bucket[5m])))",
+          "legendFormat": "P95 - {{endpoint}}"
+        },
+        {
+          "expr": "histogram_quantile(0.50, sum by (le, endpoint) (rate(http_request_duration_seconds_bucket[5m])))",
+          "legendFormat": "P50 - {{endpoint}}"
+        }
+      ]
+    },
+    {
+      "title": "Live Monthly Error Budget Burn Rate (99.5% SLO)",
+      "type": "gauge",
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "(sum(rate(http_request_duration_seconds_count{status_code=~\"5..\"}[1h])) / sum(rate(http_request_duration_seconds_count[1h]))) / 0.005",
+          "legendFormat": "Burn Rate (1x = Normal, >14x = Alarm)"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 30,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 2 },
+              { "color": "red", "value": 14 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "title": "Circuit Breaker States (0=Closed, 1=Half-Open, 2=Open)",
+      "type": "stat",
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 8 },
+      "targets": [
+        {
+          "expr": "circuit_breaker_state",
+          "legendFormat": "{{dependency}}"
+        }
+      ]
+    },
+    {
+      "title": "Scraper Fetch Velocity & Success Rate",
+      "type": "timeseries",
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "expr": "rate(scraper_jobs_fetched_total[5m])",
+          "legendFormat": "Jobs/sec - {{scraper}}"
+        },
+        {
+          "expr": "rate(scraper_failure_total[5m])",
+          "legendFormat": "Failures/sec - {{scraper}}"
+        }
+      ]
+    },
+    {
+      "title": "Supabase Query Duration P99 & Cache Hit Ratio",
+      "type": "timeseries",
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 8 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(supabase_query_duration_seconds_bucket[5m])))",
+          "legendFormat": "Supabase P99 Latency (s)"
+        },
+        {
+          "expr": "sum(rate(cache_operations_total{operation=\"write_through_refresh\"}[5m])) / sum(rate(cache_operations_total[5m]))",
+          "legendFormat": "Write-Through Freshness Ratio"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["sre", "getarole", "slo"],
+  "time": { "from": "now-1h", "to": "now" },
+  "timezone": "browser",
+  "title": "getArole — Production SRE Executive Dashboard",
+  "uid": "getarole-sre-overview"
+}
