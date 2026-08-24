@@ -62,13 +62,12 @@ async def run_scrapers():
             
     print(f"Successfully upserted {successful_upserts}/{len(all_jobs)} jobs.")
     
-    # Prune Dead Jobs
+    # Prune Dead Jobs (scoped only to Enterprise platforms scraped here)
     print("Pruning dead jobs...")
     try:
-        # Any job where last_seen_at < start_time is dead (was not seen in this scrape)
-        res = supabase.table("jobs").delete().lt("last_seen_at", start_time.isoformat()).execute()
-        deleted_count = len(res.data) if hasattr(res, 'data') else 0
-        print(f"Pruned {deleted_count} dead jobs.")
+        res = supabase.table("jobs").delete().in_("platform", ["Enterprise", "Enterprise_IT"]).lt("last_seen_at", start_time.isoformat()).execute()
+        deleted_count = len(res.data) if hasattr(res, 'data') and res.data else 0
+        print(f"Pruned {deleted_count} dead enterprise jobs.")
     except Exception as e:
         print(f"Error pruning jobs: {e}")
 
