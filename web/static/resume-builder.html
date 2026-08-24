@@ -1,132 +1,696 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>getArole — ATS Resume & Cover Letter Architect</title>
-  <meta name="description" content="Official 1-Page ATS Resume and AI Tailored Cover Letter Builder synchronized directly with candidate profile data.">
+  <meta name="description"
+    content="Official 1-Page ATS Resume and AI Tailored Cover Letter Builder synchronized directly with candidate profile data.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script>(function(){ if(!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();</script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();</script>
   <style>
-    :root{
-      --pr:#059669;--prh:#047857;--prl:#ecfdf5;--prb:#a7f3d0;
-      --sf:#fff;--bg:#f8fafc;--bd:#e2e8f0;--bds:#cbd5e1;
-      --tx:#0f172a;--txm:#475569;--txs:#94a3b8;
-      --nh:60px;--sw:220px;--ew:440px;
+    :root {
+      --pr: #059669;
+      --prh: #047857;
+      --prl: #ecfdf5;
+      --prb: #a7f3d0;
+      --sf: #fff;
+      --bg: #f8fafc;
+      --bd: #e2e8f0;
+      --bds: #cbd5e1;
+      --tx: #0f172a;
+      --txm: #475569;
+      --txs: #94a3b8;
+      --nh: 60px;
+      --sw: 220px;
+      --ew: 440px;
     }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--tx);height:100vh;display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased;}
-    h1,h2,h3,h4{font-family:'Outfit',sans-serif;letter-spacing:-.02em;}
-    ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:99px;}
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--tx);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: -.02em;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 99px;
+    }
 
     /* ═══════ TOP BAR ═══════ */
-    .tb{height:var(--nh);background:var(--sf);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 20px;gap:14px;flex-shrink:0;z-index:100;}
-    .brand{display:flex;align-items:center;gap:8px;text-decoration:none;}
-    .bi{width:28px;height:28px;background:linear-gradient(135deg,#059669,#10b981);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Outfit',sans-serif;font-weight:800;font-size:14px;box-shadow:0 2px 6px rgba(5,150,105,0.2);}
-    .bt{font-family:'Outfit',sans-serif;font-weight:800;font-size:17px;color:var(--tx);}
-    .bt span{color:var(--pr);}
-    .back{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--txm);text-decoration:none;padding:6px 11px;border-radius:8px;border:1px solid var(--bd);transition:all .15s;}
-    .back:hover{color:var(--pr);border-color:var(--prb);background:var(--prl);}
-    .dv{width:1px;height:24px;background:var(--bd);}
-    
+    .tb {
+      height: var(--nh);
+      background: var(--sf);
+      border-bottom: 1px solid var(--bd);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 14px;
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .bi {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #059669, #10b981);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2);
+    }
+
+    .bt {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      color: var(--tx);
+    }
+
+    .bt span {
+      color: var(--pr);
+    }
+
+    .back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--txm);
+      text-decoration: none;
+      padding: 6px 11px;
+      border-radius: 8px;
+      border: 1px solid var(--bd);
+      transition: all .15s;
+    }
+
+    .back:hover {
+      color: var(--pr);
+      border-color: var(--prb);
+      background: var(--prl);
+    }
+
+    .dv {
+      width: 1px;
+      height: 24px;
+      background: var(--bd);
+    }
+
     /* Document Mode Switcher (Resume vs Cover Letter) */
-    .mode-switch{display:flex;align-items:center;gap:4px;background:var(--bg);padding:4px;border-radius:10px;border:1px solid var(--bd);}
-    .btn-mode{padding:6px 14px;border-radius:7px;font-size:12.5px;font-weight:700;color:var(--txm);background:none;border:none;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;}
-    .btn-mode.active{background:var(--sf);color:var(--pr);box-shadow:0 1px 4px rgba(0,0,0,.08);font-weight:800;}
-    
+    .mode-switch {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--bd);
+    }
+
+    .btn-mode {
+      padding: 6px 14px;
+      border-radius: 7px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--txm);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-mode.active {
+      background: var(--sf);
+      color: var(--pr);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
+      font-weight: 800;
+    }
+
     /* Sync Status & Action Buttons */
-    .tbr{display:flex;align-items:center;gap:10px;margin-left:auto;}
-    .profile-synced-badge{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--pr);background:var(--prl);border:1px solid var(--prb);padding:4px 10px;border-radius:20px;}
-    .bto{padding:7px 14px;border-radius:8px;border:1.5px solid var(--bd);background:var(--sf);font-size:12.5px;font-weight:700;color:var(--tx);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;}
-    .bto:hover{border-color:var(--prb);color:var(--pr);}
-    .btp{padding:7px 18px;border-radius:8px;border:none;background:var(--pr);font-size:13px;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(5,150,105,.25);transition:all .15s;}
-    .btp:hover{background:var(--prh);}
+    .tbr {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .profile-synced-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--pr);
+      background: var(--prl);
+      border: 1px solid var(--prb);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .bto {
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--bd);
+      background: var(--sf);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--tx);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .15s;
+    }
+
+    .bto:hover {
+      border-color: var(--prb);
+      color: var(--pr);
+    }
+
+    .btp {
+      padding: 7px 18px;
+      border-radius: 8px;
+      border: none;
+      background: var(--pr);
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, .25);
+      transition: all .15s;
+    }
+
+    .btp:hover {
+      background: var(--prh);
+    }
 
     /* ═══════ THREE-COLUMN LAYOUT ═══════ */
-    .ly{flex:1;display:grid;grid-template-columns:var(--sw) var(--ew) 1fr;overflow:hidden;}
+    .ly {
+      flex: 1;
+      display: grid;
+      grid-template-columns: var(--sw) var(--ew) 1fr;
+      overflow: hidden;
+    }
 
     /* Sidebar Navigation */
-    .sn{background:var(--sf);border-right:1px solid var(--bd);padding:14px 10px;display:flex;flex-direction:column;gap:4px;overflow-y:auto;}
-    .snl{font-size:10px;font-weight:800;color:var(--txs);text-transform:uppercase;letter-spacing:.08em;padding:8px 10px 3px;}
-    .si{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13px;font-weight:600;color:var(--txm);cursor:pointer;transition:all .15s;}
-    .si:hover{background:var(--bg);color:var(--tx);}
-    .si.active{background:var(--prl);color:var(--pr);font-weight:700;}
-    .sic{font-size:15px;width:18px;text-align:center;}
-    .dot{width:7px;height:7px;border-radius:50%;background:var(--bd);margin-left:auto;flex-shrink:0;transition:background .3s;}
-    .dot.done{background:var(--pr);}
-    .cl-only{display:none;}
-    .mode-cl-active .resume-only{display:none;}
-    .mode-cl-active .cl-only{display:flex;}
+    .sn {
+      background: var(--sf);
+      border-right: 1px solid var(--bd);
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow-y: auto;
+    }
+
+    .snl {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--txs);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 8px 10px 3px;
+    }
+
+    .si {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--txm);
+      cursor: pointer;
+      transition: all .15s;
+    }
+
+    .si:hover {
+      background: var(--bg);
+      color: var(--tx);
+    }
+
+    .si.active {
+      background: var(--prl);
+      color: var(--pr);
+      font-weight: 700;
+    }
+
+    .sic {
+      font-size: 15px;
+      width: 18px;
+      text-align: center;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--bd);
+      margin-left: auto;
+      flex-shrink: 0;
+      transition: background .3s;
+    }
+
+    .dot.done {
+      background: var(--pr);
+    }
+
+    .cl-only {
+      display: none;
+    }
+
+    .mode-cl-active .resume-only {
+      display: none;
+    }
+
+    .mode-cl-active .cl-only {
+      display: flex;
+    }
 
     /* Editor Column */
-    .ep{border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden;background:var(--sf);}
-    .eh{padding:14px 20px 12px;border-bottom:1px solid var(--bd);background:var(--sf);flex-shrink:0;display:flex;justify-content:space-between;align-items:flex-start;}
-    .eh h2{font-size:17px;font-weight:800;color:var(--tx);}
-    .eh p{font-size:12px;color:var(--txm);margin-top:2px;}
-    .eb{flex:1;overflow-y:auto;padding:18px 20px;background:var(--bg);display:flex;flex-direction:column;gap:14px;}
+    .ep {
+      border-right: 1px solid var(--bd);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--sf);
+    }
+
+    .eh {
+      padding: 14px 20px 12px;
+      border-bottom: 1px solid var(--bd);
+      background: var(--sf);
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .eh h2 {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--tx);
+    }
+
+    .eh p {
+      font-size: 12px;
+      color: var(--txm);
+      margin-top: 2px;
+    }
+
+    .eb {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 20px;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
 
     /* Panels & Forms */
-    .pn{display:none;flex-direction:column;gap:14px;}
-    .pn.active{display:flex;}
-    .fg{display:flex;flex-direction:column;gap:4px;}
-    .fg label{font-size:11px;font-weight:700;color:var(--txm);text-transform:uppercase;letter-spacing:.04em;}
-    .fi,.ft{width:100%;padding:9px 12px;border:1.5px solid var(--bd);border-radius:8px;background:var(--sf);color:var(--tx);font-size:13.5px;font-family:inherit;outline:none;transition:border-color .15s;}
-    .fi:focus,.ft:focus{border-color:var(--pr);}
-    .ft{resize:vertical;min-height:72px;line-height:1.55;}
-    .fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .pn {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .pn.active {
+      display: flex;
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .fg label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--txm);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .fi,
+    .ft {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--bd);
+      border-radius: 8px;
+      background: var(--sf);
+      color: var(--tx);
+      font-size: 13.5px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .fi:focus,
+    .ft:focus {
+      border-color: var(--pr);
+    }
+
+    .ft {
+      resize: vertical;
+      min-height: 72px;
+      line-height: 1.55;
+    }
+
+    .fr2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
 
     /* Form Cards */
-    .fc{background:var(--sf);border:1.5px solid var(--bd);border-radius:11px;padding:14px;display:flex;flex-direction:column;gap:11px;}
-    .fch{display:flex;align-items:center;justify-content:space-between;}
-    .fct{font-size:13.5px;font-weight:800;color:var(--tx);}
-    .brm{background:none;border:none;cursor:pointer;color:var(--txs);font-size:13px;padding:3px 6px;border-radius:4px;transition:all .15s;}
-    .brm:hover{background:#fee2e2;color:#dc2626;}
-    .bad{padding:9px 14px;border-radius:8px;border:1.5px dashed var(--bd);background:transparent;font-size:13px;font-weight:700;color:var(--txm);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;}
-    .bad:hover{border-color:var(--pr);color:var(--pr);background:var(--prl);}
+    .fc {
+      background: var(--sf);
+      border: 1.5px solid var(--bd);
+      border-radius: 11px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .fch {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .fct {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--tx);
+    }
+
+    .brm {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--txs);
+      font-size: 13px;
+      padding: 3px 6px;
+      border-radius: 4px;
+      transition: all .15s;
+    }
+
+    .brm:hover {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .bad {
+      padding: 9px 14px;
+      border-radius: 8px;
+      border: 1.5px dashed var(--bd);
+      background: transparent;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--txm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .15s;
+    }
+
+    .bad:hover {
+      border-color: var(--pr);
+      color: var(--pr);
+      background: var(--prl);
+    }
 
     /* Bullet point rows */
-    .bls{display:flex;flex-direction:column;gap:6px;}
-    .blr{display:flex;align-items:center;gap:6px;}
-    .blr input{flex:1;padding:7px 10px;border-radius:6px;border:1px solid var(--bd);background:var(--sf);font-size:12.5px;font-family:inherit;outline:none;transition:border-color .15s;}
-    .blr input:focus{border-color:var(--pr);}
-    .bai{padding:4px 8px;border-radius:5px;border:1px solid var(--prb);background:var(--prl);color:var(--pr);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s;}
-    .bai:hover{background:var(--pr);color:#fff;}
-    .bri{background:none;border:none;cursor:pointer;color:var(--txs);font-size:13px;padding:2px 5px;}
-    .bri:hover{color:#dc2626;}
-    .bads{padding:5px 10px;border-radius:6px;border:1.5px dashed var(--bd);background:transparent;font-size:12px;font-weight:700;color:var(--txm);cursor:pointer;display:flex;align-items:center;gap:5px;margin-top:3px;transition:all .15s;}
-    .bads:hover{border-color:var(--pr);color:var(--pr);}
+    .bls {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .blr {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .blr input {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--bd);
+      background: var(--sf);
+      font-size: 12.5px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .blr input:focus {
+      border-color: var(--pr);
+    }
+
+    .bai {
+      padding: 4px 8px;
+      border-radius: 5px;
+      border: 1px solid var(--prb);
+      background: var(--prl);
+      color: var(--pr);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .15s;
+    }
+
+    .bai:hover {
+      background: var(--pr);
+      color: #fff;
+    }
+
+    .bri {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--txs);
+      font-size: 13px;
+      padding: 2px 5px;
+    }
+
+    .bri:hover {
+      color: #dc2626;
+    }
+
+    .bads {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1.5px dashed var(--bd);
+      background: transparent;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--txm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 3px;
+      transition: all .15s;
+    }
+
+    .bads:hover {
+      border-color: var(--pr);
+      color: var(--pr);
+    }
 
     /* ATS Score Card */
-    .ac{background:var(--sf);border:1.5px solid var(--bd);border-radius:10px;padding:14px;}
-    .ach{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-    .acn{font-size:24px;font-weight:900;font-family:'Outfit',sans-serif;color:var(--pr);}
-    .abb{height:6px;background:var(--bd);border-radius:99px;overflow:hidden;}
-    .abf{height:100%;border-radius:99px;transition:width .5s ease,background .5s;background:linear-gradient(90deg,var(--pr),#10b981);}
-    .ats-tips{margin-top:10px;display:flex;flex-direction:column;gap:4px;}
-    .ats-tip{font-size:11.5px;color:var(--txm);}
+    .ac {
+      background: var(--sf);
+      border: 1.5px solid var(--bd);
+      border-radius: 10px;
+      padding: 14px;
+    }
 
-    #toast{position:fixed;bottom:22px;right:22px;z-index:9999;background:#0f172a;color:#fff;padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;transform:translateY(8px);transition:all .25s ease;pointer-events:none;}
-    #toast.show{opacity:1;transform:translateY(0);}
+    .ach {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .acn {
+      font-size: 24px;
+      font-weight: 900;
+      font-family: 'Outfit', sans-serif;
+      color: var(--pr);
+    }
+
+    .abb {
+      height: 6px;
+      background: var(--bd);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .abf {
+      height: 100%;
+      border-radius: 99px;
+      transition: width .5s ease, background .5s;
+      background: linear-gradient(90deg, var(--pr), #10b981);
+    }
+
+    .ats-tips {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .ats-tip {
+      font-size: 11.5px;
+      color: var(--txm);
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      z-index: 9999;
+      background: #0f172a;
+      color: #fff;
+      padding: 11px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all .25s ease;
+      pointer-events: none;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
     /* ═══════ PREVIEW PANEL ═══════ */
-    .pv{background:#525659;overflow-y:auto;padding:24px;display:flex;flex-direction:column;align-items:center;}
-    .pvl{font-size:11px;font-weight:800;color:#e2e8f0;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;align-self:flex-start;display:flex;align-items:center;gap:8px;}
-    .a4w{width:100%;display:flex;justify-content:center;}
-    #rp{width:794px;min-height:1123px;background:#fff;box-shadow:0 6px 30px rgba(0,0,0,.4);transform-origin:top center;flex-shrink:0;}
+    .pv {
+      background: #525659;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-    @media print{
-      @page{size:A4;margin:0;}
-      body>*{display:none!important;}
-      #pw{display:block!important;position:fixed;top:0;left:0;width:210mm;min-height:297mm;z-index:99999;background:#fff;}
+    .pvl {
+      font-size: 11px;
+      font-weight: 800;
+      color: #e2e8f0;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 14px;
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .a4w {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    #rp {
+      width: 794px;
+      min-height: 1123px;
+      background: #fff;
+      box-shadow: 0 6px 30px rgba(0, 0, 0, .4);
+      transform-origin: top center;
+      flex-shrink: 0;
+    }
+
+    @media print {
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      body>* {
+        display: none !important;
+      }
+
+      #pw {
+        display: block !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 210mm;
+        min-height: 297mm;
+        z-index: 99999;
+        background: #fff;
+      }
     }
 
     /* ═════════════════════════════════════════════════════════════════
        LATEX MASTER RESUME & COVER LETTER STYLES
        Typography: Times New Roman / Computer Modern Serif
     ═════════════════════════════════════════════════════════════════ */
-    .latex-doc{
+    .latex-doc {
       font-family: 'Times New Roman', 'CMU Serif', 'Latin Modern Roman', 'Liberation Serif', Times, serif;
       color: #000;
       padding: 40px 48px;
@@ -134,18 +698,45 @@
       line-height: 1.25;
       background: #fff;
     }
-    .latex-doc a{color: #000; text-decoration: none;}
-    .latex-doc a:hover{text-decoration: underline;}
+
+    .latex-doc a {
+      color: #000;
+      text-decoration: none;
+    }
+
+    .latex-doc a:hover {
+      text-decoration: underline;
+    }
 
     /* Header */
-    .lr-header{text-align: center; margin-bottom: 12px;}
-    .lr-name{font-size: 22pt; font-weight: bold; letter-spacing: 0.5px; margin-bottom: 4px;}
-    .lr-contacts{font-size: 9.5pt; color: #222; margin-top: 3px;}
-    .lr-contacts span{margin: 0 4px;}
+    .lr-header {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .lr-name {
+      font-size: 22pt;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .lr-contacts {
+      font-size: 9.5pt;
+      color: #222;
+      margin-top: 3px;
+    }
+
+    .lr-contacts span {
+      margin: 0 4px;
+    }
 
     /* Section Headings */
-    .lr-sec{margin-bottom: 10px;}
-    .lr-sec-title{
+    .lr-sec {
+      margin-bottom: 10px;
+    }
+
+    .lr-sec-title {
       font-size: 10.5pt;
       font-weight: bold;
       text-transform: uppercase;
@@ -156,7 +747,7 @@
     }
 
     /* Summary & Text */
-    .lr-summary-text{
+    .lr-summary-text {
       font-size: 9.5pt;
       line-height: 1.35;
       text-align: justify;
@@ -164,334 +755,478 @@
     }
 
     /* Technical Skills */
-    .lr-skills-table{width: 100%; font-size: 9.5pt; line-height: 1.35;}
-    .lr-skills-row{margin-bottom: 2px;}
-    .lr-skills-label{font-weight: bold; color: #000;}
+    .lr-skills-table {
+      width: 100%;
+      font-size: 9.5pt;
+      line-height: 1.35;
+    }
+
+    .lr-skills-row {
+      margin-bottom: 2px;
+    }
+
+    .lr-skills-label {
+      font-weight: bold;
+      color: #000;
+    }
 
     /* Experience & Projects Entries */
-    .lr-entry{margin-bottom: 8px;}
-    .lr-entry-header{display: flex; justify-content: space-between; align-items: baseline; font-size: 10pt;}
-    .lr-org{font-weight: bold; color: #000;}
-    .lr-date{font-style: italic; font-size: 9.5pt; color: #222;}
-    .lr-subline{display: flex; justify-content: space-between; font-style: italic; font-size: 9.5pt; color: #333; margin-top: 1px; margin-bottom: 3px;}
-    .lr-links{font-style: normal; margin-left: 6px;}
-    .lr-links a{color: #059669; text-decoration: none; font-size: 9pt; margin-left: 4px;}
+    .lr-entry {
+      margin-bottom: 8px;
+    }
+
+    .lr-entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 10pt;
+    }
+
+    .lr-org {
+      font-weight: bold;
+      color: #000;
+    }
+
+    .lr-date {
+      font-style: italic;
+      font-size: 9.5pt;
+      color: #222;
+    }
+
+    .lr-subline {
+      display: flex;
+      justify-content: space-between;
+      font-style: italic;
+      font-size: 9.5pt;
+      color: #333;
+      margin-top: 1px;
+      margin-bottom: 3px;
+    }
+
+    .lr-links {
+      font-style: normal;
+      margin-left: 6px;
+    }
+
+    .lr-links a {
+      color: #059669;
+      text-decoration: none;
+      font-size: 9pt;
+      margin-left: 4px;
+    }
 
     /* Bullet lists */
-    .lr-bullets{margin: 0; padding-left: 18px;}
-    .lr-bullets li{font-size: 9.2pt; line-height: 1.35; color: #111; margin-bottom: 2px; text-align: justify;}
-    .lr-bullets li strong{color: #000;}
+    .lr-bullets {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .lr-bullets li {
+      font-size: 9.2pt;
+      line-height: 1.35;
+      color: #111;
+      margin-bottom: 2px;
+      text-align: justify;
+    }
+
+    .lr-bullets li strong {
+      color: #000;
+    }
 
     /* Achievements & Certifications lines */
-    .lr-single-line{display: flex; justify-content: space-between; font-size: 9.3pt; line-height: 1.35; margin-bottom: 2px;}
+    .lr-single-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9.3pt;
+      line-height: 1.35;
+      margin-bottom: 2px;
+    }
 
     /* ════════ COVER LETTER SPECIFIC STYLES ════════ */
-    .cl-header-box{border-bottom: 1.5px solid #000; padding-bottom: 12px; margin-bottom: 20px;}
-    .cl-meta-block{font-size: 10pt; line-height: 1.4; color: #111; margin-bottom: 20px;}
-    .cl-salutation{font-weight: bold; font-size: 10.5pt; margin-bottom: 14px;}
-    .cl-body-p{font-size: 10.5pt; line-height: 1.55; text-align: justify; margin-bottom: 14px; color: #111;}
-    .cl-signoff{margin-top: 24px; font-size: 10.5pt; line-height: 1.4;}
-    .cl-signoff-name{font-weight: bold; margin-top: 18px; font-size: 11.5pt;}
+    .cl-header-box {
+      border-bottom: 1.5px solid #000;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .cl-meta-block {
+      font-size: 10pt;
+      line-height: 1.4;
+      color: #111;
+      margin-bottom: 20px;
+    }
+
+    .cl-salutation {
+      font-weight: bold;
+      font-size: 10.5pt;
+      margin-bottom: 14px;
+    }
+
+    .cl-body-p {
+      font-size: 10.5pt;
+      line-height: 1.55;
+      text-align: justify;
+      margin-bottom: 14px;
+      color: #111;
+    }
+
+    .cl-signoff {
+      margin-top: 24px;
+      font-size: 10.5pt;
+      line-height: 1.4;
+    }
+
+    .cl-signoff-name {
+      font-weight: bold;
+      margin-top: 18px;
+      font-size: 11.5pt;
+    }
   </style>
 </head>
+
 <body>
 
-<!-- ════════ TOP BAR ════════ -->
-<header class="tb">
-  <a href="/dashboard" class="back">← Dashboard</a>
-  <a href="/dashboard" class="brand">
-    <div class="bi">G</div>
-    <span class="bt">get<span>A</span>role</span>
-  </a>
-  <div class="dv"></div>
-  
-  <!-- 2 Options Switcher -->
-  <div class="mode-switch">
-    <button class="btn-mode active" id="btn-mode-resume" onclick="switchDocMode('resume')">
-      1-Page ATS Resume
-    </button>
-    <button class="btn-mode" id="btn-mode-cl" onclick="switchDocMode('cover_letter')">
-      Tailored Cover Letter
-    </button>
-  </div>
+  <!-- ════════ TOP BAR ════════ -->
+  <header class="tb">
+    <a href="/dashboard" class="back">← Dashboard</a>
+    <a href="/dashboard" class="brand">
+      <div class="bi">G</div>
+      <span class="bt">get<span>A</span>role</span>
+    </a>
+    <div class="dv"></div>
 
-  <div class="tbr">
-    <div class="profile-synced-badge" id="profile-sync-indicator" title="Connected to your candidate profile">
-      Profile Synced
-    </div>
-    <button class="bto" onclick="resyncFromProfile()" title="Reload fresh data from candidate profile">
-      Re-Sync Profile
-    </button>
-    <button class="btp" onclick="exportPDF()">Export PDF</button>
-  </div>
-</header>
-
-<!-- ════════ THREE COLUMN LAYOUT ════════ -->
-<div class="ly" id="app-layout">
-  <!-- 1. SECTIONS SIDEBAR -->
-  <aside class="sn">
-    <!-- RESUME SECTIONS -->
-    <div class="snl resume-only">Resume Sections</div>
-    <div class="si active resume-only" id="nav-header"  onclick="gS('header')"><span class="sic"></span>1. Header &amp; Info<span class="dot done" id="dot-header"></span></div>
-    <div class="si resume-only"        id="nav-summary" onclick="gS('summary')"><span class="sic">📝</span>2. Summary<span class="dot done" id="dot-summary"></span></div>
-    <div class="si resume-only"        id="nav-skills"  onclick="gS('skills')"><span class="sic"></span>3. Technical Skills<span class="dot done" id="dot-skills"></span></div>
-    <div class="si resume-only"        id="nav-exp"     onclick="gS('exp')"><span class="sic"></span>4. Experience<span class="dot done" id="dot-exp"></span></div>
-    <div class="si resume-only"        id="nav-proj"    onclick="gS('proj')"><span class="sic"></span>5. Projects<span class="dot done" id="dot-proj"></span></div>
-    <div class="si resume-only"        id="nav-achieve" onclick="gS('achieve')"><span class="sic">🏅</span>6. Achievements<span class="dot done" id="dot-achieve"></span></div>
-    <div class="si resume-only"        id="nav-certs"   onclick="gS('certs')"><span class="sic">🏆</span>7. Certifications<span class="dot done" id="dot-certs"></span></div>
-    <div class="si resume-only"        id="nav-edu"     onclick="gS('edu')"><span class="sic">🎓</span>8. Education<span class="dot done" id="dot-edu"></span></div>
-    
-    <!-- COVER LETTER SECTIONS -->
-    <div class="snl cl-only">Cover Letter Details</div>
-    <div class="si cl-only active" id="nav-cl-target" onclick="gS('cl-target')"><span class="sic">🎯</span>Target Role &amp; Company<span class="dot done"></span></div>
-    <div class="si cl-only"        id="nav-cl-body"   onclick="gS('cl-body')"><span class="sic">✍️</span>Letter Content<span class="dot done"></span></div>
-
-    <div class="snl" style="margin-top:8px;">AI Optimizers</div>
-    <div class="si" id="nav-ats"    onclick="gS('ats')"><span class="sic"></span>ATS Check</div>
-    <div class="si" id="nav-tailor" onclick="gS('tailor')"><span class="sic"></span>AI Job Matcher</div>
-  </aside>
-
-  <!-- 2. FORM EDITOR COLUMN -->
-  <div class="ep">
-    <div class="eh">
-      <div>
-        <h2 id="ed-t">Header &amp; Contact Info</h2>
-        <p id="ed-s">Personal links &amp; contact details</p>
-      </div>
-      <span style="font-size:11px;font-weight:700;color:var(--txs);background:var(--bg);padding:3px 8px;border-radius:6px;" id="asv">✓ Saved</span>
+    <!-- 2 Options Switcher -->
+    <div class="mode-switch">
+      <button class="btn-mode active" id="btn-mode-resume" onclick="switchDocMode('resume')">
+        1-Page ATS Resume
+      </button>
+      <button class="btn-mode" id="btn-mode-cl" onclick="switchDocMode('cover_letter')">
+        Tailored Cover Letter
+      </button>
     </div>
 
-    <div class="eb">
-      <!-- 1. HEADER & INFO -->
-      <div class="pn active" id="panel-header">
-        <div class="fg"><label>Full Name</label><input class="fi" id="ffn" placeholder="Hemasai Vattikuti" oninput="ud('header','name',this.value)"></div>
-        <div class="fr2">
-          <div class="fg"><label>Phone Number</label><input class="fi" id="fph" placeholder="+91 79937 40469" oninput="ud('header','phone',this.value)"></div>
-          <div class="fg"><label>Email Address</label><input class="fi" id="fem" type="email" placeholder="hemasai@example.com" oninput="ud('header','email',this.value)"></div>
+    <div class="tbr">
+      <div class="profile-synced-badge" id="profile-sync-indicator" title="Connected to your candidate profile">
+        Profile Synced
+      </div>
+      <button class="bto" onclick="resyncFromProfile()" title="Reload fresh data from candidate profile">
+        Re-Sync Profile
+      </button>
+      <button class="btp" onclick="exportPDF()">Export PDF</button>
+    </div>
+  </header>
+
+  <!-- ════════ THREE COLUMN LAYOUT ════════ -->
+  <div class="ly" id="app-layout">
+    <!-- 1. SECTIONS SIDEBAR -->
+    <aside class="sn">
+      <!-- RESUME SECTIONS -->
+      <div class="snl resume-only">Resume Sections</div>
+      <div class="si active resume-only" id="nav-header" onclick="gS('header')"><span class="sic"></span>1. Header &amp;
+        Info<span class="dot done" id="dot-header"></span></div>
+      <div class="si resume-only" id="nav-summary" onclick="gS('summary')"><span class="sic">📝</span>2. Summary<span
+          class="dot done" id="dot-summary"></span></div>
+      <div class="si resume-only" id="nav-skills" onclick="gS('skills')"><span class="sic"></span>3. Technical
+        Skills<span class="dot done" id="dot-skills"></span></div>
+      <div class="si resume-only" id="nav-exp" onclick="gS('exp')"><span class="sic"></span>4. Experience<span
+          class="dot done" id="dot-exp"></span></div>
+      <div class="si resume-only" id="nav-proj" onclick="gS('proj')"><span class="sic"></span>5. Projects<span
+          class="dot done" id="dot-proj"></span></div>
+      <div class="si resume-only" id="nav-achieve" onclick="gS('achieve')"><span class="sic">🏅</span>6.
+        Achievements<span class="dot done" id="dot-achieve"></span></div>
+      <div class="si resume-only" id="nav-certs" onclick="gS('certs')"><span class="sic">🏆</span>7. Certifications<span
+          class="dot done" id="dot-certs"></span></div>
+      <div class="si resume-only" id="nav-edu" onclick="gS('edu')"><span class="sic">🎓</span>8. Education<span
+          class="dot done" id="dot-edu"></span></div>
+
+      <!-- COVER LETTER SECTIONS -->
+      <div class="snl cl-only">Cover Letter Details</div>
+      <div class="si cl-only active" id="nav-cl-target" onclick="gS('cl-target')"><span class="sic">🎯</span>Target Role
+        &amp; Company<span class="dot done"></span></div>
+      <div class="si cl-only" id="nav-cl-body" onclick="gS('cl-body')"><span class="sic">✍️</span>Letter Content<span
+          class="dot done"></span></div>
+
+      <div class="snl" style="margin-top:8px;">AI Optimizers</div>
+      <div class="si" id="nav-ats" onclick="gS('ats')"><span class="sic"></span>ATS Check</div>
+      <div class="si" id="nav-tailor" onclick="gS('tailor')"><span class="sic"></span>AI Job Matcher</div>
+    </aside>
+
+    <!-- 2. FORM EDITOR COLUMN -->
+    <div class="ep">
+      <div class="eh">
+        <div>
+          <h2 id="ed-t">Header &amp; Contact Info</h2>
+          <p id="ed-s">Personal links &amp; contact details</p>
         </div>
-        <div class="fr2">
-          <div class="fg"><label>LinkedIn Handle / URL</label><input class="fi" id="fli" placeholder="linkedin.com/in/hemasai" oninput="ud('header','linkedin',this.value)"></div>
-          <div class="fg"><label>GitHub Handle / URL</label><input class="fi" id="fgh" placeholder="github.com/hemasaivattikuti25" oninput="ud('header','github',this.value)"></div>
-        </div>
-        <div class="fg"><label>Personal Portfolio / Website</label><input class="fi" id="fpo" placeholder="mithra-lifeos.com" oninput="ud('header','portfolio',this.value)"></div>
+        <span
+          style="font-size:11px;font-weight:700;color:var(--txs);background:var(--bg);padding:3px 8px;border-radius:6px;"
+          id="asv">✓ Saved</span>
       </div>
 
-      <!-- 2. SUMMARY -->
-      <div class="pn" id="panel-summary">
-        <div class="fg">
-          <label>Summary Statement</label>
-          <textarea class="ft" id="fsu" rows="4" style="min-height:95px;" placeholder="Backend Applied AI Engineer building scalable, high-availability distributed systems..." oninput="ud('summary','text',this.value)"></textarea>
-        </div>
-        <button class="bto" style="align-self:flex-start;" onclick="genSum()">Synthesize Summary</button>
-      </div>
-
-      <!-- 3. TECHNICAL SKILLS -->
-      <div class="pn" id="panel-skills">
-        <div class="fg"><label>Languages</label><input class="fi" id="fsl" placeholder="Python, Java, SQL" oninput="ud('skills','languages',this.value)"></div>
-        <div class="fg"><label>AI / LLMs</label><input class="fi" id="fsa" placeholder="LangChain, Agentic AI, RAG Pipelines, Vector Embeddings, Semantic Search..." oninput="ud('skills','ai_llm',this.value)"></div>
-        <div class="fg"><label>Backend</label><input class="fi" id="fsb" placeholder="FastAPI, REST APIs, JWT Authentication, RBAC, Rate Limiting, Async Programming, Docker" oninput="ud('skills','backend',this.value)"></div>
-        <div class="fg"><label>Databases</label><input class="fi" id="fsd" placeholder="PostgreSQL, MongoDB (Replica Sets, Failover), Supabase, pgvector, Qdrant" oninput="ud('skills','databases',this.value)"></div>
-        <div class="fg"><label>Systems</label><input class="fi" id="fss" placeholder="Distributed Systems, High Availability, Row-Level Security, Zero-Trust Architecture" oninput="ud('skills','systems',this.value)"></div>
-        <div class="fg"><label>Tools &amp; Frameworks</label><input class="fi" id="fst" placeholder="Git, React.js, Next.js, Vercel, Google Cloud" oninput="ud('skills','tools',this.value)"></div>
-      </div>
-
-      <!-- 4. EXPERIENCE -->
-      <div class="pn" id="panel-exp">
-        <div id="ec"></div>
-        <button class="bad" onclick="addExp()">+ Add Work Experience</button>
-      </div>
-
-      <!-- 5. PROJECTS -->
-      <div class="pn" id="panel-proj">
-        <div id="pc"></div>
-        <button class="bad" onclick="addProj()">+ Add Project</button>
-      </div>
-
-      <!-- 6. ACHIEVEMENTS -->
-      <div class="pn" id="panel-achieve">
-        <div id="ac-cont"></div>
-        <button class="bad" onclick="addAchieve()">+ Add Achievement</button>
-      </div>
-
-      <!-- 7. CERTIFICATIONS -->
-      <div class="pn" id="panel-certs">
-        <div id="cc"></div>
-        <button class="bad" onclick="addCert()">+ Add Certification</button>
-      </div>
-
-      <!-- 8. EDUCATION -->
-      <div class="pn" id="panel-edu">
-        <div id="edc"></div>
-        <button class="bad" onclick="addEdu()">+ Add Education</button>
-      </div>
-
-      <!-- CL: TARGET ROLE & COMPANY -->
-      <div class="pn" id="panel-cl-target">
-        <div class="fr2">
-          <div class="fg"><label>Target Company</label><input class="fi" id="fcl-comp" placeholder="Google / Stripe / OpenAI" value="Google" oninput="udCL('company',this.value)"></div>
-          <div class="fg"><label>Target Role Title</label><input class="fi" id="fcl-role" placeholder="Applied AI / Backend Engineer" value="Applied AI Systems Engineer" oninput="udCL('role',this.value)"></div>
-        </div>
-        <div class="fr2">
-          <div class="fg"><label>Hiring Manager Name / Title</label><input class="fi" id="fcl-mgr" placeholder="Hiring Team" value="Hiring Team" oninput="udCL('manager',this.value)"></div>
-          <div class="fg"><label>Date</label><input class="fi" id="fcl-date" placeholder="Current Date" value="October 2025" oninput="udCL('date',this.value)"></div>
-        </div>
-        <div class="fg">
-          <label>Job Description / Key Requirements (Optional for AI)</label>
-          <textarea class="ft" id="fcl-jd" rows="4" style="min-height:90px;" placeholder="Paste job description snippets to tailor letter..." oninput="udCL('jd',this.value)"></textarea>
-        </div>
-        <button class="btp" onclick="aiGenerateCoverLetter()">Generate Cover Letter</button>
-      </div>
-
-      <!-- CL: LETTER BODY CONTENT -->
-      <div class="pn" id="panel-cl-body">
-        <div class="fg">
-          <label>Cover Letter Text</label>
-          <textarea class="ft" id="fcl-text" rows="14" style="min-height:280px;font-size:13px;line-height:1.6;" oninput="udCL('body',this.value)"></textarea>
-        </div>
-        <button class="bto" onclick="aiGenerateCoverLetter()">Regenerate</button>
-      </div>
-
-      <!-- AI: ATS CHECK -->
-      <div class="pn" id="panel-ats">
-        <div class="ac">
-          <div class="ach">
-            <div>
-              <div style="font-size:14px;font-weight:800;">ATS Parse Compatibility</div>
-              <div style="font-size:12px;color:var(--txm);margin-top:2px;">Scored for Applicant Tracking System parsers</div>
-            </div>
-            <div class="acn" id="ats-n">100%</div>
+      <div class="eb">
+        <!-- 1. HEADER & INFO -->
+        <div class="pn active" id="panel-header">
+          <div class="fg"><label>Full Name</label><input class="fi" id="ffn" placeholder="Hemasai Vattikuti"
+              oninput="ud('header','name',this.value)"></div>
+          <div class="fr2">
+            <div class="fg"><label>Phone Number</label><input class="fi" id="fph" placeholder="+91 79937 40469"
+                oninput="ud('header','phone',this.value)"></div>
+            <div class="fg"><label>Email Address</label><input class="fi" id="fem" type="email"
+                placeholder="hemasai@example.com" oninput="ud('header','email',this.value)"></div>
           </div>
-          <div class="abb"><div class="abf" id="ats-b" style="width:100%"></div></div>
-          <div class="ats-tips" id="ats-t"></div>
+          <div class="fr2">
+            <div class="fg"><label>LinkedIn Handle / URL</label><input class="fi" id="fli"
+                placeholder="linkedin.com/in/hemasai" oninput="ud('header','linkedin',this.value)"></div>
+            <div class="fg"><label>GitHub Handle / URL</label><input class="fi" id="fgh"
+                placeholder="github.com/hemasaivattikuti25" oninput="ud('header','github',this.value)"></div>
+          </div>
+          <div class="fg"><label>Personal Portfolio / Website</label><input class="fi" id="fpo"
+              placeholder="mithra-lifeos.com" oninput="ud('header','portfolio',this.value)"></div>
+        </div>
+
+        <!-- 2. SUMMARY -->
+        <div class="pn" id="panel-summary">
+          <div class="fg">
+            <label>Summary Statement</label>
+            <textarea class="ft" id="fsu" rows="4" style="min-height:95px;"
+              placeholder="Backend Applied AI Engineer building scalable, high-availability distributed systems..."
+              oninput="ud('summary','text',this.value)"></textarea>
+          </div>
+          <button class="bto" style="align-self:flex-start;" onclick="genSum()">Synthesize Summary</button>
+        </div>
+
+        <!-- 3. TECHNICAL SKILLS -->
+        <div class="pn" id="panel-skills">
+          <div class="fg"><label>Languages</label><input class="fi" id="fsl" placeholder="Python, Java, SQL"
+              oninput="ud('skills','languages',this.value)"></div>
+          <div class="fg"><label>AI / LLMs</label><input class="fi" id="fsa"
+              placeholder="LangChain, Agentic AI, RAG Pipelines, Vector Embeddings, Semantic Search..."
+              oninput="ud('skills','ai_llm',this.value)"></div>
+          <div class="fg"><label>Backend</label><input class="fi" id="fsb"
+              placeholder="FastAPI, REST APIs, JWT Authentication, RBAC, Rate Limiting, Async Programming, Docker"
+              oninput="ud('skills','backend',this.value)"></div>
+          <div class="fg"><label>Databases</label><input class="fi" id="fsd"
+              placeholder="PostgreSQL, MongoDB (Replica Sets, Failover), Supabase, pgvector, Qdrant"
+              oninput="ud('skills','databases',this.value)"></div>
+          <div class="fg"><label>Systems</label><input class="fi" id="fss"
+              placeholder="Distributed Systems, High Availability, Row-Level Security, Zero-Trust Architecture"
+              oninput="ud('skills','systems',this.value)"></div>
+          <div class="fg"><label>Tools &amp; Frameworks</label><input class="fi" id="fst"
+              placeholder="Git, React.js, Next.js, Vercel, Google Cloud" oninput="ud('skills','tools',this.value)">
+          </div>
+        </div>
+
+        <!-- 4. EXPERIENCE -->
+        <div class="pn" id="panel-exp">
+          <div id="ec"></div>
+          <button class="bad" onclick="addExp()">+ Add Work Experience</button>
+        </div>
+
+        <!-- 5. PROJECTS -->
+        <div class="pn" id="panel-proj">
+          <div id="pc"></div>
+          <button class="bad" onclick="addProj()">+ Add Project</button>
+        </div>
+
+        <!-- 6. ACHIEVEMENTS -->
+        <div class="pn" id="panel-achieve">
+          <div id="ac-cont"></div>
+          <button class="bad" onclick="addAchieve()">+ Add Achievement</button>
+        </div>
+
+        <!-- 7. CERTIFICATIONS -->
+        <div class="pn" id="panel-certs">
+          <div id="cc"></div>
+          <button class="bad" onclick="addCert()">+ Add Certification</button>
+        </div>
+
+        <!-- 8. EDUCATION -->
+        <div class="pn" id="panel-edu">
+          <div id="edc"></div>
+          <button class="bad" onclick="addEdu()">+ Add Education</button>
+        </div>
+
+        <!-- CL: TARGET ROLE & COMPANY -->
+        <div class="pn" id="panel-cl-target">
+          <div class="fr2">
+            <div class="fg"><label>Target Company</label><input class="fi" id="fcl-comp"
+                placeholder="Google / Stripe / OpenAI" value="Google" oninput="udCL('company',this.value)"></div>
+            <div class="fg"><label>Target Role Title</label><input class="fi" id="fcl-role"
+                placeholder="Applied AI / Backend Engineer" value="Applied AI Systems Engineer"
+                oninput="udCL('role',this.value)"></div>
+          </div>
+          <div class="fr2">
+            <div class="fg"><label>Hiring Manager Name / Title</label><input class="fi" id="fcl-mgr"
+                placeholder="Hiring Team" value="Hiring Team" oninput="udCL('manager',this.value)"></div>
+            <div class="fg"><label>Date</label><input class="fi" id="fcl-date" placeholder="Current Date"
+                value="October 2025" oninput="udCL('date',this.value)"></div>
+          </div>
+          <div class="fg">
+            <label>Job Description / Key Requirements (Optional for AI)</label>
+            <textarea class="ft" id="fcl-jd" rows="4" style="min-height:90px;"
+              placeholder="Paste job description snippets to tailor letter..."
+              oninput="udCL('jd',this.value)"></textarea>
+          </div>
+          <button class="btp" onclick="aiGenerateCoverLetter()">Generate Cover Letter</button>
+        </div>
+
+        <!-- CL: LETTER BODY CONTENT -->
+        <div class="pn" id="panel-cl-body">
+          <div class="fg">
+            <label>Cover Letter Text</label>
+            <textarea class="ft" id="fcl-text" rows="14" style="min-height:280px;font-size:13px;line-height:1.6;"
+              oninput="udCL('body',this.value)"></textarea>
+          </div>
+          <button class="bto" onclick="aiGenerateCoverLetter()">Regenerate</button>
+        </div>
+
+        <!-- AI: ATS CHECK -->
+        <div class="pn" id="panel-ats">
+          <div class="ac">
+            <div class="ach">
+              <div>
+                <div style="font-size:14px;font-weight:800;">ATS Parse Compatibility</div>
+                <div style="font-size:12px;color:var(--txm);margin-top:2px;">Scored for Applicant Tracking System
+                  parsers</div>
+              </div>
+              <div class="acn" id="ats-n">100%</div>
+            </div>
+            <div class="abb">
+              <div class="abf" id="ats-b" style="width:100%"></div>
+            </div>
+            <div class="ats-tips" id="ats-t"></div>
+          </div>
+        </div>
+
+        <!-- AI: JOB TAILOR -->
+        <div class="pn" id="panel-tailor">
+          <div class="fg">
+            <label>Target Job Description</label>
+            <textarea class="ft" id="fjd" rows="8" style="min-height:140px;"
+              placeholder="Paste the target JD to automatically match keywords &amp; tailor your resume..."></textarea>
+          </div>
+          <button class="btp" onclick="tailorR()">Tailor to JD</button>
+          <div id="tout"
+            style="display:none;background:var(--prl);border:1px solid var(--prb);border-radius:8px;padding:14px;font-size:12.5px;color:var(--tx);line-height:1.6;">
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- AI: JOB TAILOR -->
-      <div class="pn" id="panel-tailor">
-        <div class="fg">
-          <label>Target Job Description</label>
-          <textarea class="ft" id="fjd" rows="8" style="min-height:140px;" placeholder="Paste the target JD to automatically match keywords &amp; tailor your resume..."></textarea>
-        </div>
-        <button class="btp" onclick="tailorR()">Tailor to JD</button>
-        <div id="tout" style="display:none;background:var(--prl);border:1px solid var(--prb);border-radius:8px;padding:14px;font-size:12.5px;color:var(--tx);line-height:1.6;"></div>
+    <!-- 3. LIVE PREVIEW COLUMN -->
+    <div class="pv">
+      <div class="pvl">
+        <span></span> <span id="doc-mode-label">1-Page ATS Resume</span> &mdash; Live A4 Preview
+      </div>
+      <div class="a4w">
+        <div id="rp"></div>
       </div>
     </div>
   </div>
 
-  <!-- 3. LIVE PREVIEW COLUMN -->
-  <div class="pv">
-    <div class="pvl">
-      <span></span> <span id="doc-mode-label">1-Page ATS Resume</span> &mdash; Live A4 Preview
-    </div>
-    <div class="a4w">
-      <div id="rp"></div>
-    </div>
-  </div>
-</div>
+  <div id="pw" style="display:none;"></div>
+  <div id="toast"></div>
 
-<div id="pw" style="display:none;"></div>
-<div id="toast"></div>
+  <script>
+    /* ═════════════════════════════════════════════════════════════════
+       MASTER DATA MODEL: 1. ATS RESUME & 2. TAILORED COVER LETTER
+    ═════════════════════════════════════════════════════════════════ */
+    let docMode = 'resume'; // 'resume' | 'cover_letter'
 
-<script>
-/* ═════════════════════════════════════════════════════════════════
-   MASTER DATA MODEL: 1. ATS RESUME & 2. TAILORED COVER LETTER
-═════════════════════════════════════════════════════════════════ */
-let docMode = 'resume'; // 'resume' | 'cover_letter'
-
-let R = {
-  header: {
-    name: 'Hemasai Vattikuti',
-    phone: '+91 79937 40469',
-    email: 'Email',
-    linkedin: 'LinkedIn',
-    github: 'GitHub',
-    portfolio: 'mithra-lifeos.com'
-  },
-  summary: {
-    text: 'Backend Applied AI Engineer building scalable, high-availability distributed systems and production LLM infrastructure — from mission-critical defense systems to AI products serving real users.'
-  },
-  skills: {
-    languages: 'Python, Java, SQL',
-    ai_llm: 'LangChain, Agentic AI, RAG Pipelines, Vector Embeddings, Semantic Search, Prompt Engineering, OpenAI API, Gemini API, Groq API, Hugging Face, Qdrant',
-    backend: 'FastAPI, REST APIs, JWT Authentication, RBAC, Rate Limiting, Async Programming, Docker',
-    databases: 'PostgreSQL, MongoDB (Replica Sets, Failover), Supabase, pgvector, Qdrant',
-    systems: 'Distributed Systems, High Availability, Row-Level Security, Zero-Trust Architecture',
-    tools: 'Git, React.js, Next.js, Vercel, Google Cloud'
-  },
-  experience: [
-    {
-      company: 'Defence Research and Development Laboratory (DRDL – DRDO)',
-      dates: 'Aug – Nov 2025',
-      title: 'Project Intern · Backend & Distributed Systems · Hyderabad, India',
-      bullets: [
-        'Architected a 3-node MongoDB Replica Set with automatic PRIMARY election and sub-10s failover for a mission-critical Defence Asset Management System under Scientist E, Ministry of Defence',
-        'Built production-grade FastAPI backend with JWT authentication, RBAC, and rate limiting; engineered auto-switch to standalone mode on replica failure',
-        'Dockerized full stack (MongoDB + FastAPI + React) with health monitors polling CPU/DB every 30s, auto-triggering failover on breach'
-      ]
-    },
-    {
-      company: 'Embrizon Technologies Pvt. Ltd.',
-      dates: 'Nov 2024 – Jan 2025',
-      title: 'Artificial Intelligence Intern · Remote',
-      bullets: [
-        'Engineered AI-powered automation workflows using LangChain, Llama-3, and Gemini models for customer support',
-        'Developed FastAPI backend services for AI applications and integrated production-ready LLM pipelines',
-        'Improved operational efficiency through automated routing and intelligent response generation'
-      ]
-    }
-  ],
-  projects: [
-    {
-      name: 'Mithra Life OS',
-      liveLink: 'https://mithra-lifeos.com',
-      githubLink: 'https://github.com/hemasaivattikuti25/mithra-lifeos',
-      dates: '2025 – Present',
-      stack: 'React · FastAPI · Supabase · PostgreSQL · Gemini API · pgvector · Docker',
-      bullets: [
-        'Deployed full-stack AI productivity platform serving 900+ registered users',
-        'Designed a zero-trust architecture using PostgreSQL Row-Level Security enforcing strict user-level data isolation',
-        'Implemented Retrieval-Augmented Generation (RAG) using 768-dimensional Gemini embeddings stored in pgvector for semantic search'
-      ]
-    },
-    {
-      name: 'VITAP-UniOS',
-      liveLink: 'https://vitap-unios.vercel.app',
-      githubLink: 'https://github.com/hemasaivattikuti25/vitap-unios',
-      dates: '2026',
-      stack: 'Next.js · FastAPI · Qdrant · Groq Llama · RAG',
-      bullets: [
-        'Built an AI-powered campus assistant for VIT-AP students using Retrieval-Augmented Generation over university resources, notices, and academic documents',
-        'Developed FastAPI retrieval services integrated with Qdrant vector database for semantic search and contextual retrieval',
-        'Implemented scoped retrieval and filtering strategies to improve answer relevance and reduce hallucinations',
-        'Successfully served 1490+ production queries while maintaining low-latency response times'
-      ]
-    }
-  ],
-  achievements: [
-    { text: '4th Place — Google Cloud Hackathon (GoogleDevs Sprint 2K25) · VIT-AP · 486 participants', date: 'Mar 2025' },
-    { text: '7th Place — Simverse Hackathon · VIT-AP University · 200+ participants', date: 'Jan 2026' },
-    { text: 'GSSoC 2025 — Tech Contributor · GirlScript Summer of Code · DataSentience-AIML', date: '2025' }
-  ],
-  certifications: [
-    { name: 'AI Agents and Agentic AI with Python & Generative AI', issuer: 'Vanderbilt University (Coursera)', date: 'Oct 2025' },
-    { name: 'Advanced Learning Algorithms', issuer: 'Stanford / DeepLearning.AI', date: 'Jul 2025' },
-    { name: 'Supervised ML: Regression & Classification', issuer: 'Stanford / DeepLearning.AI', date: 'Apr 2025' }
-  ],
-  education: [
-    {
-      school: 'Vellore Institute of Technology – Andhra Pradesh (VIT-AP)',
-      dates: '2023 – 2027',
-      degree: 'B.Tech, Computer Science and Engineering · Amaravati, AP',
-      coursework: 'Data Structures & Algorithms, Machine Learning, NLP, DBMS, Linear Algebra, Web Technologies'
-    }
-  ],
-  cover_letter: {
-    company: 'Google',
-    role: 'Applied AI Systems Engineer',
-    manager: 'Hiring Team',
-    date: 'October 2025',
-    jd: '',
-    body: `Dear Hiring Team at Google,
+    let R = {
+      header: {
+        name: 'Hemasai Vattikuti',
+        phone: '+91 79937 40469',
+        email: 'Email',
+        linkedin: 'LinkedIn',
+        github: 'GitHub',
+        portfolio: 'mithra-lifeos.com'
+      },
+      summary: {
+        text: 'Backend Applied AI Engineer building scalable, high-availability distributed systems and production LLM infrastructure — from mission-critical defense systems to AI products serving real users.'
+      },
+      skills: {
+        languages: 'Python, Java, SQL',
+        ai_llm: 'LangChain, Agentic AI, RAG Pipelines, Vector Embeddings, Semantic Search, Prompt Engineering, OpenAI API, Gemini API, Groq API, Hugging Face, Qdrant',
+        backend: 'FastAPI, REST APIs, JWT Authentication, RBAC, Rate Limiting, Async Programming, Docker',
+        databases: 'PostgreSQL, MongoDB (Replica Sets, Failover), Supabase, pgvector, Qdrant',
+        systems: 'Distributed Systems, High Availability, Row-Level Security, Zero-Trust Architecture',
+        tools: 'Git, React.js, Next.js, Vercel, Google Cloud'
+      },
+      experience: [
+        {
+          company: 'Defence Research and Development Laboratory (DRDL – DRDO)',
+          dates: 'Aug – Nov 2025',
+          title: 'Project Intern · Backend & Distributed Systems · Hyderabad, India',
+          bullets: [
+            'Architected a 3-node MongoDB Replica Set with automatic PRIMARY election and sub-10s failover for a mission-critical Defence Asset Management System under Scientist E, Ministry of Defence',
+            'Built production-grade FastAPI backend with JWT authentication, RBAC, and rate limiting; engineered auto-switch to standalone mode on replica failure',
+            'Dockerized full stack (MongoDB + FastAPI + React) with health monitors polling CPU/DB every 30s, auto-triggering failover on breach'
+          ]
+        },
+        {
+          company: 'Embrizon Technologies Pvt. Ltd.',
+          dates: 'Nov 2024 – Jan 2025',
+          title: 'Artificial Intelligence Intern · Remote',
+          bullets: [
+            'Engineered AI-powered automation workflows using LangChain, Llama-3, and Gemini models for customer support',
+            'Developed FastAPI backend services for AI applications and integrated production-ready LLM pipelines',
+            'Improved operational efficiency through automated routing and intelligent response generation'
+          ]
+        }
+      ],
+      projects: [
+        {
+          name: 'Mithra Life OS',
+          liveLink: 'https://mithra-lifeos.com',
+          githubLink: 'https://github.com/hemasaivattikuti25/mithra-lifeos',
+          dates: '2025 – Present',
+          stack: 'React · FastAPI · Supabase · PostgreSQL · Gemini API · pgvector · Docker',
+          bullets: [
+            'Deployed full-stack AI productivity platform serving 900+ registered users',
+            'Designed a zero-trust architecture using PostgreSQL Row-Level Security enforcing strict user-level data isolation',
+            'Implemented Retrieval-Augmented Generation (RAG) using 768-dimensional Gemini embeddings stored in pgvector for semantic search'
+          ]
+        },
+        {
+          name: 'VITAP-UniOS',
+          liveLink: 'https://vitap-unios.vercel.app',
+          githubLink: 'https://github.com/hemasaivattikuti25/vitap-unios',
+          dates: '2026',
+          stack: 'Next.js · FastAPI · Qdrant · Groq Llama · RAG',
+          bullets: [
+            'Built an AI-powered campus assistant for VIT-AP students using Retrieval-Augmented Generation over university resources, notices, and academic documents',
+            'Developed FastAPI retrieval services integrated with Qdrant vector database for semantic search and contextual retrieval',
+            'Implemented scoped retrieval and filtering strategies to improve answer relevance and reduce hallucinations',
+            'Successfully served 1490+ production queries while maintaining low-latency response times'
+          ]
+        }
+      ],
+      achievements: [
+        { text: '4th Place — Google Cloud Hackathon (GoogleDevs Sprint 2K25) · VIT-AP · 486 participants', date: 'Mar 2025' },
+        { text: '7th Place — Simverse Hackathon · VIT-AP University · 200+ participants', date: 'Jan 2026' },
+        { text: 'GSSoC 2025 — Tech Contributor · GirlScript Summer of Code · DataSentience-AIML', date: '2025' }
+      ],
+      certifications: [
+        { name: 'AI Agents and Agentic AI with Python & Generative AI', issuer: 'Vanderbilt University (Coursera)', date: 'Oct 2025' },
+        { name: 'Advanced Learning Algorithms', issuer: 'Stanford / DeepLearning.AI', date: 'Jul 2025' },
+        { name: 'Supervised ML: Regression & Classification', issuer: 'Stanford / DeepLearning.AI', date: 'Apr 2025' }
+      ],
+      education: [
+        {
+          school: 'Vellore Institute of Technology – Andhra Pradesh (VIT-AP)',
+          dates: '2023 – 2027',
+          degree: 'B.Tech, Computer Science and Engineering · Amaravati, AP',
+          coursework: 'Data Structures & Algorithms, Machine Learning, NLP, DBMS, Linear Algebra, Web Technologies'
+        }
+      ],
+      cover_letter: {
+        company: 'Google',
+        role: 'Applied AI Systems Engineer',
+        manager: 'Hiring Team',
+        date: 'October 2025',
+        jd: '',
+        body: `Dear Hiring Team at Google,
 
 I am writing to express my strong interest in the Applied AI Systems Engineer role at Google. With hands-on experience engineering mission-critical high-availability distributed systems at DRDO and deploying production LLM infrastructure serving real users, I am eager to contribute to Google's world-class engineering initiatives.
 
@@ -501,127 +1236,161 @@ Google's relentless focus on high-throughput, low-latency distributed intelligen
 
 Sincerely,
 Hemasai Vattikuti`
-  }
-};
-
-// ── Auto-Sync from candidate profile ──
-function loadDataFromProfile() {
-  const profileRaw = localStorage.getItem('getarole_profile');
-  const resumeSaved = localStorage.getItem('getarole_resume_v2');
-
-  if (resumeSaved) {
-    try {
-      const savedObj = JSON.parse(resumeSaved);
-      if (savedObj.header && savedObj.header.name) {
-        R = { ...R, ...savedObj };
       }
-    } catch(e){}
-  } else if (profileRaw) {
-    try {
-      const prof = JSON.parse(profileRaw);
-      if (prof.name) R.header.name = prof.name;
-      if (prof.phone) R.header.phone = prof.phone;
-      if (prof.email) R.header.email = prof.email;
-      if (prof.links?.linkedin) R.header.linkedin = prof.links.linkedin;
-      if (prof.links?.github) R.header.github = prof.links.github;
-      if (prof.links?.portfolio) R.header.portfolio = prof.links.portfolio;
-    } catch(e){}
-  }
-}
+    };
 
-function populateFormFields() {
-  const h = R.header;
-  sv('ffn', h.name);
-  sv('fph', h.phone);
-  sv('fem', h.email);
-  sv('fli', h.linkedin);
-  sv('fgh', h.github);
-  sv('fpo', h.portfolio);
-  sv('fsu', R.summary.text);
+    function getFirebaseUID() {
+      const directUid = localStorage.getItem('firebase_uid') || sessionStorage.getItem('firebase_uid');
+      if (directUid) return directUid;
+      const raw = localStorage.getItem('getarole_user');
+      if (!raw) return null;
+      try {
+        const parsed = JSON.parse(raw);
+        return parsed.uid || parsed.id || null;
+      } catch (e) {
+        return raw.trim() || null;
+      }
+    }
 
-  const sk = R.skills;
-  sv('fsl', sk.languages);
-  sv('fsa', sk.ai_llm);
-  sv('fsb', sk.backend);
-  sv('fsd', sk.databases);
-  sv('fss', sk.systems);
-  sv('fst', sk.tools);
+    // ── Auto-Sync from candidate profile & Supabase Cloud ──
+    async function loadDataFromProfile() {
+      const profileRaw = localStorage.getItem('getarole_profile');
+      const resumeSaved = localStorage.getItem('getarole_resume_v2');
 
-  document.getElementById('ec').innerHTML = '';
-  R.experience.forEach((_, i) => rExp(i));
-  document.getElementById('pc').innerHTML = '';
-  R.projects.forEach((_, i) => rProj(i));
-  document.getElementById('ac-cont').innerHTML = '';
-  R.achievements.forEach((_, i) => rAchieve(i));
-  document.getElementById('cc').innerHTML = '';
-  R.certifications.forEach((_, i) => rCert(i));
-  document.getElementById('edc').innerHTML = '';
-  R.education.forEach((_, i) => rEdu(i));
+      if (resumeSaved) {
+        try {
+          const savedObj = JSON.parse(resumeSaved);
+          if (savedObj.header && savedObj.header.name) {
+            R = { ...R, ...savedObj };
+          }
+        } catch (e) { }
+      } else if (profileRaw) {
+        try {
+          const prof = JSON.parse(profileRaw);
+          if (prof.name) R.header.name = prof.name;
+          if (prof.phone) R.header.phone = prof.phone;
+          if (prof.email) R.header.email = prof.email;
+          if (prof.links?.linkedin) R.header.linkedin = prof.links.linkedin;
+          if (prof.links?.github) R.header.github = prof.links.github;
+          if (prof.links?.portfolio) R.header.portfolio = prof.links.portfolio;
+        } catch (e) { }
+      }
 
-  // Cover Letter
-  const cl = R.cover_letter || {};
-  sv('fcl-comp', cl.company || 'Google');
-  sv('fcl-role', cl.role || 'Applied AI Systems Engineer');
-  sv('fcl-mgr', cl.manager || 'Hiring Team');
-  sv('fcl-date', cl.date || 'October 2025');
-  sv('fcl-jd', cl.jd || '');
-  sv('fcl-text', cl.body || '');
-}
+      // Cloud Fetch from Supabase
+      const uid = getFirebaseUID();
+      if (uid) {
+        try {
+          const res = await fetch('/api/user/resume', {
+            headers: { 'X-Firebase-UID': uid }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.resume && data.resume.header) {
+              R = { ...R, ...data.resume };
+              localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
+              populateFormFields();
+              rp();
+            }
+          }
+        } catch (err) {
+          console.warn('Cloud resume load notice:', err);
+        }
+      }
+    }
 
-function sv(id, v) { const e = document.getElementById(id); if(e) e.value = v || ''; }
+    function populateFormFields() {
+      const h = R.header;
+      sv('ffn', h.name);
+      sv('fph', h.phone);
+      sv('fem', h.email);
+      sv('fli', h.linkedin);
+      sv('fgh', h.github);
+      sv('fpo', h.portfolio);
+      sv('fsu', R.summary.text);
 
-function resyncFromProfile() {
-  localStorage.removeItem('getarole_resume_v2');
-  loadDataFromProfile();
-  populateFormFields();
-  rp();
-  toast('Synced fresh data from your profile!');
-}
+      const sk = R.skills;
+      sv('fsl', sk.languages);
+      sv('fsa', sk.ai_llm);
+      sv('fsb', sk.backend);
+      sv('fsd', sk.databases);
+      sv('fss', sk.systems);
+      sv('fst', sk.tools);
 
-/* ═════════════════════════════════════════════════════════════════
-   DOCUMENT MODE SWITCHER (1-Page Resume vs Tailored Cover Letter)
-═════════════════════════════════════════════════════════════════ */
-function switchDocMode(mode) {
-  docMode = mode;
-  document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active'));
-  const layout = document.getElementById('app-layout');
-  
-  if (mode === 'resume') {
-    document.getElementById('btn-mode-resume').classList.add('active');
-    document.getElementById('doc-mode-label').textContent = '1-Page ATS Resume';
-    layout.classList.remove('mode-cl-active');
-    gS('header');
-  } else {
-    document.getElementById('btn-mode-cl').classList.add('active');
-    document.getElementById('doc-mode-label').textContent = 'Tailored Cover Letter';
-    layout.classList.add('mode-cl-active');
-    gS('cl-target');
-  }
-  
-  rp();
-  toast(`Switched to ${mode === 'resume' ? '1-Page ATS Resume' : 'Tailored Cover Letter'}`);
-}
+      document.getElementById('ec').innerHTML = '';
+      R.experience.forEach((_, i) => rExp(i));
+      document.getElementById('pc').innerHTML = '';
+      R.projects.forEach((_, i) => rProj(i));
+      document.getElementById('ac-cont').innerHTML = '';
+      R.achievements.forEach((_, i) => rAchieve(i));
+      document.getElementById('cc').innerHTML = '';
+      R.certifications.forEach((_, i) => rCert(i));
+      document.getElementById('edc').innerHTML = '';
+      R.education.forEach((_, i) => rEdu(i));
 
-/* ═════════════════════════════════════════════════════════════════
-   RENDER OVERLEAF/LATEX TEMPLATE (RESUME & COVER LETTER)
-═════════════════════════════════════════════════════════════════ */
-function rp() {
-  const container = document.getElementById('rp');
-  const h = R.header;
+      // Cover Letter
+      const cl = R.cover_letter || {};
+      sv('fcl-comp', cl.company || 'Google');
+      sv('fcl-role', cl.role || 'Applied AI Systems Engineer');
+      sv('fcl-mgr', cl.manager || 'Hiring Team');
+      sv('fcl-date', cl.date || 'October 2025');
+      sv('fcl-jd', cl.jd || '');
+      sv('fcl-text', cl.body || '');
+    }
 
-  const contacts = [
-    h.phone && `<span>${h.phone}</span>`,
-    h.email && `<a href="mailto:${h.email}">Email</a>`,
-    h.linkedin && `<a href="${h.linkedin.startsWith('http')?h.linkedin:'https://'+h.linkedin}" target="_blank">LinkedIn</a>`,
-    h.github && `<a href="${h.github.startsWith('http')?h.github:'https://'+h.github}" target="_blank">GitHub</a>`,
-    h.portfolio && `<a href="${h.portfolio.startsWith('http')?h.portfolio:'https://'+h.portfolio}" target="_blank">${h.portfolio.replace(/^https?:\/\//,'')}</a>`
-  ].filter(Boolean);
+    function sv(id, v) { const e = document.getElementById(id); if (e) e.value = v || ''; }
 
-  if (docMode === 'cover_letter') {
-    const cl = R.cover_letter || {};
-    const paragraphs = (cl.body || '').split('\n\n').filter(Boolean);
+    function resyncFromProfile() {
+      localStorage.removeItem('getarole_resume_v2');
+      loadDataFromProfile();
+      populateFormFields();
+      rp();
+      toast('Synced fresh data from your profile!');
+    }
 
-    container.innerHTML = `
+    /* ═════════════════════════════════════════════════════════════════
+       DOCUMENT MODE SWITCHER (1-Page Resume vs Tailored Cover Letter)
+    ═════════════════════════════════════════════════════════════════ */
+    function switchDocMode(mode) {
+      docMode = mode;
+      document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active'));
+      const layout = document.getElementById('app-layout');
+
+      if (mode === 'resume') {
+        document.getElementById('btn-mode-resume').classList.add('active');
+        document.getElementById('doc-mode-label').textContent = '1-Page ATS Resume';
+        layout.classList.remove('mode-cl-active');
+        gS('header');
+      } else {
+        document.getElementById('btn-mode-cl').classList.add('active');
+        document.getElementById('doc-mode-label').textContent = 'Tailored Cover Letter';
+        layout.classList.add('mode-cl-active');
+        gS('cl-target');
+      }
+
+      rp();
+      toast(`Switched to ${mode === 'resume' ? '1-Page ATS Resume' : 'Tailored Cover Letter'}`);
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       RENDER OVERLEAF/LATEX TEMPLATE (RESUME & COVER LETTER)
+    ═════════════════════════════════════════════════════════════════ */
+    function rp() {
+      const container = document.getElementById('rp');
+      const h = R.header;
+
+      const contacts = [
+        h.phone && `<span>${h.phone}</span>`,
+        h.email && `<a href="mailto:${h.email}">Email</a>`,
+        h.linkedin && `<a href="${h.linkedin.startsWith('http') ? h.linkedin : 'https://' + h.linkedin}" target="_blank">LinkedIn</a>`,
+        h.github && `<a href="${h.github.startsWith('http') ? h.github : 'https://' + h.github}" target="_blank">GitHub</a>`,
+        h.portfolio && `<a href="${h.portfolio.startsWith('http') ? h.portfolio : 'https://' + h.portfolio}" target="_blank">${h.portfolio.replace(/^https?:\/\//, '')}</a>`
+      ].filter(Boolean);
+
+      if (docMode === 'cover_letter') {
+        const cl = R.cover_letter || {};
+        const paragraphs = (cl.body || '').split('\n\n').filter(Boolean);
+
+        container.innerHTML = `
       <div class="latex-doc">
         <!-- Letterhead -->
         <div class="cl-header-box">
@@ -652,9 +1421,9 @@ function rp() {
         </div>
       </div>
     `;
-  } else {
-    // 1-PAGE ATS RESUME
-    const expHtml = R.experience.map(e => `
+      } else {
+        // 1-PAGE ATS RESUME
+        const expHtml = R.experience.map(e => `
       <div class="lr-entry">
         <div class="lr-entry-header">
           <span class="lr-org">${e.company}</span>
@@ -662,12 +1431,12 @@ function rp() {
         </div>
         <div class="lr-subline">${e.title}</div>
         <ul class="lr-bullets">
-          ${(e.bullets||[]).map(b => `<li>${formatBulletBold(b)}</li>`).join('')}
+          ${(e.bullets || []).map(b => `<li>${formatBulletBold(b)}</li>`).join('')}
         </ul>
       </div>
     `).join('');
 
-    const projHtml = R.projects.map(p => `
+        const projHtml = R.projects.map(p => `
       <div class="lr-entry">
         <div class="lr-entry-header">
           <div>
@@ -681,26 +1450,26 @@ function rp() {
         </div>
         <div class="lr-subline">${p.stack}</div>
         <ul class="lr-bullets">
-          ${(p.bullets||[]).map(b => `<li>${formatBulletBold(b)}</li>`).join('')}
+          ${(p.bullets || []).map(b => `<li>${formatBulletBold(b)}</li>`).join('')}
         </ul>
       </div>
     `).join('');
 
-    const achieveHtml = R.achievements.map(a => `
+        const achieveHtml = R.achievements.map(a => `
       <div class="lr-single-line">
         <span>${formatBulletBold(a.text)}</span>
         <span class="lr-date">${a.date}</span>
       </div>
     `).join('');
 
-    const certsHtml = R.certifications.map(c => `
+        const certsHtml = R.certifications.map(c => `
       <div class="lr-single-line">
         <span><strong>${c.name}</strong> — <em>${c.issuer}</em></span>
         <span class="lr-date">${c.date}</span>
       </div>
     `).join('');
 
-    const eduHtml = R.education.map(e => `
+        const eduHtml = R.education.map(e => `
       <div class="lr-entry">
         <div class="lr-entry-header">
           <span class="lr-org">${e.school}</span>
@@ -711,7 +1480,7 @@ function rp() {
       </div>
     `).join('');
 
-    container.innerHTML = `
+        container.innerHTML = `
       <div class="latex-doc">
         <!-- 1. Header -->
         <div class="lr-header">
@@ -772,36 +1541,36 @@ function rp() {
         </div>
       </div>
     `;
-  }
+      }
 
-  scale();
-  uDots();
-}
+      scale();
+      uDots();
+    }
 
-function formatBulletBold(str) {
-  if (!str) return '';
-  // Convert markdown **text** to <strong>text</strong>
-  let out = str.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  
-  // Universal metric and action highlighting: numbers with units (e.g., 99.9%, 10x, $5M, 1500+, 3-node, sub-10s)
-  // if not already inside a strong tag
-  if (!out.includes('<strong>')) {
-    out = out.replace(/\b(\d+(?:\.\d+)?(?:%|x|\+|k|M|B|s|ms)?|\$\d+(?:\.\d+)?[kMB]?)\b/gi, (match) => {
-      if (match.length > 1) return `<strong>${match}</strong>`;
-      return match;
-    });
-  }
-  return out;
-}
+    function formatBulletBold(str) {
+      if (!str) return '';
+      // Convert markdown **text** to <strong>text</strong>
+      let out = str.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
-/* ═════════════════════════════════════════════════════════════════
-   PDF EXPORT
-═════════════════════════════════════════════════════════════════ */
-function exportPDF() {
-  const html = document.getElementById('rp').innerHTML;
-  const css = Array.from(document.querySelectorAll('style')).map(s => s.innerHTML).join('\n');
-  const w = window.open('', '_blank', 'width=900,height=1200');
-  w.document.write(`
+      // Universal metric and action highlighting: numbers with units (e.g., 99.9%, 10x, $5M, 1500+, 3-node, sub-10s)
+      // if not already inside a strong tag
+      if (!out.includes('<strong>')) {
+        out = out.replace(/\b(\d+(?:\.\d+)?(?:%|x|\+|k|M|B|s|ms)?|\$\d+(?:\.\d+)?[kMB]?)\b/gi, (match) => {
+          if (match.length > 1) return `<strong>${match}</strong>`;
+          return match;
+        });
+      }
+      return out;
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       PDF EXPORT
+    ═════════════════════════════════════════════════════════════════ */
+    function exportPDF() {
+      const html = document.getElementById('rp').innerHTML;
+      const css = Array.from(document.querySelectorAll('style')).map(s => s.innerHTML).join('\n');
+      const w = window.open('', '_blank', 'width=900,height=1200');
+      w.document.write(`
     <!DOCTYPE html><html><head><meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
     <style>${css}@page{size:A4;margin:0;}body{margin:0;padding:0;background:white;}#sh{width:794px;min-height:1123px;background:white;}</style>
@@ -809,77 +1578,89 @@ function exportPDF() {
     <script>window.onload=function(){setTimeout(function(){window.print();window.close();},500);};<\/script>
     </body></html>
   `);
-  w.document.close();
-  toast('Print dialog opened — Save as PDF');
-}
+      w.document.close();
+      toast('Print dialog opened — Save as PDF');
+    }
 
-/* ═════════════════════════════════════════════════════════════════
-   AI HELPERS & FORM HANDLERS
-═════════════════════════════════════════════════════════════════ */
-let st;
-function ud(s, k, v) {
-  if (s === 'header') R.header[k] = v;
-  if (s === 'summary') R.summary[k] = v;
-  if (s === 'skills') R.skills[k] = v;
-  rp(); ss(); uAts();
-}
-function udCL(k, v) {
-  if (!R.cover_letter) R.cover_letter = {};
-  R.cover_letter[k] = v;
-  rp(); ss();
-}
-function uad(s, i, k, v) { if(R[s][i]) R[s][i][k] = v; rp(); ss(); }
-function ubl(s, i, bi, v) { if(R[s][i] && R[s][i].bullets) R[s][i].bullets[bi] = v; rp(); ss(); }
-function ss() {
-  clearTimeout(st);
-  document.getElementById('asv').textContent = '...';
-  st = setTimeout(() => {
-    localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
-    document.getElementById('asv').textContent = '✓ Saved';
-  }, 700);
-}
+    /* ═════════════════════════════════════════════════════════════════
+       AI HELPERS & FORM HANDLERS
+    ═════════════════════════════════════════════════════════════════ */
+    let st;
+    function ud(s, k, v) {
+      if (s === 'header') R.header[k] = v;
+      if (s === 'summary') R.summary[k] = v;
+      if (s === 'skills') R.skills[k] = v;
+      rp(); ss(); uAts();
+    }
+    function udCL(k, v) {
+      if (!R.cover_letter) R.cover_letter = {};
+      R.cover_letter[k] = v;
+      rp(); ss();
+    }
+    function uad(s, i, k, v) { if (R[s][i]) R[s][i][k] = v; rp(); ss(); }
+    function ubl(s, i, bi, v) { if (R[s][i] && R[s][i].bullets) R[s][i].bullets[bi] = v; rp(); ss(); }
+    function ss() {
+      clearTimeout(st);
+      document.getElementById('asv').textContent = '...';
+      st = setTimeout(async () => {
+        localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
+        document.getElementById('asv').textContent = '✓ Saved';
+        const uid = getFirebaseUID();
+        if (uid) {
+          try {
+            await fetch('/api/user/resume', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+              body: JSON.stringify({ resume: R })
+            });
+          } catch (err) {
+            console.warn('Resume cloud save notice:', err);
+          }
+        }
+      }, 700);
+    }
 
-const SM = {
-  header: { t: '1. Header & Info', s: 'Personal details and web handles' },
-  summary: { t: '2. Summary', s: 'Professional executive statement' },
-  skills: { t: '3. Technical Skills', s: 'Categorized technical domains & core competencies' },
-  exp: { t: '4. Experience', s: 'Work history, roles and quantifiable impact' },
-  proj: { t: '5. Projects', s: 'Featured builds, repositories and products' },
-  achieve: { t: '6. Achievements', s: 'Awards, competitions and open source' },
-  certs: { t: '7. Certifications', s: 'Professional credentials and accreditations' },
-  edu: { t: '8. Education', s: 'Degrees, institutions & academic coursework' },
-  'cl-target': { t: 'Target Role & Company', s: 'Specify recipient company, title and job description' },
-  'cl-body': { t: 'Cover Letter Text', s: 'High-impact 3-paragraph tailored cover letter' },
-  ats: { t: 'ATS Check', s: 'Verified ATS-compliant LaTeX typography' },
-  tailor: { t: 'AI Job Tailor', s: 'Tailor resume for target company job descriptions' }
-};
+    const SM = {
+      header: { t: '1. Header & Info', s: 'Personal details and web handles' },
+      summary: { t: '2. Summary', s: 'Professional executive statement' },
+      skills: { t: '3. Technical Skills', s: 'Categorized technical domains & core competencies' },
+      exp: { t: '4. Experience', s: 'Work history, roles and quantifiable impact' },
+      proj: { t: '5. Projects', s: 'Featured builds, repositories and products' },
+      achieve: { t: '6. Achievements', s: 'Awards, competitions and open source' },
+      certs: { t: '7. Certifications', s: 'Professional credentials and accreditations' },
+      edu: { t: '8. Education', s: 'Degrees, institutions & academic coursework' },
+      'cl-target': { t: 'Target Role & Company', s: 'Specify recipient company, title and job description' },
+      'cl-body': { t: 'Cover Letter Text', s: 'High-impact 3-paragraph tailored cover letter' },
+      ats: { t: 'ATS Check', s: 'Verified ATS-compliant LaTeX typography' },
+      tailor: { t: 'AI Job Tailor', s: 'Tailor resume for target company job descriptions' }
+    };
 
-function gS(n) {
-  document.querySelectorAll('.si').forEach(e => e.classList.remove('active'));
-  document.querySelectorAll('.pn').forEach(e => e.classList.remove('active'));
-  const ni = document.getElementById('nav-' + n);
-  const pi = document.getElementById('panel-' + n);
-  if (ni) ni.classList.add('active');
-  if (pi) pi.classList.add('active');
-  const m = SM[n] || { t: n, s: '' };
-  document.getElementById('ed-t').textContent = m.t;
-  document.getElementById('ed-s').textContent = m.s;
-  if (n === 'ats') uAts();
-}
+    function gS(n) {
+      document.querySelectorAll('.si').forEach(e => e.classList.remove('active'));
+      document.querySelectorAll('.pn').forEach(e => e.classList.remove('active'));
+      const ni = document.getElementById('nav-' + n);
+      const pi = document.getElementById('panel-' + n);
+      if (ni) ni.classList.add('active');
+      if (pi) pi.classList.add('active');
+      const m = SM[n] || { t: n, s: '' };
+      document.getElementById('ed-t').textContent = m.t;
+      document.getElementById('ed-s').textContent = m.s;
+      if (n === 'ats') uAts();
+    }
 
-function esc(s) { return (s || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-/* Form Dynamic Lists */
-function addExp() { R.experience.push({ company:'', dates:'', title:'', bullets:['',''] }); rExp(R.experience.length - 1); ss(); }
-function rmExp(i) { R.experience.splice(i, 1); document.getElementById('ec').innerHTML = ''; R.experience.forEach((_, j) => rExp(j)); rp(); ss(); }
-function rExp(i) {
-  let c = document.getElementById('ec');
-  const id = 'exc' + i;
-  if (!document.getElementById(id)) { const d = document.createElement('div'); d.id = id; c.appendChild(d); }
-  const e = R.experience[i];
-  document.getElementById(id).className = 'fc';
-  document.getElementById(id).innerHTML = `
-    <div class="fch"><div class="fct">Experience ${i+1}</div><button class="brm" onclick="rmExp(${i})">✕ Remove</button></div>
+    /* Form Dynamic Lists */
+    function addExp() { R.experience.push({ company: '', dates: '', title: '', bullets: ['', ''] }); rExp(R.experience.length - 1); ss(); }
+    function rmExp(i) { R.experience.splice(i, 1); document.getElementById('ec').innerHTML = ''; R.experience.forEach((_, j) => rExp(j)); rp(); ss(); }
+    function rExp(i) {
+      let c = document.getElementById('ec');
+      const id = 'exc' + i;
+      if (!document.getElementById(id)) { const d = document.createElement('div'); d.id = id; c.appendChild(d); }
+      const e = R.experience[i];
+      document.getElementById(id).className = 'fc';
+      document.getElementById(id).innerHTML = `
+    <div class="fch"><div class="fct">Experience ${i + 1}</div><button class="brm" onclick="rmExp(${i})">✕ Remove</button></div>
     <div class="fr2">
       <div class="fg"><label>Organization / Company</label><input class="fi" value="${esc(e.company)}" placeholder="Company Name" oninput="uad('experience',${i},'company',this.value)"></div>
       <div class="fg"><label>Dates</label><input class="fi" value="${esc(e.dates)}" placeholder="Month Year – Present" oninput="uad('experience',${i},'dates',this.value)"></div>
@@ -887,7 +1668,7 @@ function rExp(i) {
     <div class="fg"><label>Role & Subline</label><input class="fi" value="${esc(e.title)}" placeholder="Job Title · Department / Focus · Location" oninput="uad('experience',${i},'title',this.value)"></div>
     <div class="fg">
       <label>Key Accomplishments</label>
-      <div class="bls">${(e.bullets||[]).map((b, bi) => `
+      <div class="bls">${(e.bullets || []).map((b, bi) => `
         <div class="blr">
           <input value="${esc(b)}" placeholder="Architected / Delivered / Optimized..." oninput="ubl('experience',${i},${bi},this.value)">
           <button class="bai" onclick="enhB('experience',${i},${bi})">AI</button>
@@ -897,18 +1678,18 @@ function rExp(i) {
       <button class="bads" onclick="addBl('experience',${i})">+ Add bullet</button>
     </div>
   `;
-}
+    }
 
-function addProj() { R.projects.push({ name:'', liveLink:'', githubLink:'', dates:'', stack:'', bullets:['',''] }); rProj(R.projects.length - 1); ss(); }
-function rmProj(i) { R.projects.splice(i, 1); document.getElementById('pc').innerHTML = ''; R.projects.forEach((_, j) => rProj(j)); rp(); ss(); }
-function rProj(i) {
-  let c = document.getElementById('pc');
-  const id = 'prjc' + i;
-  if (!document.getElementById(id)) { const d = document.createElement('div'); d.id = id; c.appendChild(d); }
-  const p = R.projects[i];
-  document.getElementById(id).className = 'fc';
-  document.getElementById(id).innerHTML = `
-    <div class="fch"><div class="fct">Project ${i+1}</div><button class="brm" onclick="rmProj(${i})">✕</button></div>
+    function addProj() { R.projects.push({ name: '', liveLink: '', githubLink: '', dates: '', stack: '', bullets: ['', ''] }); rProj(R.projects.length - 1); ss(); }
+    function rmProj(i) { R.projects.splice(i, 1); document.getElementById('pc').innerHTML = ''; R.projects.forEach((_, j) => rProj(j)); rp(); ss(); }
+    function rProj(i) {
+      let c = document.getElementById('pc');
+      const id = 'prjc' + i;
+      if (!document.getElementById(id)) { const d = document.createElement('div'); d.id = id; c.appendChild(d); }
+      const p = R.projects[i];
+      document.getElementById(id).className = 'fc';
+      document.getElementById(id).innerHTML = `
+    <div class="fch"><div class="fct">Project ${i + 1}</div><button class="brm" onclick="rmProj(${i})">✕</button></div>
     <div class="fr2">
       <div class="fg"><label>Project Name</label><input class="fi" value="${esc(p.name)}" placeholder="Project Name" oninput="uad('projects',${i},'name',this.value)"></div>
       <div class="fg"><label>Dates</label><input class="fi" value="${esc(p.dates)}" placeholder="Year – Present" oninput="uad('projects',${i},'dates',this.value)"></div>
@@ -920,7 +1701,7 @@ function rProj(i) {
     <div class="fg"><label>Tech Stack Subline</label><input class="fi" value="${esc(p.stack)}" placeholder="Technologies · Frameworks · Tools" oninput="uad('projects',${i},'stack',this.value)"></div>
     <div class="fg">
       <label>Impact Bullet Points</label>
-      <div class="bls">${(p.bullets||[]).map((b, bi) => `
+      <div class="bls">${(p.bullets || []).map((b, bi) => `
         <div class="blr">
           <input value="${esc(b)}" placeholder="Engineered / Scaled / Implemented..." oninput="ubl('projects',${i},${bi},this.value)">
           <button class="bai" onclick="enhB('projects',${i},${bi})">AI</button>
@@ -930,53 +1711,53 @@ function rProj(i) {
       <button class="bads" onclick="addBl('projects',${i})">+ Add bullet</button>
     </div>
   `;
-}
+    }
 
-function addAchieve() { R.achievements.push({ text:'', date:'' }); rAchieve(R.achievements.length - 1); ss(); }
-function rmAchieve(i) { R.achievements.splice(i, 1); document.getElementById('ac-cont').innerHTML = ''; R.achievements.forEach((_, j) => rAchieve(j)); rp(); ss(); }
-function rAchieve(i) {
-  let c = document.getElementById('ac-cont');
-  const id = 'achc' + i;
-  if (!document.getElementById(id)) { const d = document.createElement('div'); d.id = id; c.appendChild(d); }
-  const a = R.achievements[i];
-  document.getElementById(id).className = 'fc';
-  document.getElementById(id).innerHTML = `
-    <div class="fch"><div class="fct">Achievement ${i+1}</div><button class="brm" onclick="rmAchieve(${i})">✕</button></div>
+    function addAchieve() { R.achievements.push({ text: '', date: '' }); rAchieve(R.achievements.length - 1); ss(); }
+    function rmAchieve(i) { R.achievements.splice(i, 1); document.getElementById('ac-cont').innerHTML = ''; R.achievements.forEach((_, j) => rAchieve(j)); rp(); ss(); }
+    function rAchieve(i) {
+      let c = document.getElementById('ac-cont');
+      const id = 'achc' + i;
+      if (!document.getElementById(id)) { const d = document.createElement('div'); d.id = id; c.appendChild(d); }
+      const a = R.achievements[i];
+      document.getElementById(id).className = 'fc';
+      document.getElementById(id).innerHTML = `
+    <div class="fch"><div class="fct">Achievement ${i + 1}</div><button class="brm" onclick="rmAchieve(${i})">✕</button></div>
     <div class="fr2">
       <div class="fg"><label>Achievement Description</label><input class="fi" value="${esc(a.text)}" placeholder="Award / Competition / Honor" oninput="uad('achievements',${i},'text',this.value)"></div>
       <div class="fg"><label>Date</label><input class="fi" value="${esc(a.date)}" placeholder="Month Year" oninput="uad('achievements',${i},'date',this.value)"></div>
     </div>
   `;
-}
+    }
 
-function addCert() { R.certifications.push({ name:'', issuer:'', date:'' }); rCert(R.certifications.length - 1); ss(); }
-function rmCert(i) { R.certifications.splice(i, 1); document.getElementById('cc').innerHTML = ''; R.certifications.forEach((_, j) => rCert(j)); rp(); ss(); }
-function rCert(i) {
-  let c = document.getElementById('cc');
-  const id = 'ctc' + i;
-  if (!document.getElementById(id)) { const d = document.createElement('div'); d.id = id; c.appendChild(d); }
-  const ct = R.certifications[i];
-  document.getElementById(id).className = 'fc';
-  document.getElementById(id).innerHTML = `
-    <div class="fch"><div class="fct">Certification ${i+1}</div><button class="brm" onclick="rmCert(${i})">✕</button></div>
+    function addCert() { R.certifications.push({ name: '', issuer: '', date: '' }); rCert(R.certifications.length - 1); ss(); }
+    function rmCert(i) { R.certifications.splice(i, 1); document.getElementById('cc').innerHTML = ''; R.certifications.forEach((_, j) => rCert(j)); rp(); ss(); }
+    function rCert(i) {
+      let c = document.getElementById('cc');
+      const id = 'ctc' + i;
+      if (!document.getElementById(id)) { const d = document.createElement('div'); d.id = id; c.appendChild(d); }
+      const ct = R.certifications[i];
+      document.getElementById(id).className = 'fc';
+      document.getElementById(id).innerHTML = `
+    <div class="fch"><div class="fct">Certification ${i + 1}</div><button class="brm" onclick="rmCert(${i})">✕</button></div>
     <div class="fr2">
       <div class="fg"><label>Certification Name</label><input class="fi" value="${esc(ct.name)}" placeholder="Credential / Certification Name" oninput="uad('certifications',${i},'name',this.value)"></div>
       <div class="fg"><label>Issuer</label><input class="fi" value="${esc(ct.issuer)}" placeholder="Issuing Organization" oninput="uad('certifications',${i},'issuer',this.value)"></div>
     </div>
     <div class="fg"><label>Date</label><input class="fi" value="${esc(ct.date)}" placeholder="Month Year" oninput="uad('certifications',${i},'date',this.value)"></div>
   `;
-}
+    }
 
-function addEdu() { R.education.push({ school:'', dates:'', degree:'', coursework:'' }); rEdu(R.education.length - 1); ss(); }
-function rmEdu(i) { R.education.splice(i, 1); document.getElementById('edc').innerHTML = ''; R.education.forEach((_, j) => rEdu(j)); rp(); ss(); }
-function rEdu(i) {
-  let c = document.getElementById('edc');
-  const id = 'educ' + i;
-  if (!document.getElementById(id)) { const d = document.createElement('div'); d.id = id; c.appendChild(d); }
-  const e = R.education[i];
-  document.getElementById(id).className = 'fc';
-  document.getElementById(id).innerHTML = `
-    <div class="fch"><div class="fct">Education ${i+1}</div><button class="brm" onclick="rmEdu(${i})">✕</button></div>
+    function addEdu() { R.education.push({ school: '', dates: '', degree: '', coursework: '' }); rEdu(R.education.length - 1); ss(); }
+    function rmEdu(i) { R.education.splice(i, 1); document.getElementById('edc').innerHTML = ''; R.education.forEach((_, j) => rEdu(j)); rp(); ss(); }
+    function rEdu(i) {
+      let c = document.getElementById('edc');
+      const id = 'educ' + i;
+      if (!document.getElementById(id)) { const d = document.createElement('div'); d.id = id; c.appendChild(d); }
+      const e = R.education[i];
+      document.getElementById(id).className = 'fc';
+      document.getElementById(id).innerHTML = `
+    <div class="fch"><div class="fct">Education ${i + 1}</div><button class="brm" onclick="rmEdu(${i})">✕</button></div>
     <div class="fr2">
       <div class="fg"><label>School / University</label><input class="fi" value="${esc(e.school)}" placeholder="University / College Name" oninput="uad('education',${i},'school',this.value)"></div>
       <div class="fg"><label>Dates</label><input class="fi" value="${esc(e.dates)}" placeholder="Year – Year" oninput="uad('education',${i},'dates',this.value)"></div>
@@ -984,207 +1765,208 @@ function rEdu(i) {
     <div class="fg"><label>Degree & Location</label><input class="fi" value="${esc(e.degree)}" placeholder="Degree / Major · Location" oninput="uad('education',${i},'degree',this.value)"></div>
     <div class="fg"><label>Coursework / Honors</label><input class="fi" value="${esc(e.coursework)}" placeholder="Key Courses, Honors, GPA..." oninput="uad('education',${i},'coursework',this.value)"></div>
   `;
-}
-
-function addBl(s, i) { R[s][i].bullets.push(''); if(s === 'experience') rExp(i); if(s === 'projects') rProj(i); rp(); }
-function rmBl(s, i, bi) { R[s][i].bullets.splice(bi, 1); if(s === 'experience') rExp(i); if(s === 'projects') rProj(i); rp(); ss(); }
-
-/* AI Actions */
-async function enhB(s, i, bi) {
-  const cur = R[s][i].bullets[bi];
-  if (!cur || cur.trim().length < 5) { toast('Write a bullet point first'); return; }
-  toast('AI enhancing with STAR format...');
-  try {
-    const r = await fetch('/api/enhance-bullet', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        bullet: cur,
-        context: `${R[s][i].company || R[s][i].name || ''} ${R[s][i].title || ''}`
-      })
-    });
-    const d = await r.json();
-    R[s][i].bullets[bi] = d.enhanced || cur;
-  } catch(e) {
-    let t = cur.trim();
-    t = t.charAt(0).toUpperCase() + t.slice(1);
-    if (!/\d/.test(t) && t.length > 20) t = t.replace(/\.?$/, ', improving efficiency by 25%+.');
-    R[s][i].bullets[bi] = t;
-  }
-  if (s === 'experience') rExp(i);
-  if (s === 'projects') rProj(i);
-  rp(); ss();
-  toast('Bullet enhanced!');
-}
-
-async function genSum() {
-  toast('AI generating executive summary...');
-  const expContext = (R.experience || []).map(e => `${e.company} (${e.title})`).join(', ');
-  const projContext = (R.projects || []).map(p => p.name).join(', ');
-  const allSkills = Object.values(R.skills || {}).filter(Boolean).join(', ');
-
-  try {
-    const r = await fetch('/api/enhance-bullet', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        bullet: R.summary.text || 'Experienced software professional with proven technical background.',
-        context: `Candidate Name: ${R.header.name}. Experience: ${expContext}. Projects: ${projContext}. Skills: ${allSkills}.`
-      })
-    });
-    const d = await r.json();
-    if (d.enhanced) {
-      document.getElementById('fsu').value = d.enhanced;
-      R.summary.text = d.enhanced;
-      rp(); ss();
-      toast('Summary updated with AI!');
-      return;
     }
-  } catch(e){}
-}
 
-async function aiGenerateCoverLetter() {
-  const comp = document.getElementById('fcl-comp').value.trim() || 'Target Organization';
-  const role = document.getElementById('fcl-role').value.trim() || 'Software Engineer';
-  const jd = document.getElementById('fcl-jd').value.trim();
+    function addBl(s, i) { R[s][i].bullets.push(''); if (s === 'experience') rExp(i); if (s === 'projects') rProj(i); rp(); }
+    function rmBl(s, i, bi) { R[s][i].bullets.splice(bi, 1); if (s === 'experience') rExp(i); if (s === 'projects') rProj(i); rp(); ss(); }
 
-  const expContext = (R.experience || []).map(e => `${e.company}: ${e.title} - ${(e.bullets||[]).join('; ')}`).join('\n');
-  const allSkills = Object.values(R.skills || {}).filter(Boolean).join(', ');
+    /* AI Actions */
+    async function enhB(s, i, bi) {
+      const cur = R[s][i].bullets[bi];
+      if (!cur || cur.trim().length < 5) { toast('Write a bullet point first'); return; }
+      toast('AI enhancing with STAR format...');
+      try {
+        const r = await fetch('/api/enhance-bullet', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            bullet: cur,
+            context: `${R[s][i].company || R[s][i].name || ''} ${R[s][i].title || ''}`
+          })
+        });
+        const d = await r.json();
+        R[s][i].bullets[bi] = d.enhanced || cur;
+      } catch (e) {
+        let t = cur.trim();
+        t = t.charAt(0).toUpperCase() + t.slice(1);
+        if (!/\d/.test(t) && t.length > 20) t = t.replace(/\.?$/, ', improving efficiency by 25%+.');
+        R[s][i].bullets[bi] = t;
+      }
+      if (s === 'experience') rExp(i);
+      if (s === 'projects') rProj(i);
+      rp(); ss();
+      toast('Bullet enhanced!');
+    }
 
-  toast(`AI generating tailored cover letter for ${comp}...`);
-  
-  try {
-    const r = await fetch('/api/generate-cover-letter', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        company_name: comp,
-        role_title: role,
-        job_description: jd,
-        candidate_summary: R.summary.text,
-        candidate_name: R.header.name || 'Candidate',
-        candidate_email: R.header.email || '',
-        candidate_phone: R.header.phone || '',
-        candidate_experience: expContext,
-        candidate_skills: allSkills
-      })
-    });
-    
-    const reader = r.body.getReader();
-    const decoder = new TextDecoder('utf-8');
-    document.getElementById('fcl-text').value = "";
-    
-    if (!R.cover_letter) R.cover_letter = {};
-    R.cover_letter.company = comp;
-    R.cover_letter.role = role;
-    
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      const chunk = decoder.decode(value, {stream: true});
-      const lines = chunk.split('\n');
-      for (const line of lines) {
-        if (line.startsWith('data: ') && line !== 'data: [DONE]') {
-          try {
-            const parsed = JSON.parse(line.substring(6));
-            if (parsed.content) {
-              document.getElementById('fcl-text').value += parsed.content;
-              R.cover_letter.body = document.getElementById('fcl-text').value;
-              rp(); // Re-render preview live
-            }
-          } catch(e) {}
+    async function genSum() {
+      toast('AI generating executive summary...');
+      const expContext = (R.experience || []).map(e => `${e.company} (${e.title})`).join(', ');
+      const projContext = (R.projects || []).map(p => p.name).join(', ');
+      const allSkills = Object.values(R.skills || {}).filter(Boolean).join(', ');
+
+      try {
+        const r = await fetch('/api/enhance-bullet', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            bullet: R.summary.text || 'Experienced software professional with proven technical background.',
+            context: `Candidate Name: ${R.header.name}. Experience: ${expContext}. Projects: ${projContext}. Skills: ${allSkills}.`
+          })
+        });
+        const d = await r.json();
+        if (d.enhanced) {
+          document.getElementById('fsu').value = d.enhanced;
+          R.summary.text = d.enhanced;
+          rp(); ss();
+          toast('Summary updated with AI!');
+          return;
         }
+      } catch (e) { }
+    }
+
+    async function aiGenerateCoverLetter() {
+      const comp = document.getElementById('fcl-comp').value.trim() || 'Target Organization';
+      const role = document.getElementById('fcl-role').value.trim() || 'Software Engineer';
+      const jd = document.getElementById('fcl-jd').value.trim();
+
+      const expContext = (R.experience || []).map(e => `${e.company}: ${e.title} - ${(e.bullets || []).join('; ')}`).join('\n');
+      const allSkills = Object.values(R.skills || {}).filter(Boolean).join(', ');
+
+      toast(`AI generating tailored cover letter for ${comp}...`);
+
+      try {
+        const r = await fetch('/api/generate-cover-letter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            company_name: comp,
+            role_title: role,
+            job_description: jd,
+            candidate_summary: R.summary.text,
+            candidate_name: R.header.name || 'Candidate',
+            candidate_email: R.header.email || '',
+            candidate_phone: R.header.phone || '',
+            candidate_experience: expContext,
+            candidate_skills: allSkills
+          })
+        });
+
+        const reader = r.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        document.getElementById('fcl-text').value = "";
+
+        if (!R.cover_letter) R.cover_letter = {};
+        R.cover_letter.company = comp;
+        R.cover_letter.role = role;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n');
+          for (const line of lines) {
+            if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+              try {
+                const parsed = JSON.parse(line.substring(6));
+                if (parsed.content) {
+                  document.getElementById('fcl-text').value += parsed.content;
+                  R.cover_letter.body = document.getElementById('fcl-text').value;
+                  rp(); // Re-render preview live
+                }
+              } catch (e) { }
+            }
+          }
+        }
+        ss();
+        gS('cl-body');
+        toast(`Cover Letter tailored for ${comp}!`);
+      } catch (e) {
+        console.error(e);
+        toast('Error generating cover letter.');
       }
     }
-    ss();
-    gS('cl-body');
-    toast(`Cover Letter tailored for ${comp}!`);
-  } catch(e){
-    console.error(e);
-    toast('Error generating cover letter.');
-  }
-}
 
-async function tailorR() {
-  const jd = document.getElementById('fjd').value.trim();
-  if (!jd) { toast('Paste a target JD first'); return; }
-  const out = document.getElementById('tout');
-  out.style.display = 'block';
-  out.innerHTML = '<span style="color:var(--pr)">Matching keywords against candidate profile &amp; skills...</span>';
-  
-  const allSkills = Object.values(R.skills || {}).filter(Boolean).join(', ');
-  const expContext = (R.experience || []).map(e => `${e.company} (${e.title})`).join(', ');
+    async function tailorR() {
+      const jd = document.getElementById('fjd').value.trim();
+      if (!jd) { toast('Paste a target JD first'); return; }
+      const out = document.getElementById('tout');
+      out.style.display = 'block';
+      out.innerHTML = '<span style="color:var(--pr)">Matching keywords against candidate profile &amp; skills...</span>';
 
-  try {
-    const r = await fetch('/api/enhance-bullet', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        bullet: R.summary.text || 'Experienced professional targeting this role.',
-        context: `Target Job Description:\n${jd.slice(0, 1200)}\n\nCandidate Skills:\n${allSkills}\nExperience:\n${expContext}`
-      })
-    });
-    const d = await r.json();
-    out.innerHTML = `<strong>Tailored Summary for Target Role:</strong><br><br>${d.enhanced || 'Updated summary ready.'}<br><br><em style="color:var(--txs);">Click to copy or paste directly into your summary field.</em>`;
-  } catch(e) {
-    out.innerHTML = `<strong>Resume Tailoring Analysis:</strong><br><br>Analyzed against target job requirements. Review your skills and summary to match key terms.`;
-  }
-}
+      const allSkills = Object.values(R.skills || {}).filter(Boolean).join(', ');
+      const expContext = (R.experience || []).map(e => `${e.company} (${e.title})`).join(', ');
 
-/* ATS Scorer */
-function uAts() {
-  const sc = 100;
-  document.getElementById('ats-n').textContent = sc + '%';
-  document.getElementById('ats-n').style.color = 'var(--pr)';
-  document.getElementById('ats-b').style.width = '100%';
-  const te = document.getElementById('ats-t');
-  if (te) {
-    te.innerHTML = '<div class="ats-tip">100% ATS-Compliant: Standard Overleaf/LaTeX typography, clear hierarchy, and ATS-parseable single-column layout.</div>';
-  }
-}
+      try {
+        const r = await fetch('/api/enhance-bullet', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            bullet: R.summary.text || 'Experienced professional targeting this role.',
+            context: `Target Job Description:\n${jd.slice(0, 1200)}\n\nCandidate Skills:\n${allSkills}\nExperience:\n${expContext}`
+          })
+        });
+        const d = await r.json();
+        out.innerHTML = `<strong>Tailored Summary for Target Role:</strong><br><br>${d.enhanced || 'Updated summary ready.'}<br><br><em style="color:var(--txs);">Click to copy or paste directly into your summary field.</em>`;
+      } catch (e) {
+        out.innerHTML = `<strong>Resume Tailoring Analysis:</strong><br><br>Analyzed against target job requirements. Review your skills and summary to match key terms.`;
+      }
+    }
 
-function uDots() {
-  const ch = {
-    header: true,
-    summary: true,
-    skills: true,
-    exp: true,
-    proj: true,
-    achieve: true,
-    certs: true,
-    edu: true
-  };
-  for (const [k, v] of Object.entries(ch)) {
-    const d = document.getElementById('dot-' + k);
-    if (d) d.classList.toggle('done', !!v);
-  }
-}
+    /* ATS Scorer */
+    function uAts() {
+      const sc = 100;
+      document.getElementById('ats-n').textContent = sc + '%';
+      document.getElementById('ats-n').style.color = 'var(--pr)';
+      document.getElementById('ats-b').style.width = '100%';
+      const te = document.getElementById('ats-t');
+      if (te) {
+        te.innerHTML = '<div class="ats-tip">100% ATS-Compliant: Standard Overleaf/LaTeX typography, clear hierarchy, and ATS-parseable single-column layout.</div>';
+      }
+    }
 
-function scale() {
-  const pv = document.querySelector('.pv');
-  const sh = document.getElementById('rp');
-  const av = pv.clientWidth - 48;
-  const sc = Math.min(1, av / 794);
-  sh.style.transform = `scale(${sc})`;
-  sh.style.transformOrigin = 'top center';
-  document.querySelector('.a4w').style.height = `${sh.offsetHeight * sc}px`;
-}
+    function uDots() {
+      const ch = {
+        header: true,
+        summary: true,
+        skills: true,
+        exp: true,
+        proj: true,
+        achieve: true,
+        certs: true,
+        edu: true
+      };
+      for (const [k, v] of Object.entries(ch)) {
+        const d = document.getElementById('dot-' + k);
+        if (d) d.classList.toggle('done', !!v);
+      }
+    }
 
-let tt;
-function toast(m) {
-  const e = document.getElementById('toast');
-  e.textContent = m;
-  e.classList.add('show');
-  clearTimeout(tt);
-  tt = setTimeout(() => e.classList.remove('show'), 3000);
-}
+    function scale() {
+      const pv = document.querySelector('.pv');
+      const sh = document.getElementById('rp');
+      const av = pv.clientWidth - 48;
+      const sc = Math.min(1, av / 794);
+      sh.style.transform = `scale(${sc})`;
+      sh.style.transformOrigin = 'top center';
+      document.querySelector('.a4w').style.height = `${sh.offsetHeight * sc}px`;
+    }
 
-// ── Startup Initialization ──
-window.addEventListener('resize', scale);
-loadDataFromProfile();
-populateFormFields();
-rp();
-uAts();
-</script>
+    let tt;
+    function toast(m) {
+      const e = document.getElementById('toast');
+      e.textContent = m;
+      e.classList.add('show');
+      clearTimeout(tt);
+      tt = setTimeout(() => e.classList.remove('show'), 3000);
+    }
+
+    // ── Startup Initialization ──
+    window.addEventListener('resize', scale);
+    loadDataFromProfile();
+    populateFormFields();
+    rp();
+    uAts();
+  </script>
 </body>
+
 </html>

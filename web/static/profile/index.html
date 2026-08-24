@@ -342,7 +342,7 @@
           <p>Takes 30 seconds to upload and saves 10 hours/week on average. For free.</p>
         </div>
         <button class="btn-promo" onclick="document.getElementById('file-resume').click()">Upload Resume</button>
-        <input type="file" id="file-resume" accept=".pdf,.doc,.docx" style="display:none;" onchange="alert('Resume uploaded successfully!')">
+        <input type="file" id="file-resume" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleResumeUpload(event)">
       </div>
 
       <!-- Rendered Static Cards -->
@@ -695,6 +695,72 @@
         const res = await fetch('/api/user/preferences', { headers: { 'X-Firebase-UID': uid } });
         return await res.json();
       } catch(e) { return JSON.parse(localStorage.getItem('getarole_prefs') || '{}'); }
+    }
+
+    async function handleResumeUpload(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      const promoBtn = document.querySelector('.btn-promo');
+      const originalText = promoBtn ? promoBtn.textContent : 'Upload Resume';
+      if (promoBtn) promoBtn.textContent = '⏳ Parsing Resume...';
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch('/api/match-resume', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const parsedProf = data.candidate_profile || {};
+          
+          if (parsedProf.skills && parsedProf.skills.length > 0) {
+            profileData.skills = Array.from(new Set([...(profileData.skills || []), ...parsedProf.skills]));
+          }
+          if (parsedProf.name && parsedProf.name !== 'Candidate' && !profileData.name) {
+            profileData.name = parsedProf.name;
+          }
+          
+          localStorage.setItem('getarole_profile', JSON.stringify(profileData));
+          await apiSaveProfile(profileData);
+
+          const uid = getFirebaseUID();
+          if (uid && data.resume_text) {
+            try {
+              await fetch('/api/user/resume', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+                body: JSON.stringify({
+                  resume: {
+                    header: { name: profileData.name || parsedProf.name || 'Candidate' },
+                    summary: { text: data.resume_text.slice(0, 500) },
+                    skills: { languages: (parsedProf.skills || []).slice(0, 10).join(', ') },
+                    raw_text: data.resume_text
+                  }
+                })
+              });
+            } catch (err) {
+              console.warn('Resume table sync notice:', err);
+            }
+          }
+
+          renderLeftProfile();
+          renderStaticCards();
+          alert(`✅ Resume analyzed successfully! Extracted ${(parsedProf.skills || []).length} skills and synced to your profile.`);
+        } else {
+          alert('Could not parse resume file. Please ensure it is a valid PDF or Word document.');
+        }
+      } catch (err) {
+        console.error('Resume upload error:', err);
+        alert('Upload failed. Please check your network connection.');
+      } finally {
+        if (promoBtn) promoBtn.textContent = originalText;
+        e.target.value = '';
+      }
     }
     // ─────────────────────────────────────────────────────────
 

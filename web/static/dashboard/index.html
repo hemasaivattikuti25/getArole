@@ -1035,13 +1035,80 @@
         }
 
         allJobs = loadedList || [];
+        
+        // 3. Real Dynamic Fit Score Calculation based on user preferences & profile
+        const userProf = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+        const userPrefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
+        
+        function computeJobFitScore(job, profile, prefs) {
+          let score = 55;
+          const userSkills = (profile.skills || []).map(s => s.toLowerCase());
+          const targetRoles = [prefs.role, profile.headline, prefs.target_role].filter(Boolean).map(r => r.toLowerCase());
+          const preferredCities = (prefs.locations || [prefs.city, profile.city]).filter(Boolean).map(c => c.toLowerCase());
+          const remotePref = prefs.remoteOnly || prefs.workplaceType === 'Remote';
+
+          const jobTitle = (job.title || '').toLowerCase();
+          const jobDesc = (job.description || '').toLowerCase();
+          const jobLoc = (job.location || '').toLowerCase();
+          const jobSkills = (job.skills || []).map(s => s.toLowerCase());
+          const isRemote = (job.workplace_type || '').toLowerCase() === 'remote' || jobLoc.includes('remote');
+
+          // Target Role Affinity (+25 pts max)
+          if (targetRoles.length > 0) {
+            for (const role of targetRoles) {
+              const words = role.split(/\s+/).filter(w => w.length > 2);
+              const matchedWords = words.filter(w => jobTitle.includes(w) || jobDesc.includes(w));
+              if (matchedWords.length > 0) {
+                score += Math.min(25, Math.round((matchedWords.length / words.length) * 25));
+                break;
+              }
+            }
+          } else {
+            // Default boost for SWE/Engineering
+            if (jobTitle.includes('engineer') || jobTitle.includes('developer') || jobTitle.includes('ai')) score += 18;
+          }
+
+          // Location & Workplace Match (+12 pts max)
+          if (remotePref && isRemote) {
+            score += 12;
+          } else if (preferredCities.length > 0) {
+            for (const city of preferredCities) {
+              if (jobLoc.includes(city) || (job.city && job.city.toLowerCase().includes(city))) {
+                score += 12;
+                break;
+              }
+            }
+          } else {
+            score += 6;
+          }
+
+          // Technical Skills Match (+12 pts max)
+          if (userSkills.length > 0) {
+            let hits = 0;
+            for (const skill of userSkills) {
+              if (jobSkills.includes(skill) || jobDesc.includes(skill) || jobTitle.includes(skill)) {
+                hits++;
+              }
+            }
+            score += Math.min(12, Math.round((hits / Math.max(1, Math.min(userSkills.length, 5))) * 12));
+          } else {
+            score += 5;
+          }
+
+          return Math.min(99, Math.max(62, score));
+        }
+
+        allJobs = allJobs.map(j => ({
+          ...j,
+          fit_score: computeJobFitScore(j, userProf, userPrefs)
+        }));
+
         filteredJobs = [...allJobs];
         
-        // Prepare matches
-        matchedJobs = allJobs.slice(0, 30).map((j, i) => ({
-          ...j,
-          fit_score: Math.max(72, 98 - (i * 1.5))
-        }));
+        // Real calibrated high-fit matches sorted by score
+        matchedJobs = [...allJobs]
+          .sort((a, b) => (b.fit_score || 0) - (a.fit_score || 0))
+          .slice(0, 60);
 
         renderFeed();
         if (filteredJobs.length > 0) {

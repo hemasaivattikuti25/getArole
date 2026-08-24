@@ -686,9 +686,45 @@
       userPrefs.minSalary = sal;
     }
 
+    function getFirebaseUID() {
+      const directUid = localStorage.getItem('firebase_uid') || sessionStorage.getItem('firebase_uid');
+      if (directUid) return directUid;
+      const raw = localStorage.getItem('getarole_user');
+      if (!raw) return null;
+      try {
+        const parsed = JSON.parse(raw);
+        return parsed.uid || parsed.id || null;
+      } catch (e) {
+        return raw.trim() || null;
+      }
+    }
+
     // Step 7: Finish
-    function finishAndCelebrate() {
+    async function finishAndCelebrate() {
       localStorage.setItem('getarole_prefs', JSON.stringify(userPrefs));
+      
+      // Real-time Cloud Sync to Supabase
+      const uid = getFirebaseUID();
+      if (uid) {
+        try {
+          fetch('/api/user/preferences', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+            body: JSON.stringify(userPrefs)
+          }).catch(e => console.warn('Onboarding prefs sync notice:', e));
+
+          fetch('/api/user/profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+            body: JSON.stringify({
+              headline: userPrefs.role || 'Software Engineer',
+              city: (userPrefs.locations && userPrefs.locations[0]) || 'India'
+            })
+          }).catch(e => console.warn('Onboarding profile sync notice:', e));
+        } catch (err) {
+          console.warn('Onboarding sync error:', err);
+        }
+      }
       
       document.getElementById('celeb-pills-list').innerHTML = `
         <span class="celeb-pill">📍 ${userPrefs.locations.slice(0, 2).join(', ')}${userPrefs.locations.length > 2 ? ' +' + (userPrefs.locations.length - 2) : ''}</span>
