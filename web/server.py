@@ -452,19 +452,8 @@ class TailorResumeRequest(BaseModel):
     resume_data: Dict[str, Any] = {}
     custom_instruction: str = ""
 
-@app.post("/api/ai/tailor-resume")
-async def tailor_resume_api(req: TailorResumeRequest):
-    """
-    Analyzes candidate resume against a target JD: calculates ATS match score,
-    extracts matched & missing keywords, and produces personalized tailored summary and bullet suggestions.
-    """
-    jd = req.job_description.lower()
-    r = req.resume_data
-
-    # Extract all text from resume
-    resume_text = json.dumps(r).lower()
-
-    # Common technical keywords pool
+def _calculate_rule_based_tailoring(jd: str, resume_text: str) -> Tuple[int, List[str], List[str], str]:
+    """Helper to compute rule-based ATS match score & keyword lists."""
     common_keywords = [
         "python", "javascript", "typescript", "react", "next.js", "fastapi", "django",
         "node.js", "docker", "kubernetes", "aws", "gcp", "azure", "postgresql", "mysql",
@@ -472,7 +461,6 @@ async def tailor_resume_api(req: TailorResumeRequest):
         "distributed systems", "system design", "unit testing", "agile", "machine learning",
         "llm", "ai", "performance optimization", "sql", "nosql", "linux"
     ]
-
     jd_keywords = [kw for kw in common_keywords if kw in jd]
     if not jd_keywords:
         words = set([w.strip(".,;:()") for w in jd.split() if len(w) > 4])
@@ -480,11 +468,22 @@ async def tailor_resume_api(req: TailorResumeRequest):
 
     matched = [kw for kw in jd_keywords if kw in resume_text]
     missing = [kw for kw in jd_keywords if kw not in resume_text]
-
     score = int((len(matched) / max(len(jd_keywords), 1)) * 100)
     score = min(max(score, 50), 98)
+    summary = f"Results-driven Engineer with expertise in {', '.join(matched[:3]) if matched else 'modern software development'}, targeting key contributions in scalable architecture."
+    return score, matched, missing, summary
 
-    tailored_summary = f"Results-driven Engineer with expertise in {', '.join(matched[:3]) if matched else 'modern software development'}, targeting key contributions in scalable architecture and high-reliability systems."
+@app.post("/api/ai/tailor-resume")
+async def tailor_resume_api(req: TailorResumeRequest):
+    """
+    Analyzes candidate resume against a target JD.
+    Delegates rule-based matching to _calculate_rule_based_tailoring (<50 lines).
+    """
+    jd = req.job_description.lower()
+    r = req.resume_data
+    resume_text = json.dumps(r).lower()
+
+    score, matched, missing, summary = _calculate_rule_based_tailoring(jd, resume_text)
 
     try:
         llm = get_llm_service()
@@ -508,8 +507,7 @@ Return JSON:
         start_idx = resp_text.find("{")
         end_idx = resp_text.rfind("}") + 1
         if start_idx != -1 and end_idx > start_idx:
-            parsed = json.loads(resp_text[start_idx:end_idx])
-            return parsed
+            return json.loads(resp_text[start_idx:end_idx])
     except Exception as e:
         print(f"[TailorResume] LLM fallback: {e}")
 
@@ -517,7 +515,7 @@ Return JSON:
         "match_score": score,
         "matched_keywords": matched,
         "missing_keywords": missing,
-        "tailored_summary": tailored_summary,
+        "tailored_summary": summary,
         "bullet_suggestions": [
             f"Engineered scalable solutions leveraging {', '.join(matched[:2]) if matched else 'production technologies'}, enhancing reliability by 25%+.",
             f"Implemented automated pipelines and robust testing, accelerating feature delivery cycles."
@@ -579,20 +577,15 @@ class CoverLetterRequest(BaseModel):
     candidate_skills: str = ""
     custom_instruction: str = ""
 
-@app.post("/api/generate-cover-letter")
-async def generate_cover_letter_api(req: CoverLetterRequest):
-    """
-    Generates a personalized, professional 3-paragraph Cover Letter using NVIDIA Llama 3.1 70B,
-    deeply integrating any specific user instructions or talking points.
-    """
-    llm = get_llm_service()
+def _build_cover_letter_prompt(req: CoverLetterRequest) -> str:
+    """Helper to build Cover Letter prompt."""
     user_guidance = f"""
 SPECIFIC USER INSTRUCTIONS & TALKING POINTS:
 {req.custom_instruction}
 Ensure the candidate's custom instructions and specific personal talking points are seamlessly woven into the letter body.
 """ if req.custom_instruction else ""
 
-    prompt = f"""You are an elite career strategist and executive recruiter. Write a compelling, tailored, high-signal 3-paragraph Cover Letter for {req.candidate_name} applying for the {req.role_title} position at {req.company_name}.
+    return f"""You are an elite career strategist and executive recruiter. Write a compelling, tailored, high-signal 3-paragraph Cover Letter for {req.candidate_name} applying for the {req.role_title} position at {req.company_name}.
 
 CANDIDATE DOSSIER:
 Name: {req.candidate_name}
@@ -614,10 +607,18 @@ Letter Structure:
 
 Tone: Authentic, highly personalized, persuasive, crisp, tailored to the specific role and company. Zero filler. Return ONLY the letter text."""
 
+@app.post("/api/generate-cover-letter")
+async def generate_cover_letter_api(req: CoverLetterRequest):
+    """
+    Generates a personalized, professional 3-paragraph Cover Letter.
+    Delegates prompt assembly to _build_cover_letter_prompt (<50 lines).
+    """
+    llm = get_llm_service()
+    prompt = _build_cover_letter_prompt(req)
+
     try:
         async def event_generator():
             yield f": ping\n\n"
-            streamed_any = False
             try:
                 # Attempt live LLM streaming
                 stream_gen = llm.a_stream_chat(
@@ -626,12 +627,10 @@ Tone: Authentic, highly personalized, persuasive, crisp, tailored to the specifi
                     max_tokens=700
                 )
                 async for chunk in stream_gen:
-                    streamed_any = True
                     yield f"data: {json.dumps({'content': chunk})}\n\n"
                 yield "data: [DONE]\n\n"
             except Exception as e:
                 print(f"[CoverLetter Streaming] Error: {e}")
-                import json
                 yield f"data: {json.dumps({'error': 'AI generation failed'})}\n\n"
                 
         return StreamingResponse(

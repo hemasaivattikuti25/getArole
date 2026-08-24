@@ -917,15 +917,7 @@
         if (homeName) homeName.textContent = name;
       }
 
-      // Sync to backend (fire and forget)
-      const uid = (function() {
-        const u = sessionStorage.getItem('firebase_uid') || localStorage.getItem('firebase_uid');
-        if (u) return u;
-        try { const raw = localStorage.getItem('getarole_user'); if (raw) { const p = JSON.parse(raw); if (p && p.uid) return p.uid; } } catch(e) {}
-        let id = localStorage.getItem('getarole_user_id');
-        if (!id) { id = 'usr_' + Math.random().toString(36).substring(2, 11); localStorage.setItem('getarole_user_id', id); }
-        return id;
-      })();
+      const uid = getFirebaseUID();
 
       Promise.all([
         fetch('/api/user/profile', {

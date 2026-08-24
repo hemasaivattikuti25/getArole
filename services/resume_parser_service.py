@@ -50,9 +50,117 @@ class ResumeParserService:
                     links["portfolio"] = full_url
         return links
 
+    def _parse_experience_lines(self, lines: List[str]) -> List[Dict[str, Any]]:
+        """Helper to parse experience section lines into structured objects."""
+        fb_exp = []
+        curr_exp = None
+        month_pattern = re.compile(r'(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|Present)\b.*(\d{4}|Present)', re.IGNORECASE)
+        date_pattern = re.compile(r'\d{4}\s*[-–—]\s*(\d{4}|Present)', re.IGNORECASE)
+        company_indicators = ["ltd", "inc", "corp", "llc", "pvt", "gmbh", "technologies", "solutions", "laboratory", "labs", "lab", "organization", "foundation", "company", "group", "services", "systems", "agency", "studio", "studios", "ventures", "partners", "global", "co."]
+        role_indicators = ["intern", "engineer", "developer", "manager", "lead", "architect", "analyst", "designer", "consultant", "director", "officer", "specialist", "associate", "head", "cto", "ceo", "vp", "founder"]
+
+        for l in lines:
+            is_bullet = l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*")
+            has_date = bool(month_pattern.search(l)) or bool(date_pattern.search(l))
+            lower_l = l.lower()
+            is_company = any(ci in lower_l for ci in company_indicators) and len(l) < 120
+            is_role = any(ri in lower_l for ri in role_indicators) and len(l) < 120
+            
+            if is_bullet:
+                bullet = l.lstrip("•-·* ").strip()
+                if curr_exp and bullet:
+                    curr_exp["bullets"].append(bullet)
+            elif is_company and not is_bullet:
+                curr_exp = {"company": l, "title": "", "dates": "", "bullets": []}
+                fb_exp.append(curr_exp)
+            elif not curr_exp and not is_bullet and len(l) < 120:
+                curr_exp = {"company": l, "title": "", "dates": "", "bullets": []}
+                fb_exp.append(curr_exp)
+            elif has_date and curr_exp and not curr_exp.get("dates"):
+                curr_exp["dates"] = l
+            elif is_role and curr_exp and not curr_exp.get("title"):
+                curr_exp["title"] = l
+            elif curr_exp and not curr_exp.get("title") and not is_bullet and len(l) < 100:
+                curr_exp["title"] = l
+        return fb_exp
+
+    def _parse_projects_lines(self, lines: List[str]) -> List[Dict[str, Any]]:
+        """Helper to parse projects section lines into structured objects."""
+        fb_proj = []
+        curr_proj = None
+        noise_words = {"Live", "GitHub", "Demo", "Link", "Source", "Code", "View", "Website", "Repo", "App"}
+        
+        for l in lines:
+            is_bullet = l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*")
+            is_url = l.startswith("http") or l.startswith("www.") or "://" in l
+            is_noise = l.strip() in noise_words
+            is_year_only = bool(re.match(r'^\d{4}(\s*[-–—]\s*(Present|\d{4}))?$', l.strip()))
+            is_tech_stack = "·" in l and len(l.split("·")) >= 3
+            
+            if is_bullet:
+                bullet = l.lstrip("•-·* ").strip()
+                if curr_proj and bullet:
+                    curr_proj["bullets"].append(bullet)
+                    if not curr_proj["description"]:
+                        curr_proj["description"] = bullet
+            elif is_noise or is_year_only or is_url:
+                if is_url and curr_proj and not curr_proj.get("link"):
+                    curr_proj["link"] = l
+                continue
+            elif is_tech_stack and curr_proj:
+                curr_proj["tech"] = l
+                continue
+            elif not is_bullet and not is_noise and not is_year_only and not is_tech_stack:
+                l_stripped = l.strip()
+                word_count = len(l_stripped.split())
+                starts_upper = l_stripped[0].isupper() if l_stripped else False
+                if word_count <= 6 and starts_upper and not l_stripped.endswith(".") and not l_stripped.startswith("for ") and not l_stripped.startswith("and "):
+                    if curr_proj and len(curr_proj["bullets"]) > 0:
+                        curr_proj = {"name": l_stripped, "description": "", "link": "", "bullets": []}
+                        fb_proj.append(curr_proj)
+                    elif not curr_proj:
+                        curr_proj = {"name": l_stripped, "description": "", "link": "", "bullets": []}
+                        fb_proj.append(curr_proj)
+                    else:
+                        curr_proj["description"] = (curr_proj["description"] + " " + l_stripped).strip()
+                else:
+                    if curr_proj:
+                        curr_proj["description"] = (curr_proj["description"] + " " + l_stripped).strip()
+        return fb_proj
+
+    def _parse_education_lines(self, lines: List[str]) -> List[Dict[str, Any]]:
+        """Helper to parse education section lines into structured objects."""
+        fb_edu = []
+        curr_edu = None
+        school_keywords = ["university", "institute", "institution", "college", "school", "academy", "polytechnic", "conservatory", "faculty"]
+        degree_keywords = ["b.tech", "b.e", "b.s", "b.a", "m.tech", "m.s", "m.a", "ph.d", "phd", "bachelor", "master", "doctorate", "diploma", "degree", "major"]
+        
+        for l in lines:
+            if l.startswith("http") or l.startswith("mailto:") or "://" in l or l.startswith("==="):
+                continue
+            
+            lower_l = l.lower()
+            is_school = any(k in lower_l for k in school_keywords)
+            is_degree = any(k in lower_l for k in degree_keywords)
+            has_year = bool(re.search(r'20\d{2}', l))
+            
+            if is_school:
+                curr_edu = {"school": l, "degree": "", "year": ""}
+                fb_edu.append(curr_edu)
+            elif not curr_edu and (is_degree or has_year) and len(l) < 120:
+                curr_edu = {"school": l, "degree": "", "year": ""}
+                fb_edu.append(curr_edu)
+            elif curr_edu:
+                if has_year and not curr_edu["year"]:
+                    curr_edu["year"] = l
+                elif not curr_edu["degree"]:
+                    curr_edu["degree"] = l
+                elif len(l) > 5 and not l.startswith("http"):
+                    curr_edu["degree"] += " · " + l
+        return fb_edu
+
     def parse_sections_fallback(self, text: str) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], List[Dict[str, Any]]]:
-        """Universal section fallback classifier for Experience, Education, and Projects."""
-        fb_exp, fb_edu, fb_proj = [], [], []
+        """Universal section fallback classifier split into modular helpers."""
         sec_lines = [l.strip() for l in text.splitlines() if l.strip()]
         sections = {}
         curr_sec = "HEADER"
@@ -75,138 +183,13 @@ class ResumeParserService:
             else:
                 sections.setdefault(curr_sec, []).append(l)
 
-        # ── EXPERIENCE ──
-        if "EXPERIENCE" in sections:
-            curr_exp = None
-            month_pattern = re.compile(r'(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|Present)\b.*(\d{4}|Present)', re.IGNORECASE)
-            date_pattern = re.compile(r'\d{4}\s*[-–—]\s*(\d{4}|Present)', re.IGNORECASE)
-            company_indicators = ["ltd", "inc", "corp", "llc", "pvt", "gmbh", "technologies", "solutions", "laboratory", "labs", "lab", "organization", "foundation", "company", "group", "services", "systems", "agency", "studio", "studios", "ventures", "partners", "global", "co."]
-            role_indicators = ["intern", "engineer", "developer", "manager", "lead", "architect", "analyst", "designer", "consultant", "director", "officer", "specialist", "associate", "head", "cto", "ceo", "vp", "founder"]
-            
-            for l in sections["EXPERIENCE"]:
-                is_bullet = l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*")
-                has_date = bool(month_pattern.search(l)) or bool(date_pattern.search(l))
-                lower_l = l.lower()
-                is_company = any(ci in lower_l for ci in company_indicators) and len(l) < 120
-                is_role = any(ri in lower_l for ri in role_indicators) and len(l) < 120
-                
-                if is_bullet:
-                    bullet = l.lstrip("•-·* ").strip()
-                    if curr_exp and bullet:
-                        curr_exp["bullets"].append(bullet)
-                elif is_company and not is_bullet:
-                    curr_exp = {"company": l, "title": "", "dates": "", "bullets": []}
-                    fb_exp.append(curr_exp)
-                elif not curr_exp and not is_bullet and len(l) < 120:
-                    curr_exp = {"company": l, "title": "", "dates": "", "bullets": []}
-                    fb_exp.append(curr_exp)
-                elif has_date and curr_exp and not curr_exp.get("dates"):
-                    curr_exp["dates"] = l
-                elif is_role and curr_exp and not curr_exp.get("title"):
-                    curr_exp["title"] = l
-                elif curr_exp and not curr_exp.get("title") and not is_bullet and len(l) < 100:
-                    curr_exp["title"] = l
-
-        # ── PROJECTS ──
-        if "PROJECTS" in sections:
-            curr_proj = None
-            noise_words = {"Live", "GitHub", "Demo", "Link", "Source", "Code", "View", "Website", "Repo", "App"}
-            
-            for l in sections["PROJECTS"]:
-                is_bullet = l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*")
-                is_url = l.startswith("http") or l.startswith("www.") or "://" in l
-                is_noise = l.strip() in noise_words
-                is_year_only = bool(re.match(r'^\d{4}(\s*[-–—]\s*(Present|\d{4}))?$', l.strip()))
-                is_tech_stack = "·" in l and len(l.split("·")) >= 3
-                
-                if is_bullet:
-                    bullet = l.lstrip("•-·* ").strip()
-                    if curr_proj and bullet:
-                        curr_proj["bullets"].append(bullet)
-                        if not curr_proj["description"]:
-                            curr_proj["description"] = bullet
-                elif is_noise or is_year_only or is_url:
-                    if is_url and curr_proj and not curr_proj.get("link"):
-                        curr_proj["link"] = l
-                    continue
-                elif is_tech_stack and curr_proj:
-                    curr_proj["tech"] = l
-                    continue
-                elif not is_bullet and not is_noise and not is_year_only and not is_tech_stack:
-                    l_stripped = l.strip()
-                    word_count = len(l_stripped.split())
-                    starts_upper = l_stripped[0].isupper() if l_stripped else False
-                    if word_count <= 6 and starts_upper and not l_stripped.endswith(".") and not l_stripped.startswith("for ") and not l_stripped.startswith("and "):
-                        if curr_proj and len(curr_proj["bullets"]) > 0:
-                            curr_proj = {"name": l_stripped, "description": "", "link": "", "bullets": []}
-                            fb_proj.append(curr_proj)
-                        elif not curr_proj:
-                            curr_proj = {"name": l_stripped, "description": "", "link": "", "bullets": []}
-                            fb_proj.append(curr_proj)
-                        else:
-                            curr_proj["description"] = (curr_proj["description"] + " " + l_stripped).strip()
-                    else:
-                        if curr_proj:
-                            curr_proj["description"] = (curr_proj["description"] + " " + l_stripped).strip()
-
-        # ── EDUCATION ──
-        if "EDUCATION" in sections:
-            curr_edu = None
-            school_keywords = ["university", "institute", "institution", "college", "school", "academy", "polytechnic", "conservatory", "faculty"]
-            degree_keywords = ["b.tech", "b.e", "b.s", "b.a", "m.tech", "m.s", "m.a", "ph.d", "phd", "bachelor", "master", "doctorate", "diploma", "degree", "major"]
-            
-            for l in sections["EDUCATION"]:
-                if l.startswith("http") or l.startswith("mailto:") or "://" in l or l.startswith("==="):
-                    continue
-                
-                lower_l = l.lower()
-                is_school = any(k in lower_l for k in school_keywords)
-                is_degree = any(k in lower_l for k in degree_keywords)
-                has_year = bool(re.search(r'20\d{2}', l))
-                
-                if is_school:
-                    curr_edu = {"school": l, "degree": "", "year": ""}
-                    fb_edu.append(curr_edu)
-                elif not curr_edu and (is_degree or has_year) and len(l) < 120:
-                    curr_edu = {"school": l, "degree": "", "year": ""}
-                    fb_edu.append(curr_edu)
-                elif curr_edu:
-                    if has_year and not curr_edu["year"]:
-                        curr_edu["year"] = l
-                    elif not curr_edu["degree"]:
-                        curr_edu["degree"] = l
-                    elif len(l) > 5 and not l.startswith("http"):
-                        curr_edu["degree"] += " · " + l
-
+        fb_exp = self._parse_experience_lines(sections.get("EXPERIENCE", []))
+        fb_proj = self._parse_projects_lines(sections.get("PROJECTS", []))
+        fb_edu = self._parse_education_lines(sections.get("EDUCATION", []))
         return fb_exp, fb_edu, fb_proj
 
-    async def process_resume_bytes(self, pdf_bytes: bytes, filename: str) -> Dict[str, Any]:
-        """Main orchestrator for resume parsing."""
-        text, pdf_links = self.parse_pdf_bytes(pdf_bytes)
-
-        # Skill extraction taxonomy
-        common_tech = [
-            "python", "java", "c++", "c#", "c", "rust", "golang", "go", "typescript", "javascript",
-            "react", "next.js", "vue", "angular", "node.js", "express", "fastapi", "django", "spring boot",
-            "aws", "gcp", "azure", "docker", "kubernetes", "sql", "postgresql", "mysql", "mongodb",
-            "redis", "pytorch", "tensorflow", "scikit-learn", "git", "linux", "html5", "css3", "tailwind"
-        ]
-        lower = text.lower()
-        extracted_skills = [s for s in common_tech if s in lower]
-
-        # Regex fallback for contact info
-        email_match = re.search(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', text)
-        phone_match = re.search(r'(?:(?:\+|0{0,2})\d{1,3}[\s-]*)?(?:\(?\d{2,5}\)?[\s-]*)?\d{3,4}[\s-]*\d{4}', text)
-        lines = [line.strip() for line in text.splitlines() if line.strip()]
-        candidate_name = lines[0] if lines and len(lines[0].split()) <= 4 else "Candidate"
-        
-        email = email_match.group(0) if email_match else ""
-        phone = phone_match.group(0) if phone_match else ""
-        headline = "Software Engineer"
-        summary = " ".join(lines[1:4]) if len(lines) > 1 else ""
-
-        # Structured LLM Parse
-        llm_parsed = {}
+    async def _call_llm_parser(self, text: str) -> Dict[str, Any]:
+        """Helper to invoke LLM parser safely."""
         try:
             from services.llm_service import get_llm_service
             llm = get_llm_service()
@@ -257,11 +240,36 @@ Return valid JSON with exact structure:
             start_idx = resp.find("{")
             end_idx = resp.rfind("}") + 1
             if start_idx != -1 and end_idx > start_idx:
-                llm_parsed = json.loads(resp[start_idx:end_idx])
+                return json.loads(resp[start_idx:end_idx])
         except Exception as e:
             print(f"[ResumeParserService LLM Notice] {e}")
+        return {}
 
-        # Extract name parts
+    async def process_resume_bytes(self, pdf_bytes: bytes, filename: str) -> Dict[str, Any]:
+        """Main orchestrator for resume parsing (<50 lines)."""
+        text, pdf_links = self.parse_pdf_bytes(pdf_bytes)
+
+        common_tech = [
+            "python", "java", "c++", "c#", "c", "rust", "golang", "go", "typescript", "javascript",
+            "react", "next.js", "vue", "angular", "node.js", "express", "fastapi", "django", "spring boot",
+            "aws", "gcp", "azure", "docker", "kubernetes", "sql", "postgresql", "mysql", "mongodb",
+            "redis", "pytorch", "tensorflow", "scikit-learn", "git", "linux", "html5", "css3", "tailwind"
+        ]
+        lower = text.lower()
+        extracted_skills = [s for s in common_tech if s in lower]
+
+        email_match = re.search(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', text)
+        phone_match = re.search(r'(?:(?:\+|0{0,2})\d{1,3}[\s-]*)?(?:\(?\d{2,5}\)?[\s-]*)?\d{3,4}[\s-]*\d{4}', text)
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        candidate_name = lines[0] if lines and len(lines[0].split()) <= 4 else "Candidate"
+        
+        email = email_match.group(0) if email_match else ""
+        phone = phone_match.group(0) if phone_match else ""
+        headline = "Software Engineer"
+        summary = " ".join(lines[1:4]) if len(lines) > 1 else ""
+
+        llm_parsed = await self._call_llm_parser(text)
+
         first_name = llm_parsed.get("first_name", "")
         last_name = llm_parsed.get("last_name", "")
         if llm_parsed.get("name") and llm_parsed["name"] != "Candidate Full Name":
@@ -282,7 +290,6 @@ Return valid JSON with exact structure:
         if llm_parsed.get("skills"):
             extracted_skills = sorted(list(set(extracted_skills + [s for s in llm_parsed["skills"] if isinstance(s, str)])))
 
-        # Extract links & sections
         links = self.extract_links(text, pdf_links, llm_parsed)
         experience_list = llm_parsed.get("experience") or []
         education_list = llm_parsed.get("education") or []
