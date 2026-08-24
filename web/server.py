@@ -560,3 +560,22 @@ async def serve_dashboard():
         with open(index_file, "r", encoding="utf-8") as f:
             return f.read()
     return "<h1>getArole Dashboard</h1>"
+
+@app.get("/profile", response_class=HTMLResponse)
+@app.get("/profile/", response_class=HTMLResponse)
+async def serve_profile():
+    profile_file = os.path.join(STATIC_DIR, "profile", "index.html")
+    if os.path.exists(profile_file):
+        with open(profile_file, "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h1>getArole Profile</h1>"
+
+@app.get("/preferences", response_class=HTMLResponse)
+@app.get("/preferences/", response_class=HTMLResponse)
+async def serve_preferences():
+    pref_file = os.path.join(STATIC_DIR, "preferences", "index.html")
+    if os.path.exists(pref_file):
+        with open(pref_file, "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h1>getArole Preferences</h1>"
+
