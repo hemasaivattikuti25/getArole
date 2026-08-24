@@ -150,7 +150,63 @@
     }
     .dropdown-item:hover { background: var(--background); color: var(--primary); }
 
-    /* ════════════════════ FILTER & SEARCH BAR (SIMPLIFY PILLS) ════════════════════ */
+    
+    /* ════════════════════ FILTER & SEARCH BAR ════════════════════ */
+    .filter-bar {
+      background: var(--surface, #ffffff);
+      border-bottom: 1px solid var(--border, #e2e8f0);
+      padding: 10px 24px;
+      position: sticky; top: var(--nav-height, 64px); z-index: 90;
+    }
+    .filter-inner {
+      max-width: 1500px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: flex-start; gap: 8px; flex-wrap: wrap;
+    }
+    .search-input-wrap {
+      position: relative; display: flex; align-items: center; min-width: 220px; flex: 1;
+    }
+    .search-input-wrap .search-icon {
+      position: absolute; left: 14px; width: 16px; height: 16px; color: var(--text-subtle, #94a3b8);
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%; padding: 8px 14px 8px 38px; border-radius: 99px;
+      border: 1.5px solid var(--border, #e2e8f0); background: var(--background, #f8fafc);
+      font-size: 13px; font-weight: 600; color: var(--text-main, #0f172a); outline: none;
+      transition: all 0.15s;
+    }
+    .search-input:focus { border-color: var(--primary, #4f46e5); background: #ffffff; box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+
+    .filter-dropdown {
+      padding: 7px 12px; border-radius: 99px; font-size: 12.5px; font-weight: 600;
+      border: 1.5px solid var(--border, #e2e8f0); background: var(--surface, #ffffff);
+      color: var(--text-muted, #475569); cursor: pointer; outline: none;
+      transition: all 0.15s; max-width: 220px;
+    }
+    .filter-dropdown:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
+    .filter-dropdown:focus { border-color: var(--primary, #4f46e5); background: var(--primary-light, #e0e7ff); }
+
+    .btn-filter-pill {
+      padding: 7px 12px; border-radius: 99px; font-size: 12px; font-weight: 700;
+      border: 1.5px solid var(--border, #e2e8f0); background: var(--surface, #ffffff);
+      color: var(--text-muted, #475569); cursor: pointer; transition: all 0.15s;
+    }
+    .btn-filter-pill:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
+    .btn-filter-pill.active { background: var(--primary-light, #e0e7ff); border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
+
+    .btn-filter-action {
+      padding: 7px 12px; border-radius: 99px; font-size: 12px; font-weight: 700;
+      border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.15s;
+    }
+    .btn-save-search {
+      background: #eff6ff; color: #1d4ed8; border: 1.5px solid #bfdbfe;
+    }
+    .btn-save-search:hover { background: #dbeafe; }
+    .btn-clear-filters {
+      background: transparent; color: #0284c7; text-decoration: underline; border: none; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .btn-clear-filters:hover { color: #0369a1; }
+
     .filter-bar {
       background: var(--surface); border-bottom: 1px solid var(--border);
       padding: 12px 24px; position: sticky; top: var(--nav-height); z-index: 90;
@@ -485,7 +541,63 @@
     .dropdown-item:hover { background: var(--background, #f8fafc); color: var(--primary, #4f46e5); }
 
   
-    /* ════════════════════ FILTER & SEARCH BAR (SIMPLIFY DROPDOWNS) ════════════════════ */
+    
+    /* ════════════════════ FILTER & SEARCH BAR ════════════════════ */
+    .filter-bar {
+      background: var(--surface, #ffffff);
+      border-bottom: 1px solid var(--border, #e2e8f0);
+      padding: 10px 24px;
+      position: sticky; top: var(--nav-height, 64px); z-index: 90;
+    }
+    .filter-inner {
+      max-width: 1500px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: flex-start; gap: 8px; flex-wrap: wrap;
+    }
+    .search-input-wrap {
+      position: relative; display: flex; align-items: center; min-width: 220px; flex: 1;
+    }
+    .search-input-wrap .search-icon {
+      position: absolute; left: 14px; width: 16px; height: 16px; color: var(--text-subtle, #94a3b8);
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%; padding: 8px 14px 8px 38px; border-radius: 99px;
+      border: 1.5px solid var(--border, #e2e8f0); background: var(--background, #f8fafc);
+      font-size: 13px; font-weight: 600; color: var(--text-main, #0f172a); outline: none;
+      transition: all 0.15s;
+    }
+    .search-input:focus { border-color: var(--primary, #4f46e5); background: #ffffff; box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+
+    .filter-dropdown {
+      padding: 7px 12px; border-radius: 99px; font-size: 12.5px; font-weight: 600;
+      border: 1.5px solid var(--border, #e2e8f0); background: var(--surface, #ffffff);
+      color: var(--text-muted, #475569); cursor: pointer; outline: none;
+      transition: all 0.15s; max-width: 220px;
+    }
+    .filter-dropdown:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
+    .filter-dropdown:focus { border-color: var(--primary, #4f46e5); background: var(--primary-light, #e0e7ff); }
+
+    .btn-filter-pill {
+      padding: 7px 12px; border-radius: 99px; font-size: 12px; font-weight: 700;
+      border: 1.5px solid var(--border, #e2e8f0); background: var(--surface, #ffffff);
+      color: var(--text-muted, #475569); cursor: pointer; transition: all 0.15s;
+    }
+    .btn-filter-pill:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
+    .btn-filter-pill.active { background: var(--primary-light, #e0e7ff); border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
+
+    .btn-filter-action {
+      padding: 7px 12px; border-radius: 99px; font-size: 12px; font-weight: 700;
+      border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.15s;
+    }
+    .btn-save-search {
+      background: #eff6ff; color: #1d4ed8; border: 1.5px solid #bfdbfe;
+    }
+    .btn-save-search:hover { background: #dbeafe; }
+    .btn-clear-filters {
+      background: transparent; color: #0284c7; text-decoration: underline; border: none; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .btn-clear-filters:hover { color: #0369a1; }
+
     .filter-bar {
       background: var(--surface, #ffffff);
       border-bottom: 1px solid var(--border, #e2e8f0);
@@ -577,53 +689,94 @@
     </div>
   </header>
 
-    <!-- ════════════════════ FILTER & SEARCH BAR ════════════════════ -->
+      <!-- ════════════════════ FILTER & SEARCH BAR ════════════════════ -->
   <div class="filter-bar" id="filter-bar" style="display:block;">
     <div class="filter-inner">
       <div class="search-input-wrap">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input type="text" id="main-search-input" class="search-input" placeholder="Search for roles, companies, or skills (e.g. Software, Python, AI)..." oninput="filterJobs()">
+        <input type="text" id="main-search-input" class="search-input" placeholder="Search roles, companies, or skills (e.g. Python, Backend, AI)..." oninput="filterJobs()">
       </div>
 
       <select id="filter-location" class="filter-dropdown" onchange="filterJobs()">
-        <option value="">📍 Location (All)</option>
-        <option value="remote">🌐 Remote</option>
-        <option value="bengaluru">📍 Bengaluru</option>
+        <option value="">📍 All Locations (70+ Cities & Remote)</option>
+        <option value="remote_in">🌐 Remote in India</option>
+        <option value="global_remote">🌍 Global Remote</option>
+        <option value="bengaluru">📍 Bengaluru / Bangalore</option>
         <option value="hyderabad">📍 Hyderabad</option>
-        <option value="mumbai">📍 Mumbai / Pune</option>
-        <option value="delhi">📍 Delhi NCR / Gurgaon</option>
+        <option value="pune">📍 Pune</option>
+        <option value="delhi">📍 Delhi NCR / Gurgaon / Noida</option>
+        <option value="mumbai">📍 Mumbai / Navi Mumbai / Thane</option>
         <option value="chennai">📍 Chennai</option>
-        <option value="global">🌍 Global Remote</option>
+        <option value="kolkata">📍 Kolkata</option>
+        <option value="ahmedabad">📍 Ahmedabad</option>
+        <option value="kochi">📍 Kochi / Trivandrum</option>
+        <option value="chandigarh">📍 Chandigarh / Mohali</option>
+        <option value="jaipur">📍 Jaipur</option>
+        <option value="indore">📍 Indore</option>
+        <option value="coimbatore">📍 Coimbatore</option>
+        <option value="surat">📍 Surat</option>
+        <option value="lucknow">📍 Lucknow</option>
+        <option value="nagpur">📍 Nagpur</option>
+        <option value="visakhapatnam">📍 Visakhapatnam</option>
+        <option value="patna">📍 Patna</option>
+        <option value="vadodara">📍 Vadodara</option>
+        <option value="bhopal">📍 Bhopal</option>
+        <option value="ludhiana">📍 Ludhiana</option>
+        <option value="nashik">📍 Nashik</option>
+        <option value="rajkot">📍 Rajkot</option>
+        <option value="varanasi">📍 Varanasi</option>
+        <option value="amritsar">📍 Amritsar</option>
+        <option value="ranchi">📍 Ranchi</option>
+        <option value="jabalpur">📍 Jabalpur</option>
+        <option value="gwalior">📍 Gwalior</option>
+        <option value="vijayawada">📍 Vijayawada</option>
+        <option value="jodhpur">📍 Jodhpur</option>
+        <option value="madurai">📍 Madurai</option>
+        <option value="raipur">📍 Raipur</option>
+        <option value="kota">📍 Kota</option>
+        <option value="guwahati">📍 Guwahati</option>
+        <option value="dehradun">📍 Dehradun</option>
+        <option value="goa">📍 Goa</option>
+      </select>
+
+      <select id="filter-category" class="filter-dropdown" onchange="filterJobs()">
+        <option value="">🔲 All Categories (17 Departments)</option>
+        <option value="technical_eng">Technical & Engineering</option>
+        <option value="aerospace">Aerospace Engineering</option>
+        <option value="ai_ml">AI & Machine Learning</option>
+        <option value="architecture_civil">Architecture & Civil Engineering</option>
+        <option value="data_analytics">Data & Analytics</option>
+        <option value="devrel">Developer Relations</option>
+        <option value="devops_infra">DevOps & Infrastructure</option>
+        <option value="electrical">Electrical Engineering</option>
+        <option value="eng_mgmt">Engineering Management</option>
+        <option value="hardware">Hardware Engineering</option>
+        <option value="it_security">IT & Security</option>
+        <option value="mechanical">Mechanical Engineering</option>
+        <option value="process_eng">Process Engineering</option>
+        <option value="qa_testing">QA & Testing</option>
+        <option value="quant_finance">Quantitative Finance</option>
+        <option value="quantum">Quantum Computing</option>
+        <option value="software">Software Engineering</option>
       </select>
 
       <select id="filter-jobtype" class="filter-dropdown" onchange="filterJobs()">
-        <option value="">💼 Job Type (All)</option>
+        <option value="">💼 All Job Types</option>
         <option value="fulltime">Full-Time</option>
         <option value="internship">Internship</option>
         <option value="contract">Contract / Part-Time</option>
       </select>
 
       <select id="filter-experience" class="filter-dropdown" onchange="filterJobs()">
-        <option value="">📈 Experience Level (All)</option>
-        <option value="entry">Entry Level / Batch 2025-2027</option>
+        <option value="">📈 All Experience Levels</option>
+        <option value="entry">Entry Level / Freshers (Batch 2025-2027)</option>
         <option value="mid">Mid Level (2-5 yrs)</option>
-        <option value="senior">Senior / Lead (5+ yrs)</option>
+        <option value="senior">Senior Level (5+ yrs)</option>
+        <option value="lead">Lead / Staff / Executive</option>
       </select>
 
-      <select id="filter-category" class="filter-dropdown" onchange="filterJobs()">
-        <option value="">🔲 Category (All)</option>
-        <option value="software">Software Engineering</option>
-        <option value="ai">AI & Machine Learning</option>
-        <option value="data">Data & Analytics</option>
-        <option value="devops">DevOps & Cloud</option>
-        <option value="product">Product & QA</option>
-      </select>
-
-      <select id="filter-more" class="filter-dropdown" onchange="filterJobs()">
-        <option value="">⚙️ More Filters</option>
-        <option value="recent">Posted in last 24 hours</option>
-        <option value="highfit">High AI Fit (>80%)</option>
-      </select>
+      <button class="btn-filter-pill" id="toggle-24h" onclick="toggleQuickFilter('24h')">⏰ Last 24 Hours</button>
+      <button class="btn-filter-pill" id="toggle-highfit" onclick="toggleQuickFilter('highfit')">🎯 High AI Fit (>80%)</button>
 
       <button class="btn-filter-action btn-save-search" onclick="saveSearch()">💙 Save Search</button>
       <button class="btn-clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
