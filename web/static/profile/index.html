@@ -652,49 +652,67 @@
           if (parsed && parsed.uid) return parsed.uid;
         }
       } catch(e) {}
-      return '';
+      let localId = localStorage.getItem('getarole_user_id');
+      if (!localId) {
+        localId = 'usr_' + Math.random().toString(36).substring(2, 11);
+        localStorage.setItem('getarole_user_id', localId);
+      }
+      return localId;
     }
 
     async function apiSaveProfile(profileData) {
+      localStorage.setItem('getarole_profile', JSON.stringify(profileData));
       const uid = getFirebaseUID();
-      if (!uid) return;
       try {
         await fetch('/api/user/profile', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
           body: JSON.stringify(profileData)
         });
-      } catch(e) { console.warn('[Profile] Save failed, falling back to localStorage', e); localStorage.setItem('getarole_profile', JSON.stringify(profileData)); }
+      } catch(e) { console.warn('[Profile] Save warning', e); }
     }
 
     async function apiSavePreferences(prefsData) {
+      const dashPrefs = {
+        role: (prefsData.roles && prefsData.roles[0]) || prefsData.role || '',
+        specializations: prefsData.roles || prefsData.specializations || [],
+        city: (prefsData.locations && prefsData.locations[0]) || prefsData.city || '',
+        locations: prefsData.locations || [],
+        remoteOnly: (prefsData.locations || []).includes('Remote'),
+        workplaceType: (prefsData.locations || []).includes('Remote') ? 'Remote' : 'Hybrid',
+        companySizes: prefsData.compsize || prefsData.companySizes || [],
+        industries: prefsData.industries_inc || prefsData.industries || [],
+        employmentTypes: prefsData.roletype || prefsData.employmentTypes || []
+      };
+      localStorage.setItem('getarole_prefs', JSON.stringify(dashPrefs));
       const uid = getFirebaseUID();
-      if (!uid) return;
       try {
         await fetch('/api/user/preferences', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
           body: JSON.stringify(prefsData)
         });
-      } catch(e) { console.warn('[Prefs] Save failed, falling back to localStorage', e); localStorage.setItem('getarole_prefs', JSON.stringify(prefsData)); }
+      } catch(e) { console.warn('[Prefs] Save warning', e); }
     }
 
     async function apiLoadProfile() {
       const uid = getFirebaseUID();
-      if (!uid) return JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+      const local = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
       try {
         const res = await fetch('/api/user/profile', { headers: { 'X-Firebase-UID': uid } });
-        return await res.json();
-      } catch(e) { return JSON.parse(localStorage.getItem('getarole_profile') || '{}'); }
+        const cloud = await res.json();
+        return { ...local, ...cloud };
+      } catch(e) { return local; }
     }
 
     async function apiLoadPreferences() {
       const uid = getFirebaseUID();
-      if (!uid) return JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
+      const local = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
       try {
         const res = await fetch('/api/user/preferences', { headers: { 'X-Firebase-UID': uid } });
-        return await res.json();
-      } catch(e) { return JSON.parse(localStorage.getItem('getarole_prefs') || '{}'); }
+        const cloud = await res.json();
+        return { ...local, ...cloud };
+      } catch(e) { return local; }
     }
 
     async function handleResumeUpload(e) {

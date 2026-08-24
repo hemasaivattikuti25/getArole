@@ -845,6 +845,31 @@
 
       localStorage.setItem('getarole_prefs', JSON.stringify(dashboardPrefs));
       localStorage.setItem('getarole_profile', JSON.stringify(dashboardProfile));
+      localStorage.setItem('getarole_onboarding_completed', 'true');
+
+      let uid = localStorage.getItem('firebase_uid') || localStorage.getItem('getarole_user_id');
+      if (!uid) {
+        uid = 'usr_' + Math.random().toString(36).substring(2, 11);
+        localStorage.setItem('getarole_user_id', uid);
+      }
+
+      // Save to Supabase Cloud asynchronously
+      try {
+        await Promise.all([
+          fetch('/api/user/preferences', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+            body: JSON.stringify(dashboardPrefs)
+          }),
+          fetch('/api/user/profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+            body: JSON.stringify(dashboardProfile)
+          })
+        ]);
+      } catch (err) {
+        console.warn('Supabase sync warning:', err);
+      }
 
       window.location.href = '/dashboard';
     }
