@@ -19,6 +19,12 @@ from services.supabase_service import get_supabase_service
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_DIR = os.path.join(BASE_DIR, "web", "static")
 
+# Job cache file paths
+DATA_DIR = os.path.join(BASE_DIR, "data")
+os.makedirs(DATA_DIR, exist_ok=True)
+SAVED_JOBS_FILE = os.path.join(DATA_DIR, "jobs.json")
+TMP_JOBS_FILE = "/tmp/jobs.json"
+
 app = FastAPI(
     title="getArole — Smart Resume Screener & Job Discovery Engine",
     description="Multi-platform job aggregator, local vector matcher, and AI recruiter resume screening pipeline",
@@ -148,6 +154,38 @@ async def trigger_scrape(
         "message": "Candidate profile and resume stored successfully.",
         "candidate": supa_record or profile
     }
+
+@app.get("/api/jobs")
+async def get_jobs(
+    limit: int = 1500,
+    location: Optional[str] = None,
+    category: Optional[str] = None
+):
+    """
+    Returns all cached job listings for the frontend (Explore, Matches, Dashboard).
+    Falls back to Supabase if local cache is empty.
+    """
+    jobs = AGGREGATOR.cached_jobs or []
+
+    # If in-memory cache is empty, try loading from disk or Supabase
+    if not jobs:
+        jobs = load_cached_jobs() or []
+
+    # If still empty, try Supabase directly
+    if not jobs:
+        try:
+            supabase = get_supabase_service()
+            if supabase.is_connected() and supabase.client:
+                res = supabase.client.table("jobs").select("*").limit(limit).execute()
+                if res.data:
+                    jobs = [JobListing(**item) for item in res.data]
+                    AGGREGATOR.cached_jobs = jobs
+        except Exception as e:
+            print(f"[api/jobs] Supabase fallback: {e}")
+
+    jobs_list = [j.model_dump() if hasattr(j, 'model_dump') else j for j in jobs]
+    return {"total": len(jobs_list), "jobs": jobs_list}
+
 
 @app.get("/api/candidates")
 async def get_all_candidates():

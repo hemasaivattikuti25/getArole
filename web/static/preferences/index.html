@@ -938,9 +938,9 @@
           } catch(e) {}
         }
 
-        renderLeftProfile();
-        if (typeof renderStaticCards === 'function') renderStaticCards();
-        alert(`✅ Resume analyzed successfully! Extracted ${(parsedProf.skills || []).length} skills and synced to your profile.`);
+        renderStaticCards();
+        if (typeof updateNavUser === 'function') updateNavUser();
+        alert(`✅ Resume analyzed! Extracted ${(parsedProf.skills || []).length} skills and synced to your profile.`);
       } catch (err) {
         console.error('Resume upload error:', err);
         alert('Could not parse resume file. Please ensure it is a valid text PDF or Word document.');

@@ -722,8 +722,22 @@
 
     let currentTab = 0;
 
-    // profileData is a live alias to state.profile so all functions (incl. handleResumeUpload) can access it
+    // profileData is a live alias to state.profile so all functions can access it
     const profileData = state.profile;
+
+    // Preload from localStorage so skills/data are available before initData async completes
+    (function preloadFromLocalStorage() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+        if (saved && Object.keys(saved).length > 0) {
+          Object.assign(state.profile, saved);
+        }
+        const savedPrefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
+        if (savedPrefs && Object.keys(savedPrefs).length > 0) {
+          Object.assign(state.prefs, savedPrefs);
+        }
+      } catch(e) {}
+    })();
 
     
 
@@ -938,9 +952,10 @@
           } catch(e) {}
         }
 
-        renderLeftProfile();
-        if (typeof renderStaticCards === 'function') renderStaticCards();
-        alert(`✅ Resume analyzed successfully! Extracted ${(parsedProf.skills || []).length} skills and synced to your profile.`);
+        renderStaticCards();
+        updateNavUser();
+        if (typeof renderSummaryCards === 'function') renderSummaryCards();
+        alert(`✅ Resume analyzed! Extracted ${(parsedProf.skills || []).length} skills and synced to your profile.`);
       } catch (err) {
         console.error('Resume upload error:', err);
         alert('Could not parse resume file. Please ensure it is a valid text PDF or Word document.');
@@ -1431,6 +1446,76 @@
       document.addEventListener('DOMContentLoaded', updateNavUser);
     } else {
       updateNavUser();
+    }
+  </script>
+
+  <!-- ══════════════ RESUME PREVIEW MODAL ══════════════ -->
+  <div id="resume-preview-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.65); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:18px; width:100%; max-width:760px; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 25px 60px -15px rgba(0,0,0,0.25); overflow:hidden;">
+      <div style="padding:18px 24px; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; justify-content:space-between; background:#f8fafc;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:28px;">📄</span>
+          <div>
+            <h3 style="font-size:17px; font-weight:800; margin:0; color:#0f172a;">Resume Preview</h3>
+            <p style="font-size:12px; color:#64748b; margin:0;">Parsed candidate data &amp; verified skills</p>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button onclick="window.location.href='/resume-builder/'" style="padding:7px 14px; border-radius:8px; border:1.5px solid #059669; background:#ecfdf5; color:#059669; font-size:12.5px; font-weight:700; cursor:pointer;">✏️ Edit in ATS Builder</button>
+          <button onclick="closeResumePreviewModal()" style="background:none; border:none; font-size:24px; color:#94a3b8; cursor:pointer; line-height:1;">&times;</button>
+        </div>
+      </div>
+      <div id="resume-preview-body" style="padding:24px; overflow-y:auto; flex:1; font-size:14px; color:#0f172a; line-height:1.6;"></div>
+    </div>
+  </div>
+
+  <script>
+    function openResumePreviewModal() {
+      const modal = document.getElementById('resume-preview-modal');
+      const body = document.getElementById('resume-preview-body');
+      const prof = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+      const resume = JSON.parse(localStorage.getItem('getarole_resume_v2') || localStorage.getItem('getarole_uploaded_resume') || '{}');
+
+      const name = prof.name || (resume.header && resume.header.name) || state.profile.name || 'Candidate';
+      const headline = prof.headline || (resume.header && resume.header.title) || 'Software Engineer';
+      const email = prof.email || (resume.header && resume.header.email) || '';
+      const phone = prof.phone || (resume.header && resume.header.phone) || '';
+      const city = prof.city || prof.loc || 'India';
+      const summary = (resume.summary && resume.summary.text) || prof.summary || 'No summary extracted.';
+      const skills = Array.from(new Set([...(prof.skills || []), ...(resume.skills && resume.skills.all ? resume.skills.all.split(',').map(s=>s.trim()) : [])]));
+      const rawText = resume.raw_text || '';
+
+      body.innerHTML = `
+        <div style="padding-bottom:16px; border-bottom:1px solid #e2e8f0; margin-bottom:20px;">
+          <h2 style="font-size:22px; font-weight:800; color:#0f172a; margin:0 0 4px;">${name}</h2>
+          <div style="font-weight:700; color:#059669; margin-bottom:6px;">${headline}</div>
+          <div style="font-size:13px; color:#64748b;">${[email, phone, city].filter(Boolean).join(' · ')}</div>
+        </div>
+        <div style="margin-bottom:18px;">
+          <h4 style="font-size:13px; font-weight:800; text-transform:uppercase; color:#0f172a; letter-spacing:0.05em; margin-bottom:8px;">Summary</h4>
+          <p style="font-size:13.5px; color:#334155; background:#f8fafc; padding:12px 16px; border-radius:8px; border:1px solid #e2e8f0; margin:0;">${summary}</p>
+        </div>
+        <div style="margin-bottom:18px;">
+          <h4 style="font-size:13px; font-weight:800; text-transform:uppercase; color:#0f172a; letter-spacing:0.05em; margin-bottom:8px;">Skills (${skills.length})</h4>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;">
+            ${skills.length > 0 ? skills.map(s => `<span style="background:#ecfdf5; color:#059669; border:1px solid #a7f3d0; padding:4px 10px; border-radius:6px; font-size:12.5px; font-weight:700;">${s}</span>`).join('') : '<span style="color:#94a3b8;">No skills extracted yet.</span>'}
+          </div>
+        </div>
+        ${rawText ? `
+        <div>
+          <h4 style="font-size:13px; font-weight:800; text-transform:uppercase; color:#0f172a; letter-spacing:0.05em; margin-bottom:8px;">Raw Extracted Text</h4>
+          <pre style="background:#0f172a; color:#f8fafc; padding:16px; border-radius:10px; font-size:11.5px; font-family:monospace; max-height:220px; overflow-y:auto; white-space:pre-wrap; margin:0;">${rawText.slice(0,3000).replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+        </div>` : ''}
+      `;
+
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeResumePreviewModal() {
+      const modal = document.getElementById('resume-preview-modal');
+      if (modal) modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
     }
   </script>
 
