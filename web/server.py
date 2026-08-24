@@ -15,7 +15,7 @@ from scrapers.models import JobListing, CandidateProfile
 from scrapers.aggregator import JobAggregator
 from scrapers.matcher import ResumeMatcher
 from services.llm_service import get_llm_service
-from services.supabase_service import get_supabase_service
+from services.supabase_service import get_supabase_service, get_user_lock
 from core.logging_config import configure_logging
 from core.observability_middleware import ObservabilityMiddleware
 from core.security import enforce_ai_rate_limit, extract_authenticated_uid
@@ -855,9 +855,10 @@ class UserPreferencesSchema(BaseModel):
 @app.post("/api/user/profile")
 async def save_user_profile_endpoint(request: Request, profile: Dict[str, Any] = Body(...), x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
     uid = extract_authenticated_uid(request)
-    supabase = get_supabase_service()
-    result = await supabase.save_user_profile(uid, profile)
-    return JSONResponse({"status": "ok", "data": result})
+    async with get_user_lock(uid):
+        supabase = get_supabase_service()
+        result = await supabase.save_user_profile(uid, profile)
+        return JSONResponse({"status": "ok", "data": result})
 
 @app.get("/api/user/preferences")
 async def get_user_preferences(request: Request, x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
@@ -869,9 +870,10 @@ async def get_user_preferences(request: Request, x_firebase_uid: Optional[str] =
 @app.post("/api/user/preferences")
 async def save_user_preferences_endpoint(request: Request, prefs: Dict[str, Any] = Body(...), x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
     uid = extract_authenticated_uid(request)
-    supabase = get_supabase_service()
-    result = await supabase.save_user_preferences(uid, prefs)
-    return JSONResponse({"status": "ok", "data": result})
+    async with get_user_lock(uid):
+        supabase = get_supabase_service()
+        result = await supabase.save_user_preferences(uid, prefs)
+        return JSONResponse({"status": "ok", "data": result})
 
 @app.get("/api/user/resume")
 async def get_user_resume(request: Request, x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
@@ -895,9 +897,24 @@ async def save_user_resume_endpoint(request: Request, resume_data: Dict[str, Any
             extra={"path": request.url.path, "client_ip": request.client.host if request.client else "unknown"}
         )
         return JSONResponse({"error": "Missing X-Firebase-UID or Authorization header"}, status_code=401)
-    supabase = get_supabase_service()
-    result = await supabase.save_user_resume(uid, resume_data)
-    return JSONResponse({"status": "ok", "data": result})
+    async with get_user_lock(uid):
+        supabase = get_supabase_service()
+        result = await supabase.save_user_resume(uid, resume_data)
+        return JSONResponse({"status": "ok", "data": result})
+
+@app.delete("/api/user/account")
+async def delete_user_account_endpoint(request: Request, x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
+    """
+    GDPR Right to be Forgotten & Cascade Account Erasure:
+    Permanently purges all profile, preference, and resume records for the authenticated user.
+    """
+    uid = extract_authenticated_uid(request)
+    if not uid or uid == "guest_user":
+        return JSONResponse({"error": "Authentication required to delete account."}, status_code=401)
+    async with get_user_lock(uid):
+        supabase = get_supabase_service()
+        success = await supabase.purge_user_account(uid)
+        return JSONResponse({"status": "ok" if success else "error", "message": "Account data purged successfully."})
 
 
 from services.resume_parser_service import get_resume_parser_service

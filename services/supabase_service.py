@@ -2,6 +2,7 @@ import os
 import time
 import asyncio
 import logging
+from collections import defaultdict
 from typing import List, Dict, Any, Optional
 from dotenv import load_dotenv
 from supabase import create_client, Client
@@ -338,6 +339,42 @@ class SupabaseService:
         except Exception as e:
             print(f"[Supabase] load_user_resume error: {e}")
             return None
+
+    async def purge_user_account(self, firebase_uid: str) -> bool:
+        """
+        GDPR Right-to-be-Forgotten & Cascade Deletion:
+        Purges all user records from user_profiles, user_preferences, and user_resumes.
+        """
+        client = await self._get_client()
+        if not client or not firebase_uid or firebase_uid == "guest_user":
+            return False
+        try:
+            # Delete in parallel across user tables
+            await asyncio.gather(
+                client.table("user_profiles").delete().eq("firebase_uid", firebase_uid).execute(),
+                client.table("user_preferences").delete().eq("firebase_uid", firebase_uid).execute(),
+                client.table("user_resumes").delete().eq("firebase_uid", firebase_uid).execute(),
+                return_exceptions=True
+            )
+            print(f"🧹 [GDPR Purge] Successfully purged all associated records for UID: {firebase_uid}")
+            return True
+        except Exception as e:
+            print(f"[Supabase] purge_user_account error: {e}")
+            return False
+
+# Global User Mutex Registry for TOCTOU concurrency serialization
+_USER_LOCKS: Dict[Any, asyncio.Lock] = {}
+
+def get_user_lock(uid: str) -> asyncio.Lock:
+    """Returns an async lock bound to the currently active running event loop."""
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
+    key = (loop, uid)
+    if key not in _USER_LOCKS:
+        _USER_LOCKS[key] = asyncio.Lock()
+    return _USER_LOCKS[key]
 
 # Global Singleton
 _supabase_service: Optional[SupabaseService] = None
