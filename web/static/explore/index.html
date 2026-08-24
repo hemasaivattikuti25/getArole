@@ -338,6 +338,18 @@
     .jd-body {
       font-size: 14.5px; color: #334155; line-height: 1.75; margin-bottom: 30px;
     }
+    /* Viewport 3-Layer Fallback */
+    html, body {
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      min-height: 100dvh;
+    }
+
+    /* iOS Safari Auto-Zoom Prevention on Focus (< 16px triggers zoom) */
+    input, select, textarea {
+      font-size: max(16px, 1rem) !important;
+    }
+
     @media (max-width: 900px) {
       .jobs-split-container { grid-template-columns: 1fr; }
       .job-detail-col { display: none; }
@@ -348,9 +360,17 @@
       .nav-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; max-width: calc(100vw - 120px); }
       .nav-tabs::-webkit-scrollbar { display: none; }
       .nav-tab { padding: 6px 10px; font-size: 12px; flex-shrink: 0; }
+      input, select, textarea, .filter-dropdown, .search-input { font-size: 16px !important; }
     }
     @supports (padding-bottom: env(safe-area-inset-bottom)) {
       body { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    }
+    header {
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-backface-visibility: hidden;
     }
 </style>
 </head>
