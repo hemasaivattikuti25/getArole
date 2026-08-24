@@ -10,8 +10,13 @@ from .linkedin import scrape_all_linkedin_jobs
 from .unstop import fetch_unstop_jobs
 
 class JobAggregator:
-    def __init__(self):
+    def __init__(self, scrapers: Optional[List[Any]] = None):
         self.cached_jobs: List[JobListing] = []
+        self.registered_scrapers: List[Any] = scrapers or []
+
+    def register_scraper(self, scraper: Any):
+        """Register a new scraper strategy dynamically (Open/Closed Principle)."""
+        self.registered_scrapers.append(scraper)
 
     async def _run_with_retries(self, scraper_func, name: str, max_retries: int = 3, base_delay: float = 2.0) -> List[JobListing]:
         """Runs an async scraper function with exponential backoff retries."""
@@ -33,6 +38,9 @@ class JobAggregator:
 
     async def aggregate_all(
         self,
+        query: str = "Software Engineer",
+        location: str = "Remote",
+        limit: int = 20,
         include_greenhouse: bool = True,
         include_lever: bool = True,
         include_ashby: bool = True,
@@ -41,18 +49,24 @@ class JobAggregator:
         include_unstop: bool = True
     ) -> List[JobListing]:
         tasks = []
-        if include_greenhouse:
-            tasks.append(self._run_with_retries(scrape_all_greenhouse_jobs, "Greenhouse Scraper"))
-        if include_lever:
-            tasks.append(self._run_with_retries(scrape_all_lever_jobs, "Lever Scraper"))
-        if include_ashby:
-            tasks.append(self._run_with_retries(scrape_all_ashby_jobs, "Ashby Scraper"))
-        if include_internshala:
-            tasks.append(self._run_with_retries(scrape_all_internshala_jobs, "Internshala Scraper"))
-        if include_linkedin:
-            tasks.append(self._run_with_retries(scrape_all_linkedin_jobs, "LinkedIn Scraper"))
-        if include_unstop:
-            tasks.append(self._run_with_retries(fetch_unstop_jobs, "Unstop Scraper"))
+        
+        # If custom scrapers registered, execute registered strategy instances
+        if self.registered_scrapers:
+            for s in self.registered_scrapers:
+                tasks.append(self._run_with_retries(lambda sc=s: sc.scrape(query, location, limit), getattr(s, 'name', type(s).__name__)))
+        else:
+            if include_greenhouse:
+                tasks.append(self._run_with_retries(scrape_all_greenhouse_jobs, "Greenhouse Scraper"))
+            if include_lever:
+                tasks.append(self._run_with_retries(scrape_all_lever_jobs, "Lever Scraper"))
+            if include_ashby:
+                tasks.append(self._run_with_retries(scrape_all_ashby_jobs, "Ashby Scraper"))
+            if include_internshala:
+                tasks.append(self._run_with_retries(scrape_all_internshala_jobs, "Internshala Scraper"))
+            if include_linkedin:
+                tasks.append(self._run_with_retries(scrape_all_linkedin_jobs, "LinkedIn Scraper"))
+            if include_unstop:
+                tasks.append(self._run_with_retries(fetch_unstop_jobs, "Unstop Scraper"))
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
         

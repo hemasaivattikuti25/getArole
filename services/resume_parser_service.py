@@ -1,0 +1,345 @@
+import re
+import json
+import fitz  # PyMuPDF
+from typing import Dict, Any, List, Tuple
+
+class ResumeParserService:
+    """
+    Dedicated domain service for parsing PDF/Word resumes (Single Responsibility Principle).
+    Handles binary PDF text extraction, hyperlink annotation parsing, structured LLM extraction,
+    and universal fallback section classification.
+    """
+
+    def parse_pdf_bytes(self, pdf_bytes: bytes) -> Tuple[str, List[str]]:
+        """Extracts plain text and link annotation URIs from raw PDF bytes."""
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        pages_text = []
+        pdf_links = []
+        for p in doc:
+            pages_text.append(p.get_text())
+            for l in p.get_links():
+                if l.get("uri"):
+                    pdf_links.append(l.get("uri"))
+        
+        text = "\n".join(pages_text).strip()
+        if pdf_links:
+            text += "\n\n=== EXTRACTED PDF ANNOTATION LINKS ===\n" + "\n".join(set(pdf_links))
+        return text, pdf_links
+
+    def extract_links(self, text: str, pdf_links: List[str], llm_parsed: Dict[str, Any]) -> Dict[str, str]:
+        """Extracts LinkedIn, GitHub, and Portfolio URLs using annotations and regex."""
+        links = {
+            "linkedin": llm_parsed.get("linkedin_url", ""),
+            "github": llm_parsed.get("github_url", ""),
+            "portfolio": llm_parsed.get("portfolio_url", ""),
+            "other": llm_parsed.get("other_url", "")
+        }
+
+        raw_urls = pdf_links + re.findall(r'(?:https?://)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+(?:/[^\s,)]*)?)', text)
+        for url_str in raw_urls:
+            url_clean = url_str.replace("mailto:", "").strip()
+            full_url = url_clean if url_clean.startswith("http") else f"https://{url_clean}"
+            lower_u = url_clean.lower()
+            if "linkedin.com" in lower_u and not links["linkedin"]:
+                links["linkedin"] = full_url
+            elif "github.com" in lower_u and not links["github"]:
+                if not any(sub in lower_u for sub in ["/mithra", "/vitap"]):
+                    links["github"] = full_url
+            elif not links["portfolio"] and not any(ignore in lower_u for ignore in ["google.com", "schema.org", "w3.org", "fonts.googleapis", "gmail.com"]):
+                if any(ext in lower_u for ext in [".dev", ".io", ".me", "portfolio", "vercel.app", "github.io", "lifeos.com", "mithra"]):
+                    links["portfolio"] = full_url
+        return links
+
+    def parse_sections_fallback(self, text: str) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], List[Dict[str, Any]]]:
+        """Universal section fallback classifier for Experience, Education, and Projects."""
+        fb_exp, fb_edu, fb_proj = [], [], []
+        sec_lines = [l.strip() for l in text.splitlines() if l.strip()]
+        sections = {}
+        curr_sec = "HEADER"
+        sections[curr_sec] = []
+
+        for l in sec_lines:
+            u = l.upper().strip(":")
+            if u in ["EXPERIENCE", "WORK EXPERIENCE", "EMPLOYMENT", "EMPLOYMENT HISTORY", "WORK HISTORY"]:
+                curr_sec = "EXPERIENCE"
+                sections[curr_sec] = []
+            elif u in ["PROJECTS", "KEY PROJECTS", "PERSONAL PROJECTS", "PROJECTS & OUTSIDE EXPERIENCE"]:
+                curr_sec = "PROJECTS"
+                sections[curr_sec] = []
+            elif u in ["EDUCATION", "ACADEMIC BACKGROUND", "QUALIFICATIONS"]:
+                curr_sec = "EDUCATION"
+                sections[curr_sec] = []
+            elif u in ["SKILLS", "TECHNICAL SKILLS", "SUMMARY", "ACHIEVEMENTS", "CERTIFICATIONS", "LANGUAGES"]:
+                curr_sec = "OTHER_" + u
+                sections[curr_sec] = []
+            else:
+                sections.setdefault(curr_sec, []).append(l)
+
+        # ── EXPERIENCE ──
+        if "EXPERIENCE" in sections:
+            curr_exp = None
+            month_pattern = re.compile(r'(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|Present)\b.*(\d{4}|Present)', re.IGNORECASE)
+            date_pattern = re.compile(r'\d{4}\s*[-–—]\s*(\d{4}|Present)', re.IGNORECASE)
+            company_indicators = ["ltd", "inc", "corp", "llc", "pvt", "gmbh", "technologies", "solutions", "laboratory", "labs", "lab", "organization", "foundation", "company", "group", "services", "systems", "agency", "studio", "studios", "ventures", "partners", "global", "co."]
+            role_indicators = ["intern", "engineer", "developer", "manager", "lead", "architect", "analyst", "designer", "consultant", "director", "officer", "specialist", "associate", "head", "cto", "ceo", "vp", "founder"]
+            
+            for l in sections["EXPERIENCE"]:
+                is_bullet = l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*")
+                has_date = bool(month_pattern.search(l)) or bool(date_pattern.search(l))
+                lower_l = l.lower()
+                is_company = any(ci in lower_l for ci in company_indicators) and len(l) < 120
+                is_role = any(ri in lower_l for ri in role_indicators) and len(l) < 120
+                
+                if is_bullet:
+                    bullet = l.lstrip("•-·* ").strip()
+                    if curr_exp and bullet:
+                        curr_exp["bullets"].append(bullet)
+                elif is_company and not is_bullet:
+                    curr_exp = {"company": l, "title": "", "dates": "", "bullets": []}
+                    fb_exp.append(curr_exp)
+                elif not curr_exp and not is_bullet and len(l) < 120:
+                    curr_exp = {"company": l, "title": "", "dates": "", "bullets": []}
+                    fb_exp.append(curr_exp)
+                elif has_date and curr_exp and not curr_exp.get("dates"):
+                    curr_exp["dates"] = l
+                elif is_role and curr_exp and not curr_exp.get("title"):
+                    curr_exp["title"] = l
+                elif curr_exp and not curr_exp.get("title") and not is_bullet and len(l) < 100:
+                    curr_exp["title"] = l
+
+        # ── PROJECTS ──
+        if "PROJECTS" in sections:
+            curr_proj = None
+            noise_words = {"Live", "GitHub", "Demo", "Link", "Source", "Code", "View", "Website", "Repo", "App"}
+            
+            for l in sections["PROJECTS"]:
+                is_bullet = l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*")
+                is_url = l.startswith("http") or l.startswith("www.") or "://" in l
+                is_noise = l.strip() in noise_words
+                is_year_only = bool(re.match(r'^\d{4}(\s*[-–—]\s*(Present|\d{4}))?$', l.strip()))
+                is_tech_stack = "·" in l and len(l.split("·")) >= 3
+                
+                if is_bullet:
+                    bullet = l.lstrip("•-·* ").strip()
+                    if curr_proj and bullet:
+                        curr_proj["bullets"].append(bullet)
+                        if not curr_proj["description"]:
+                            curr_proj["description"] = bullet
+                elif is_noise or is_year_only or is_url:
+                    if is_url and curr_proj and not curr_proj.get("link"):
+                        curr_proj["link"] = l
+                    continue
+                elif is_tech_stack and curr_proj:
+                    curr_proj["tech"] = l
+                    continue
+                elif not is_bullet and not is_noise and not is_year_only and not is_tech_stack:
+                    l_stripped = l.strip()
+                    word_count = len(l_stripped.split())
+                    starts_upper = l_stripped[0].isupper() if l_stripped else False
+                    if word_count <= 6 and starts_upper and not l_stripped.endswith(".") and not l_stripped.startswith("for ") and not l_stripped.startswith("and "):
+                        if curr_proj and len(curr_proj["bullets"]) > 0:
+                            curr_proj = {"name": l_stripped, "description": "", "link": "", "bullets": []}
+                            fb_proj.append(curr_proj)
+                        elif not curr_proj:
+                            curr_proj = {"name": l_stripped, "description": "", "link": "", "bullets": []}
+                            fb_proj.append(curr_proj)
+                        else:
+                            curr_proj["description"] = (curr_proj["description"] + " " + l_stripped).strip()
+                    else:
+                        if curr_proj:
+                            curr_proj["description"] = (curr_proj["description"] + " " + l_stripped).strip()
+
+        # ── EDUCATION ──
+        if "EDUCATION" in sections:
+            curr_edu = None
+            school_keywords = ["university", "institute", "institution", "college", "school", "academy", "polytechnic", "conservatory", "faculty"]
+            degree_keywords = ["b.tech", "b.e", "b.s", "b.a", "m.tech", "m.s", "m.a", "ph.d", "phd", "bachelor", "master", "doctorate", "diploma", "degree", "major"]
+            
+            for l in sections["EDUCATION"]:
+                if l.startswith("http") or l.startswith("mailto:") or "://" in l or l.startswith("==="):
+                    continue
+                
+                lower_l = l.lower()
+                is_school = any(k in lower_l for k in school_keywords)
+                is_degree = any(k in lower_l for k in degree_keywords)
+                has_year = bool(re.search(r'20\d{2}', l))
+                
+                if is_school:
+                    curr_edu = {"school": l, "degree": "", "year": ""}
+                    fb_edu.append(curr_edu)
+                elif not curr_edu and (is_degree or has_year) and len(l) < 120:
+                    curr_edu = {"school": l, "degree": "", "year": ""}
+                    fb_edu.append(curr_edu)
+                elif curr_edu:
+                    if has_year and not curr_edu["year"]:
+                        curr_edu["year"] = l
+                    elif not curr_edu["degree"]:
+                        curr_edu["degree"] = l
+                    elif len(l) > 5 and not l.startswith("http"):
+                        curr_edu["degree"] += " · " + l
+
+        return fb_exp, fb_edu, fb_proj
+
+    async def process_resume_bytes(self, pdf_bytes: bytes, filename: str) -> Dict[str, Any]:
+        """Main orchestrator for resume parsing."""
+        text, pdf_links = self.parse_pdf_bytes(pdf_bytes)
+
+        # Skill extraction taxonomy
+        common_tech = [
+            "python", "java", "c++", "c#", "c", "rust", "golang", "go", "typescript", "javascript",
+            "react", "next.js", "vue", "angular", "node.js", "express", "fastapi", "django", "spring boot",
+            "aws", "gcp", "azure", "docker", "kubernetes", "sql", "postgresql", "mysql", "mongodb",
+            "redis", "pytorch", "tensorflow", "scikit-learn", "git", "linux", "html5", "css3", "tailwind"
+        ]
+        lower = text.lower()
+        extracted_skills = [s for s in common_tech if s in lower]
+
+        # Regex fallback for contact info
+        email_match = re.search(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', text)
+        phone_match = re.search(r'(?:(?:\+|0{0,2})\d{1,3}[\s-]*)?(?:\(?\d{2,5}\)?[\s-]*)?\d{3,4}[\s-]*\d{4}', text)
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        candidate_name = lines[0] if lines and len(lines[0].split()) <= 4 else "Candidate"
+        
+        email = email_match.group(0) if email_match else ""
+        phone = phone_match.group(0) if phone_match else ""
+        headline = "Software Engineer"
+        summary = " ".join(lines[1:4]) if len(lines) > 1 else ""
+
+        # Structured LLM Parse
+        llm_parsed = {}
+        try:
+            from services.llm_service import get_llm_service
+            llm = get_llm_service()
+            prompt = f"""You are a principal HR Resume Parser. Extract structured candidate profile from this resume:
+
+Resume Text:
+{text[:8000]}
+
+Return valid JSON with exact structure:
+{{
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "name": "Full Name",
+  "headline": "Target Title e.g. Senior Software Engineer",
+  "email": "email@example.com",
+  "phone": "+1234567890",
+  "location": "City, Country",
+  "summary": "2-3 sentence executive summary",
+  "linkedin_url": "https://linkedin.com/in/username",
+  "github_url": "https://github.com/username",
+  "portfolio_url": "https://portfolio.dev",
+  "other_url": "",
+  "skills": ["Python", "React", "AWS", "FastAPI"],
+  "experience": [
+    {{
+      "company": "Company Name",
+      "title": "Role Title",
+      "dates": "Jan 2024 - Present",
+      "bullets": ["Built high-throughput API...", "Reduced latency by 40%..."]
+    }}
+  ],
+  "education": [
+    {{
+      "school": "University Name",
+      "degree": "B.Tech Computer Science",
+      "year": "2025"
+    }}
+  ],
+  "projects": [
+    {{
+      "name": "Project Name",
+      "description": "Full stack real-time application using FastAPI and React.",
+      "link": "https://github.com/user/project"
+    }}
+  ]
+}}"""
+            resp = await llm.a_call_chat([{"role": "user", "content": prompt}], max_tokens=1800)
+            start_idx = resp.find("{")
+            end_idx = resp.rfind("}") + 1
+            if start_idx != -1 and end_idx > start_idx:
+                llm_parsed = json.loads(resp[start_idx:end_idx])
+        except Exception as e:
+            print(f"[ResumeParserService LLM Notice] {e}")
+
+        # Extract name parts
+        first_name = llm_parsed.get("first_name", "")
+        last_name = llm_parsed.get("last_name", "")
+        if llm_parsed.get("name") and llm_parsed["name"] != "Candidate Full Name":
+            candidate_name = llm_parsed["name"]
+        
+        if not first_name or not last_name:
+            name_parts = candidate_name.split()
+            if len(name_parts) >= 2:
+                first_name = first_name or name_parts[0]
+                last_name = last_name or " ".join(name_parts[1:])
+            elif len(name_parts) == 1:
+                first_name = first_name or name_parts[0]
+
+        if llm_parsed.get("headline"): headline = llm_parsed["headline"]
+        if llm_parsed.get("summary"): summary = llm_parsed["summary"]
+        if llm_parsed.get("email"): email = llm_parsed["email"]
+        if llm_parsed.get("phone"): phone = llm_parsed["phone"]
+        if llm_parsed.get("skills"):
+            extracted_skills = sorted(list(set(extracted_skills + [s for s in llm_parsed["skills"] if isinstance(s, str)])))
+
+        # Extract links & sections
+        links = self.extract_links(text, pdf_links, llm_parsed)
+        experience_list = llm_parsed.get("experience") or []
+        education_list = llm_parsed.get("education") or []
+        projects_list = llm_parsed.get("projects") or []
+
+        fb_exp, fb_edu, fb_proj = self.parse_sections_fallback(text)
+        if not experience_list and fb_exp: experience_list = fb_exp
+        if not education_list and fb_edu: education_list = fb_edu
+        if not projects_list and fb_proj: projects_list = fb_proj
+
+        candidate_profile = {
+            "first_name": first_name,
+            "last_name": last_name,
+            "first": first_name,
+            "last": last_name,
+            "name": candidate_name,
+            "email": email,
+            "phone": phone,
+            "headline": headline,
+            "location": llm_parsed.get("location", "India"),
+            "skills": extracted_skills,
+            "summary": summary,
+            "experience": experience_list,
+            "education": education_list,
+            "projects": projects_list,
+            "links": links
+        }
+
+        resume_data = {
+            "header": {
+                "name": candidate_name,
+                "first_name": first_name,
+                "last_name": last_name,
+                "email": email,
+                "phone": phone,
+                "location": llm_parsed.get("location", "India"),
+                "title": headline
+            },
+            "summary": {"text": summary},
+            "skills": {
+                "languages": ", ".join(extracted_skills[:10]),
+                "all": ", ".join(extracted_skills)
+            },
+            "experience": experience_list,
+            "education": education_list,
+            "projects": projects_list,
+            "links": links,
+            "raw_text": text
+        }
+
+        return {
+            "success": True,
+            "filename": filename,
+            "resume_text": text,
+            "candidate_profile": candidate_profile,
+            "resume_data": resume_data
+        }
+
+def get_resume_parser_service() -> ResumeParserService:
+    return ResumeParserService()
