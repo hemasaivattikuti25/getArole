@@ -343,6 +343,11 @@
     :focus:not(:focus-visible) {
       outline: none;
     }
+    @media (max-width: 640px) {
+      input, select, textarea { font-size: 16px !important; }
+      body { touch-action: manipulation; }
+      .wizard-container { word-break: break-word; overflow-wrap: anywhere; padding: 32px 20px; }
+    }
   </style>
 </head>
 

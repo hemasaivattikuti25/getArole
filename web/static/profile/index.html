@@ -80,7 +80,14 @@
       max-width: 1100px; width: 100%; margin: 32px auto 80px; padding: 0 24px;
       display: grid; grid-template-columns: 280px 1fr; gap: 32px; align-items: start;
     }
-    @media (max-width: 860px) { .page-container { grid-template-columns: 1fr; } }
+    @media (max-width: 860px) { 
+      .page-container { grid-template-columns: 1fr; padding: 0 16px; margin: 16px auto 60px; } 
+    }
+    @media (max-width: 640px) {
+      input, select, textarea { font-size: 16px !important; }
+      body { touch-action: manipulation; }
+      .profile-card, .right-col { word-break: break-word; overflow-wrap: anywhere; }
+    }
 
     /* ── LEFT COLUMN (Profile Card) ── */
     .left-col { display: flex; flex-direction: column; gap: 24px; position: sticky; top: 96px; }

@@ -1244,6 +1244,11 @@
     :focus:not(:focus-visible) {
       outline: none;
     }
+    @media (max-width: 640px) {
+      input, select, textarea, .fi, .ft { font-size: 16px !important; }
+      body { touch-action: manipulation; }
+      .ep, .sn, .pv { word-break: break-word; overflow-wrap: anywhere; }
+    }
     .dropdown-item {
       padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 600;
       color: var(--text-main, #0f172a); text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
