@@ -397,7 +397,7 @@
     <!-- Left Column -->
     <aside class="left-col">
       <div class="profile-card">
-        <button class="edit-prof-btn" onclick="openGenericModal('personal')">✏️</button>
+        <button class="edit-prof-btn" onclick="scrollToSection('section-personal')">✏️</button>
         <div class="avatar-lg" id="prof-avatar">?</div>
         <h1 class="prof-name" id="disp-name">Your Name</h1>
         <p class="prof-headline" id="disp-headline">Add your headline</p>
@@ -407,27 +407,33 @@
 
       <div class="career-hub">
         <h3 class="hub-title">My Career Hub</h3>
-        <a href="/resume-builder/" class="hub-btn">
-          <div class="hub-btn-content">
-            <strong>✏️ Profile</strong>
-            <span>Edit autofill information</span>
-          </div>
-          <span style="color:var(--border-strong)">→</span>
-        </a>
-        <a href="javascript:void(0)" class="hub-btn" onclick="openGenericModal('personal')">
+        <a href="javascript:void(0)" class="hub-btn" id="hub-personal" onclick="scrollToSection('section-personal')">
           <div class="hub-btn-content">
             <strong>📊 Personal Info</strong>
-            <span>Edit demographic data</span>
+            <span>Edit your details</span>
           </div>
           <span style="color:var(--border-strong)">→</span>
         </a>
-
-        <a href="javascript:void(0)" class="hub-btn active" onclick="openModal(0)">
+        <a href="javascript:void(0)" class="hub-btn" id="hub-experience" onclick="scrollToSection('section-experience')">
           <div class="hub-btn-content">
-            <strong>💼 Job Preferences</strong>
+            <strong>💼 Experience & Education</strong>
+            <span>Work history & qualifications</span>
+          </div>
+          <span style="color:var(--border-strong)">→</span>
+        </a>
+        <a href="javascript:void(0)" class="hub-btn" id="hub-skills" onclick="scrollToSection('section-skills')">
+          <div class="hub-btn-content">
+            <strong>🛠️ Skills & Links</strong>
+            <span>Technical skills & portfolio</span>
+          </div>
+          <span style="color:var(--border-strong)">→</span>
+        </a>
+        <a href="javascript:void(0)" class="hub-btn" id="hub-prefs" onclick="openModal(0)">
+          <div class="hub-btn-content">
+            <strong>🎯 Job Preferences</strong>
             <span>Refine your job search</span>
           </div>
-          <span style="color:var(--primary-light)">→</span>
+          <span style="color:var(--border-strong)">→</span>
         </a>
       </div>
     </aside>
@@ -923,6 +929,19 @@
         if (parsedProf.email && !profileData.email) profileData.email = parsedProf.email;
         if (parsedProf.phone && !profileData.phone) profileData.phone = parsedProf.phone;
         if (parsedProf.summary && !profileData.summary) profileData.summary = parsedProf.summary;
+        if (parsedProf.headline) profileData.headline = parsedProf.headline;
+        if (parsedProf.location) profileData.loc = parsedProf.location;
+        // Save experience, education, projects, links
+        if (parsedProf.experience && parsedProf.experience.length > 0) profileData.experience = parsedProf.experience;
+        if (parsedProf.education && parsedProf.education.length > 0) profileData.education = parsedProf.education;
+        if (parsedProf.projects && parsedProf.projects.length > 0) profileData.projects = parsedProf.projects;
+        if (parsedProf.links) profileData.links = parsedProf.links;
+        // Split name into first/last for profile card
+        if (parsedProf.name && parsedProf.name !== 'Candidate') {
+          const parts = parsedProf.name.split(' ');
+          if (!profileData.first) profileData.first = parts[0] || '';
+          if (!profileData.last) profileData.last = parts.slice(1).join(' ') || '';
+        }
 
         localStorage.setItem('getarole_profile', JSON.stringify(profileData));
         localStorage.setItem('getarole_uploaded_resume', JSON.stringify({
@@ -1006,12 +1025,61 @@
       closeGenericModal();
     }
     
+    function scrollToSection(sectionId) {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Highlight the correct hub button
+        document.querySelectorAll('.hub-btn').forEach(b => b.classList.remove('active'));
+        const map = { 'section-personal': 'hub-personal', 'section-experience': 'hub-experience', 'section-skills': 'hub-skills' };
+        const hubId = map[sectionId];
+        if (hubId) document.getElementById(hubId).classList.add('active');
+      }
+    }
+
+    let editingPersonal = false;
+
+    function toggleEditPersonal() {
+      editingPersonal = !editingPersonal;
+      renderStaticCards();
+      if (editingPersonal) {
+        setTimeout(() => {
+          const el = document.getElementById('section-personal');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+
+    function savePersonalInline() {
+      ['first','last','pref','suffix','email','dob','phone','loc','add1','add2','add3','zip'].forEach(k => {
+        const el = document.getElementById('pi-'+k);
+        if (el) state.profile[k] = el.value || '';
+      });
+      // Also save headline
+      const headlineEl = document.getElementById('pi-headline');
+      if (headlineEl) state.profile.headline = headlineEl.value || '';
+      
+      state.profile.name = `${state.profile.first} ${state.profile.last}`.trim();
+      apiSaveProfile(state.profile);
+      
+      document.getElementById('disp-name').textContent = state.profile.name || 'Your Name';
+      document.getElementById('disp-headline').textContent = state.profile.headline || 'Add your headline';
+      const initials = state.profile.name ? state.profile.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : '?';
+      document.getElementById('prof-avatar').textContent = initials;
+      document.getElementById('nav-avatar').textContent = initials;
+      
+      editingPersonal = false;
+      renderStaticCards();
+    }
+
     function renderStaticCards() {
       const container = document.getElementById('static-cards-container');
       
       const savedResume = JSON.parse(localStorage.getItem('getarole_uploaded_resume') || localStorage.getItem('getarole_resume_v2') || 'null');
+      const resumeV2 = JSON.parse(localStorage.getItem('getarole_resume_v2') || 'null');
       const resumeName = savedResume ? (savedResume.filename || (savedResume.header && savedResume.header.name ? `${savedResume.header.name}_Resume.pdf` : 'Candidate_Resume.pdf')) : null;
-      const skillCount = (profileData.skills || state.prefs.skills_inc || []).length;
+      const userSkills = profileData.skills || state.prefs.skills_inc || [];
+      const skillCount = userSkills.length;
 
       const resumeHTML = savedResume ? `
         <div class="summary-card" style="border-color: var(--primary-border); background: linear-gradient(145deg, #ffffff, #f8fafc);">
@@ -1030,7 +1098,6 @@
               <button class="btn-refresh" onclick="document.getElementById('file-resume').click()" style="padding:6px 14px; font-size:12.5px;">
                 🔄 Replace
               </button>
-              <button class="edit-icon-btn" onclick="window.location.href='/resume-builder/'" title="Open ATS Resume Builder">✏️</button>
             </div>
           </div>
         </div>
@@ -1038,7 +1105,6 @@
         <div class="summary-card">
           <div class="summary-card-header">
             <h3 class="summary-card-title">Resume</h3>
-            <button class="edit-icon-btn" onclick="document.getElementById('file-resume').click()">📤</button>
           </div>
           <div style="border: 2px dashed var(--border); border-radius: var(--radius-lg); padding:32px; text-align:center; color:var(--text-muted); cursor:pointer;" onclick="document.getElementById('file-resume').click()">
             <div style="font-size:40px; margin-bottom:12px;">📄</div>
@@ -1048,97 +1114,168 @@
         </div>
       `;
 
-      const piHTML = `
-        <div class="summary-card">
-          <div class="summary-card-header">
-            <h3 class="summary-card-title">Personal Info</h3>
-            <button class="edit-icon-btn" onclick="openGenericModal('personal')">✏️</button>
+      // ── PERSONAL INFO (inline editable) ──
+      const p = state.profile;
+      let piHTML;
+      if (editingPersonal) {
+        piHTML = `
+          <div class="summary-card" id="section-personal">
+            <div class="summary-card-header">
+              <h3 class="summary-card-title">Personal Info</h3>
+              <div style="display:flex;gap:8px;">
+                <button class="btn-save-continue" style="padding:8px 16px; font-size:13px;" onclick="savePersonalInline()">💾 Save</button>
+                <button class="btn-close-txt" style="padding:8px 16px; font-size:13px;" onclick="editingPersonal=false; renderStaticCards();">Cancel</button>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px;">
+              <div><label class="form-label">First Name *</label><input type="text" id="pi-first" class="form-input" value="${p.first || ''}"></div>
+              <div><label class="form-label">Last Name *</label><input type="text" id="pi-last" class="form-input" value="${p.last || ''}"></div>
+              <div><label class="form-label">Headline / Title</label><input type="text" id="pi-headline" class="form-input" value="${p.headline || ''}"></div>
+              <div><label class="form-label">Email</label><input type="email" id="pi-email" class="form-input" value="${p.email || ''}"></div>
+              <div><label class="form-label">Phone</label><input type="tel" id="pi-phone" class="form-input" value="${p.phone || ''}"></div>
+              <div><label class="form-label">Date of Birth</label><input type="date" id="pi-dob" class="form-input" value="${p.dob || ''}"></div>
+              <div><label class="form-label">Location</label><input type="text" id="pi-loc" class="form-input" value="${p.loc || ''}"></div>
+              <div><label class="form-label">Preferred Name</label><input type="text" id="pi-pref" class="form-input" value="${p.pref || ''}"></div>
+            </div>
+            <div style="margin-top:16px;">
+              <label class="form-label">Address</label><input type="text" id="pi-add1" class="form-input" value="${p.add1 || ''}">
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px;">
+              <div><label class="form-label">Address Line 2</label><input type="text" id="pi-add2" class="form-input" value="${p.add2 || ''}"></div>
+              <div><label class="form-label">Postal Code</label><input type="text" id="pi-zip" class="form-input" value="${p.zip || ''}"></div>
+            </div>
+            <input type="hidden" id="pi-suffix" value="${p.suffix || ''}">
+            <input type="hidden" id="pi-add3" value="${p.add3 || ''}">
           </div>
-          <div class="kv-grid">
-            <div class="kv-item"><div class="kv-label">First Name</div><div class="kv-value">${state.profile.first}</div></div>
-            <div class="kv-item"><div class="kv-label">Last Name</div><div class="kv-value">${state.profile.last}</div></div>
-            <div class="kv-item"><div class="kv-label">Preferred Name</div><div class="kv-value">${state.profile.pref}</div></div>
-            <div class="kv-item"><div class="kv-label">Suffix Name</div><div class="kv-value">${state.profile.suffix}</div></div>
-            <div class="kv-item"><div class="kv-label">Email Address</div><div class="kv-value">${state.profile.email}</div></div>
-            <div class="kv-item"><div class="kv-label">Phone Number</div><div class="kv-value">${state.profile.phone}</div></div>
-            <div class="kv-item"><div class="kv-label">Birthday</div><div class="kv-value">${state.profile.dob}</div></div>
-            <div class="kv-item"><div class="kv-label">Location</div><div class="kv-value">${state.profile.loc}</div></div>
-            <div class="kv-item"><div class="kv-label">Address</div><div class="kv-value">${state.profile.add1}</div></div>
-            <div class="kv-item"><div class="kv-label">Address 2</div><div class="kv-value">${state.profile.add2}</div></div>
-            <div class="kv-item"><div class="kv-label">Address 3</div><div class="kv-value">${state.profile.add3}</div></div>
-            <div class="kv-item"><div class="kv-label">Postal Code</div><div class="kv-value">${state.profile.zip}</div></div>
+        `;
+      } else {
+        piHTML = `
+          <div class="summary-card" id="section-personal">
+            <div class="summary-card-header">
+              <h3 class="summary-card-title">Personal Info</h3>
+              <button class="edit-icon-btn" onclick="toggleEditPersonal()">✏️</button>
+            </div>
+            <div class="kv-grid">
+              <div class="kv-item"><div class="kv-label">First Name</div><div class="kv-value">${p.first || '-'}</div></div>
+              <div class="kv-item"><div class="kv-label">Last Name</div><div class="kv-value">${p.last || '-'}</div></div>
+              <div class="kv-item"><div class="kv-label">Headline</div><div class="kv-value">${p.headline || '-'}</div></div>
+              <div class="kv-item"><div class="kv-label">Email</div><div class="kv-value">${p.email || '-'}</div></div>
+              <div class="kv-item"><div class="kv-label">Phone</div><div class="kv-value">${p.phone || '-'}</div></div>
+              <div class="kv-item"><div class="kv-label">Birthday</div><div class="kv-value">${p.dob || '-'}</div></div>
+              <div class="kv-item"><div class="kv-label">Location</div><div class="kv-value">${p.loc || '-'}</div></div>
+              <div class="kv-item"><div class="kv-label">Address</div><div class="kv-value">${p.add1 || '-'}</div></div>
+            </div>
           </div>
-        </div>
-      `;
-      
+        `;
+      }
+
+      // ── EXPERIENCE (from resume data) ──
+      const expData = (resumeV2 && resumeV2.experience) || (profileData.experience) || [];
+      let expContent = '';
+      if (expData.length > 0) {
+        expContent = expData.map(exp => `
+          <div style="padding:16px; border:1px solid var(--border); border-radius:12px; margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div>
+                <div style="font-size:15px; font-weight:800; color:var(--text-main);">${exp.title || exp.role || 'Role'}</div>
+                <div style="font-size:13.5px; font-weight:600; color:var(--primary);">${exp.company || 'Company'}</div>
+              </div>
+              <div style="font-size:12px; font-weight:700; color:var(--text-subtle); white-space:nowrap;">${exp.dates || exp.duration || ''}</div>
+            </div>
+            ${(exp.bullets && exp.bullets.length > 0) ? `<ul style="margin-top:8px; padding-left:18px; font-size:13px; color:var(--text-muted); line-height:1.6;">${exp.bullets.map(b => `<li>${b}</li>`).join('')}</ul>` : ''}
+          </div>
+        `).join('');
+      } else {
+        expContent = '<div style="font-size:14px; font-weight:600; color:var(--text-muted);">No work experience added yet. Upload your resume to auto-fill.</div>';
+      }
       const expHTML = `
-        <div class="summary-card">
+        <div class="summary-card" id="section-experience">
           <div class="summary-card-header">
             <h3 class="summary-card-title">Work Experience</h3>
-            <button class="edit-icon-btn" onclick="window.location.href='/resume-builder/'">✏️</button>
           </div>
-          <div style="font-size:14px; font-weight:600; color:var(--text-muted);">No work experience added yet. Upload your resume to auto-fill.</div>
+          ${expContent}
         </div>
       `;
 
+      // ── EDUCATION (from resume data) ──
+      const eduData = (resumeV2 && resumeV2.education) || (profileData.education) || [];
+      let eduContent = '';
+      if (eduData.length > 0) {
+        eduContent = eduData.map(edu => `
+          <div style="padding:14px; border:1px solid var(--border); border-radius:12px; margin-bottom:10px;">
+            <div style="font-size:15px; font-weight:800; color:var(--text-main);">${edu.school || edu.institution || 'Institution'}</div>
+            <div style="font-size:13.5px; font-weight:600; color:var(--primary);">${edu.degree || ''}</div>
+            <div style="font-size:12px; font-weight:700; color:var(--text-subtle);">${edu.year || edu.dates || ''}</div>
+          </div>
+        `).join('');
+      } else {
+        eduContent = '<div style="font-size:14px; font-weight:600; color:var(--text-muted);">No education added yet. Upload your resume to auto-fill.</div>';
+      }
       const eduHTML = `
         <div class="summary-card">
           <div class="summary-card-header">
             <h3 class="summary-card-title">Education</h3>
-            <button class="edit-icon-btn" onclick="window.location.href='/resume-builder/'">✏️</button>
           </div>
-          <div style="font-size:14px; font-weight:600; color:var(--text-muted);">No education added yet. Upload your resume to auto-fill.</div>
+          ${eduContent}
         </div>
       `;
-      
+
+      // ── PROJECTS (from resume data) ──
+      const projData = (resumeV2 && resumeV2.projects) || (profileData.projects) || [];
+      let projContent = '';
+      if (projData.length > 0) {
+        projContent = projData.map(proj => `
+          <div style="padding:14px; border:1px solid var(--border); border-radius:12px; margin-bottom:10px;">
+            <div style="font-size:15px; font-weight:800; color:var(--text-main);">${proj.name || proj.title || 'Project'}</div>
+            <div style="font-size:13px; color:var(--text-muted); margin-top:4px;">${proj.description || ''}</div>
+          </div>
+        `).join('');
+      } else {
+        projContent = '<div style="font-size:14px; font-weight:600; color:var(--text-muted);">No projects added yet. Upload your resume to auto-fill.</div>';
+      }
       const projHTML = `
         <div class="summary-card">
           <div class="summary-card-header">
             <h3 class="summary-card-title">Projects & Outside Experience</h3>
-            <button class="edit-icon-btn" onclick="window.location.href='/resume-builder/'">✏️</button>
           </div>
-          <div style="font-size:14px; font-weight:600; color:var(--text-muted);">No items added</div>
+          ${projContent}
         </div>
       `;
 
+      // ── LINKS (from resume data) ──
+      const linksData = (resumeV2 && resumeV2.links) || (profileData.links) || {};
       const linksHTML = `
         <div class="summary-card">
           <div class="summary-card-header">
             <h3 class="summary-card-title">Portfolio & Links</h3>
-            <button class="edit-icon-btn" onclick="window.location.href='/resume-builder/'">✏️</button>
           </div>
-          <div style="font-size:14px; font-weight:600; color:var(--text-muted);">No links added yet.</div>
+          <div class="kv-grid">
+            <div class="kv-item"><div class="kv-label">LinkedIn</div><div class="kv-value">${linksData.linkedin ? `<a href="${linksData.linkedin}" target="_blank" style="color:var(--primary); text-decoration:none; font-weight:700;">${linksData.linkedin.replace('https://','').substring(0,35)}...</a>` : '-'}</div></div>
+            <div class="kv-item"><div class="kv-label">GitHub</div><div class="kv-value">${linksData.github ? `<a href="${linksData.github}" target="_blank" style="color:var(--primary); text-decoration:none; font-weight:700;">${linksData.github.replace('https://','').substring(0,35)}...</a>` : '-'}</div></div>
+            <div class="kv-item"><div class="kv-label">Portfolio</div><div class="kv-value">${linksData.portfolio ? `<a href="${linksData.portfolio}" target="_blank" style="color:var(--primary); text-decoration:none; font-weight:700;">${linksData.portfolio.replace('https://','').substring(0,35)}...</a>` : '-'}</div></div>
+            <div class="kv-item"><div class="kv-label">Other</div><div class="kv-value">${linksData.other || '-'}</div></div>
+          </div>
         </div>
       `;
-      
-      const skillsArray = ["Distributed Systems", "Docker", "FastAPI", "Git", "JavaScript", "Linux/Unix", "LLM", "Machine Learning", "MongoDB", "Next.js", "Nginx", "Playwright", "Postgres", "Pydantic", "Python", "React.js", "REST APIs", "Role-based Access Control", "SQL", "Vercel"];
+
+      // ── SKILLS (uses real data from profile/prefs, NOT hardcoded) ──
       const skillsHTML = `
-        <div class="summary-card">
+        <div class="summary-card" id="section-skills">
           <div class="summary-card-header">
             <h3 class="summary-card-title">Skills</h3>
-            <button class="edit-icon-btn" onclick="window.location.href='/resume-builder/'">✏️</button>
+            <button class="edit-icon-btn" onclick="openModal(6)">✏️</button>
           </div>
           <div style="font-size:13px; font-weight:600; color:var(--text-muted); margin-bottom:16px;">Skills that you'd prefer to utilize in roles are highlighted with a heart</div>
           <div style="display:flex; flex-wrap:wrap; gap:8px;">
-            ${skillsArray.map(s => `<div class="pill-chip" style="background:var(--bg-subtle); border-color:transparent;">${s} 💚</div>`).join('')}
+            ${userSkills.length > 0 ? userSkills.map(s => `<div class="pill-chip" style="background:var(--bg-subtle); border-color:transparent;">${s} 💚</div>`).join('') : '<div style="font-size:14px; font-weight:600; color:var(--text-muted);">No skills detected yet. Upload your resume or add skills in Job Preferences.</div>'}
           </div>
         </div>
       `;
       
-      const langHTML = `
-        <div class="summary-card">
-          <div class="summary-card-header">
-            <h3 class="summary-card-title">Languages</h3>
-            <button class="edit-icon-btn" onclick="window.location.href='/resume-builder/'">✏️</button>
-          </div>
-          <div style="font-size:14px; font-weight:600; color:var(--text-muted);">No items added</div>
-        </div>
-      `;
-      
-      // We also inject a header for Job Preferences to separate it
+      // Job Preferences header
       const prefHeader = `<h3 style="font-size:20px; font-weight:800; color:var(--text-main); margin-top:16px; margin-bottom:4px;">Job Preferences</h3><div style="font-size:14px; color:var(--text-muted); margin-bottom:12px; font-weight:600;">How we match you to roles</div>`;
 
-      container.innerHTML = resumeHTML + piHTML + expHTML + eduHTML + projHTML + linksHTML + skillsHTML + langHTML + prefHeader;
+      container.innerHTML = resumeHTML + piHTML + expHTML + eduHTML + projHTML + linksHTML + skillsHTML + prefHeader;
     }
 
         async function initData() {

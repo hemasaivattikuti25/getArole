@@ -886,6 +886,76 @@ Return valid JSON:
         except Exception as llm_err:
             print(f"[ResumeParser LLM Notice] {llm_err}")
 
+        # 6. Extract experience and education from LLM or regex fallback
+        experience_list = []
+        education_list = []
+        projects_list = []
+
+        # Check if LLM parsed these
+        try:
+            if 'llm_parsed' in dir() or 'llm_parsed' in locals():
+                if llm_parsed.get("experience"):
+                    experience_list = llm_parsed["experience"]
+                if llm_parsed.get("education"):
+                    education_list = llm_parsed["education"]
+                if llm_parsed.get("projects"):
+                    projects_list = llm_parsed["projects"]
+        except Exception:
+            pass
+
+        # Regex fallback for experience if LLM didn't return any
+        if not experience_list:
+            import re as re2
+            exp_pattern = re2.compile(
+                r'(?:^|\n)\s*([A-Z][A-Za-z\s&.,]+(?:Inc|LLC|Ltd|Corp|Technologies|Solutions|Software|Labs|Company|Systems|Group|Services)?)\s*[\|·\-–—]\s*(.+?)[\|·\-–—\n]\s*(\w+\s+\d{4}\s*(?:[-–—]\s*(?:\w+\s+\d{4}|Present|Current))?)',
+                re2.MULTILINE
+            )
+            for m in exp_pattern.finditer(text[:3000]):
+                experience_list.append({
+                    "company": m.group(1).strip(),
+                    "title": m.group(2).strip(),
+                    "dates": m.group(3).strip(),
+                    "bullets": []
+                })
+
+        # Regex fallback for education
+        if not education_list:
+            edu_keywords = ["university", "institute", "college", "school", "iit", "nit", "bits", "vit", "manipal", "amity"]
+            for i, line in enumerate(lines):
+                if any(k in line.lower() for k in edu_keywords):
+                    degree = lines[i+1] if i+1 < len(lines) else ""
+                    year = ""
+                    for near_line in lines[max(0,i-1):min(len(lines),i+3)]:
+                        yr_match = re.search(r'(\d{4})', near_line)
+                        if yr_match:
+                            year = yr_match.group(1)
+                            break
+                    education_list.append({
+                        "school": line.strip(),
+                        "degree": degree.strip(),
+                        "year": year
+                    })
+                    if len(education_list) >= 3:
+                        break
+
+        # Extract LinkedIn/GitHub/Portfolio URLs
+        url_pattern = re.compile(r'(https?://[^\s,)]+)')
+        found_urls = url_pattern.findall(text[:2000])
+        links = {
+            "linkedin": "",
+            "github": "",
+            "portfolio": "",
+            "other": ""
+        }
+        for u in found_urls:
+            ul = u.lower()
+            if "linkedin.com" in ul:
+                links["linkedin"] = u
+            elif "github.com" in ul:
+                links["github"] = u
+            elif links["portfolio"] == "":
+                links["portfolio"] = u
+
         candidate_profile = {
             "name": candidate_name,
             "email": email,
@@ -893,7 +963,11 @@ Return valid JSON:
             "headline": headline,
             "location": "India",
             "skills": extracted_skills,
-            "summary": summary
+            "summary": summary,
+            "experience": experience_list,
+            "education": education_list,
+            "projects": projects_list,
+            "links": links
         }
 
         resume_data = {
@@ -909,6 +983,10 @@ Return valid JSON:
                 "languages": ", ".join(extracted_skills[:10]),
                 "all": ", ".join(extracted_skills)
             },
+            "experience": experience_list,
+            "education": education_list,
+            "projects": projects_list,
+            "links": links,
             "raw_text": text
         }
 

@@ -823,7 +823,7 @@
       updateUI();
     }
 
-    function finishOnboarding() {
+    async function finishOnboarding() {
       // Map preferences to dashboard schema
       const dashboardPrefs = {
         role: prefs.specializations.length > 0 ? prefs.specializations[0] : prefs.department,
