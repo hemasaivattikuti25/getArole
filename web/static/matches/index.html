@@ -1211,13 +1211,15 @@
     function renderMatchesSplitView() {
       const feed = document.getElementById('matches-feed-list');
 
-      if (!localStorage.getItem('getarole_prefs') || !localStorage.getItem('getarole_resume_v2')) {
+      const hasPrefs = localStorage.getItem('getarole_prefs') || localStorage.getItem('getarole_profile');
+
+      if (!hasPrefs && matchedJobs.length === 0) {
         document.getElementById('matches-count-header').textContent = '0';
         feed.innerHTML = `
           <div style="padding:40px 20px; text-align:center;">
             <div style="font-size:32px; margin-bottom:12px;">🔒</div>
             <h3 style="font-size:16px; font-weight:800; color:var(--text-main); margin-bottom:8px;">Complete your setup</h3>
-            <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:24px; line-height:1.5;">You need to tell us your preferences and upload a resume to unlock personalized AI matches.</p>
+            <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:24px; line-height:1.5;">You need to tell us your preferences to unlock personalized AI matches.</p>
             <button onclick="window.location.href='/onboarding'" style="background:var(--primary); color:white; padding:10px 20px; border-radius:8px; border:none; font-weight:700; cursor:pointer; width:100%; margin-bottom:12px; font-size:14px;">Set Preferences</button>
             <button onclick="window.location.href='/resume-builder'" style="background:var(--bg-subtle); color:var(--text-main); border:1.5px solid var(--border); padding:10px 20px; border-radius:8px; font-weight:700; cursor:pointer; width:100%; font-size:14px;">I don't have a resume</button>
           </div>

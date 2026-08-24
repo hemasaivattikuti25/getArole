@@ -873,6 +873,71 @@
 
       window.location.href = '/dashboard';
     }
+
+    function syncUIToState() {
+      document.querySelectorAll('#options-department .option-card').forEach(el => {
+        if (prefs.departments.includes(el.innerText)) el.classList.add('selected');
+      });
+      document.querySelectorAll('.loc-chip').forEach(el => {
+        if (prefs.locations.includes(el.innerText)) el.classList.add('selected');
+      });
+      document.querySelectorAll('.emp-chip').forEach(el => {
+        if (prefs.employmentTypes.includes(el.innerText)) el.classList.add('selected');
+      });
+      document.querySelectorAll('.size-chip').forEach(el => {
+        if (prefs.companySizes.includes(el.innerText)) el.classList.add('selected');
+      });
+      document.querySelectorAll('#industry-chips .skill-chip').forEach(el => {
+        if (prefs.industries.includes(el.innerText)) el.classList.add('selected');
+      });
+      document.querySelectorAll('.status-card').forEach(el => {
+        const val = el.innerText.substring(3).trim();
+        if (prefs.searchStatuses.includes(val)) el.classList.add('selected');
+      });
+      renderSelectedSkills();
+    }
+
+    async function loadExistingState() {
+      const savedPrefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
+      const savedProfile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+
+      let uid = localStorage.getItem('firebase_uid') || localStorage.getItem('getarole_user_id');
+      if (uid) {
+        try {
+          const [resP, resProf] = await Promise.all([
+            fetch('/api/user/preferences', { headers: { 'X-Firebase-UID': uid } }),
+            fetch('/api/user/profile', { headers: { 'X-Firebase-UID': uid } })
+          ]);
+          if (resP.ok) {
+            const dataP = await resP.json();
+            if (dataP && dataP.specializations) Object.assign(savedPrefs, dataP);
+          }
+          if (resProf.ok) {
+            const dataProf = await resProf.json();
+            if (dataProf && dataProf.skills) Object.assign(savedProfile, dataProf);
+          }
+        } catch(e) {}
+      }
+
+      if (savedPrefs.specializations) prefs.specializations = savedPrefs.specializations;
+      if (savedPrefs.locations) prefs.locations = savedPrefs.locations;
+      if (savedPrefs.employmentTypes) prefs.employmentTypes = savedPrefs.employmentTypes;
+      if (savedPrefs.companySizes) prefs.companySizes = savedPrefs.companySizes;
+      if (savedPrefs.industries) prefs.industries = savedPrefs.industries;
+      if (savedPrefs.role) {
+        departments.forEach(d => {
+          if (specializations[d] && specializations[d].includes(savedPrefs.role)) {
+            if (!prefs.departments.includes(d)) prefs.departments.push(d);
+          }
+        });
+      }
+      if (savedProfile.skills) prefs.skills = savedProfile.skills;
+      if (savedProfile.searchStatuses) prefs.searchStatuses = savedProfile.searchStatuses;
+
+      syncUIToState();
+    }
+
+    loadExistingState();
   </script>
 </body>
 
