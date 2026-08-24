@@ -432,9 +432,9 @@
       </div>
 
       <div class="header-actions">
-        <button class="btn-refresh" onclick="openPreferencesModal()" style="background:#ffffff; border:1px solid var(--border); color:var(--text-main); font-weight:700;">
+        <a href="/preferences" class="btn-refresh" style="background:#ffffff; border:1px solid var(--border); color:var(--text-main); font-weight:700; text-decoration:none; display:inline-flex; align-items:center;">
           ⚙️ Preferences
-        </button>
+        </a>
 
         <button class="btn-refresh" id="btn-refresh-scrape" onclick="triggerScrape()">
           Sync
@@ -446,8 +446,8 @@
           <span style="font-size: 10px; color: var(--text-subtle)">▼</span>
 
           <div class="user-dropdown" id="user-dropdown">
-            <a href="#" onclick="openPreferencesModal()" class="dropdown-item">⚙️ Job Preferences</a>
-            <a href="/onboarding" class="dropdown-item">📝 Onboarding Wizard</a>
+            <a href="/preferences" class="dropdown-item">⚙️ Job Preferences & Profile</a>
+            <a href="/onboarding" class="dropdown-item">📝 Re-run Onboarding</a>
             <a href="#" onclick="openCandidateDatabaseModal()" class="dropdown-item">👥 Database</a>
             <div style="height:1px; background:var(--border); margin:4px 0;"></div>
             <a href="#" onclick="handleLogout()" class="dropdown-item" style="color:#ef4444">Sign Out</a>

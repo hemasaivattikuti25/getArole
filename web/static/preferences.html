@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Preferences & Profile — getArole</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/logo.png">
+
+  <style>
+    :root {
+      --primary: #059669;
+      --primary-hover: #047857;
+      --primary-light: #ecfdf5;
+      --primary-border: #a7f3d0;
+      --bg: #ffffff;
+      --bg-subtle: #f8fafc;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #94a3b8;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 20px -2px rgba(0,0,0,0.06);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-subtle);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
+
+    /* ── HEADER ── */
+    header {
+      background: #ffffff; border-bottom: 1px solid var(--border);
+      height: 64px; display: flex; align-items: center; position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner {
+      max-width: 1200px; width: 100%; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .brand-logo-img { width: 32px; height: 32px; border-radius: 8px; }
+    .brand-title { font-family: 'Outfit', sans-serif; font-size: 19px; font-weight: 800; color: var(--text-main); }
+    .brand-title span { color: var(--primary); }
+
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .btn-outline {
+      padding: 8px 16px; border-radius: 9px; border: 1.5px solid var(--border);
+      background: #ffffff; font-size: 13.5px; font-weight: 700; color: var(--text-muted);
+      cursor: pointer; text-decoration: none; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-outline:hover { background: var(--bg-subtle); color: var(--text-main); border-color: var(--border-strong); }
+    .btn-save {
+      padding: 9px 22px; border-radius: 9px; border: none;
+      background: var(--primary); font-size: 14px; font-weight: 800; color: #ffffff;
+      cursor: pointer; transition: all 0.15s; box-shadow: 0 4px 12px rgba(5,150,105,0.25);
+    }
+    .btn-save:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+    /* ── PAGE LAYOUT ── */
+    .page-container {
+      max-width: 1200px; width: 100%; margin: 32px auto 80px; padding: 0 24px;
+      display: grid; grid-template-columns: 260px 1fr; gap: 36px; align-items: start;
+    }
+    @media (max-width: 860px) {
+      .page-container { grid-template-columns: 1fr; }
+      .sidebar-nav { display: none; }
+    }
+
+    /* ── SIDEBAR NAV ── */
+    .sidebar-nav {
+      background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 16px 12px; position: sticky; top: 88px; display: flex; flex-direction: column; gap: 4px;
+      box-shadow: var(--shadow-sm);
+    }
+    .nav-anchor {
+      padding: 10px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 700;
+      color: var(--text-muted); text-decoration: none; transition: all 0.15s; display: flex; align-items: center; gap: 10px;
+    }
+    .nav-anchor:hover, .nav-anchor.active {
+      background: var(--primary-light); color: var(--primary);
+    }
+
+    /* ── MAIN CONTENT CARDS ── */
+    .content-stream { display: flex; flex-direction: column; gap: 28px; }
+    .pref-card {
+      background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-lg);
+      padding: 28px 32px; box-shadow: var(--shadow-sm); scroll-margin-top: 84px;
+    }
+    .pref-card-header {
+      margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 14px;
+    }
+    .pref-card-title {
+      font-size: 18px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px;
+    }
+    .pref-card-subtitle {
+      font-size: 13px; color: var(--text-muted); margin-top: 4px;
+    }
+
+    /* ── FORMS & INPUTS ── */
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    @media (max-width: 600px) { .form-grid-2 { grid-template-columns: 1fr; } }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-label { font-size: 12.5px; font-weight: 700; color: var(--text-main); }
+    .form-input {
+      padding: 11px 14px; border-radius: 9px; border: 1.5px solid var(--border);
+      font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.15s;
+    }
+    .form-input:focus { border-color: var(--primary); }
+
+    /* ── SELECTION CARDS & OPTIONS ── */
+    .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+    .choice-card {
+      padding: 14px 16px; border-radius: 12px; border: 1.5px solid var(--border);
+      background: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      font-size: 14px; font-weight: 700; color: var(--text-main); transition: all 0.15s; user-select: none;
+    }
+    .choice-card:hover { border-color: var(--primary); background: var(--bg-subtle); }
+    .choice-card.selected {
+      border-color: var(--primary); background: var(--primary-light); color: var(--primary);
+      box-shadow: 0 0 0 1px var(--primary);
+    }
+    .choice-card.selected::after { content: "✓"; font-weight: 900; color: var(--primary); }
+
+    /* ── CHIPS ── */
+    .chips-box {
+      display: flex; flex-wrap: wrap; gap: 8px; max-height: 280px; overflow-y: auto; padding: 10px;
+      background: var(--bg-subtle); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 14px;
+    }
+    .pill-chip {
+      padding: 8px 14px; border-radius: 99px; border: 1.5px solid var(--border);
+      background: #ffffff; font-size: 13px; font-weight: 700; color: var(--text-main);
+      cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px;
+      user-select: none;
+    }
+    .pill-chip:hover { border-color: var(--primary); color: var(--primary); }
+    .pill-chip.selected {
+      background: var(--primary); color: #ffffff; border-color: var(--primary);
+      box-shadow: 0 2px 6px rgba(5,150,105,0.25);
+    }
+
+    /* ── SALARY TOGGLE ── */
+    .salary-toggle-wrap {
+      display: inline-flex; padding: 4px; background: var(--bg-subtle);
+      border: 1px solid var(--border); border-radius: 10px; margin-bottom: 16px;
+    }
+    .sal-tab {
+      padding: 6px 16px; border-radius: 7px; font-size: 13px; font-weight: 700;
+      color: var(--text-muted); cursor: pointer; border: none; background: none; transition: all 0.15s;
+    }
+    .sal-tab.active { background: #ffffff; color: var(--primary); box-shadow: var(--shadow-sm); }
+
+    /* ── RESUME DROPZONE ── */
+    .resume-upload-zone {
+      border: 2px dashed var(--border-strong); border-radius: 14px; padding: 30px 20px;
+      text-align: center; background: var(--bg-subtle); cursor: pointer; transition: all 0.2s;
+    }
+    .resume-upload-zone:hover { border-color: var(--primary); background: var(--primary-light); }
+
+    /* ── FLOATING SAVE BAR ── */
+    .save-bar-bottom {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: rgba(15,23,42,0.92); backdrop-filter: blur(10px);
+      padding: 12px 24px; border-radius: 99px; display: flex; align-items: center; gap: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25); z-index: 99; color: #ffffff; font-size: 13.5px; font-weight: 600;
+    }
+
+    #toast {
+      position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%);
+      background: #059669; color: #ffffff; padding: 10px 22px; border-radius: 99px;
+      font-size: 14px; font-weight: 700; box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      display: none; z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════ HEADER ═══════ -->
+  <header>
+    <div class="header-inner">
+      <a href="/dashboard" class="brand-wrap">
+        <img src="/logo.png" alt="getArole Logo" class="brand-logo-img">
+        <span class="brand-title">getArole<span>.in</span></span>
+      </a>
+
+      <div class="header-actions">
+        <a href="/dashboard" class="btn-outline">← Back to Dashboard</a>
+        <button class="btn-save" onclick="saveAllPreferences()">💾 Save Changes</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-container">
+
+    <!-- ═══════ LEFT ANCHOR SIDEBAR ═══════ -->
+    <aside class="sidebar-nav">
+      <a href="#section-profile" class="nav-anchor active">👤 Profile Details</a>
+      <a href="#section-resume" class="nav-anchor">📄 Resume & Skills</a>
+      <a href="#section-timeline" class="nav-anchor">⚡ Search Timeline</a>
+      <a href="#section-locations" class="nav-anchor">📍 Target Locations</a>
+      <a href="#section-experience" class="nav-anchor">🎓 Experience Level</a>
+      <a href="#section-roles" class="nav-anchor">💻 Specializations</a>
+      <a href="#section-salary" class="nav-anchor">💰 Compensation</a>
+      <a href="#section-links" class="nav-anchor">🔗 Portfolio & Links</a>
+    </aside>
+
+    <!-- ═══════ MAIN CONTENT FORM ═══════ -->
+    <main class="content-stream">
+
+      <!-- 1. PROFILE DETAILS -->
+      <section class="pref-card" id="section-profile">
+        <div class="pref-card-header">
+          <h2 class="pref-card-title">👤 Basic Profile Information</h2>
+          <p class="pref-card-subtitle">Your personal identity across verified applications and recruiters.</p>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="prof-name" class="form-input" placeholder="e.g. Hemasai Vattikuti">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" id="prof-email" class="form-input" placeholder="name@example.com">
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Current Headline / Target Title</label>
+            <input type="text" id="prof-headline" class="form-input" placeholder="e.g. Full Stack Engineer | Python & React">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number (Optional)</label>
+            <input type="tel" id="prof-phone" class="form-input" placeholder="+91 98765 43210">
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. RESUME & SKILLS -->
+      <section class="pref-card" id="section-resume">
+        <div class="pref-card-header">
+          <h2 class="pref-card-title">📄 Resume & Validated Skills</h2>
+          <p class="pref-card-subtitle">Used by our 70B AI matching engine to calculate your 0–100% role fit scores.</p>
+        </div>
+        <div class="resume-upload-zone" onclick="document.getElementById('file-resume').click()">
+          <div style="font-size:32px; margin-bottom:6px;">📄</div>
+          <div style="font-size:15px; font-weight:800; color:var(--text-main);" id="resume-file-name">Click to upload or update your Resume</div>
+          <div style="font-size:12.5px; color:var(--text-muted); margin-top:2px;">PDF, DOC, DOCX up to 5 MB</div>
+          <input type="file" id="file-resume" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleResumeUpload(event)">
+        </div>
+
+        <div style="margin-top:20px;">
+          <label class="form-label" style="margin-bottom:8px; display:block;">Your Validated Skills (Click to toggle / add)</label>
+          <div class="chips-box" id="skills-cloud-container">
+            <!-- Dynamic skills -->
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. SEARCH TIMELINE -->
+      <section class="pref-card" id="section-timeline">
+        <div class="pref-card-header">
+          <h2 class="pref-card-title">⚡ Job Search Timeline & Urgency</h2>
+          <p class="pref-card-subtitle">How actively are you seeking to start your next opportunity?</p>
+        </div>
+        <div class="options-grid" id="timeline-options-grid">
+          <div class="choice-card selected" onclick="selectTimeline(this, 'ASAP')">⚡ ASAP (Actively interviewing)</div>
+          <div class="choice-card" onclick="selectTimeline(this, 'Within 3 months')">📅 Within 3 months</div>
+          <div class="choice-card" onclick="selectTimeline(this, 'Within 6 months')">⏳ Within 6 months</div>
+          <div class="choice-card" onclick="selectTimeline(this, 'Passively browsing')">👀 Passively browsing</div>
+        </div>
+      </section>
+
+      <!-- 4. TARGET LOCATIONS -->
+      <section class="pref-card" id="section-locations">
+        <div class="pref-card-header">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h2 class="pref-card-title">📍 Preferred Job Locations</h2>
+              <p class="pref-card-subtitle">Select any of 120+ Indian tech hubs, remote, or custom cities.</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button onclick="selectAllLocations(true)" style="background:none; border:none; color:var(--primary); font-size:13px; font-weight:700; cursor:pointer;">Select All</button>
+              <button onclick="selectAllLocations(false)" style="background:none; border:none; color:var(--text-subtle); font-size:13px; font-weight:700; cursor:pointer;">Unselect All</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="position:relative; margin-bottom:12px;">
+          <input type="text" id="loc-search" placeholder="Type to search Indian cities (e.g. Pune, Tirupati, Gurgaon...)" class="form-input" oninput="renderLocations()" style="padding-left:36px;">
+          <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:14px; color:var(--text-subtle);">🔍</span>
+        </div>
+
+        <div class="chips-box" id="locations-chips-container" style="max-height:240px;">
+          <!-- Dynamically rendered -->
+        </div>
+      </section>
+
+      <!-- 5. EXPERIENCE LEVEL -->
+      <section class="pref-card" id="section-experience">
+        <div class="pref-card-header">
+          <h2 class="pref-card-title">🎓 Experience Level & Seniority</h2>
+          <p class="pref-card-subtitle">Select up to 2 seniority levels matching your background.</p>
+        </div>
+        <div class="options-grid" id="exp-options-grid">
+          <div class="choice-card" onclick="toggleExp(this, 'No experience')">🎓 No experience / Student</div>
+          <div class="choice-card" onclick="toggleExp(this, 'Internship')">💼 Internship</div>
+          <div class="choice-card selected" onclick="toggleExp(this, 'Entry Level')">🌱 Entry Level (Batch 2025/2026)</div>
+          <div class="choice-card" onclick="toggleExp(this, 'Junior (1 to 2 years)')">⚡ Junior (1 to 2 years)</div>
+          <div class="choice-card" onclick="toggleExp(this, 'Mid-level (3 to 4 years)')">🚀 Mid-level (3 to 4 years)</div>
+          <div class="choice-card" onclick="toggleExp(this, 'Senior (5 to 8 years)')">🏆 Senior (5 to 8 years)</div>
+          <div class="choice-card" onclick="toggleExp(this, 'Expert & Leadership (9+ years)')">👑 Expert (9+ years)</div>
+        </div>
+      </section>
+
+      <!-- 6. TARGET SPECIALIZATIONS -->
+      <section class="pref-card" id="section-roles">
+        <div class="pref-card-header">
+          <h2 class="pref-card-title">💻 Target Roles & Specializations</h2>
+          <p class="pref-card-subtitle">Choose the engineering and product domains you want to target.</p>
+        </div>
+        <div class="chips-box" id="roles-chips-container">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+
+      <!-- 7. MINIMUM EXPECTED COMPENSATION -->
+      <section class="pref-card" id="section-salary">
+        <div class="pref-card-header">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h2 class="pref-card-title">💰 Minimum Expected Compensation</h2>
+              <p class="pref-card-subtitle">Filter out listings below your salary threshold.</p>
+            </div>
+            <div class="salary-toggle-wrap">
+              <button class="sal-tab active" id="tab-curr-inr" onclick="setCurrency('INR')">₹ INR (LPA)</button>
+              <button class="sal-tab" id="tab-curr-usd" onclick="setCurrency('USD')">$ USD (k/yr)</button>
+            </div>
+          </div>
+        </div>
+        <div class="options-grid" id="salary-options-grid">
+          <!-- Dynamic salary options -->
+        </div>
+      </section>
+
+      <!-- 8. PORTFOLIO & LINKS -->
+      <section class="pref-card" id="section-links">
+        <div class="pref-card-header">
+          <h2 class="pref-card-title">🔗 Professional Portfolios & Links</h2>
+          <p class="pref-card-subtitle">Included on your verified candidate profile card for employers.</p>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">LinkedIn Profile URL</label>
+            <input type="url" id="link-linkedin" class="form-input" placeholder="https://linkedin.com/in/username">
+          </div>
+          <div class="form-group">
+            <label class="form-label">GitHub URL</label>
+            <input type="url" id="link-github" class="form-input" placeholder="https://github.com/username">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Personal Portfolio / Website</label>
+          <input type="url" id="link-portfolio" class="form-input" placeholder="https://yourportfolio.dev">
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ── FLOATING SAVE BAR ── -->
+  <div class="save-bar-bottom">
+    <span>💡 Changes are auto-synced to your dashboard matches</span>
+    <button class="btn-save" onclick="saveAllPreferences()">💾 Save Preferences</button>
+  </div>
+
+  <div id="toast"></div>
+
+  <!-- ═══════ APPLICATION DATA LOGIC ═══════ -->
+  <script>
+    const allIndianCities = [
+      "India (Anywhere)", "Remote in India", "Global Remote", "Hybrid",
+      "Bengaluru", "Hyderabad", "Pune", "Delhi NCR", "Mumbai", "Chennai", "Gurgaon (Gurugram)", "Noida", "Kolkata", "Ahmedabad",
+      "Visakhapatnam", "Vijayawada", "Guntur", "Tirupati", "Nellore", "Kakinada", "Rajahmundry", "Kurnool", "Kadapa", "Anantapur", "Warangal", "Nizamabad", "Karimnagar", "Khammam",
+      "Mysuru (Mysore)", "Mangalore", "Hubli-Dharwad", "Belagavi", "Kochi (Cochin)", "Thiruvananthapuram", "Kozhikode (Calicut)", "Thrissur", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem",
+      "Navi Mumbai", "Thane", "Nagpur", "Nashik", "Aurangabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar", "Goa",
+      "Faridabad", "Ghaziabad", "Greater Noida", "Lucknow", "Kanpur", "Agra", "Varanasi", "Prayagraj (Allahabad)", "Dehradun", "Haridwar",
+      "Chandigarh", "Mohali", "Panchkula", "Ludhiana", "Amritsar", "Jalandhar", "Jaipur", "Jodhpur", "Kota", "Udaipur", "Shimla", "Jammu", "Srinagar",
+      "Indore", "Bhopal", "Gwalior", "Jabalpur", "Raipur", "Bilaspur", "Patna", "Gaya", "Ranchi", "Jamshedpur", "Dhanbad",
+      "Howrah", "Siliguri", "Bhubaneswar", "Cuttack", "Guwahati", "Shillong", "Agartala", "Imphal", "Aizawl"
+    ];
+
+    const allSkillsList = [
+      "Python", "FastAPI", "Docker", "PostgreSQL", "React.js", "Next.js", "Node.js",
+      "TypeScript", "JavaScript", "SQL", "Git", "Linux", "REST APIs", "Machine Learning",
+      "Distributed Systems", "AWS", "GCP", "Kubernetes", "Redis", "MongoDB", "TailwindCSS", "Java", "C++", "Golang"
+    ];
+
+    const allRolesList = [
+      "Software Engineering", "Full Stack Developer", "Backend Developer",
+      "Frontend Developer", "AI & Machine Learning", "Data Science",
+      "DevOps & Cloud Engineer", "Product Management", "Mobile (iOS/Android)",
+      "UI/UX Design", "QA / Automation Engineer", "Cyber Security",
+      "Business & Strategy", "Growth & Marketing", "Fintech & Banking", "Consulting"
+    ];
+
+    const salaryINR = ["Any", "₹6 LPA+", "₹10 LPA+", "₹15 LPA+", "₹25 LPA+", "₹40 LPA+"];
+    const salaryUSD = ["Any", "$60k+", "$80k+", "$100k+", "$140k+", "$200k+"];
+
+    let userPrefs = {
+      timeline: 'ASAP',
+      locations: ['Bengaluru', 'Hyderabad', 'Remote in India', 'Global Remote'],
+      experience: ['Entry Level'],
+      role: 'Software Engineering',
+      currency: 'INR',
+      minSalary: '₹10 LPA+'
+    };
+
+    let userProfile = {
+      name: '',
+      email: '',
+      headline: '',
+      phone: '',
+      skills: ["Python", "FastAPI", "React.js", "PostgreSQL", "Docker"],
+      links: { linkedin: '', github: '', portfolio: '' }
+    };
+
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3000);
+    }
+
+    function initData() {
+      const savedPrefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
+      const savedProfile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+      const authUser = JSON.parse(localStorage.getItem('getarole_user') || '{}');
+
+      if (savedPrefs.timeline) userPrefs = { ...userPrefs, ...savedPrefs };
+      if (savedProfile.name || savedProfile.email) userProfile = { ...userProfile, ...savedProfile };
+
+      // Fill Inputs
+      document.getElementById('prof-name').value = userProfile.name || authUser.displayName || '';
+      document.getElementById('prof-email').value = userProfile.email || authUser.email || '';
+      document.getElementById('prof-headline').value = userProfile.headline || userPrefs.role || '';
+      document.getElementById('prof-phone').value = userProfile.phone || '';
+
+      if (userProfile.links) {
+        document.getElementById('link-linkedin').value = userProfile.links.linkedin || '';
+        document.getElementById('link-github').value = userProfile.links.github || '';
+        document.getElementById('link-portfolio').value = userProfile.links.portfolio || '';
+      }
+
+      renderSkills();
+      renderTimeline();
+      renderLocations();
+      renderExperience();
+      renderRoles();
+      renderSalary();
+    }
+
+    function renderSkills() {
+      const container = document.getElementById('skills-cloud-container');
+      const activeSkills = new Set(userProfile.skills || []);
+      container.innerHTML = allSkillsList.map(s => {
+        const isSel = activeSkills.has(s);
+        return `<div class="pill-chip ${isSel ? 'selected' : ''}" onclick="toggleSkill('${s}')">${s} ${isSel ? '✓' : ''}</div>`;
+      }).join('');
+    }
+
+    function toggleSkill(s) {
+      if (!userProfile.skills) userProfile.skills = [];
+      const idx = userProfile.skills.indexOf(s);
+      if (idx > -1) userProfile.skills.splice(idx, 1);
+      else userProfile.skills.push(s);
+      renderSkills();
+    }
+
+    function renderTimeline() {
+      document.querySelectorAll('#timeline-options-grid .choice-card').forEach(c => {
+        c.classList.toggle('selected', c.textContent.includes(userPrefs.timeline));
+      });
+    }
+
+    function selectTimeline(el, val) {
+      userPrefs.timeline = val;
+      renderTimeline();
+    }
+
+    function renderLocations() {
+      const query = (document.getElementById('loc-search').value || '').trim().toLowerCase();
+      const container = document.getElementById('locations-chips-container');
+      const filtered = allIndianCities.filter(c => c.toLowerCase().includes(query));
+
+      let html = '';
+      if (query && !allIndianCities.some(c => c.toLowerCase() === query)) {
+        const customTitle = document.getElementById('loc-search').value.trim();
+        const isCustomSel = userPrefs.locations.includes(customTitle);
+        html += `<div class="pill-chip selected" style="background:#059669; border-color:#059669;" onclick="toggleLocation('${customTitle}')">
+          + Add "${customTitle}" ✓
+        </div>`;
+      }
+
+      html += filtered.map(c => {
+        const isSel = userPrefs.locations.includes(c);
+        return `<div class="pill-chip ${isSel ? 'selected' : ''}" onclick="toggleLocation('${c}')">${c} ${isSel ? '✓' : ''}</div>`;
+      }).join('');
+
+      container.innerHTML = html;
+    }
+
+    function toggleLocation(c) {
+      const idx = userPrefs.locations.indexOf(c);
+      if (idx > -1) userPrefs.locations.splice(idx, 1);
+      else userPrefs.locations.push(c);
+      renderLocations();
+    }
+
+    function selectAllLocations(select) {
+      userPrefs.locations = select ? [...allIndianCities] : [];
+      renderLocations();
+    }
+
+    function renderExperience() {
+      document.querySelectorAll('#exp-options-grid .choice-card').forEach(c => {
+        const matched = userPrefs.experience.some(exp => c.textContent.includes(exp));
+        c.classList.toggle('selected', matched);
+      });
+    }
+
+    function toggleExp(el, val) {
+      const idx = userPrefs.experience.indexOf(val);
+      if (idx > -1) userPrefs.experience.splice(idx, 1);
+      else {
+        if (userPrefs.experience.length >= 2) userPrefs.experience.shift();
+        userPrefs.experience.push(val);
+      }
+      renderExperience();
+    }
+
+    function renderRoles() {
+      const container = document.getElementById('roles-chips-container');
+      container.innerHTML = allRolesList.map(r => {
+        const isSel = userPrefs.role === r;
+        return `<div class="pill-chip ${isSel ? 'selected' : ''}" onclick="selectRole('${r}')">${r} ${isSel ? '✓' : ''}</div>`;
+      }).join('');
+    }
+
+    function selectRole(r) {
+      userPrefs.role = r;
+      renderRoles();
+    }
+
+    function setCurrency(curr) {
+      userPrefs.currency = curr;
+      document.getElementById('tab-curr-inr').classList.toggle('active', curr === 'INR');
+      document.getElementById('tab-curr-usd').classList.toggle('active', curr === 'USD');
+      renderSalary();
+    }
+
+    function renderSalary() {
+      const list = userPrefs.currency === 'INR' ? salaryINR : salaryUSD;
+      const container = document.getElementById('salary-options-grid');
+      container.innerHTML = list.map(sal => {
+        const isSel = userPrefs.minSalary === sal;
+        return `<div class="choice-card ${isSel ? 'selected' : ''}" onclick="selectSalary('${sal}')">${sal}</div>`;
+      }).join('');
+    }
+
+    function selectSalary(sal) {
+      userPrefs.minSalary = sal;
+      renderSalary();
+    }
+
+    function handleResumeUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      document.getElementById('resume-file-name').textContent = `✓ ${file.name} uploaded`;
+      toast(`Resume ${file.name} uploaded successfully!`);
+    }
+
+    function saveAllPreferences() {
+      userProfile.name = document.getElementById('prof-name').value.trim();
+      userProfile.email = document.getElementById('prof-email').value.trim();
+      userProfile.headline = document.getElementById('prof-headline').value.trim();
+      userProfile.phone = document.getElementById('prof-phone').value.trim();
+      userProfile.links = {
+        linkedin: document.getElementById('link-linkedin').value.trim(),
+        github: document.getElementById('link-github').value.trim(),
+        portfolio: document.getElementById('link-portfolio').value.trim()
+      };
+      userProfile.preferences = { ...userPrefs };
+
+      localStorage.setItem('getarole_profile', JSON.stringify(userProfile));
+      localStorage.setItem('getarole_prefs', JSON.stringify(userPrefs));
+
+      toast('✓ All Preferences & Profile details saved!');
+      setTimeout(() => {
+        window.location.href = '/dashboard/';
+      }, 1000);
+    }
+
+    // Scroll Spy for sidebar nav
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('section.pref-card');
+      const navLinks = document.querySelectorAll('.nav-anchor');
+      let currentId = '';
+      sections.forEach(sec => {
+        const top = sec.offsetTop - 120;
+        if (window.pageYOffset >= top) currentId = sec.getAttribute('id');
+      });
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === `#${currentId}`);
+      });
+    });
+
+    initData();
+  </script>
+</body>
+</html>
