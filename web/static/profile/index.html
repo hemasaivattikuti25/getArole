@@ -919,9 +919,9 @@
           }));
         }
 
-        // Apply parsed fields to candidate profileData & state.profile
-        if (parsedProf.first_name) state.profile.first = parsedProf.first_name;
-        if (parsedProf.last_name) state.profile.last = parsedProf.last_name;
+        // Apply parsed fields to state.profile
+        if (parsedProf.first_name || parsedProf.first) state.profile.first = parsedProf.first_name || parsedProf.first;
+        if (parsedProf.last_name || parsedProf.last) state.profile.last = parsedProf.last_name || parsedProf.last;
         if (!state.profile.first && parsedProf.name && parsedProf.name !== 'Candidate') {
           const parts = parsedProf.name.split(' ');
           state.profile.first = parts[0] || '';
@@ -933,19 +933,35 @@
         if (parsedProf.skills && parsedProf.skills.length > 0) {
           state.profile.skills = Array.from(new Set([...(state.profile.skills || []), ...parsedProf.skills]));
         }
-        if (parsedProf.email && !state.profile.email) state.profile.email = parsedProf.email;
-        if (parsedProf.phone && !state.profile.phone) state.profile.phone = parsedProf.phone;
-        if (parsedProf.summary && !state.profile.summary) state.profile.summary = parsedProf.summary;
+        if (parsedProf.email) state.profile.email = parsedProf.email;
+        if (parsedProf.phone) state.profile.phone = parsedProf.phone;
+        if (parsedProf.summary) state.profile.summary = parsedProf.summary;
         if (parsedProf.headline) state.profile.headline = parsedProf.headline;
         if (parsedProf.location) state.profile.loc = parsedProf.location;
 
-        // Save experience, education, projects, links
+        // Save experience, education, projects, links to state.profile
         if (parsedProf.experience && parsedProf.experience.length > 0) state.profile.experience = parsedProf.experience;
         if (parsedProf.education && parsedProf.education.length > 0) state.profile.education = parsedProf.education;
         if (parsedProf.projects && parsedProf.projects.length > 0) state.profile.projects = parsedProf.projects;
-        if (parsedProf.links) state.profile.links = parsedProf.links;
+        if (parsedProf.links) {
+          state.profile.links = parsedProf.links;
+          if (parsedProf.links.linkedin) state.profile.linkedin_url = parsedProf.links.linkedin;
+          if (parsedProf.links.github) state.profile.github_url = parsedProf.links.github;
+          if (parsedProf.links.portfolio) state.profile.portfolio_url = parsedProf.links.portfolio;
+        }
 
-        localStorage.setItem('getarole_profile', JSON.stringify(profileData));
+        // Save full profile to localStorage (this is the SOURCE OF TRUTH on reload)
+        localStorage.setItem('getarole_profile', JSON.stringify(state.profile));
+        
+        // ALSO save the full resume data (experience/edu/projects/links) separately
+        // so renderStaticCards can ALWAYS find it even if Supabase load overwrites state.profile
+        const fullResumeV2 = JSON.parse(localStorage.getItem('getarole_resume_v2') || '{}');
+        fullResumeV2.experience = parsedProf.experience || fullResumeV2.experience || [];
+        fullResumeV2.education = parsedProf.education || fullResumeV2.education || [];
+        fullResumeV2.projects = parsedProf.projects || fullResumeV2.projects || [];
+        fullResumeV2.links = parsedProf.links || fullResumeV2.links || {};
+        localStorage.setItem('getarole_resume_v2', JSON.stringify(fullResumeV2));
+
         localStorage.setItem('getarole_uploaded_resume', JSON.stringify({
           filename: file.name,
           uploadedAt: new Date().toLocaleDateString(),
@@ -953,8 +969,10 @@
           skills: parsedProf.skills || []
         }));
 
-        await apiSaveProfile(profileData);
+        // Save basic profile fields to Supabase (user_profiles table)
+        await apiSaveProfile(state.profile);
 
+        // Save FULL resume data to Supabase (user_resumes table) 
         const uid = getFirebaseUID();
         if (uid && resumeText) {
           try {
@@ -962,21 +980,27 @@
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
               body: JSON.stringify({
-                resume: {
-                  header: { name: profileData.name || parsedProf.name || 'Candidate' },
-                  summary: { text: resumeText.slice(0, 500) },
-                  skills: { languages: (parsedProf.skills || []).slice(0, 10).join(', ') },
-                  raw_text: resumeText
-                }
+                filename: file.name,
+                work_experience: parsedProf.experience || [],
+                education: parsedProf.education || [],
+                projects: parsedProf.projects || [],
+                links: parsedProf.links || {},
+                skills: parsedProf.skills || [],
+                raw_text: resumeText.slice(0, 5000)
               })
             });
-          } catch(e) {}
+          } catch(e) { console.warn('[Resume Save]', e); }
         }
 
         renderStaticCards();
         updateNavUser();
         if (typeof renderSummaryCards === 'function') renderSummaryCards();
-        alert(`✅ Resume analyzed! Extracted ${(parsedProf.skills || []).length} skills and synced to your profile.`);
+        
+        const expCount = (parsedProf.experience || []).length;
+        const eduCount = (parsedProf.education || []).length;
+        const projCount = (parsedProf.projects || []).length;
+        const linksCount = Object.values(parsedProf.links || {}).filter(Boolean).length;
+        alert(`✅ Resume analyzed!\n${(parsedProf.skills || []).length} skills, ${expCount} work experiences, ${eduCount} education entries, ${projCount} projects, ${linksCount} portfolio links extracted.`);
       } catch (err) {
         console.error('Resume upload error:', err);
         alert('Could not parse resume file. Please ensure it is a valid text PDF or Word document.');
@@ -1290,17 +1314,43 @@
           if(!Array.isArray(state.prefs[k])) state.prefs[k] = [];
         });
       }
+      
+      // Load basic profile from Supabase (first, last, email, phone, headline, etc.)
       if(Object.keys(savedProfile).length > 0) {
-        const currentExp = state.profile.experience || [];
-        const currentEdu = state.profile.education || [];
-        const currentProj = state.profile.projects || [];
-        const currentLinks = state.profile.links || {};
-
         state.profile = { ...state.profile, ...savedProfile };
-        if (!state.profile.experience || state.profile.experience.length === 0) state.profile.experience = currentExp;
-        if (!state.profile.education || state.profile.education.length === 0) state.profile.education = currentEdu;
-        if (!state.profile.projects || state.profile.projects.length === 0) state.profile.projects = currentProj;
-        if (!state.profile.links || !state.profile.links.linkedin) state.profile.links = currentLinks;
+      }
+
+      // CRITICAL: Restore rich resume data from localStorage
+      // Supabase user_profiles table does NOT store experience/education/projects/links arrays.
+      // These live in localStorage getarole_profile and getarole_resume_v2.
+      const localProfile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+      const resumeV2 = JSON.parse(localStorage.getItem('getarole_resume_v2') || '{}');
+
+      // Experience: prefer localStorage profile > resumeV2 > empty
+      if (!state.profile.experience || state.profile.experience.length === 0) {
+        state.profile.experience = localProfile.experience || resumeV2.experience || [];
+      }
+      // Education
+      if (!state.profile.education || state.profile.education.length === 0) {
+        state.profile.education = localProfile.education || resumeV2.education || [];
+      }
+      // Projects
+      if (!state.profile.projects || state.profile.projects.length === 0) {
+        state.profile.projects = localProfile.projects || resumeV2.projects || [];
+      }
+      // Links
+      if (!state.profile.links || (!state.profile.links.linkedin && !state.profile.links.github && !state.profile.links.portfolio)) {
+        state.profile.links = localProfile.links || resumeV2.links || {};
+      }
+      // Also set linkedin_url/github_url/portfolio_url for Supabase columns
+      if (state.profile.links) {
+        if (state.profile.links.linkedin && !state.profile.linkedin_url) state.profile.linkedin_url = state.profile.links.linkedin;
+        if (state.profile.links.github && !state.profile.github_url) state.profile.github_url = state.profile.links.github;
+        if (state.profile.links.portfolio && !state.profile.portfolio_url) state.profile.portfolio_url = state.profile.links.portfolio;
+      }
+      // Skills
+      if ((!state.profile.skills || state.profile.skills.length === 0) && localProfile.skills && localProfile.skills.length > 0) {
+        state.profile.skills = localProfile.skills;
       }
 
 

@@ -975,20 +975,37 @@
           if (parsedProf.skills && parsedProf.skills.length > 0) {
             existing.skills = Array.from(new Set([...(existing.skills || []), ...parsedProf.skills]));
           }
-          if (parsedProf.first_name) existing.first = parsedProf.first_name;
-          if (parsedProf.last_name) existing.last = parsedProf.last_name;
-          if (parsedProf.name && parsedProf.name !== 'Candidate') existing.name = parsedProf.name;
-          if (parsedProf.headline) existing.headline = parsedProf.headline;
-          if (parsedProf.experience) existing.experience = parsedProf.experience;
-          if (parsedProf.education) existing.education = parsedProf.education;
-          if (parsedProf.projects) existing.projects = parsedProf.projects;
-          if (parsedProf.links) existing.links = parsedProf.links;
+           if (parsedProf.first_name) existing.first = parsedProf.first_name;
+           if (parsedProf.last_name) existing.last = parsedProf.last_name;
+           if (parsedProf.name && parsedProf.name !== 'Candidate') existing.name = parsedProf.name;
+           if (parsedProf.headline) existing.headline = parsedProf.headline;
+           if (parsedProf.email) existing.email = parsedProf.email;
+           if (parsedProf.phone) existing.phone = parsedProf.phone;
+           if (parsedProf.experience && parsedProf.experience.length > 0) existing.experience = parsedProf.experience;
+           if (parsedProf.education && parsedProf.education.length > 0) existing.education = parsedProf.education;
+           if (parsedProf.projects && parsedProf.projects.length > 0) existing.projects = parsedProf.projects;
+           if (parsedProf.links) {
+             existing.links = parsedProf.links;
+             if (parsedProf.links.linkedin) existing.linkedin_url = parsedProf.links.linkedin;
+             if (parsedProf.links.github) existing.github_url = parsedProf.links.github;
+             if (parsedProf.links.portfolio) existing.portfolio_url = parsedProf.links.portfolio;
+           }
 
           localStorage.setItem('getarole_profile', JSON.stringify(existing));
           localStorage.setItem('getarole_uploaded_resume', JSON.stringify({ filename: file.name, uploadedAt: new Date().toLocaleDateString(), raw_text: data.resume_text || '', skills: parsedProf.skills || [] }));
-          if (data.resume_data) localStorage.setItem('getarole_resume_v2', JSON.stringify(data.resume_data));
-          if (statusEl) statusEl.textContent = `✓ ${file.name} parsed · ${(parsedProf.skills || []).length} skills`;
-          toast(`✅ Resume parsed! ${(parsedProf.skills || []).length} skills extracted.`);
+          if (data.resume_data) {
+            const rv2 = data.resume_data;
+            rv2.experience = parsedProf.experience || rv2.experience || [];
+            rv2.education = parsedProf.education || rv2.education || [];
+            rv2.projects = parsedProf.projects || rv2.projects || [];
+            rv2.links = parsedProf.links || rv2.links || {};
+            localStorage.setItem('getarole_resume_v2', JSON.stringify(rv2));
+          }
+          const expC = (parsedProf.experience || []).length;
+          const eduC = (parsedProf.education || []).length;
+          const projC = (parsedProf.projects || []).length;
+          if (statusEl) statusEl.textContent = `✓ ${file.name} parsed · ${(parsedProf.skills || []).length} skills, ${expC} exp, ${eduC} edu, ${projC} projects`;
+          toast(`✅ Resume parsed! ${(parsedProf.skills || []).length} skills, ${expC} work experiences extracted.`);
         } else {
           if (statusEl) statusEl.textContent = `✓ ${file.name} uploaded`;
           toast(`Resume ${file.name} uploaded!`);

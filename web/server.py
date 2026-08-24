@@ -981,51 +981,112 @@ Return valid JSON with exact structure:
                     sections[curr_sec] = []
                 else:
                     sections.setdefault(curr_sec, []).append(l)
-                    
+
+            # ── EXPERIENCE PARSER (robust multi-line grouping) ──
             if "EXPERIENCE" in sections:
+                import re as re_fb
                 curr_exp = None
+                month_pattern = re_fb.compile(r'(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|Present)\b.*(\d{4}|Present)', re_fb.IGNORECASE)
+                date_pattern = re_fb.compile(r'\d{4}\s*[-–—]\s*(\d{4}|Present)', re_fb.IGNORECASE)
+                company_indicators = ["Ltd", "Inc", "Corp", "LLC", "Pvt", "GmbH", "Technologies", "Solutions", "Laboratory", "DRDO", "Organization", "Foundation", "Company", "Group"]
+                role_indicators = ["Intern", "Engineer", "Developer", "Manager", "Lead", "Architect", "Analyst", "Designer", "Consultant", "Director", "Officer"]
+                
                 for l in sections["EXPERIENCE"]:
-                    if l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*"):
+                    is_bullet = l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*")
+                    has_date = bool(month_pattern.search(l)) or bool(date_pattern.search(l))
+                    is_company = any(ci in l for ci in company_indicators) and len(l) < 120
+                    is_role = any(ri in l for ri in role_indicators) and len(l) < 120
+                    
+                    if is_bullet:
                         bullet = l.lstrip("•-·* ").strip()
                         if curr_exp and bullet:
                             curr_exp["bullets"].append(bullet)
-                    else:
-                        if not curr_exp or len(curr_exp["bullets"]) > 0:
-                            curr_exp = {"company": l, "title": "", "dates": "", "bullets": []}
-                            fb_exp.append(curr_exp)
-                        else:
-                            if any(c.isdigit() for c in l) or any(m in l for m in ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Present"]):
-                                curr_exp["dates"] = (curr_exp["dates"] + " " + l).strip()
-                            else:
-                                curr_exp["title"] = (curr_exp["title"] + " · " + l).strip(" · ")
+                    elif is_company and not is_bullet:
+                        # New company entry
+                        curr_exp = {"company": l, "title": "", "dates": "", "bullets": []}
+                        fb_exp.append(curr_exp)
+                    elif has_date and curr_exp and not curr_exp.get("dates"):
+                        curr_exp["dates"] = l
+                    elif is_role and curr_exp and not curr_exp.get("title"):
+                        curr_exp["title"] = l
+                    elif curr_exp and not curr_exp.get("title") and not is_bullet and len(l) < 100:
+                        # Non-bullet, non-company, non-date short line = role/title
+                        curr_exp["title"] = l
+                    # else: skip continuation fragments of bullet text
 
+            # ── PROJECTS PARSER (skip noise fragments) ──
             if "PROJECTS" in sections:
+                import re as re_fp
                 curr_proj = None
+                noise_words = {"Live", "GitHub", "Demo", "Link", "Source", "Code", "View"}
+                
                 for l in sections["PROJECTS"]:
-                    if l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*"):
+                    is_bullet = l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*")
+                    is_url = l.startswith("http") or l.startswith("www.") or "://" in l
+                    is_noise = l.strip() in noise_words
+                    is_year_only = bool(re_fp.match(r'^\d{4}(\s*[-–—]\s*(Present|\d{4}))?$', l.strip()))
+                    is_tech_stack = "·" in l and len(l.split("·")) >= 3  # "React · FastAPI · Supabase"
+                    
+                    if is_bullet:
                         bullet = l.lstrip("•-·* ").strip()
                         if curr_proj and bullet:
                             curr_proj["bullets"].append(bullet)
-                            curr_proj["description"] = " ".join(curr_proj["bullets"])
-                    else:
-                        if not curr_proj or len(curr_proj["bullets"]) > 0:
-                            curr_proj = {"name": l, "description": "", "link": "", "bullets": []}
-                            fb_proj.append(curr_proj)
+                            if not curr_proj["description"]:
+                                curr_proj["description"] = bullet
+                    elif is_noise or is_year_only or is_url:
+                        # Skip noise, just attach URL if available
+                        if is_url and curr_proj and not curr_proj.get("link"):
+                            curr_proj["link"] = l
+                        continue
+                    elif is_tech_stack and curr_proj:
+                        # Tech stack line belongs to current project, add as metadata
+                        curr_proj["tech"] = l
+                        continue
+                    elif not is_bullet and not is_noise and not is_year_only and not is_tech_stack:
+                        # Potential project name line
+                        # Only create new project if: line is short, not a sentence, and looks like a name
+                        l_stripped = l.strip()
+                        word_count = len(l_stripped.split())
+                        starts_upper = l_stripped[0].isupper() if l_stripped else False
+                        if word_count <= 6 and starts_upper and not l_stripped.endswith(".") and not l_stripped.startswith("for ") and not l_stripped.startswith("and "):
+                            if curr_proj and len(curr_proj["bullets"]) > 0:
+                                # Previous project had bullets, start a new one
+                                curr_proj = {"name": l_stripped, "description": "", "link": "", "bullets": []}
+                                fb_proj.append(curr_proj)
+                            elif not curr_proj:
+                                # First project
+                                curr_proj = {"name": l_stripped, "description": "", "link": "", "bullets": []}
+                                fb_proj.append(curr_proj)
+                            else:
+                                # Continuation text, append to description
+                                curr_proj["description"] = (curr_proj["description"] + " " + l_stripped).strip()
                         else:
-                            curr_proj["description"] = (curr_proj["description"] + " " + l).strip()
+                            # Long line = description text
+                            if curr_proj:
+                                curr_proj["description"] = (curr_proj["description"] + " " + l_stripped).strip()
 
+            # ── EDUCATION PARSER (filter out URLs and noise) ──
             if "EDUCATION" in sections:
                 curr_edu = None
                 for l in sections["EDUCATION"]:
-                    if not curr_edu or (any(k in l.lower() for k in ["university", "institute", "vit", "college", "school"]) and curr_edu.get("school")):
+                    # Skip URLs and noise
+                    if l.startswith("http") or l.startswith("mailto:") or "://" in l:
+                        continue
+                    if l.startswith("==="):
+                        continue
+                    
+                    is_school = any(k in l.lower() for k in ["university", "institute", "vit", "college", "school", "iit", "nit", "bits"])
+                    has_year = bool(re.search(r'20\d{2}', l))
+                    
+                    if is_school:
                         curr_edu = {"school": l, "degree": "", "year": ""}
                         fb_edu.append(curr_edu)
-                    else:
-                        if any(c.isdigit() for c in l) and any(yr in l for yr in ["202", "201", "200"]):
+                    elif curr_edu:
+                        if has_year and not curr_edu["year"]:
                             curr_edu["year"] = l
                         elif not curr_edu["degree"]:
                             curr_edu["degree"] = l
-                        else:
+                        elif len(l) > 5 and not l.startswith("http"):
                             curr_edu["degree"] += " · " + l
 
             if not experience_list and fb_exp: experience_list = fb_exp
