@@ -432,6 +432,10 @@
       </div>
 
       <div class="header-actions">
+        <button class="btn-refresh" onclick="openPreferencesModal()" style="background:#ffffff; border:1px solid var(--border); color:var(--text-main); font-weight:700;">
+          ⚙️ Preferences
+        </button>
+
         <button class="btn-refresh" id="btn-refresh-scrape" onclick="triggerScrape()">
           Sync
         </button>
@@ -442,9 +446,9 @@
           <span style="font-size: 10px; color: var(--text-subtle)">▼</span>
 
           <div class="user-dropdown" id="user-dropdown">
-            <a href="/onboarding" class="dropdown-item">Profile</a>
-            <a href="#" onclick="openCandidateDatabaseModal()" class="dropdown-item">Database</a>
-            <a href="#" onclick="openPreferencesModal()" class="dropdown-item">Settings</a>
+            <a href="#" onclick="openPreferencesModal()" class="dropdown-item">⚙️ Job Preferences</a>
+            <a href="/onboarding" class="dropdown-item">📝 Onboarding Wizard</a>
+            <a href="#" onclick="openCandidateDatabaseModal()" class="dropdown-item">👥 Database</a>
             <div style="height:1px; background:var(--border); margin:4px 0;"></div>
             <a href="#" onclick="handleLogout()" class="dropdown-item" style="color:#ef4444">Sign Out</a>
           </div>
@@ -635,6 +639,118 @@
 
   <div id="toast"></div>
 
+  <!-- ════════════════════ PREFERENCES & PROFILE MODAL ════════════════════ -->
+  <div id="preferences-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.6); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#ffffff; border:1px solid var(--border); border-radius:18px; width:100%; max-width:640px; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 25px 60px -15px rgba(0,0,0,0.25); position:relative; overflow:hidden;">
+      
+      <!-- Modal Header -->
+      <div style="padding:18px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:var(--bg-subtle);">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:32px; height:32px; border-radius:8px; background:var(--primary-light); color:var(--primary); font-size:16px; display:flex; align-items:center; justify-content:center; font-weight:800;">⚙️</div>
+          <div>
+            <h3 style="font-size:17px; font-weight:800; color:var(--text-main); line-height:1.2;">Job Preferences & Profile</h3>
+            <p style="font-size:12px; color:var(--text-muted);">Configure your search criteria to get personalized AI matches</p>
+          </div>
+        </div>
+        <button onclick="closePreferencesModal()" style="background:none; border:none; font-size:20px; color:var(--text-subtle); cursor:pointer;">&times;</button>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div style="padding:24px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:24px;">
+        
+        <!-- SECTION 1: PROFILE & RESUME -->
+        <div style="background:var(--bg-subtle); border:1px solid var(--border); border-radius:12px; padding:16px;">
+          <div style="font-size:12px; font-weight:800; color:var(--primary); text-transform:uppercase; margin-bottom:8px;">1. Candidate Details & Resume</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Full Name</label>
+              <input type="text" id="pref-fullname" placeholder="e.g. Hemasai Vattikuti" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-size:13.5px; outline:none;">
+            </div>
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Target Title</label>
+              <input type="text" id="pref-target-title" placeholder="e.g. Software Engineer" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-size:13.5px; outline:none;">
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; background:#ffffff; border:1px dashed var(--border-strong); border-radius:8px; padding:10px 14px;">
+            <div style="font-size:13px; font-weight:600; color:var(--text-main);" id="pref-resume-status">📄 Resume Uploaded & Active</div>
+            <label style="font-size:12px; font-weight:700; color:var(--primary); cursor:pointer; text-decoration:underline;">
+              Update PDF
+              <input type="file" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleModalResumeUpload(event)">
+            </label>
+          </div>
+        </div>
+
+        <!-- SECTION 2: TIMELINE / URGENCY -->
+        <div>
+          <label style="font-size:13.5px; font-weight:800; color:var(--text-main); display:block; margin-bottom:8px;">⚡ Job Search Timeline</label>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="modal-timeline-grid">
+            <div class="option-card" style="padding:10px 14px; font-size:13px;" onclick="selectModalTimeline(this, 'ASAP')">⚡ ASAP (Active)</div>
+            <div class="option-card" style="padding:10px 14px; font-size:13px;" onclick="selectModalTimeline(this, 'Within 3 months')">📅 Within 3 months</div>
+            <div class="option-card" style="padding:10px 14px; font-size:13px;" onclick="selectModalTimeline(this, 'Within 6 months')">⏳ Within 6 months</div>
+            <div class="option-card" style="padding:10px 14px; font-size:13px;" onclick="selectModalTimeline(this, 'Passively browsing')">👀 Passively browsing</div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: LOCATIONS (INDIA & REMOTE) -->
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <label style="font-size:13.5px; font-weight:800; color:var(--text-main);">📍 Preferred Locations</label>
+            <span style="font-size:12px; font-weight:700; color:var(--primary);" id="modal-loc-count">4 Selected</span>
+          </div>
+          <div style="position:relative; margin-bottom:8px;">
+            <input type="text" id="modal-city-search" placeholder="Search 120+ Indian cities..." oninput="renderModalCities()" style="width:100%; padding:8px 12px 8px 32px; border-radius:8px; border:1px solid var(--border); font-size:13px; outline:none;">
+            <span style="position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:13px; color:var(--text-subtle);">🔍</span>
+          </div>
+          <div class="chips-grid" id="modal-cities-chips" style="max-height:160px; overflow-y:auto; padding:6px; background:var(--bg-subtle); border:1px solid var(--border); border-radius:10px; display:flex; flex-wrap:wrap; gap:6px;">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- SECTION 4: EXPERIENCE LEVEL -->
+        <div>
+          <label style="font-size:13.5px; font-weight:800; color:var(--text-main); display:block; margin-bottom:8px;">🎓 Experience Level</label>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;" id="modal-exp-chips">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- SECTION 5: TARGET SPECIALIZATIONS -->
+        <div>
+          <label style="font-size:13.5px; font-weight:800; color:var(--text-main); display:block; margin-bottom:8px;">💻 Primary Specialization</label>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;" id="modal-role-chips">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- SECTION 6: MINIMUM COMPENSATION -->
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <label style="font-size:13.5px; font-weight:800; color:var(--text-main);">💰 Minimum Expected Compensation</label>
+            <div class="salary-toggle" style="margin-bottom:0; padding:2px;">
+              <button class="salary-tab active" id="modal-sal-inr" onclick="setModalCurrency('INR')" style="padding:4px 10px; font-size:11.5px;">₹ INR</button>
+              <button class="salary-tab" id="modal-sal-usd" onclick="setModalCurrency('USD')" style="padding:4px 10px; font-size:11.5px;">$ USD</button>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;" id="modal-salary-grid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="padding:16px 24px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:var(--bg-subtle);">
+        <button onclick="closePreferencesModal()" style="padding:9px 18px; border-radius:8px; border:1px solid var(--border); background:#ffffff; font-size:13.5px; font-weight:700; color:var(--text-muted); cursor:pointer;">
+          Cancel
+        </button>
+        <button onclick="savePreferencesFromModal()" class="btn btn-primary" style="padding:10px 24px; font-size:14px;">
+          💾 Save Preferences
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ════════════════════ LOGIC & DATA ENGINE ════════════════════ -->
   <script type="module">
     import { initAuthListener, logoutUser } from "/firebase-auth.js";
@@ -653,14 +769,188 @@
       }
     });
 
-    window.openPreferencesModal = function() {
-      toast('Search Preferences feature is coming soon!');
-    };
-
     window.handleLogout = async function() {
       await logoutUser();
       window.location.href = "/";
     };
+  </script>
+
+  <script>
+    const modalIndianCities = [
+      "India (Anywhere)", "Remote in India", "Global Remote", "Hybrid",
+      "Bengaluru", "Hyderabad", "Pune", "Delhi NCR", "Mumbai", "Chennai", "Gurgaon (Gurugram)", "Noida", "Kolkata", "Ahmedabad",
+      "Visakhapatnam", "Vijayawada", "Guntur", "Tirupati", "Nellore", "Kakinada", "Rajahmundry", "Kurnool", "Kadapa", "Anantapur", "Warangal", "Nizamabad", "Karimnagar", "Khammam",
+      "Mysuru (Mysore)", "Mangalore", "Hubli-Dharwad", "Belagavi", "Kochi (Cochin)", "Thiruvananthapuram", "Kozhikode (Calicut)", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem",
+      "Navi Mumbai", "Thane", "Nagpur", "Nashik", "Aurangabad", "Surat", "Vadodara", "Rajkot", "Gandhinagar", "Goa",
+      "Faridabad", "Ghaziabad", "Greater Noida", "Lucknow", "Kanpur", "Agra", "Varanasi", "Prayagraj (Allahabad)", "Dehradun", "Haridwar",
+      "Chandigarh", "Mohali", "Panchkula", "Ludhiana", "Amritsar", "Jalandhar", "Jaipur", "Jodhpur", "Kota", "Udaipur", "Shimla", "Jammu", "Srinagar",
+      "Indore", "Bhopal", "Gwalior", "Jabalpur", "Raipur", "Bilaspur", "Patna", "Gaya", "Ranchi", "Jamshedpur", "Dhanbad",
+      "Howrah", "Siliguri", "Bhubaneswar", "Cuttack", "Guwahati", "Shillong"
+    ];
+
+    const modalRoles = [
+      "Software Engineering", "Full Stack Developer", "Backend Developer",
+      "Frontend Developer", "AI & Machine Learning", "Data Science",
+      "DevOps & Cloud Engineer", "Product Management", "Mobile (iOS/Android)",
+      "UI/UX Design", "QA / Automation Engineer", "Cyber Security",
+      "Business & Strategy", "Growth & Marketing", "Fintech & Banking"
+    ];
+
+    const modalExpLevels = [
+      "No experience", "Internship", "Entry Level",
+      "Junior (1 to 2 years)", "Mid-level (3 to 4 years)", "Senior (5 to 8 years)", "Expert & Leadership (9+ years)"
+    ];
+
+    const modalSalaryINR = ["Any", "₹6 LPA+", "₹10 LPA+", "₹15 LPA+", "₹25 LPA+", "₹40 LPA+"];
+    const modalSalaryUSD = ["Any", "$60k+", "$80k+", "$100k+", "$140k+", "$200k+"];
+
+    let modalPrefs = {
+      timeline: 'ASAP',
+      locations: ['Bengaluru', 'Hyderabad', 'Remote in India', 'Global Remote'],
+      experience: ['Entry Level'],
+      role: 'Software Engineering',
+      currency: 'INR',
+      minSalary: '₹10 LPA+'
+    };
+
+    window.openPreferencesModal = function() {
+      const saved = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
+      const profile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+      
+      if (saved.timeline) modalPrefs = { ...modalPrefs, ...saved };
+      
+      const nameEl = document.getElementById('pref-fullname');
+      if (nameEl) nameEl.value = profile.name || profile.firstName || '';
+      const titleEl = document.getElementById('pref-target-title');
+      if (titleEl) titleEl.value = modalPrefs.role || '';
+
+      renderModalTimeline();
+      renderModalCities();
+      renderModalExp();
+      renderModalRoles();
+      renderModalSalary();
+
+      document.getElementById('preferences-modal').style.display = 'flex';
+    };
+
+    window.closePreferencesModal = function() {
+      document.getElementById('preferences-modal').style.display = 'none';
+    };
+
+    function renderModalTimeline() {
+      const items = document.querySelectorAll('#modal-timeline-grid .option-card');
+      items.forEach(el => {
+        const text = el.textContent;
+        el.classList.toggle('selected', text.includes(modalPrefs.timeline));
+      });
+    }
+
+    function selectModalTimeline(el, val) {
+      modalPrefs.timeline = val;
+      renderModalTimeline();
+    }
+
+    function renderModalCities() {
+      const query = (document.getElementById('modal-city-search').value || '').trim().toLowerCase();
+      const container = document.getElementById('modal-cities-chips');
+      const filtered = modalIndianCities.filter(c => c.toLowerCase().includes(query));
+      
+      container.innerHTML = filtered.map(c => {
+        const isSel = modalPrefs.locations.includes(c);
+        return `<div class="choice-chip ${isSel ? 'selected' : ''}" style="padding:6px 12px; font-size:12px;" onclick="toggleModalCity('${c}')">${c} ${isSel ? '✓' : ''}</div>`;
+      }).join('');
+
+      document.getElementById('modal-loc-count').textContent = `${modalPrefs.locations.length} Selected`;
+    }
+
+    function toggleModalCity(c) {
+      const idx = modalPrefs.locations.indexOf(c);
+      if (idx > -1) modalPrefs.locations.splice(idx, 1);
+      else modalPrefs.locations.push(c);
+      renderModalCities();
+    }
+
+    function renderModalExp() {
+      const container = document.getElementById('modal-exp-chips');
+      container.innerHTML = modalExpLevels.map(lvl => {
+        const isSel = modalPrefs.experience.includes(lvl);
+        return `<div class="choice-chip ${isSel ? 'selected' : ''}" style="padding:6px 12px; font-size:12px;" onclick="toggleModalExp('${lvl}')">${lvl} ${isSel ? '✓' : ''}</div>`;
+      }).join('');
+    }
+
+    function toggleModalExp(lvl) {
+      const idx = modalPrefs.experience.indexOf(lvl);
+      if (idx > -1) modalPrefs.experience.splice(idx, 1);
+      else {
+        if (modalPrefs.experience.length >= 2) modalPrefs.experience.shift();
+        modalPrefs.experience.push(lvl);
+      }
+      renderModalExp();
+    }
+
+    function renderModalRoles() {
+      const container = document.getElementById('modal-role-chips');
+      container.innerHTML = modalRoles.map(r => {
+        const isSel = modalPrefs.role === r;
+        return `<div class="choice-chip ${isSel ? 'selected' : ''}" style="padding:6px 12px; font-size:12px;" onclick="selectModalRole('${r}')">${r} ${isSel ? '✓' : ''}</div>`;
+      }).join('');
+    }
+
+    function selectModalRole(r) {
+      modalPrefs.role = r;
+      renderModalRoles();
+    }
+
+    function setModalCurrency(curr) {
+      modalPrefs.currency = curr;
+      document.getElementById('modal-sal-inr').classList.toggle('active', curr === 'INR');
+      document.getElementById('modal-sal-usd').classList.toggle('active', curr === 'USD');
+      renderModalSalary();
+    }
+
+    function renderModalSalary() {
+      const list = modalPrefs.currency === 'INR' ? modalSalaryINR : modalSalaryUSD;
+      const container = document.getElementById('modal-salary-grid');
+      container.innerHTML = list.map(sal => {
+        const isSel = modalPrefs.minSalary === sal;
+        return `<div class="option-card ${isSel ? 'selected' : ''}" style="padding:8px 10px; font-size:12px; justify-content:center;" onclick="selectModalSalary('${sal}')">${sal}</div>`;
+      }).join('');
+    }
+
+    function selectModalSalary(sal) {
+      modalPrefs.minSalary = sal;
+      renderModalSalary();
+    }
+
+    function handleModalResumeUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      document.getElementById('pref-resume-status').textContent = `✓ ${file.name} uploaded`;
+      toast(`Resume ${file.name} uploaded!`);
+    }
+
+    function savePreferencesFromModal() {
+      const name = document.getElementById('pref-fullname').value.trim();
+      const targetTitle = document.getElementById('pref-target-title').value.trim();
+      
+      const profile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+      if (name) profile.name = name;
+      if (targetTitle) profile.title = targetTitle;
+      profile.preferences = { ...modalPrefs };
+      localStorage.setItem('getarole_profile', JSON.stringify(profile));
+
+      localStorage.setItem('getarole_prefs', JSON.stringify(modalPrefs));
+      
+      closePreferencesModal();
+      toast('✓ Job Preferences saved successfully!');
+      
+      // Update UI title if changed
+      if (name) {
+        document.getElementById('nav-username').textContent = name;
+        const homeName = document.getElementById('home-user-name');
+        if (homeName) homeName.textContent = name;
+      }
+    }
   </script>
 
   <script>
