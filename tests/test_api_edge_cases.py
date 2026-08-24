@@ -305,3 +305,17 @@ def test_enterprise_frontend_security_headers():
     assert "max-age=31536000" in res.headers.get("strict-transport-security", "")
     assert "default-src 'self'" in res.headers.get("content-security-policy", "")
     assert "frame-ancestors 'none'" in res.headers.get("content-security-policy", "")
+
+
+# ── 11. Error Pages UX Verification (404 & 500) ──────────────────────────────
+
+def test_custom_404_and_500_pages():
+    """Test that custom 404 and 500 error boundaries return responsive HTML."""
+    res_html = client.get("/non-existent-random-page")
+    assert res_html.status_code == 404
+    assert "404 — Page Not Found" in res_html.text
+    assert "Return to Dashboard" in res_html.text
+
+    res_api = client.get("/api/non-existent-api-endpoint")
+    assert res_api.status_code == 404
+    assert res_api.json()["error"] == "API route not found."

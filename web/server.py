@@ -58,9 +58,43 @@ app.add_middleware(
 async def global_exception_handler(request: Request, exc: Exception):
     """Global exception boundary to prevent raw stack trace leakage."""
     print(f"[Global Exception Boundary] Unhandled error at {request.url.path}: {exc}")
-    return JSONResponse(
-        status_code=500,
-        content={"success": False, "error": "An internal server error occurred. Please try again."}
+    if request.url.path.startswith("/api/"):
+        return JSONResponse(
+            status_code=500,
+            content={"success": False, "error": "An internal server error occurred. Please try again."}
+        )
+    return HTMLResponse(
+        """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>500 — Server Error | getArole</title>
+  <link rel="icon" type="image/svg+xml" href="/logo.svg">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; text-align: center; }
+    .card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 48px 32px; max-width: 480px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+    .icon { font-size: 56px; margin-bottom: 16px; }
+    h1 { font-size: 28px; font-weight: 800; margin-bottom: 12px; color: #ffffff; }
+    p { font-size: 15px; color: #94a3b8; line-height: 1.6; margin-bottom: 28px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; background: #4f46e5; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 15px; transition: background 0.2s; border: none; cursor: pointer; }
+    .btn:hover { background: #4338ca; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">⚠️</div>
+    <h1>500 — Something Went Wrong</h1>
+    <p>We encountered an unexpected server error while processing your request. Please retry or head back to the dashboard.</p>
+    <div style="display: flex; gap: 12px; justify-content: center;">
+      <button onclick="window.location.reload()" class="btn" style="background: #334155;">Retry Action</button>
+      <a href="/dashboard" class="btn">Go to Dashboard</a>
+    </div>
+  </div>
+</body>
+</html>""",
+        status_code=500
     )
 
 @app.exception_handler(404)
@@ -68,7 +102,36 @@ async def custom_404_handler(request: Request, exc: Exception):
     """SPA fallback for invalid frontend routes."""
     if request.url.path.startswith("/api/"):
         return JSONResponse(status_code=404, content={"success": False, "error": "API route not found."})
-    return HTMLResponse("<h1>404 — Page Not Found</h1><p>Return to <a href='/'>getArole Home</a></p>", status_code=404)
+    return HTMLResponse(
+        """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Page Not Found | getArole</title>
+  <link rel="icon" type="image/svg+xml" href="/logo.svg">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; text-align: center; }
+    .card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 48px 32px; max-width: 480px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
+    .icon { font-size: 56px; margin-bottom: 16px; }
+    h1 { font-size: 28px; font-weight: 800; margin-bottom: 12px; color: #ffffff; }
+    p { font-size: 15px; color: #94a3b8; line-height: 1.6; margin-bottom: 28px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; background: #4f46e5; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 15px; transition: background 0.2s; }
+    .btn:hover { background: #4338ca; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🔍</div>
+    <h1>404 — Page Not Found</h1>
+    <p>The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
+    <a href="/dashboard" class="btn">Return to Dashboard</a>
+  </div>
+</body>
+</html>""",
+        status_code=404
+    )
 
 AGGREGATOR = JobAggregator()
 MATCHER: Optional[ResumeMatcher] = None

@@ -266,3 +266,35 @@ if ('serviceWorker' in navigator && window.location.protocol.startsWith('http'))
       .catch((err) => console.warn('[getArole PWA] Service Worker registration failed:', err));
   });
 }
+
+// Global Connection State Banner (Offline Detection)
+function initConnectionMonitor() {
+  let banner = document.getElementById('offline-indicator-banner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'offline-indicator-banner';
+    banner.setAttribute('role', 'alert');
+    banner.setAttribute('aria-live', 'assertive');
+    banner.style.cssText = 'display:none;position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#1e293b;color:#f8fafc;padding:10px 20px;border-radius:30px;font-size:13px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,0.3);z-index:99999;border:1px solid #475569;align-items:center;gap:8px;';
+    banner.innerHTML = '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ef4444;"></span> You are currently browsing offline. Cached data is being shown.';
+    document.body.appendChild(banner);
+  }
+
+  function updateStatus() {
+    if (!navigator.onLine) {
+      banner.style.display = 'flex';
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+
+  window.addEventListener('offline', updateStatus);
+  window.addEventListener('online', updateStatus);
+  if (!navigator.onLine) updateStatus();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initConnectionMonitor);
+} else {
+  initConnectionMonitor();
+}
