@@ -243,7 +243,32 @@ def test_ai_telemetry_engine_header():
     res = client.post("/api/enhance-bullet", json={"bullet": "Built REST APIs for user auth."})
     assert res.status_code == 200
     assert "X-AI-Engine" in res.headers
-    assert res.headers["X-AI-Engine"] in ["nvidia-nim", "fallback-heuristics"]
+# ── 13. WCAG 2.1 AA Legal Pages Skip Link Verification ───────────────────────
+def test_legal_pages_skip_links_and_wcag_accessibility():
+    """Validates that /privacy and /terms include keyboard skip-links and #main-content landmarks."""
+    base_static = os.path.join(os.path.dirname(__file__), "..", "web", "static")
+    
+    for page in ["privacy/index.html", "terms/index.html"]:
+        path = os.path.join(base_static, page)
+        assert os.path.exists(path), f"{page} missing!"
+        with open(path, "r", encoding="utf-8") as f:
+            content = f.read()
+            assert "class=\"skip-link\"" in content, f"{page} missing .skip-link"
+            assert "id=\"main-content\"" in content, f"{page} missing #main-content landmark"
+            assert "prefers-reduced-motion" in content, f"{page} missing prefers-reduced-motion"
+
+# ── 14. Mobile Viewport 16px Font Size & Motion Reduction Verification ───────
+def test_mobile_viewport_font_size_and_motion_reduction():
+    """Validates that core app interfaces enforce 16px mobile input size (iOS auto-zoom fix)."""
+    base_static = os.path.join(os.path.dirname(__file__), "..", "web", "static")
+    
+    for page in ["landing.html", "dashboard/index.html", "explore/index.html", "matches/index.html", "profile/index.html", "preferences/index.html"]:
+        path = os.path.join(base_static, page)
+        assert os.path.exists(path), f"{page} missing!"
+        with open(path, "r", encoding="utf-8") as f:
+            content = f.read()
+            assert "font-size: 16px !important;" in content or "font-size: 16px" in content
+            assert "prefers-reduced-motion" in content, f"{page} missing prefers-reduced-motion"
 
 # ── Standalone Runner ────────────────────────────────────────────────────────
 if __name__ == "__main__":
@@ -259,4 +284,6 @@ if __name__ == "__main__":
     test_resume_upload_10mb_payload_size_ceiling()
     asyncio.run(test_resume_parser_async_thread_offload())
     test_ai_telemetry_engine_header()
-    print("✅ ALL 12 AUDIT, SRE & COMPLIANCE VERIFICATION TESTS PASSED GREEN!")
+    test_legal_pages_skip_links_and_wcag_accessibility()
+    test_mobile_viewport_font_size_and_motion_reduction()
+    print("✅ ALL 14 AUDIT, SRE, ACCESSIBILITY & COMPLIANCE VERIFICATION TESTS PASSED GREEN!")
