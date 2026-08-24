@@ -982,20 +982,21 @@ Return valid JSON with exact structure:
                 else:
                     sections.setdefault(curr_sec, []).append(l)
 
-            # ── EXPERIENCE PARSER (robust multi-line grouping) ──
+            # ── EXPERIENCE PARSER (universal multi-line grouping) ──
             if "EXPERIENCE" in sections:
                 import re as re_fb
                 curr_exp = None
                 month_pattern = re_fb.compile(r'(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|Present)\b.*(\d{4}|Present)', re_fb.IGNORECASE)
                 date_pattern = re_fb.compile(r'\d{4}\s*[-–—]\s*(\d{4}|Present)', re_fb.IGNORECASE)
-                company_indicators = ["Ltd", "Inc", "Corp", "LLC", "Pvt", "GmbH", "Technologies", "Solutions", "Laboratory", "DRDO", "Organization", "Foundation", "Company", "Group"]
-                role_indicators = ["Intern", "Engineer", "Developer", "Manager", "Lead", "Architect", "Analyst", "Designer", "Consultant", "Director", "Officer"]
+                company_indicators = ["ltd", "inc", "corp", "llc", "pvt", "gmbh", "technologies", "solutions", "laboratory", "labs", "lab", "organization", "foundation", "company", "group", "services", "systems", "agency", "studio", "studios", "ventures", "partners", "global", "co."]
+                role_indicators = ["intern", "engineer", "developer", "manager", "lead", "architect", "analyst", "designer", "consultant", "director", "officer", "specialist", "associate", "head", "cto", "ceo", "vp", "founder"]
                 
                 for l in sections["EXPERIENCE"]:
                     is_bullet = l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*")
                     has_date = bool(month_pattern.search(l)) or bool(date_pattern.search(l))
-                    is_company = any(ci in l for ci in company_indicators) and len(l) < 120
-                    is_role = any(ri in l for ri in role_indicators) and len(l) < 120
+                    lower_l = l.lower()
+                    is_company = any(ci in lower_l for ci in company_indicators) and len(l) < 120
+                    is_role = any(ri in lower_l for ri in role_indicators) and len(l) < 120
                     
                     if is_bullet:
                         bullet = l.lstrip("•-·* ").strip()
@@ -1005,27 +1006,30 @@ Return valid JSON with exact structure:
                         # New company entry
                         curr_exp = {"company": l, "title": "", "dates": "", "bullets": []}
                         fb_exp.append(curr_exp)
+                    elif not curr_exp and not is_bullet and len(l) < 120:
+                        # First non-bullet line under EXPERIENCE section = company/role
+                        curr_exp = {"company": l, "title": "", "dates": "", "bullets": []}
+                        fb_exp.append(curr_exp)
                     elif has_date and curr_exp and not curr_exp.get("dates"):
                         curr_exp["dates"] = l
                     elif is_role and curr_exp and not curr_exp.get("title"):
                         curr_exp["title"] = l
                     elif curr_exp and not curr_exp.get("title") and not is_bullet and len(l) < 100:
-                        # Non-bullet, non-company, non-date short line = role/title
+                        # Non-bullet short line = role/title
                         curr_exp["title"] = l
-                    # else: skip continuation fragments of bullet text
 
-            # ── PROJECTS PARSER (skip noise fragments) ──
+            # ── PROJECTS PARSER (universal noise filtering) ──
             if "PROJECTS" in sections:
                 import re as re_fp
                 curr_proj = None
-                noise_words = {"Live", "GitHub", "Demo", "Link", "Source", "Code", "View"}
+                noise_words = {"Live", "GitHub", "Demo", "Link", "Source", "Code", "View", "Website", "Repo", "App"}
                 
                 for l in sections["PROJECTS"]:
                     is_bullet = l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*")
                     is_url = l.startswith("http") or l.startswith("www.") or "://" in l
                     is_noise = l.strip() in noise_words
                     is_year_only = bool(re_fp.match(r'^\d{4}(\s*[-–—]\s*(Present|\d{4}))?$', l.strip()))
-                    is_tech_stack = "·" in l and len(l.split("·")) >= 3  # "React · FastAPI · Supabase"
+                    is_tech_stack = "·" in l and len(l.split("·")) >= 3
                     
                     if is_bullet:
                         bullet = l.lstrip("•-·* ").strip()
@@ -1034,51 +1038,48 @@ Return valid JSON with exact structure:
                             if not curr_proj["description"]:
                                 curr_proj["description"] = bullet
                     elif is_noise or is_year_only or is_url:
-                        # Skip noise, just attach URL if available
                         if is_url and curr_proj and not curr_proj.get("link"):
                             curr_proj["link"] = l
                         continue
                     elif is_tech_stack and curr_proj:
-                        # Tech stack line belongs to current project, add as metadata
                         curr_proj["tech"] = l
                         continue
                     elif not is_bullet and not is_noise and not is_year_only and not is_tech_stack:
-                        # Potential project name line
-                        # Only create new project if: line is short, not a sentence, and looks like a name
                         l_stripped = l.strip()
                         word_count = len(l_stripped.split())
                         starts_upper = l_stripped[0].isupper() if l_stripped else False
                         if word_count <= 6 and starts_upper and not l_stripped.endswith(".") and not l_stripped.startswith("for ") and not l_stripped.startswith("and "):
                             if curr_proj and len(curr_proj["bullets"]) > 0:
-                                # Previous project had bullets, start a new one
                                 curr_proj = {"name": l_stripped, "description": "", "link": "", "bullets": []}
                                 fb_proj.append(curr_proj)
                             elif not curr_proj:
-                                # First project
                                 curr_proj = {"name": l_stripped, "description": "", "link": "", "bullets": []}
                                 fb_proj.append(curr_proj)
                             else:
-                                # Continuation text, append to description
                                 curr_proj["description"] = (curr_proj["description"] + " " + l_stripped).strip()
                         else:
-                            # Long line = description text
                             if curr_proj:
                                 curr_proj["description"] = (curr_proj["description"] + " " + l_stripped).strip()
 
-            # ── EDUCATION PARSER (filter out URLs and noise) ──
+            # ── EDUCATION PARSER (universal institution & degree detection) ──
             if "EDUCATION" in sections:
                 curr_edu = None
+                school_keywords = ["university", "institute", "institution", "college", "school", "academy", "polytechnic", "conservatory", "faculty"]
+                degree_keywords = ["b.tech", "b.e", "b.s", "b.a", "m.tech", "m.s", "m.a", "ph.d", "phd", "bachelor", "master", "doctorate", "diploma", "degree", "major"]
+                
                 for l in sections["EDUCATION"]:
-                    # Skip URLs and noise
-                    if l.startswith("http") or l.startswith("mailto:") or "://" in l:
-                        continue
-                    if l.startswith("==="):
+                    if l.startswith("http") or l.startswith("mailto:") or "://" in l or l.startswith("==="):
                         continue
                     
-                    is_school = any(k in l.lower() for k in ["university", "institute", "vit", "college", "school", "iit", "nit", "bits"])
+                    lower_l = l.lower()
+                    is_school = any(k in lower_l for k in school_keywords)
+                    is_degree = any(k in lower_l for k in degree_keywords)
                     has_year = bool(re.search(r'20\d{2}', l))
                     
                     if is_school:
+                        curr_edu = {"school": l, "degree": "", "year": ""}
+                        fb_edu.append(curr_edu)
+                    elif not curr_edu and (is_degree or has_year) and len(l) < 120:
                         curr_edu = {"school": l, "degree": "", "year": ""}
                         fb_edu.append(curr_edu)
                     elif curr_edu:
