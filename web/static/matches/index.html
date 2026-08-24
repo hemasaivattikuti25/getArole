@@ -881,7 +881,7 @@
       toast(`Resume ${file.name} uploaded!`);
     }
 
-    function savePreferencesFromModal() {
+    async function savePreferencesFromModal() {
       const name = document.getElementById('pref-fullname').value.trim();
       const targetTitle = document.getElementById('pref-target-title').value.trim();
       
@@ -898,10 +898,34 @@
       
       // Update UI title if changed
       if (name) {
-        document.getElementById('nav-username').textContent = name;
+        const navUser = document.getElementById('nav-username');
+        if (navUser) navUser.textContent = name;
         const homeName = document.getElementById('home-user-name');
         if (homeName) homeName.textContent = name;
       }
+
+      // Sync to backend (fire and forget)
+      const uid = (function() {
+        const u = sessionStorage.getItem('firebase_uid') || localStorage.getItem('firebase_uid');
+        if (u) return u;
+        try { const raw = localStorage.getItem('getarole_user'); if (raw) { const p = JSON.parse(raw); if (p && p.uid) return p.uid; } } catch(e) {}
+        let id = localStorage.getItem('getarole_user_id');
+        if (!id) { id = 'usr_' + Math.random().toString(36).substring(2, 11); localStorage.setItem('getarole_user_id', id); }
+        return id;
+      })();
+
+      Promise.all([
+        fetch('/api/user/profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+          body: JSON.stringify(profile)
+        }).catch(e => console.warn('[Profile sync]', e)),
+        fetch('/api/user/preferences', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+          body: JSON.stringify(modalPrefs)
+        }).catch(e => console.warn('[Prefs sync]', e))
+      ]);
     }
   </script>
 

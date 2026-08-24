@@ -48,6 +48,23 @@ def get_matcher() -> ResumeMatcher:
         MATCHER = ResumeMatcher()
     return MATCHER
 
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://tgmhtlqcjgcjedlnthfk.supabase.co")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn")
+
+def _fetch_jobs_from_supabase_rest(limit: int = 1500) -> list:
+    """Directly call Supabase REST API using httpx (sync). Always works regardless of async client state."""
+    try:
+        import httpx
+        url = f"{SUPABASE_URL}/rest/v1/jobs?select=*&order=created_at.desc&limit={limit}"
+        headers = {"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"}
+        with httpx.Client(timeout=15) as client:
+            res = client.get(url, headers=headers)
+            if res.status_code == 200:
+                return res.json() or []
+    except Exception as e:
+        print(f"[Supabase REST] Direct fetch error: {e}")
+    return []
+
 def load_cached_jobs() -> List[JobListing]:
     # 1. Check project directory first, then /tmp
     target_files = [SAVED_JOBS_FILE, TMP_JOBS_FILE]
@@ -63,14 +80,17 @@ def load_cached_jobs() -> List[JobListing]:
             except Exception:
                 pass
 
-    # 2. Fallback to Supabase cloud PostgreSQL
+    # 2. Fallback: direct Supabase REST API (sync httpx)
     try:
-        from services.supabase_service import get_supabase_service
-        supabase = get_supabase_service()
-        if supabase.is_connected() and supabase.client:
-            res = supabase.client.table("jobs").select("*").limit(2000).execute()
-            if res.data:
-                jobs = [JobListing(**item) for item in res.data]
+        raw_jobs = _fetch_jobs_from_supabase_rest(limit=1500)
+        if raw_jobs:
+            jobs = []
+            for item in raw_jobs:
+                try:
+                    jobs.append(JobListing(**item))
+                except Exception:
+                    pass
+            if jobs:
                 AGGREGATOR.cached_jobs = jobs
                 return jobs
     except Exception as e:
@@ -163,25 +183,32 @@ async def get_jobs(
 ):
     """
     Returns all cached job listings for the frontend (Explore, Matches, Dashboard).
-    Falls back to Supabase if local cache is empty.
+    Falls back to direct Supabase REST if in-memory cache is empty.
     """
     jobs = AGGREGATOR.cached_jobs or []
 
-    # If in-memory cache is empty, try loading from disk or Supabase
+    # If in-memory cache is empty, load from disk cache
     if not jobs:
         jobs = load_cached_jobs() or []
 
-    # If still empty, try Supabase directly
+    # If still empty, fetch directly from Supabase REST (always reliable)
     if not jobs:
         try:
-            supabase = get_supabase_service()
-            if supabase.is_connected() and supabase.client:
-                res = supabase.client.table("jobs").select("*").limit(limit).execute()
-                if res.data:
-                    jobs = [JobListing(**item) for item in res.data]
-                    AGGREGATOR.cached_jobs = jobs
+            import asyncio
+            raw_jobs = await asyncio.get_event_loop().run_in_executor(
+                None, lambda: _fetch_jobs_from_supabase_rest(limit)
+            )
+            if raw_jobs:
+                jobs_out = []
+                for item in raw_jobs:
+                    try:
+                        jobs_out.append(JobListing(**item))
+                    except Exception:
+                        pass
+                AGGREGATOR.cached_jobs = jobs_out
+                jobs = jobs_out
         except Exception as e:
-            print(f"[api/jobs] Supabase fallback: {e}")
+            print(f"[api/jobs] Supabase REST fallback error: {e}")
 
     jobs_list = [j.model_dump() if hasattr(j, 'model_dump') else j for j in jobs]
     return {"total": len(jobs_list), "jobs": jobs_list}
