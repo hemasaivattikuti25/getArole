@@ -1028,7 +1028,7 @@
         const userPrefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
         
         function computeJobFitScore(job, profile, prefs) {
-          let score = 55;
+          let score = 0;
           const userSkills = (profile.skills || []).map(s => s.toLowerCase());
           const targetRoles = [prefs.role, profile.headline, prefs.target_role].filter(Boolean).map(r => r.toLowerCase());
           const preferredCities = (prefs.locations || [prefs.city, profile.city]).filter(Boolean).map(c => c.toLowerCase());
@@ -1040,49 +1040,35 @@
           const jobSkills = (job.skills || []).map(s => s.toLowerCase());
           const isRemote = (job.workplace_type || '').toLowerCase() === 'remote' || jobLoc.includes('remote');
 
-          // Target Role Affinity (+25 pts max)
-          if (targetRoles.length > 0) {
-            for (const role of targetRoles) {
-              const words = role.split(/\s+/).filter(w => w.length > 2);
-              const matchedWords = words.filter(w => jobTitle.includes(w) || jobDesc.includes(w));
-              if (matchedWords.length > 0) {
-                score += Math.min(25, Math.round((matchedWords.length / words.length) * 25));
-                break;
-              }
-            }
-          } else {
-            // Default boost for SWE/Engineering
-            if (jobTitle.includes('engineer') || jobTitle.includes('developer') || jobTitle.includes('ai')) score += 18;
-          }
+          // Strict checking: Must match role/title somewhat
+          let roleMatch = false;
+          if (targetRoles.length === 0) roleMatch = true; // no preferences set
+          else if (targetRoles.some(r => jobTitle.includes(r) || r.includes(jobTitle))) roleMatch = true;
+          else if (targetRoles.some(r => jobDesc.includes(r))) roleMatch = true;
 
-          // Location & Workplace Match (+12 pts max)
+          if (!roleMatch) return 0; // Filter out if completely irrelevant to role preferences
+
+          score += 65; // Base score for matching role
+
+          // Location Match
           if (remotePref && isRemote) {
-            score += 12;
+            score += 15;
+          } else if (preferredCities.length > 0 && preferredCities.some(c => jobLoc.includes(c) || (job.city && job.city.toLowerCase().includes(c)))) {
+            score += 15;
           } else if (preferredCities.length > 0) {
-            for (const city of preferredCities) {
-              if (jobLoc.includes(city) || (job.city && job.city.toLowerCase().includes(city))) {
-                score += 12;
-                break;
-              }
-            }
-          } else {
-            score += 6;
+            score -= 10; // Penalty for wrong location
           }
 
-          // Technical Skills Match (+12 pts max)
+          // Skills Match
           if (userSkills.length > 0) {
             let hits = 0;
             for (const skill of userSkills) {
-              if (jobSkills.includes(skill) || jobDesc.includes(skill) || jobTitle.includes(skill)) {
-                hits++;
-              }
+              if (jobSkills.includes(skill) || jobDesc.includes(skill) || jobTitle.includes(skill)) hits++;
             }
-            score += Math.min(12, Math.round((hits / Math.max(1, Math.min(userSkills.length, 5))) * 12));
-          } else {
-            score += 5;
+            score += Math.min(20, Math.round((hits / Math.max(1, userSkills.length)) * 20));
           }
 
-          return Math.min(99, Math.max(62, score));
+          return Math.min(99, Math.max(0, score));
         }
 
         allJobs = allJobs.map(j => ({
@@ -1092,9 +1078,10 @@
 
         filteredJobs = [...allJobs];
         
-        // Real calibrated high-fit matches sorted by score
-        matchedJobs = [...allJobs]
-          .sort((a, b) => (b.fit_score || 0) - (a.fit_score || 0))
+        // Only include jobs that actually match the preferences
+        matchedJobs = allJobs
+          .filter(j => j.fit_score > 0)
+          .sort((a, b) => b.fit_score - a.fit_score)
           .slice(0, 60);
 
         renderFeed();
@@ -1234,7 +1221,7 @@
               ${isApplied ? 'Marked as Applied' : 'Already Applied?'}
             </button>
             <div style="position:relative;">
-              <button class="btn-referral" onclick="toggleReferralDropdown('${job.id}')">
+              <button class="btn-referral" style="border: 2px solid #4f46e5; color: #4f46e5; font-weight: 700; background: #e0e7ff;" onclick="toggleReferralDropdown('${job.id}')">
                 Find Referrals ▼
               </button>
               <div class="referral-dropdown" id="ref-dropdown-${job.id}">
@@ -1276,21 +1263,25 @@
               <div class="circle-text">${matchScore}%</div>
             </div>
             <div>
-              <div class="match-summary-title">ATS Original Score</div>
+              <div class="match-summary-title">ATS Fit Score</div>
               <div class="match-summary-sub">
-                Based on your uploaded ATS resume.
-                <a href="/resume-builder">Improve Resume →</a>
+                Based on your loaded preferences and profile.
               </div>
             </div>
           </div>
-          <button class="btn-ai-tailor" onclick="openTailorWithJob('${job.id}')">
-            <span></span> 70B ATS Tailor
-          </button>
+          <div style="display:flex; gap:10px;">
+            <button class="btn-ai-tailor" onclick="openTailorWithJob('${job.id}')">
+              <span></span> Improve
+            </button>
+            <button class="btn-ai-tailor" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="window.location.href='/cover-letter-builder'">
+              ✉️ Cover Letter
+            </button>
+          </div>
         </div>
         ` : `
         <div class="ai-match-card" style="align-items:center; justify-content:space-between;">
-            <div style="font-size:14px; color:var(--text-main); font-weight:600;">Upload your resume to see ATS score.</div>
-            <a href="/resume-builder" class="btn-ai-tailor" style="text-decoration:none;">Build ATS Resume</a>
+            <div style="font-size:14px; color:var(--text-main); font-weight:600;">Fill your profile to view ATS matches.</div>
+            <a href="/resume-builder" class="btn-ai-tailor" style="text-decoration:none; background: linear-gradient(135deg, #ef4444, #b91c1c);">Fill Profile</a>
         </div>
         `}
 
@@ -1328,6 +1319,14 @@
     function renderMatchesSplitView() {
       const feed = document.getElementById('matches-feed-list');
       document.getElementById('matches-count-header').textContent = matchedJobs.length;
+
+      if (matchedJobs.length === 0) {
+        feed.innerHTML = `<div style="padding:40px 20px; text-align:center; color:var(--text-subtle); font-size:14px; font-weight:600;">
+          Sorry, we couldn't find any jobs matching your strict preferences right now.<br><br>Try broadening your preferences or check back later!
+        </div>`;
+        document.getElementById('matches-detail-pane').innerHTML = '<div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--text-subtle); font-size:14px; font-weight:600">No matching jobs available.</div>';
+        return;
+      }
 
       feed.innerHTML = matchedJobs.map(j => {
         const isSelected = j.id === selectedMatchJobId;

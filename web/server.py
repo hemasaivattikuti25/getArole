@@ -190,7 +190,7 @@ async def get_candidate_by_id(cand_id: str):
 @app.get("/resume-builder", response_class=HTMLResponse)
 @app.get("/resume-builder/", response_class=HTMLResponse)
 async def serve_resume_builder():
-    rb_file = os.path.join(STATIC_DIR, "resume-builder.html")
+    rb_file = os.path.join(STATIC_DIR, "resume-builder", "index.html")
     if os.path.exists(rb_file):
         with open(rb_file, "r", encoding="utf-8") as f:
             return f.read()
@@ -199,7 +199,7 @@ async def serve_resume_builder():
 @app.get("/cover-letter-builder", response_class=HTMLResponse)
 @app.get("/cover-letter-builder/", response_class=HTMLResponse)
 async def serve_cover_letter_builder():
-    cl_file = os.path.join(STATIC_DIR, "cover-letter-builder.html")
+    cl_file = os.path.join(STATIC_DIR, "cover-letter-builder", "index.html")
     if os.path.exists(cl_file):
         with open(cl_file, "r", encoding="utf-8") as f:
             return f.read()
@@ -603,7 +603,7 @@ async def serve_candidate():
 
 @app.get("/onboarding", response_class=HTMLResponse)
 async def serve_onboarding():
-    ob_file = os.path.join(STATIC_DIR, "onboarding.html")
+    ob_file = os.path.join(STATIC_DIR, "onboarding", "index.html")
     if os.path.exists(ob_file):
         with open(ob_file, "r", encoding="utf-8") as f:
             return f.read()
@@ -611,7 +611,7 @@ async def serve_onboarding():
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def serve_dashboard():
-    dash_file = os.path.join(STATIC_DIR, "dashboard.html")
+    dash_file = os.path.join(STATIC_DIR, "dashboard", "index.html")
     if os.path.exists(dash_file):
         with open(dash_file, "r", encoding="utf-8") as f:
             return f.read()
@@ -620,7 +620,7 @@ async def serve_dashboard():
 @app.get("/profile", response_class=HTMLResponse)
 @app.get("/profile/", response_class=HTMLResponse)
 async def serve_profile():
-    prof_file = os.path.join(STATIC_DIR, "profile.html")
+    prof_file = os.path.join(STATIC_DIR, "profile", "index.html")
     if os.path.exists(prof_file):
         with open(prof_file, "r", encoding="utf-8") as f:
             return f.read()
@@ -685,7 +685,7 @@ async def save_user_resume_endpoint(request: Request, resume_data: Dict[str, Any
 @app.get("/preferences", response_class=HTMLResponse)
 @app.get("/preferences/", response_class=HTMLResponse)
 async def serve_preferences():
-    pref_file = os.path.join(STATIC_DIR, "preferences.html")
+    pref_file = os.path.join(STATIC_DIR, "preferences", "index.html")
     if os.path.exists(pref_file):
         with open(pref_file, "r", encoding="utf-8") as f:
             return f.read()
