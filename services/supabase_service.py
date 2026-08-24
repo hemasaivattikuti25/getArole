@@ -217,6 +217,31 @@ class SupabaseService:
             print(f"[Supabase] load_user_preferences error: {e}")
             return None
 
+    async def save_user_resume(self, firebase_uid: str, resume_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """Save a user's uploaded and parsed resume into user_resumes table."""
+        client = await self._get_client()
+        if not client:
+            return None
+        try:
+            record = {"firebase_uid": firebase_uid, **resume_data}
+            res = await client.table("user_resumes").insert(record).execute()
+            return res.data[0] if res.data else record
+        except Exception as e:
+            print(f"[Supabase] save_user_resume error: {e}")
+            return None
+
+    async def load_user_resume(self, firebase_uid: str) -> Optional[Dict[str, Any]]:
+        """Fetch a user's active resume from user_resumes table."""
+        client = await self._get_client()
+        if not client:
+            return None
+        try:
+            res = await client.table("user_resumes").select("*").eq("firebase_uid", firebase_uid).order("uploaded_at", desc=True).limit(1).execute()
+            return res.data[0] if res.data else None
+        except Exception as e:
+            print(f"[Supabase] load_user_resume error: {e}")
+            return None
+
 # Global Singleton
 _supabase_service: Optional[SupabaseService] = None
 

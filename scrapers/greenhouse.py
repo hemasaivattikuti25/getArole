@@ -12,7 +12,9 @@ GREENHOUSE_COMPANIES = [
     "clevertap", "moengage", "chargebee", "whatfix", "darwinbox",
     "inmobi", "glance", "atlan", "yellowai",
     "ola", "rapido", "curefit", "pharmeasy", "healthifyme",
-    "stripe", "coinbase", "brex", "gitlab", "databricks", "notion", "figma"
+    "stripe", "coinbase", "brex", "gitlab", "databricks", "notion", "figma",
+    "phonepe", "mongodb", "elastic", "datadog", "cloudflare", "airbnb",
+    "dropbox", "twilio", "newrelic", "pagerduty"
 ]
 
 INDIAN_LOCATIONS = [

@@ -286,6 +286,7 @@
         <a href="/dashboard">Home</a>
         <a href="/dashboard">Matches</a>
         <a href="/dashboard">Jobs</a>
+        <button onclick="handleSignOut()" style="background:transparent; border:1px solid var(--border); padding:6px 14px; border-radius:99px; font-weight:700; font-size:13px; color:var(--text-muted); cursor:pointer;">Sign Out</button>
         <div class="avatar-mini" id="nav-avatar">?</div>
       </div>
     </div>
@@ -297,9 +298,9 @@
     <!-- Left Column -->
     <aside class="left-col">
       <div class="profile-card">
-        <button class="edit-prof-btn">✏️</button>
-        <div class="avatar-lg" id="prof-avatar">HV</div>
-        <h1 class="prof-name" id="disp-name">Hemasai Vattikuti</h1>
+        <button class="edit-prof-btn" onclick="openGenericModal('personal')">✏️</button>
+        <div class="avatar-lg" id="prof-avatar">?</div>
+        <h1 class="prof-name" id="disp-name">Your Name</h1>
         <p class="prof-headline" id="disp-headline">Add your headline</p>
         <div class="prof-status-label">Job Search Status</div>
         <div class="prof-status-val" id="disp-status">Actively looking</div>
@@ -624,10 +625,34 @@
 
     
 
+    // ─── Auth Guard ──────────────────────────────────────────
+    (function checkAuthGuard() {
+      const user = localStorage.getItem('getarole_user') || localStorage.getItem('firebase_uid');
+      if (!user) {
+        window.location.href = '/';
+      }
+    })();
+
+    function handleSignOut() {
+      localStorage.removeItem('getarole_user');
+      localStorage.removeItem('firebase_uid');
+      sessionStorage.removeItem('firebase_uid');
+      window.location.href = '/';
+    }
+
     // ─── Supabase API helpers ────────────────────────────────
-    // Firebase UID is read from sessionStorage (set by auth page on login)
+    // Firebase UID is read from sessionStorage, localStorage, or parsed getarole_user
     function getFirebaseUID() {
-      return sessionStorage.getItem('firebase_uid') || localStorage.getItem('firebase_uid') || '';
+      const directUid = sessionStorage.getItem('firebase_uid') || localStorage.getItem('firebase_uid');
+      if (directUid) return directUid;
+      try {
+        const raw = localStorage.getItem('getarole_user');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.uid) return parsed.uid;
+        }
+      } catch(e) {}
+      return '';
     }
 
     async function apiSaveProfile(profileData) {
@@ -837,13 +862,15 @@
 
 
       // Set Profile Left Card
-      document.getElementById('disp-name').textContent = state.profile.name || 'Hemasai Vattikuti';
-      document.getElementById('disp-headline').textContent = state.profile.headline || 'Previously Full-Stack Developer @ Orion Movers, New Zealand';
-      document.getElementById('disp-status').textContent = state.prefs.status;
+      const userObj = JSON.parse(localStorage.getItem('getarole_user') || '{}');
+      const defaultName = state.profile.name || userObj.displayName || '';
+      document.getElementById('disp-name').textContent = defaultName || 'Your Name';
+      document.getElementById('disp-headline').textContent = state.profile.headline || 'Add your headline';
+      document.getElementById('disp-status').textContent = state.prefs.status || 'Actively looking';
       
-      const initials = (state.profile.name || 'HV').split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
-      document.getElementById('prof-avatar').textContent = initials;
-      document.getElementById('nav-avatar').textContent = initials;
+      const initials = (defaultName ? defaultName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : '?');
+      document.getElementById('prof-avatar').textContent = initials || '?';
+      document.getElementById('nav-avatar').textContent = initials || '?';
       
       // Init Modal Inputs
       document.getElementById('salary-currency').value = state.prefs.salary_curr || 'USD';

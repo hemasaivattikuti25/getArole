@@ -7,12 +7,7 @@ from .models import JobListing
 from .greenhouse import normalize_city, clean_html, INDIAN_LOCATIONS
 
 LEVER_COMPANIES = [
-    "swiggy", "zomato", "mpl", "dream11", "cred", "curefit", "dunzo",
-    "unacademy", "vedantu", "upgrad", "eruditus",
-    "urbancompany", "lendingkart", "rupeek", "navifinserv", "kreditbee",
-    "pocketfm", "pratilipi", "loco", "winzo", "famapp",
-    "spinny", "cars24", "zoomcar", "clevertap", "exotel", "yellowmessenger",
-    "atlassian", "palantir", "canva"
+    "cred", "pocketfm"
 ]
 
 async def scrape_single_lever_board(client: httpx.AsyncClient, company: str) -> List[JobListing]:

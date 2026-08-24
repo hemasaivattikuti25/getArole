@@ -86,6 +86,8 @@ export async function logoutUser() {
   try {
     await signOut(auth);
     localStorage.removeItem("getarole_user");
+    localStorage.removeItem("firebase_uid");
+    sessionStorage.removeItem("firebase_uid");
     return { success: true };
   } catch (error) {
     console.error("[Auth] Sign-Out Error:", error);
@@ -104,6 +106,8 @@ function persistUserSession(user) {
     photoURL: user.photoURL || ""
   };
   localStorage.setItem("getarole_user", JSON.stringify(userData));
+  localStorage.setItem("firebase_uid", user.uid);
+  sessionStorage.setItem("firebase_uid", user.uid);
 }
 
 /**
@@ -123,6 +127,8 @@ export function initAuthListener(onUserChanged) {
       }
     } else {
       localStorage.removeItem("getarole_user");
+      localStorage.removeItem("firebase_uid");
+      sessionStorage.removeItem("firebase_uid");
       if (typeof onUserChanged === "function") {
         onUserChanged(null);
       }

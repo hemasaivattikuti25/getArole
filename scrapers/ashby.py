@@ -7,8 +7,8 @@ from .greenhouse import normalize_city, clean_html, INDIAN_LOCATIONS
 
 # Prominent tech companies using Ashby
 ASHBY_COMPANIES = [
-    "linear", "retool", "resend", "vapi", "cursor", "perplexity",
-    "sanas", "baseten", "together-ai", "dust", "cognition", "modal", "qdrant"
+    "linear", "resend", "vapi", "cursor", "perplexity",
+    "baseten", "dust", "cognition", "modal"
 ]
 
 async def scrape_single_ashby_board(client: httpx.AsyncClient, company: str) -> List[JobListing]:
