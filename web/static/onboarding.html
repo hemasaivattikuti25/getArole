@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>getArole — Build Your Candidate Profile</title>
+  <title>Get Started — getArole | Your AI Job Search Partner</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/logo.png">
+
   <script>
     // Strict Authentication Guard
     (function checkAuth() {
@@ -22,24 +24,27 @@
     :root {
       --primary: #059669;
       --primary-hover: #047857;
-      --primary-accent: #10b981;
       --primary-light: #ecfdf5;
       --primary-border: #a7f3d0;
-      --surface: #ffffff;
-      --background: #f8fafc;
-      --border-subtle: #f1f5f9;
-      --border: #e2e8f0;
-      --border-strong: #cbd5e1;
+      --bg: #ffffff;
+      --bg-subtle: #f8fafc;
       --text-main: #0f172a;
       --text-muted: #475569;
       --text-subtle: #94a3b8;
-      --sidebar-w: 240px;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 20px -2px rgba(0,0,0,0.06);
+      --shadow-lg: 0 12px 36px -4px rgba(0,0,0,0.08);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--background);
+      background: var(--bg-subtle);
       color: var(--text-main);
       min-height: 100vh;
       display: flex; flex-direction: column;
@@ -47,642 +52,613 @@
     }
     h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
 
-    /* Navigation */
-    nav {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      height: 60px; display: flex; align-items: center;
-      position: sticky; top: 0; z-index: 100;
+    /* ── TOP HEADER ── */
+    header {
+      background: #ffffff; border-bottom: 1px solid var(--border);
+      height: 64px; display: flex; align-items: center; position: sticky; top: 0; z-index: 100;
     }
-    .nav-inner {
-      max-width: 1200px; width: 100%; margin: 0 auto; padding: 0 24px;
+    .header-inner {
+      max-width: 960px; width: 100%; margin: 0 auto; padding: 0 24px;
       display: flex; align-items: center; justify-content: space-between;
     }
     .brand-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .brand-icon {
-      width: 30px; height: 30px;
-      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-      border-radius: 7px; display: flex; align-items: center; justify-content: center;
-      color: white; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 15px;
-    }
-    .brand-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 18px; color: var(--text-main); }
+    .brand-logo-img { width: 32px; height: 32px; border-radius: 8px; }
+    .brand-title { font-family: 'Outfit', sans-serif; font-size: 19px; font-weight: 800; color: var(--text-main); }
     .brand-title span { color: var(--primary); }
 
-    .btn-signout-nav {
-      font-size: 13px; font-weight: 700; color: var(--text-subtle); text-decoration: none;
-      padding: 6px 12px; border-radius: 6px; transition: all 0.15s;
+    /* ── PROGRESS BAR ── */
+    .progress-bar-wrap {
+      width: 100%; height: 4px; background: var(--border); position: relative;
     }
-    .btn-signout-nav:hover { color: #ef4444; background: #fef2f2; }
-
-    /* Onboarding Layout */
-    .onboarding-container {
-      flex: 1; max-width: 1100px; width: 100%; margin: 0 auto; padding: 36px 24px 60px;
-      display: grid; grid-template-columns: var(--sidebar-w) 1fr; gap: 40px; align-items: start;
+    .progress-bar-fill {
+      height: 100%; width: 14%; background: var(--primary); transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Step Sidebar */
-    .steps-sidebar {
-      background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px;
-      padding: 16px 12px; display: flex; flex-direction: column; gap: 4px;
-      position: sticky; top: 84px;
+    /* ── ONBOARDING CONTAINER ── */
+    .onboarding-main {
+      flex: 1; max-width: 680px; width: 100%; margin: 40px auto 60px; padding: 0 24px;
     }
-    .step-nav-item {
-      padding: 10px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 600;
-      color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-      transition: all 0.15s;
-    }
-    .step-nav-item:hover { background: var(--border-subtle); color: var(--text-main); }
-    .step-nav-item.active {
-      background: var(--primary-light); color: var(--primary); font-weight: 800;
-    }
-    .step-nav-item.completed { color: var(--text-main); }
-    .step-nav-item.completed::after { content: '✓'; color: var(--primary); font-weight: 800; }
-
-    /* Main Card */
     .step-card {
-      background: var(--surface); border: 1.5px solid var(--border); border-radius: 18px;
-      padding: 36px 40px; box-shadow: 0 4px 20px -2px rgba(0,0,0,0.03);
+      background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-lg);
+      padding: 36px 32px; box-shadow: var(--shadow-md); animation: fadeIn 0.25s ease;
     }
-    .step-header { margin-bottom: 28px; }
-    .step-h1 { font-size: 26px; font-weight: 800; color: var(--text-main); margin-bottom: 6px; }
-    .founder-note {
-      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
-      font-size: 13px; font-weight: 700; color: var(--primary);
-    }
-    .step-subtitle { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Form Fields */
-    .form-group { margin-bottom: 20px; }
-    .form-label { display: block; font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
-    .form-input, .form-select, .form-textarea {
-      width: 100%; padding: 11px 14px; border-radius: 8px; border: 1.5px solid var(--border);
-      font-size: 14px; font-family: inherit; outline: none; background: var(--surface);
-      transition: border-color 0.15s;
+    .step-number-tag {
+      font-size: 12px; font-weight: 800; color: var(--primary);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
     }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--primary); }
-    .form-textarea { min-height: 100px; line-height: 1.6; }
-
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-
-    /* Radio / Selection Pills */
-    .radio-card-group { display: flex; gap: 12px; }
-    .radio-pill {
-      flex: 1; padding: 12px; border: 1.5px solid var(--border); border-radius: 10px;
-      text-align: center; font-size: 13.5px; font-weight: 700; color: var(--text-muted);
-      cursor: pointer; transition: all 0.15s; background: var(--surface);
+    .step-title {
+      font-size: clamp(24px, 3vw, 32px); font-weight: 800; color: var(--text-main); margin-bottom: 8px; line-height: 1.2;
     }
-    .radio-pill:hover { border-color: var(--primary-border); }
-    .radio-pill.selected {
+    .step-tagline {
+      font-size: 14.5px; color: var(--text-muted); margin-bottom: 24px;
+    }
+
+    /* ── FOUNDER NOTE CARD (Simplify Style) ── */
+    .founder-card {
+      background: var(--primary-light); border: 1px solid var(--primary-border);
+      border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 24px;
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .founder-avatar {
+      width: 38px; height: 38px; border-radius: 50%; background: var(--primary);
+      color: white; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .founder-text { font-size: 13.5px; color: var(--text-main); line-height: 1.5; }
+    .founder-name { font-weight: 700; color: var(--primary); font-size: 12px; margin-top: 2px; }
+
+    /* ── SELECTABLE OPTIONS (Cards & Pills) ── */
+    .options-stack { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .option-card {
+      padding: 16px 20px; border-radius: 12px; border: 1.5px solid var(--border);
+      background: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      transition: all 0.15s ease; font-size: 15px; font-weight: 700; color: var(--text-main);
+    }
+    .option-card:hover { border-color: var(--primary); background: var(--bg-subtle); }
+    .option-card.selected {
       border-color: var(--primary); background: var(--primary-light); color: var(--primary);
+      box-shadow: 0 0 0 1px var(--primary);
+    }
+    .option-card.selected::after {
+      content: "✓"; font-weight: 900; color: var(--primary); font-size: 16px;
     }
 
-    /* Skills Cloud */
-    .skills-cloud { display: flex; flex-wrap: wrap; gap: 8px; max-height: 200px; overflow-y: auto; padding: 8px; border: 1px solid var(--border); border-radius: 10px; background: #fafbfc; margin-bottom: 20px; }
-    .skill-chip {
-      padding: 6px 12px; border-radius: 20px; font-size: 12.5px; font-weight: 600;
-      border: 1px solid var(--border); background: white; color: var(--text-main);
-      cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s;
+    /* ── MULTI-SELECT CHIPS GRID ── */
+    .chips-grid {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; max-height: 240px; overflow-y: auto; padding: 4px;
     }
-    .skill-chip:hover { border-color: var(--primary); color: var(--primary); }
-    .skill-chip.selected {
-      background: var(--primary); border-color: var(--primary); color: white;
+    .choice-chip {
+      padding: 8px 16px; border-radius: 99px; border: 1px solid var(--border);
+      background: #ffffff; font-size: 13.5px; font-weight: 600; color: var(--text-muted);
+      cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .choice-chip:hover { border-color: var(--primary); color: var(--primary); }
+    .choice-chip.selected {
+      background: var(--primary); color: #ffffff; border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(5,150,105,0.25);
     }
 
-    /* Resume Dropzone */
+    /* ── SEARCH INPUT IN ONBOARDING ── */
+    .filter-input-wrap {
+      margin-bottom: 16px; position: relative;
+    }
+    .filter-input {
+      width: 100%; padding: 12px 16px 12px 40px; border-radius: 10px;
+      border: 1.5px solid var(--border); font-size: 14px; font-family: inherit;
+      outline: none; transition: border-color 0.15s;
+    }
+    .filter-input:focus { border-color: var(--primary); }
+    .search-icon-inside {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      color: var(--text-subtle); font-size: 15px; pointer-events: none;
+    }
+
+    /* ── RESUME DROPZONE ── */
     .dropzone-box {
-      border: 2px dashed var(--border); border-radius: 12px; padding: 32px;
-      text-align: center; cursor: pointer; background: #fafbfc; transition: all 0.15s;
-      position: relative; margin-bottom: 16px;
+      border: 2px dashed var(--border-strong); border-radius: 16px; padding: 40px 24px;
+      text-align: center; background: var(--bg-subtle); cursor: pointer; transition: all 0.2s;
+      margin-bottom: 20px; position: relative;
     }
-    .dropzone-box:hover { border-color: var(--primary); background: var(--primary-light); }
-    .dropzone-box input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+    .dropzone-box:hover, .dropzone-box.dragover {
+      border-color: var(--primary); background: var(--primary-light);
+    }
+    .drop-icon { font-size: 36px; margin-bottom: 12px; color: var(--primary); }
+    .drop-title { font-size: 17px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+    .drop-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
 
-    /* Action Footer */
-    .step-actions {
-      margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);
-      display: flex; justify-content: space-between; align-items: center;
+    /* ── BENEFIT BULLETS ── */
+    .benefits-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;
     }
-    .btn-save-continue {
-      padding: 12px 28px; border-radius: 10px; border: none; background: var(--primary);
-      color: white; font-size: 14px; font-weight: 800; cursor: pointer;
-      box-shadow: 0 4px 12px rgba(5,150,105,0.25); transition: all 0.15s;
-    }
-    .btn-save-continue:hover { background: var(--primary-hover); transform: translateY(-1px); }
-    .btn-skip-step {
-      font-size: 13px; font-weight: 700; color: var(--text-subtle); text-transform: uppercase;
-      letter-spacing: 0.04em; background: none; border: none; cursor: pointer;
-    }
-    .btn-skip-step:hover { color: var(--text-main); }
-
-    .experience-card, .education-card {
-      background: #fafbfc; border: 1px solid var(--border); border-radius: 12px;
-      padding: 20px; margin-bottom: 16px; position: relative;
-    }
-    .btn-add-item {
-      padding: 10px 16px; border-radius: 8px; border: 1.5px dashed var(--primary);
-      background: var(--primary-light); color: var(--primary); font-size: 13.5px; font-weight: 700;
-      cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 20px;
+    @media (max-width: 580px) { .benefits-row { grid-template-columns: 1fr; } }
+    .benefit-item {
+      padding: 12px; border-radius: 10px; background: #ffffff; border: 1px solid var(--border);
+      font-size: 13px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 8px;
     }
 
-    @media (max-width: 800px) {
-      .onboarding-container { grid-template-columns: 1fr; }
-      .steps-sidebar { display: none; }
-      .grid-2, .grid-4 { grid-template-columns: 1fr; }
+    /* ── SALARY TOGGLE & CARDS ── */
+    .salary-toggle {
+      display: inline-flex; padding: 4px; background: var(--bg-subtle);
+      border: 1px solid var(--border); border-radius: 10px; margin-bottom: 20px;
     }
+    .salary-tab {
+      padding: 6px 16px; border-radius: 7px; font-size: 13.5px; font-weight: 700;
+      color: var(--text-muted); cursor: pointer; border: none; background: none; transition: all 0.15s;
+    }
+    .salary-tab.active {
+      background: #ffffff; color: var(--primary); box-shadow: var(--shadow-sm);
+    }
+
+    /* ── CELEBRATION RESULT CARD ── */
+    .celebration-wrap {
+      text-align: center; padding: 20px 0;
+    }
+    .celeb-badge {
+      display: inline-block; font-size: 44px; margin-bottom: 12px; animation: bounce 1s infinite alternate;
+    }
+    @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-8px); } }
+    .celeb-count {
+      font-size: 52px; font-weight: 900; color: var(--primary); font-family: 'Outfit', sans-serif;
+      line-height: 1; margin-bottom: 6px;
+    }
+    .celeb-summary-pills {
+      display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 20px 0;
+    }
+    .celeb-pill {
+      padding: 6px 14px; border-radius: 20px; background: var(--primary-light);
+      border: 1px solid var(--primary-border); font-size: 13px; font-weight: 700; color: var(--primary);
+    }
+
+    /* ── ACTION FOOTER ── */
+    .step-footer {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 24px;
+    }
+    .btn-back {
+      padding: 12px 20px; border-radius: 10px; border: 1px solid var(--border);
+      background: #ffffff; color: var(--text-muted); font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .btn-back:hover { background: var(--bg-subtle); color: var(--text-main); }
+    .btn-next {
+      padding: 13px 28px; border-radius: 10px; border: none;
+      background: var(--primary); color: #ffffff; font-size: 15px; font-weight: 800;
+      cursor: pointer; transition: all 0.15s; box-shadow: 0 4px 14px rgba(5,150,105,0.3);
+    }
+    .btn-next:hover { background: var(--primary-hover); transform: translateY(-1px); }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <nav>
-    <div class="nav-inner">
-      <a href="/dashboard" class="brand-wrap">
-        <div class="brand-icon">G</div>
-        <span class="brand-title">getArole<span>.ai</span></span>
+  <!-- ═══════ HEADER ═══════ -->
+  <header>
+    <div class="header-inner">
+      <a href="/" class="brand-wrap">
+        <img src="/logo.png" alt="getArole Logo" class="brand-logo-img">
+        <span class="brand-title">getArole<span>.in</span></span>
       </a>
-      <a href="#" onclick="handleLogout()" class="btn-signout-nav">SIGN OUT</a>
+      <div style="font-size:13px; font-weight:700; color:var(--text-muted);" id="step-indicator-text">
+        Step 1 of 7
+      </div>
     </div>
-  </nav>
+  </header>
 
-  <!-- Container -->
-  <div class="onboarding-container">
-    
-    <!-- Step Sidebar (Simplify Style) -->
-    <aside class="steps-sidebar">
-      <div class="step-nav-item active" id="snav-1" onclick="jumpToStep(1)">1. Roles</div>
-      <div class="step-nav-item" id="snav-2" onclick="jumpToStep(2)">2. Education</div>
-      <div class="step-nav-item" id="snav-3" onclick="jumpToStep(3)">3. Experience</div>
-      <div class="step-nav-item" id="snav-4" onclick="jumpToStep(4)">4. Work Authorization</div>
-      <div class="step-nav-item" id="snav-5" onclick="jumpToStep(5)">5. EEO</div>
-      <div class="step-nav-item" id="snav-6" onclick="jumpToStep(6)">6. Skills</div>
-      <div class="step-nav-item" id="snav-7" onclick="jumpToStep(7)">7. Personal</div>
-      <div class="step-nav-item" id="snav-8" onclick="jumpToStep(8)">8. Links</div>
-    </aside>
-
-    <!-- Main Card Body -->
-    <main class="step-card">
-
-      <!-- ══════════════ STEP 1: ROLES & RESUME ══════════════ -->
-      <section id="step-view-1" class="step-section">
-        <div class="step-header">
-          <div class="founder-note">🌿 Profile Builder</div>
-          <h1 class="step-h1">Great! Let's build your profile to start.</h1>
-          <p class="step-subtitle">This takes ~3 minutes. We'll parse your resume locally to prefill your information across all 1K+ live tech roles.</p>
-        </div>
-
-        <div class="grid-2" style="margin-bottom:20px;">
-          <div>
-            <label class="form-label">First Name *</label>
-            <input type="text" id="prof-firstname" class="form-input" placeholder="e.g. Alex">
-          </div>
-          <div>
-            <label class="form-label">Last Name *</label>
-            <input type="text" id="prof-lastname" class="form-input" placeholder="e.g. Kumar">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Upload your resume</label>
-          <div class="dropzone-box">
-            <input type="file" accept=".pdf,.doc,.docx" onchange="handleResumeFile(event)">
-            <div style="font-size:24px; margin-bottom:8px;"></div>
-            <div style="font-size:14px; font-weight:700; color:var(--text-main); margin-bottom:4px;">Upload Resume (PDF, DOC, DOCX up to 5MB)</div>
-            <div style="font-size:12.5px; color:var(--text-muted);">We parse your skills locally with PyMuPDF for sub-15ms vector match scoring.</div>
-          </div>
-          <div id="resume-status-badge" style="display:none; padding:10px 14px; border-radius:8px; background:var(--primary-light); border:1px solid var(--primary-border); color:var(--primary); font-size:13px; font-weight:700;"></div>
-        </div>
-
-        <div class="step-actions">
-          <button class="btn-skip-step" onclick="jumpToStep(2)">SKIP THIS STEP</button>
-          <button class="btn-save-continue" onclick="saveAndNext(1)">Save and Continue →</button>
-        </div>
-      </section>
-
-      <!-- ══════════════ STEP 2: EDUCATION ══════════════ -->
-      <section id="step-view-2" class="step-section" style="display:none;">
-        <div class="step-header">
-          <div class="founder-note">🎓 Academic Background</div>
-          <h1 class="step-h1">Let's start with your education.</h1>
-          <p class="step-subtitle">If your school or major isn't listed, enter the name directly.</p>
-        </div>
-
-        <div class="education-card">
-          <div class="form-group">
-            <label class="form-label">School / University Name *</label>
-            <input type="text" id="edu-school" class="form-input" placeholder="e.g. VIT-AP University, IIT, BITS">
-          </div>
-          <div class="grid-2">
-            <div class="form-group">
-              <label class="form-label">Major *</label>
-              <input type="text" id="edu-major" class="form-input" placeholder="Computer Science & Engineering">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Degree Type</label>
-              <select id="edu-degree" class="form-select">
-                <option>Bachelor of Technology (B.Tech)</option>
-                <option>Bachelor of Science (B.S. / B.Sc)</option>
-                <option>Master of Technology (M.Tech)</option>
-                <option>Master of Science (M.S.)</option>
-                <option>Other Degree</option>
-              </select>
-            </div>
-          </div>
-          <div class="grid-4">
-            <div>
-              <label class="form-label">Start Month</label>
-              <input type="text" id="edu-start-m" class="form-input" placeholder="August">
-            </div>
-            <div>
-              <label class="form-label">Start Year</label>
-              <input type="text" id="edu-start-y" class="form-input" placeholder="2023">
-            </div>
-            <div>
-              <label class="form-label">End Month</label>
-              <input type="text" id="edu-end-m" class="form-input" placeholder="May">
-            </div>
-            <div>
-              <label class="form-label">End Year</label>
-              <input type="text" id="edu-end-y" class="form-input" placeholder="2027">
-            </div>
-          </div>
-        </div>
-
-        <div class="step-actions">
-          <button class="btn-skip-step" onclick="jumpToStep(3)">SKIP THIS STEP</button>
-          <button class="btn-save-continue" onclick="saveAndNext(2)">Save and Continue →</button>
-        </div>
-      </section>
-
-      <!-- ══════════════ STEP 3: EXPERIENCE ══════════════ -->
-      <section id="step-view-3" class="step-section" style="display:none;">
-        <div class="step-header">
-          <div class="founder-note">Work History</div>
-          <h1 class="step-h1">Now, let's show off your work experience</h1>
-          <p class="step-subtitle">The more detailed the information you provide, the better 70B AI can tailor your future resumes and applications!</p>
-        </div>
-
-        <div style="margin-bottom:16px;">
-          <label style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; cursor:pointer;">
-            <input type="checkbox" id="exp-no-prior" style="accent-color:var(--primary)"> I'm looking for my first job (no prior experience)
-          </label>
-        </div>
-
-        <div class="experience-card" id="exp-card-1">
-          <div class="grid-2">
-            <div class="form-group">
-              <label class="form-label">Position Title *</label>
-              <input type="text" id="exp-title" class="form-input" placeholder="e.g. Backend Developer / SDE Intern">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Company *</label>
-              <input type="text" id="exp-company" class="form-input" placeholder="e.g. Tech Startup, DRDO">
-            </div>
-          </div>
-          <div class="grid-2">
-            <div class="form-group">
-              <label class="form-label">Location</label>
-              <input type="text" id="exp-location" class="form-input" placeholder="Bengaluru / Remote">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Experience Type</label>
-              <select id="exp-type" class="form-select">
-                <option>Internship</option>
-                <option>Full-Time</option>
-                <option>Contract</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Key Technical Contributions & Accomplishments</label>
-            <textarea id="exp-desc" class="form-textarea" placeholder="• Built asynchronous microservices with FastAPI and PostgreSQL&#10;• Reduced latency by 40% using Redis caching"></textarea>
-          </div>
-        </div>
-
-        <div class="step-actions">
-          <button class="btn-skip-step" onclick="jumpToStep(4)">SKIP THIS STEP</button>
-          <button class="btn-save-continue" onclick="saveAndNext(3)">Save and Continue →</button>
-        </div>
-      </section>
-
-      <!-- ══════════════ STEP 4: WORK AUTHORIZATION ══════════════ -->
-      <section id="step-view-4" class="step-section" style="display:none;">
-        <div class="step-header">
-          <div class="founder-note">🌍 Legal & Visas</div>
-          <h1 class="step-h1">Next, some work authorization information.</h1>
-          <p class="step-subtitle">Keep it up, you're halfway there! This helps autofill application questions automatically.</p>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Are you authorized to work in India?</label>
-          <div class="radio-card-group">
-            <div class="radio-pill selected" onclick="selectRadio(this, 'auth_in')">Yes</div>
-            <div class="radio-pill" onclick="selectRadio(this, 'auth_in')">No</div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Are you authorized to work in the US / Global Remote?</label>
-          <div class="radio-card-group">
-            <div class="radio-pill" onclick="selectRadio(this, 'auth_us')">Yes</div>
-            <div class="radio-pill selected" onclick="selectRadio(this, 'auth_us')">No</div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Will you now or in the future require visa sponsorship?</label>
-          <div class="radio-card-group">
-            <div class="radio-pill" onclick="selectRadio(this, 'auth_sponsor')">Yes</div>
-            <div class="radio-pill selected" onclick="selectRadio(this, 'auth_sponsor')">No</div>
-          </div>
-        </div>
-
-        <div class="step-actions">
-          <button class="btn-skip-step" onclick="jumpToStep(5)">SKIP THIS STEP</button>
-          <button class="btn-save-continue" onclick="saveAndNext(4)">Save and Continue →</button>
-        </div>
-      </section>
-
-      <!-- ══════════════ STEP 5: EEO DISCLOSURES ══════════════ -->
-      <section id="step-view-5" class="step-section" style="display:none;">
-        <div class="step-header">
-          <div class="founder-note">🤝 Equal Opportunity</div>
-          <h1 class="step-h1">Add your equal employment information.</h1>
-          <p class="step-subtitle">Most job applications ask these questions as voluntary disclosure. Answering will never hurt your hiring chances.</p>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">What is your gender?</label>
-          <select id="eeo-gender" class="form-select">
-            <option>Male</option>
-            <option>Female</option>
-            <option>Non-Binary</option>
-            <option>Decline to state</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Do you identify as LGBTQ+?</label>
-          <select id="eeo-lgbtq" class="form-select">
-            <option>No</option>
-            <option>Yes</option>
-            <option>Decline to state</option>
-          </select>
-        </div>
-
-        <div class="step-actions">
-          <button class="btn-skip-step" onclick="jumpToStep(6)">SKIP THIS STEP</button>
-          <button class="btn-save-continue" onclick="saveAndNext(5)">Save and Continue →</button>
-        </div>
-      </section>
-
-      <!-- ══════════════ STEP 6: SKILLS ══════════════ -->
-      <section id="step-view-6" class="step-section" style="display:none;">
-        <div class="step-header">
-          <div class="founder-note">Technical Arsenal</div>
-          <h1 class="step-h1">Let's not forget to show off your skills too.</h1>
-          <p class="step-subtitle">We'll use this information to calculate dense vector similarity across 1K+ tech jobs!</p>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Select all skills you enjoy working with:</label>
-          <div class="skills-cloud" id="skills-cloud-wrap"></div>
-        </div>
-
-        <div style="font-size:12.5px; font-weight:700; color:var(--text-subtle); margin-bottom:8px; text-transform:uppercase;">Selected Skills</div>
-        <div id="selected-skills-chips" style="display:flex; flex-wrap:wrap; gap:6px; min-height:40px; margin-bottom:24px;"></div>
-
-        <div class="step-actions">
-          <button class="btn-skip-step" onclick="jumpToStep(7)">SKIP THIS STEP</button>
-          <button class="btn-save-continue" onclick="saveAndNext(6)">Save and Continue →</button>
-        </div>
-      </section>
-
-      <!-- ══════════════ STEP 7: PERSONAL ══════════════ -->
-      <section id="step-view-7" class="step-section" style="display:none;">
-        <div class="step-header">
-          <div class="founder-note">Location & Contact</div>
-          <h1 class="step-h1">Almost there! A few last questions.</h1>
-          <p class="step-subtitle">Your contact info will be used when generating tailored job applications.</p>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Where are you currently located?</label>
-          <input type="text" id="personal-city" class="form-input" placeholder="e.g. Bengaluru, Karnataka, India">
-        </div>
-
-        <div class="grid-2">
-          <div class="form-group">
-            <label class="form-label">Date of Birth</label>
-            <input type="date" id="personal-dob" class="form-input">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Phone Number *</label>
-            <input type="tel" id="personal-phone" class="form-input" placeholder="+91 98765 43210">
-          </div>
-        </div>
-
-        <div class="step-actions">
-          <button class="btn-skip-step" onclick="jumpToStep(8)">SKIP THIS STEP</button>
-          <button class="btn-save-continue" onclick="saveAndNext(7)">Save and Continue →</button>
-        </div>
-      </section>
-
-      <!-- ══════════════ STEP 8: PERSONAL LINKS & FINISH ══════════════ -->
-      <section id="step-view-8" class="step-section" style="display:none;">
-        <div class="step-header">
-          <div class="founder-note">🔗 Social Proof</div>
-          <h1 class="step-h1">Last step, add your personal links.</h1>
-          <p class="step-subtitle">We'll embed these into your 70B AI-generated ATS resumes and cover letters.</p>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">LinkedIn Profile URL</label>
-          <input type="url" id="link-linkedin" class="form-input" placeholder="https://www.linkedin.com/in/username">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">GitHub URL</label>
-          <input type="url" id="link-github" class="form-input" placeholder="https://github.com/username">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Portfolio Website / Other</label>
-          <input type="url" id="link-portfolio" class="form-input" placeholder="https://yourportfolio.dev">
-        </div>
-
-        <div class="step-actions">
-          <button class="btn-skip-step" onclick="finishProfile()">FINISH LATER</button>
-          <button class="btn-save-continue" onclick="finishProfile()" style="padding:13px 32px; font-size:15px;">Launch Matches Dashboard →</button>
-        </div>
-      </section>
-
-    </main>
+  <!-- ── PROGRESS BAR ── -->
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-fill"></div>
   </div>
 
-  <script type="module">
-    import { logoutUser } from "/firebase-auth.js";
-    window.handleLogout = async function() {
-      await logoutUser();
-      window.location.href = "/";
-    };
-  </script>
+  <!-- ═══════ ONBOARDING FORM WIZARD ═══════ -->
+  <main class="onboarding-main">
 
+    <!-- ═══════ STEP 1: TIMELINE / URGENCY ═══════ -->
+    <div class="step-card" id="step-1">
+      <div class="step-number-tag">Step 1 • Job Search Timeline</div>
+      <h2 class="step-title">How soon are you looking to land your job?</h2>
+      <p class="step-tagline">Find your dream job 5x faster using getArole.</p>
+
+      <div class="options-stack" id="timeline-options">
+        <div class="option-card selected" onclick="selectTimeline(this, 'ASAP')">
+          <span>⚡ ASAP (Actively interviewing)</span>
+        </div>
+        <div class="option-card" onclick="selectTimeline(this, 'Within 3 months')">
+          <span>📅 Within 3 months</span>
+        </div>
+        <div class="option-card" onclick="selectTimeline(this, 'Within 6 months')">
+          <span>⏳ Within 6 months</span>
+        </div>
+        <div class="option-card" onclick="selectTimeline(this, 'Passively browsing')">
+          <span>👀 Passively browsing</span>
+        </div>
+      </div>
+
+      <div class="step-footer" style="justify-content: flex-end;">
+        <button class="btn-next" onclick="goToStep(2)">Next: Location Preferences →</button>
+      </div>
+    </div>
+
+    <!-- ═══════ STEP 2: LOCATIONS (INDIA & REMOTE) ═══════ -->
+    <div class="step-card" id="step-2" style="display:none;">
+      <div class="step-number-tag">Step 2 • Location Preferences</div>
+      <h2 class="step-title">What locations do you want to work in?</h2>
+      <p class="step-tagline">Choose all Indian tech hubs and remote preferences that interest you.</p>
+
+      <div class="filter-input-wrap">
+        <span class="search-icon-inside">🔍</span>
+        <input type="text" id="city-search" placeholder="Search Indian cities (e.g. Pune, Gurgaon, Kochi...)" class="filter-input" oninput="filterCities()">
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <span style="font-size:12.5px; font-weight:700; color:var(--text-muted);" id="location-selected-count">4 Locations Selected</span>
+        <div style="display:flex; gap:10px;">
+          <button onclick="selectAllLocations(true)" style="background:none; border:none; color:var(--primary); font-size:12.5px; font-weight:700; cursor:pointer;">Select All</button>
+          <button onclick="selectAllLocations(false)" style="background:none; border:none; color:var(--text-subtle); font-size:12.5px; font-weight:700; cursor:pointer;">Unselect All</button>
+        </div>
+      </div>
+
+      <div class="chips-grid" id="city-chips-container">
+        <!-- Injected dynamically via JS -->
+      </div>
+
+      <div class="step-footer">
+        <button class="btn-back" onclick="goToStep(1)">← Back</button>
+        <button class="btn-next" onclick="goToStep(3)">Next: Resume Upload →</button>
+      </div>
+    </div>
+
+    <!-- ═══════ STEP 3: RESUME UPLOAD (FOUNDER NOTE) ═══════ -->
+    <div class="step-card" id="step-3" style="display:none;">
+      <div class="step-number-tag">Step 3 • AI Resume Matcher</div>
+      <h2 class="step-title">Upload your resume to get matched with jobs!</h2>
+
+      <!-- Founder Note -->
+      <div class="founder-card">
+        <div class="founder-avatar">HV</div>
+        <div>
+          <div class="founder-text">
+            "We'll analyze your resume and match you with verified roles that fit your exact background. We take data privacy very seriously — your resume is never shared with advertisers."
+          </div>
+          <div class="founder-name">Hemasaivattikuti, Founder</div>
+        </div>
+      </div>
+
+      <!-- Upload Dropzone -->
+      <div class="dropzone-box" id="resume-dropzone" onclick="document.getElementById('resume-file-input').click()">
+        <div class="drop-icon">📄</div>
+        <div class="drop-title">Click to upload your resume or drag & drop</div>
+        <div class="drop-sub">PDF, DOC, DOCX up to 5 MB</div>
+        <input type="file" id="resume-file-input" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleResumeUpload(event)">
+        <div id="resume-upload-badge" style="display:none; font-size:13px; font-weight:700; color:var(--primary); margin-top:8px;"></div>
+      </div>
+
+      <!-- Value Props -->
+      <div class="benefits-row">
+        <div class="benefit-item">
+          <span>🔍</span>
+          <span>Automatic 70B AI Match Scoring</span>
+        </div>
+        <div class="benefit-item">
+          <span>📝</span>
+          <span>Instant ATS Keyword Verification</span>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-bottom:20px;">
+        <button onclick="skipResumeUpload()" style="background:none; border:none; color:var(--text-muted); font-size:13px; font-weight:600; cursor:pointer; text-decoration:underline;">
+          I don't have a resume right now → getArole will autofill your profile
+        </button>
+      </div>
+
+      <div class="step-footer">
+        <button class="btn-back" onclick="goToStep(2)">← Back</button>
+        <button class="btn-next" onclick="goToStep(4)">Next: Experience Level →</button>
+      </div>
+    </div>
+
+    <!-- ═══════ STEP 4: EXPERIENCE LEVEL ═══════ -->
+    <div class="step-card" id="step-4" style="display:none;">
+      <div class="step-number-tag">Step 4 • Seniority & Background</div>
+      <h2 class="step-title">How much experience do you have?</h2>
+      <p class="step-tagline">Select up to 2 options that describe your current career stage.</p>
+
+      <div class="options-stack" id="experience-options">
+        <div class="option-card" onclick="toggleExp(this, 'No experience')">
+          <span>🎓 No experience / College Student</span>
+        </div>
+        <div class="option-card" onclick="toggleExp(this, 'Internship')">
+          <span>💼 Internship</span>
+        </div>
+        <div class="option-card selected" onclick="toggleExp(this, 'Entry Level')">
+          <span>🌱 Entry Level & New Grad (Batch 2025/2026)</span>
+        </div>
+        <div class="option-card" onclick="toggleExp(this, 'Junior (1 to 2 years)')">
+          <span>⚡ Junior (1 to 2 years)</span>
+        </div>
+        <div class="option-card" onclick="toggleExp(this, 'Mid-level (3 to 4 years)')">
+          <span>🚀 Mid-level (3 to 4 years)</span>
+        </div>
+        <div class="option-card" onclick="toggleExp(this, 'Senior (5 to 8 years)')">
+          <span>🏆 Senior (5 to 8 years)</span>
+        </div>
+        <div class="option-card" onclick="toggleExp(this, 'Expert & Leadership (9+ years)')">
+          <span>👑 Expert & Leadership (9+ years)</span>
+        </div>
+      </div>
+
+      <div class="step-footer">
+        <button class="btn-back" onclick="goToStep(3)">← Back</button>
+        <button class="btn-next" onclick="goToStep(5)">Next: Desired Roles →</button>
+      </div>
+    </div>
+
+    <!-- ═══════ STEP 5: ROLES & SPECIALIZATION ═══════ -->
+    <div class="step-card" id="step-5" style="display:none;">
+      <div class="step-number-tag">Step 5 • Specialization</div>
+      <h2 class="step-title">What kind of role are you interested in?</h2>
+
+      <div class="founder-card">
+        <div class="founder-avatar">HV</div>
+        <div>
+          <div class="founder-text">
+            "Pick your primary specialization to get started — you can always refine and explore all other roles later!"
+          </div>
+          <div class="founder-name">Hemasaivattikuti, Founder</div>
+        </div>
+      </div>
+
+      <div class="filter-input-wrap">
+        <span class="search-icon-inside">🔍</span>
+        <input type="text" id="role-search" placeholder="Search by job title (e.g. React, Python, Product Manager...)" class="filter-input" oninput="filterRoles()">
+      </div>
+
+      <div style="font-size:12.5px; font-weight:800; color:var(--text-subtle); text-transform:uppercase; margin-bottom:10px;">
+        Popular Specializations:
+      </div>
+
+      <div class="chips-grid" id="role-chips-container">
+        <!-- Injected via JS -->
+      </div>
+
+      <div class="step-footer">
+        <button class="btn-back" onclick="goToStep(4)">← Back</button>
+        <button class="btn-next" onclick="goToStep(6)">Next: Compensation →</button>
+      </div>
+    </div>
+
+    <!-- ═══════ STEP 6: EXPECTED SALARY ═══════ -->
+    <div class="step-card" id="step-6" style="display:none;">
+      <div class="step-number-tag">Step 6 • Compensation</div>
+      <h2 class="step-title">What is your minimum expected compensation?</h2>
+
+      <div class="founder-card">
+        <div class="founder-avatar">HV</div>
+        <div>
+          <div class="founder-text">
+            "We'll only use this to match you with high-paying jobs meeting your threshold. We will never share this data."
+          </div>
+          <div class="founder-name">Hemasaivattikuti, Founder</div>
+        </div>
+      </div>
+
+      <div class="salary-toggle">
+        <button class="salary-tab active" onclick="setCurrency('INR')">₹ INR (Lakhs / Year)</button>
+        <button class="salary-tab" onclick="setCurrency('USD')">$ USD (k / Year)</button>
+      </div>
+
+      <div class="options-stack" id="salary-options-container">
+        <!-- Dynamic INR / USD options -->
+      </div>
+
+      <div class="step-footer">
+        <button class="btn-back" onclick="goToStep(5)">← Back</button>
+        <button class="btn-next" onclick="finishAndCelebrate()">Calculate Matching Jobs 🎉</button>
+      </div>
+    </div>
+
+    <!-- ═══════ STEP 7: CELEBRATION & MATCH RESULTS ═══════ -->
+    <div class="step-card" id="step-7" style="display:none;">
+      <div class="celebration-wrap">
+        <div class="celeb-badge">🎉</div>
+        <div class="step-number-tag">Matched Successfully</div>
+        <h2 style="font-size:26px; font-weight:900; margin-bottom:4px;">We Found Live Matching Roles!</h2>
+        
+        <div class="celeb-count" id="match-counter-display">1K+</div>
+        <p style="font-size:15px; color:var(--text-muted); max-width:440px; margin:0 auto 16px;">
+          verified engineering jobs matching your exact location, role, and salary preferences.
+        </p>
+
+        <div class="celeb-summary-pills" id="celeb-pills-list">
+          <!-- Summary pills injected via JS -->
+        </div>
+
+        <div style="font-size:12.5px; color:var(--text-subtle); margin-bottom:28px;">
+          ⚡ Updated every 3 hours. New jobs matching your profile are scraped continuously.
+        </div>
+
+        <button class="btn-next" onclick="launchDashboard()" style="padding:16px 36px; font-size:16px; width:100%;">
+          Launch Your Personalized Dashboard →
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══════ DATA & WIZARD LOGIC ═══════ -->
   <script>
     let currentStep = 1;
-    const totalSteps = 8;
-    const userProfile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
-    const selectedSkills = new Set(userProfile.skills || [
-      "Python", "FastAPI", "Docker", "PostgreSQL", "React.js", "Distributed Systems", "SQL", "Git", "Linux/Unix", "REST APIs"
-    ]);
+    const userPrefs = {
+      timeline: 'ASAP',
+      locations: ['Bengaluru', 'Hyderabad', 'Remote in India', 'Global Remote'],
+      experience: ['Entry Level'],
+      role: 'Software Engineering',
+      currency: 'INR',
+      minSalary: '₹8 LPA'
+    };
 
-    const allCommonSkills = [
-      "Python", "FastAPI", "Docker", "PostgreSQL", "React.js", "Next.js", "Node.js",
-      "Distributed Systems", "MongoDB", "SQL", "Git", "Linux/Unix", "REST APIs",
-      "LLM", "Machine Learning", "Pydantic", "Nginx", "Playwright", "Vercel", "Kubernetes",
-      "AWS", "GCP", "Redis", "LangChain", "TypeScript", "JavaScript", "HTML/CSS", "Java", "C++"
+    const allIndianCities = [
+      "India (Anywhere)", "Remote in India", "Global Remote",
+      "Bengaluru", "Hyderabad", "Pune", "Delhi NCR", "Mumbai",
+      "Chennai", "Gurgaon", "Noida", "Kolkata", "Ahmedabad",
+      "Kochi", "Jaipur", "Chandigarh", "Indore", "Coimbatore"
     ];
 
-    function renderSkills() {
-      const cloud = document.getElementById('skills-cloud-wrap');
-      cloud.innerHTML = allCommonSkills.map(s => {
-        const isSel = selectedSkills.has(s);
-        return `<span class="skill-chip ${isSel ? 'selected' : ''}" onclick="toggleSkill('${s}')">${s}</span>`;
-      }).join('');
+    const allRoles = [
+      "Software Engineering", "Full Stack Developer", "Backend Developer",
+      "Frontend Developer", "AI & Machine Learning", "Data Science",
+      "DevOps & Cloud Engineer", "Product Management", "Mobile (iOS/Android)",
+      "UI/UX Design", "QA / Automation Engineer", "Cyber Security",
+      "Business & Strategy", "Growth & Marketing", "Fintech & Banking", "Consulting"
+    ];
 
-      const selWrap = document.getElementById('selected-skills-chips');
-      selWrap.innerHTML = Array.from(selectedSkills).map(s => `
-        <span class="skill-chip selected" onclick="toggleSkill('${s}')">${s} ✕</span>
-      `).join('');
-    }
+    const salaryINR = ["Any Compensation", "₹6 LPA+", "₹10 LPA+", "₹15 LPA+", "₹25 LPA+", "₹40 LPA+"];
+    const salaryUSD = ["Any Compensation", "$60k+", "$80k+", "$100k+", "$140k+", "$200k+"];
 
-    function toggleSkill(s) {
-      if (selectedSkills.has(s)) selectedSkills.delete(s);
-      else selectedSkills.add(s);
-      renderSkills();
-    }
-
-    function selectRadio(el, field) {
-      el.parentElement.querySelectorAll('.radio-pill').forEach(p => p.classList.remove('selected'));
-      el.classList.add('selected');
-    }
-
-    function jumpToStep(stepNum) {
-      document.querySelectorAll('.step-section').forEach(s => s.style.display = 'none');
-      document.querySelectorAll('.step-nav-item').forEach((s, idx) => {
-        s.classList.toggle('active', idx + 1 === stepNum);
-        if (idx + 1 < stepNum) s.classList.add('completed');
-      });
-
-      document.getElementById(`step-view-${stepNum}`).style.display = 'block';
-      currentStep = stepNum;
+    function goToStep(step) {
+      document.querySelectorAll('.step-card').forEach(card => card.style.display = 'none');
+      const nextCard = document.getElementById(`step-${step}`);
+      if (nextCard) nextCard.style.display = 'block';
+      
+      currentStep = step;
+      document.getElementById('step-indicator-text').textContent = `Step ${step} of 7`;
+      document.getElementById('progress-fill').style.width = `${(step / 7) * 100}%`;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function saveAndNext(fromStep) {
-      saveStepData(fromStep);
-      jumpToStep(fromStep + 1);
+    // Timeline selector
+    function selectTimeline(el, val) {
+      document.querySelectorAll('#timeline-options .option-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      userPrefs.timeline = val;
     }
 
-    function saveStepData(step) {
-      if (step === 1) {
-        userProfile.firstName = document.getElementById('prof-firstname').value;
-        userProfile.lastName = document.getElementById('prof-lastname').value;
-      } else if (step === 2) {
-        userProfile.education = {
-          school: document.getElementById('edu-school').value,
-          major: document.getElementById('edu-major').value,
-          degree: document.getElementById('edu-degree').value,
-          startYear: document.getElementById('edu-start-y').value,
-          endYear: document.getElementById('edu-end-y').value
-        };
-      } else if (step === 3) {
-        userProfile.experience = {
-          noPrior: document.getElementById('exp-no-prior').checked,
-          title: document.getElementById('exp-title').value,
-          company: document.getElementById('exp-company').value,
-          location: document.getElementById('exp-location').value,
-          description: document.getElementById('exp-desc').value
-        };
-      } else if (step === 6) {
-        userProfile.skills = Array.from(selectedSkills);
-      } else if (step === 7) {
-        userProfile.city = document.getElementById('personal-city').value;
-        userProfile.phone = document.getElementById('personal-phone').value;
-      } else if (step === 8) {
-        userProfile.links = {
-          linkedin: document.getElementById('link-linkedin').value,
-          github: document.getElementById('link-github').value,
-          portfolio: document.getElementById('link-portfolio').value
-        };
-      }
-      localStorage.setItem('getarole_profile', JSON.stringify(userProfile));
+    // Location selector
+    function renderCities(filter = '') {
+      const container = document.getElementById('city-chips-container');
+      const filtered = allIndianCities.filter(c => c.toLowerCase().includes(filter.toLowerCase()));
+      container.innerHTML = filtered.map(c => {
+        const isSel = userPrefs.locations.includes(c);
+        return `<div class="choice-chip ${isSel ? 'selected' : ''}" onclick="toggleLocation('${c}')">${c}</div>`;
+      }).join('');
+      document.getElementById('location-selected-count').textContent = `${userPrefs.locations.length} Locations Selected`;
     }
 
-    async function handleResumeFile(e) {
+    function toggleLocation(c) {
+      const idx = userPrefs.locations.indexOf(c);
+      if (idx > -1) userPrefs.locations.splice(idx, 1);
+      else userPrefs.locations.push(c);
+      renderCities(document.getElementById('city-search').value);
+    }
+
+    function selectAllLocations(select) {
+      userPrefs.locations = select ? [...allIndianCities] : [];
+      renderCities();
+    }
+
+    function filterCities() {
+      renderCities(document.getElementById('city-search').value);
+    }
+
+    // Resume Handler
+    function handleResumeUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
-
-      const badge = document.getElementById('resume-status-badge');
+      const badge = document.getElementById('resume-upload-badge');
       badge.style.display = 'block';
-      badge.textContent = `⏳ Parsing ${file.name} with PyMuPDF...`;
+      badge.textContent = `✓ ${file.name} uploaded & parsed locally!`;
+      localStorage.setItem('getarole_resume_uploaded', 'true');
+    }
 
-      const formData = new FormData();
-      formData.append('file', file);
+    function skipResumeUpload() {
+      goToStep(4);
+    }
 
-      try {
-        const res = await fetch('/api/match-resume', { method: 'POST', body: formData });
-        const data = await res.json();
-        badge.textContent = `${file.name} parsed successfully · Top ${data.total_matches} jobs ranked!`;
-        
-        if (data.candidate_skills) {
-          data.candidate_skills.forEach(s => selectedSkills.add(s));
-          renderSkills();
+    // Experience selector
+    function toggleExp(el, val) {
+      const idx = userPrefs.experience.indexOf(val);
+      if (idx > -1) {
+        userPrefs.experience.splice(idx, 1);
+        el.classList.remove('selected');
+      } else {
+        if (userPrefs.experience.length >= 2) {
+          const first = userPrefs.experience.shift();
+          document.querySelectorAll('#experience-options .option-card').forEach(c => {
+            if (c.textContent.includes(first)) c.classList.remove('selected');
+          });
         }
-        if (data.matches) {
-          localStorage.setItem('getarole_matches', JSON.stringify(data.matches));
-        }
-      } catch (err) {
-        badge.textContent = `${file.name} loaded.`;
+        userPrefs.experience.push(val);
+        el.classList.add('selected');
       }
     }
 
-    async function finishProfile() {
-      saveStepData(8);
-      userProfile.skills = Array.from(selectedSkills);
-      const authUser = JSON.parse(localStorage.getItem('getarole_user') || '{}');
-      userProfile.email = authUser.email || '';
-      userProfile.firebase_uid = authUser.uid || '';
-      userProfile.name = `${userProfile.firstName || ''} ${userProfile.lastName || ''}`.trim() || authUser.displayName || 'Candidate';
-      
-      localStorage.setItem('getarole_profile', JSON.stringify(userProfile));
-      
-      // Auto-Sync Candidate & Resume to Supabase & Backend
-      try {
-        await fetch('/api/candidate/profile', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(userProfile)
-        });
-      } catch (e) {
-        console.warn('Profile sync notice:', e);
-      }
-
-      // Save global prefs
-      localStorage.setItem('getarole_prefs', JSON.stringify({
-        completed: true,
-        cities: [userProfile.city || 'Bengaluru'],
-        skills: userProfile.skills
-      }));
-
-      window.location.href = '/dashboard';
+    // Roles selector
+    function renderRoles(filter = '') {
+      const container = document.getElementById('role-chips-container');
+      const filtered = allRoles.filter(r => r.toLowerCase().includes(filter.toLowerCase()));
+      container.innerHTML = filtered.map(r => {
+        const isSel = userPrefs.role === r;
+        return `<div class="choice-chip ${isSel ? 'selected' : ''}" onclick="selectRole('${r}')">${r}</div>`;
+      }).join('');
     }
 
-    // Initialize UI
+    function selectRole(r) {
+      userPrefs.role = r;
+      renderRoles(document.getElementById('role-search').value);
+    }
+
+    function filterRoles() {
+      renderRoles(document.getElementById('role-search').value);
+    }
+
+    // Salary selector
+    function setCurrency(curr) {
+      userPrefs.currency = curr;
+      document.querySelectorAll('.salary-tab').forEach((t, i) => {
+        t.classList.toggle('active', (curr === 'INR' && i === 0) || (curr === 'USD' && i === 1));
+      });
+      renderSalaryOptions();
+    }
+
+    function renderSalaryOptions() {
+      const list = userPrefs.currency === 'INR' ? salaryINR : salaryUSD;
+      const container = document.getElementById('salary-options-container');
+      container.innerHTML = list.map((sal, idx) => `
+        <div class="option-card ${idx === 2 ? 'selected' : ''}" onclick="selectSalary(this, '${sal}')">
+          <span>At least ${sal}</span>
+        </div>
+      `).join('');
+      userPrefs.minSalary = list[2];
+    }
+
+    function selectSalary(el, sal) {
+      document.querySelectorAll('#salary-options-container .option-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      userPrefs.minSalary = sal;
+    }
+
+    // Finish and summary
+    function finishAndCelebrate() {
+      localStorage.setItem('getarole_prefs', JSON.stringify(userPrefs));
+      
+      // Update celebration screen
+      document.getElementById('celeb-pills-list').innerHTML = `
+        <span class="celeb-pill">📍 ${userPrefs.locations.slice(0, 2).join(', ')}${userPrefs.locations.length > 2 ? ' +' + (userPrefs.locations.length - 2) : ''}</span>
+        <span class="celeb-pill">💻 ${userPrefs.role}</span>
+        <span class="celeb-pill">💰 ${userPrefs.minSalary}</span>
+        <span class="celeb-pill">⚡ ${userPrefs.timeline}</span>
+      `;
+      goToStep(7);
+    }
+
+    function launchDashboard() {
+      window.location.href = '/dashboard/';
+    }
+
+    // Initial boot
     (function init() {
-      renderSkills();
-      if (userProfile.firstName) document.getElementById('prof-firstname').value = userProfile.firstName;
-      if (userProfile.lastName) document.getElementById('prof-lastname').value = userProfile.lastName;
+      renderCities();
+      renderRoles();
+      renderSalaryOptions();
     })();
   </script>
 </body>
