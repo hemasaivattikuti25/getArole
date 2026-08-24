@@ -6,6 +6,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from core.circuit_breaker import AsyncCircuitBreaker
+from core.metrics import LLM_FALLBACK_TOTAL
+
+llm_breaker = AsyncCircuitBreaker("nvidia_nim", fail_max=3, reset_timeout=30.0)
+
 class NvidiaLLMService:
     def __init__(
         self,
@@ -13,11 +18,16 @@ class NvidiaLLMService:
         model: Optional[str] = None,
         base_url: Optional[str] = None
     ):
-        self.api_key = api_key or os.getenv("NVIDIA_NIM_API_KEY", "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")
+        self.api_key = api_key or os.getenv("NVIDIA_NIM_API_KEY", "")
         self.model = model or os.getenv("NVIDIA_MODEL", "meta/llama-3.1-70b-instruct")
         self.base_url = (base_url or os.getenv("NVIDIA_BASE_URL", "https://integrate.api.nvidia.com/v1")).rstrip("/")
 
     async def a_call_chat(self, messages: List[Dict[str, str]], temperature: float = 0.2, max_tokens: int = 800) -> str:
+        # Check circuit state
+        if llm_breaker.is_open:
+            LLM_FALLBACK_TOTAL.labels(reason="circuit_open").inc()
+            return ""
+
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
@@ -29,11 +39,23 @@ class NvidiaLLMService:
             "max_tokens": max_tokens
         }
         timeout_cfg = httpx.Timeout(connect=2.5, read=4.0, write=2.0, pool=2.0)
-        async with httpx.AsyncClient(timeout=timeout_cfg) as client:
-            resp = await client.post(f"{self.base_url}/chat/completions", headers=headers, json=payload)
-            resp.raise_for_status()
-            data = resp.json()
-            return data["choices"][0]["message"]["content"].strip()
+        try:
+            async with httpx.AsyncClient(timeout=timeout_cfg) as client:
+                resp = await client.post(f"{self.base_url}/chat/completions", headers=headers, json=payload)
+                resp.raise_for_status()
+                data = resp.json()
+                await llm_breaker.record_success()
+                return data["choices"][0]["message"]["content"].strip()
+        except httpx.HTTPStatusError as e:
+            await llm_breaker.record_failure(e)
+            status_code = str(e.response.status_code)
+            LLM_FALLBACK_TOTAL.labels(reason=f"http_{status_code}").inc()
+            return ""
+        except Exception as e:
+            await llm_breaker.record_failure(e)
+            error_name = type(e).__name__
+            LLM_FALLBACK_TOTAL.labels(reason=error_name).inc()
+            return ""
 
     async def a_stream_chat(self, messages: List[Dict[str, str]], temperature: float = 0.2, max_tokens: int = 800):
         headers = {

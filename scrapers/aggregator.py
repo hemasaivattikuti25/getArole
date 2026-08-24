@@ -9,7 +9,8 @@ from .internshala import scrape_all_internshala_jobs
 from .linkedin import scrape_all_linkedin_jobs
 from .unstop import fetch_unstop_jobs
 
-from .base import BaseScraper
+import random
+from core.metrics import SCRAPER_FAILURE_TOTAL
 
 class JobAggregator:
     def __init__(self, scrapers: Optional[List[BaseScraper]] = None):
@@ -20,21 +21,38 @@ class JobAggregator:
         """Register a new scraper strategy dynamically (Open/Closed Principle)."""
         self.registered_scrapers.append(scraper)
 
-    async def _run_with_retries(self, scraper_func, name: str, max_retries: int = 3, base_delay: float = 2.0) -> List[JobListing]:
-        """Runs an async scraper function with exponential backoff retries."""
+    def _validate_payload(self, jobs: List[JobListing], name: str) -> List[JobListing]:
+        """Validate that returned jobs meet minimum schema and sanity standards."""
+        if not jobs:
+            return []
+        valid = []
+        for j in jobs:
+            if getattr(j, "title", None) and getattr(j, "company", None) and getattr(j, "url", None):
+                valid.append(j)
+        if len(valid) < len(jobs) * 0.5:
+            SCRAPER_FAILURE_TOTAL.labels(scraper=name, reason="anti_bot_schema_mismatch").inc()
+            return []
+        return valid
+
+    async def _run_with_retries(self, scraper_func, name: str, max_retries: int = 3, base_delay: float = 1.5) -> List[JobListing]:
+        """Runs an async scraper function with full jitter exponential backoff retries."""
         for attempt in range(1, max_retries + 1):
             try:
                 print(f"[Aggregator] Starting {name} (Attempt {attempt}/{max_retries})...")
                 results = await scraper_func()
-                print(f"[Aggregator] ✅ {name} completed successfully. Found {len(results)} jobs.")
-                return results
+                validated = self._validate_payload(results, name)
+                print(f"[Aggregator] ✅ {name} completed successfully. Found {len(validated)} verified jobs.")
+                return validated
             except Exception as e:
-                print(f"[Aggregator] ⚠️ {name} failed on attempt {attempt}: {type(e).__name__} - {e}")
+                error_type = type(e).__name__
+                print(f"[Aggregator] ⚠️ {name} failed on attempt {attempt}: {error_type} - {e}")
                 if attempt < max_retries:
-                    delay = base_delay * (2 ** (attempt - 1))
-                    print(f"[Aggregator] Retrying {name} in {delay} seconds...")
-                    await asyncio.sleep(delay)
+                    # Full Jitter formula
+                    jittered_delay = random.uniform(0.5, base_delay * (2 ** (attempt - 1)))
+                    print(f"[Aggregator] Retrying {name} in {jittered_delay:.2f}s with jitter...")
+                    await asyncio.sleep(jittered_delay)
                 else:
+                    SCRAPER_FAILURE_TOTAL.labels(scraper=name, reason=error_type).inc()
                     print(f"[Aggregator] ❌ {name} exhausted all retries. Skipping.")
         return []
 

@@ -188,3 +188,19 @@ def test_concurrent_duplicate_profile_updates():
     for res in results:
         assert res.status_code == 200
         assert res.json().get("status") == "ok"
+
+
+# ── 7. Prometheus Metrics & Kubernetes Health Probes ─────────────────────────
+
+def test_prometheus_metrics_and_health_probes():
+    """Test /metrics, /healthz, and /readyz SRE endpoints."""
+    res_healthz = client.get("/healthz")
+    assert res_healthz.status_code == 200
+    assert res_healthz.json().get("status") == "alive"
+
+    res_readyz = client.get("/readyz")
+    assert res_readyz.status_code in [200, 503]
+
+    res_metrics = client.get("/metrics")
+    assert res_metrics.status_code == 200
+    assert "http_request_duration_seconds" in res_metrics.text or "circuit_breaker_state" in res_metrics.text

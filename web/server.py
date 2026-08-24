@@ -3,7 +3,7 @@ import json
 import os
 import shutil
 from typing import List, Optional, Dict, Any
-from fastapi import FastAPI, UploadFile, File, Form, Query, HTTPException, Body, Request, Header
+from fastapi import FastAPI, UploadFile, File, Form, Query, HTTPException, Body, Request, Header, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -837,4 +837,44 @@ async def serve_preferences():
         with open(pref_file, "r", encoding="utf-8") as f:
             return f.read()
     return "<h1>getArole Preferences</h1>"
+
+
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+from services.embedding_service import embedding_service
+
+@app.get("/metrics")
+async def metrics_endpoint():
+    """Prometheus metrics scrape endpoint."""
+    return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
+
+@app.get("/healthz")
+async def liveness_probe():
+    """Liveness probe: verifies ASGI process is alive."""
+    return JSONResponse({"status": "alive"})
+
+@app.get("/readyz")
+async def readiness_probe(response: Response):
+    """Readiness probe: validates external dependencies before accepting traffic."""
+    checks = {
+        "supabase": False,
+        "embedding_model": False
+    }
+    
+    try:
+        supabase = get_supabase_service()
+        checks["supabase"] = supabase.is_connected()
+    except Exception:
+        checks["supabase"] = False
+
+    try:
+        checks["embedding_model"] = hasattr(embedding_service, 'model') and embedding_service.model is not None
+    except Exception:
+        checks["embedding_model"] = False
+
+    is_ready = all(checks.values())
+    if not is_ready:
+        response.status_code = 503
+        return JSONResponse(status_code=503, content={"status": "degraded", "dependencies": checks})
+        
+    return JSONResponse({"status": "ready", "dependencies": checks})
 

@@ -3,6 +3,8 @@ from typing import List, Generator
 from fastembed import TextEmbedding
 from core.config import settings
 
+from core.metrics import DEPENDENCY_ERRORS_TOTAL
+
 class EmbeddingService:
     _instance = None
     
@@ -13,9 +15,18 @@ class EmbeddingService:
             cache_dir = os.environ.get("FASTEMBED_CACHE_DIR", "/tmp/fastembed_cache")
             try:
                 cls._instance.model = TextEmbedding(model_name=settings.EMBEDDING_MODEL_NAME, cache_dir=cache_dir)
+                # Startup probe validating 384 dimensions
+                probe = list(cls._instance.model.embed(["probe"]))[0]
+                assert len(probe) == 384, f"Dimension mismatch: expected 384, got {len(probe)}"
             except Exception as e:
-                print(f"[EmbeddingService Warning] Custom cache_dir failed ({e}), falling back to default FastEmbed model initialization.")
-                cls._instance.model = TextEmbedding(model_name=settings.EMBEDDING_MODEL_NAME)
+                error_name = type(e).__name__
+                DEPENDENCY_ERRORS_TOTAL.labels(dependency="fastembed", error_type=error_name).inc()
+                print(f"[EmbeddingService Warning] Custom cache_dir / probe failed ({e}), falling back to default FastEmbed model initialization.")
+                try:
+                    cls._instance.model = TextEmbedding(model_name=settings.EMBEDDING_MODEL_NAME)
+                except Exception as ex:
+                    print(f"[EmbeddingService Error] Model init failure: {ex}")
+                    cls._instance.model = None
         return cls._instance
 
     def embed_texts(self, texts: List[str]) -> List[np.ndarray]:

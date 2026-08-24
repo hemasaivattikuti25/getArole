@@ -1,12 +1,17 @@
 import os
+import time
 import asyncio
 from typing import List, Dict, Any, Optional
 from dotenv import load_dotenv
 from supabase import create_client, Client
 from scrapers.models import JobListing, CandidateProfile
 from domain.models import CandidateScreeningReport
+from core.metrics import SUPABASE_FAILURES_TOTAL, DEPENDENCY_ERRORS_TOTAL
 
 load_dotenv()
+
+_JOB_WRITE_THROUGH_CACHE: List[Dict[str, Any]] = []
+_CACHE_TIMESTAMP: float = 0.0
 
 class SupabaseService:
     def __init__(self):
@@ -73,22 +78,35 @@ class SupabaseService:
         return inserted_count
 
     async def fetch_jobs(self, limit: int = 100, city: Optional[str] = None, workplace_type: Optional[str] = None) -> List[Dict[str, Any]]:
+        global _JOB_WRITE_THROUGH_CACHE, _CACHE_TIMESTAMP
         client = await self._get_client()
         if not client:
-            return []
+            return _JOB_WRITE_THROUGH_CACHE
 
         try:
-            query = client.table("jobs").select("*").limit(limit)
-            if city:
-                query = query.ilike("city", f"%{city}%")
-            if workplace_type:
-                query = query.ilike("workplace_type", f"%{workplace_type}%")
-                
-            res = await query.execute()
-            return res.data or []
+            async with asyncio.timeout(2.5):  # 2.5s strict timeout
+                query = client.table("jobs").select("id,title,company,location,workplace_type,salary,apply_url,created_at,source").limit(limit)
+                if city:
+                    query = query.ilike("city", f"%{city}%")
+                if workplace_type:
+                    query = query.ilike("workplace_type", f"%{workplace_type}%")
+                    
+                res = await query.execute()
+                if res.data:
+                    _JOB_WRITE_THROUGH_CACHE = res.data
+                    _CACHE_TIMESTAMP = time.time()
+                return res.data or _JOB_WRITE_THROUGH_CACHE
+        except asyncio.TimeoutError:
+            SUPABASE_FAILURES_TOTAL.labels(error_type="timeout_2.5s").inc()
+            DEPENDENCY_ERRORS_TOTAL.labels(dependency="supabase", error_type="timeout").inc()
+            print(f"[Supabase] Timeout fetching jobs. Serving cached data (age: {time.time() - _CACHE_TIMESTAMP:.1f}s)")
+            return _JOB_WRITE_THROUGH_CACHE
         except Exception as e:
-            print(f"[Supabase] Fetch error: {e}")
-            return []
+            error_name = type(e).__name__
+            SUPABASE_FAILURES_TOTAL.labels(error_type=error_name).inc()
+            DEPENDENCY_ERRORS_TOTAL.labels(dependency="supabase", error_type=error_name).inc()
+            print(f"[Supabase] Fetch error ({error_name}): {e}. Serving cached data.")
+            return _JOB_WRITE_THROUGH_CACHE
 
     async def save_candidate_screening(
         self,
