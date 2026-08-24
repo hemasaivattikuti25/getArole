@@ -455,6 +455,26 @@
     </div>
   </header>
 
+  <!-- ════════════════════ FILTER & SEARCH BAR ════════════════════ -->
+  <div class="filter-bar" id="filter-bar" style="display:none;">
+    <div class="filter-inner">
+      <div class="search-input-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="main-search-input" class="search-input" placeholder="Search for roles, companies, or skills (e.g. Python, Backend, AI)..." oninput="filterJobs()">
+      </div>
+
+      <div class="filter-pills-row">
+        <button class="filter-pill" id="pill-remote"    onclick="togglePillFilter('remote')">Remote</button>
+        <button class="filter-pill" id="pill-bengaluru" onclick="togglePillFilter('bengaluru')">Bengaluru</button>
+        <button class="filter-pill" id="pill-hyderabad" onclick="togglePillFilter('hyderabad')">Hyderabad</button>
+        <button class="filter-pill" id="pill-intern"    onclick="togglePillFilter('internship')">Internships</button>
+        <button class="filter-pill" id="pill-fulltime"  onclick="togglePillFilter('fulltime')">Full-Time</button>
+        <button class="filter-pill" id="pill-parttime"  onclick="togglePillFilter('parttime')">Contract</button>
+
+      </div>
+    </div>
+  </div>
+
   <!-- ════════════════════ MAIN CONTENT ════════════════════ -->
   <main>
     <!-- 0. HOME VIEW -->
@@ -525,6 +545,31 @@
         <div id="home-matches-preview-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px;"></div>
       </div>
 
+    </div>
+
+    <!-- 1. JOBS EXPLORER VIEW (SPLIT PANE) -->
+    <div id="view-jobs" class="page-view">
+      <div class="jobs-split-container">
+        
+        <!-- Left Column: Job Feed List -->
+        <div class="jobs-feed-col">
+          <div class="feed-header">
+            <span>Showing <strong id="jobs-count-text">0</strong> Opportunities</span>
+            <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:12px; font-weight:700; color:var(--text-muted)">
+              <input type="checkbox" id="sort-recent" onchange="filterJobs()" checked style="accent-color:var(--primary)"> Most recent
+            </label>
+          </div>
+          <div class="feed-list" id="job-feed-list"></div>
+        </div>
+
+        <!-- Right Column: Job Detail & Match Pane -->
+        <div class="job-detail-col" id="job-detail-pane">
+          <div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--text-subtle); font-size:14px; font-weight:600">
+            Select an opportunity on the left to view AI match breakdown and requirements.
+          </div>
+        </div>
+
+      </div>
     </div>
 
     <!-- 2. AI MATCHES VIEW (SPLIT PANE LIKE JOB EXPLORER) -->
@@ -1082,6 +1127,69 @@
       filteredJobs = [...allJobs];
       renderFeed();
       if (filteredJobs.length > 0) selectJob(filteredJobs[0].id);
+    }
+
+    function filterJobs() {
+      const q = document.getElementById('main-search-input').value.toLowerCase().trim();
+      
+      filteredJobs = allJobs.filter(j => {
+        const textMatch = !q || `${j.title} ${j.company} ${j.location} ${j.description}`.toLowerCase().includes(q);
+        
+        let pillMatch = true;
+        if (activePills.has('remote') && !(j.workplace_type || '').toLowerCase().includes('remote')) pillMatch = false;
+        if (activePills.has('bengaluru') && !(j.location || '').toLowerCase().includes('bengaluru') && !(j.city || '').toLowerCase().includes('bengaluru')) pillMatch = false;
+        if (activePills.has('hyderabad') && !(j.location || '').toLowerCase().includes('hyderabad') && !(j.city || '').toLowerCase().includes('hyderabad')) pillMatch = false;
+        if (activePills.has('internship') && !(j.employment_type || '').toLowerCase().includes('intern')) pillMatch = false;
+        if (activePills.has('fulltime') && !(j.employment_type || '').toLowerCase().includes('full')) pillMatch = false;
+        if (activePills.has('parttime')) {
+          const pt = `${j.employment_type || ''} ${j.title || ''} ${j.description || ''}`.toLowerCase();
+          if (!pt.includes('part') && !pt.includes('contract') && !pt.includes('freelance') && !pt.includes('fractional')) pillMatch = false;
+        }
+
+        return textMatch && pillMatch;
+      });
+
+      renderFeed();
+      if (filteredJobs.length > 0) {
+        selectJob(filteredJobs[0].id);
+      } else {
+        document.getElementById('job-detail-pane').innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-subtle);font-size:14px;font-weight:600">
+            No opportunities match the selected criteria. Try clearing filters.
+          </div>`;
+      }
+    }
+
+    function renderFeed() {
+      const feed = document.getElementById('job-feed-list');
+      document.getElementById('jobs-count-text').textContent = filteredJobs.length.toLocaleString('en-IN');
+
+      feed.innerHTML = filteredJobs.map(j => {
+        const isSelected = j.id === selectedJobId;
+        const isSaved = tracker.saved.includes(j.id);
+        const compInitial = j.company ? j.company[0].toUpperCase() : 'G';
+        const batchTag = j.title.toLowerCase().includes('intern') ? 'Batch 2026/2027' : 'Immediate';
+
+        return `
+          <div class="job-card ${isSelected ? 'selected' : ''}" onclick="selectJob('${j.id}')">
+            <div class="card-top">
+              <div class="company-badge-wrap">
+                <div class="company-logo">${compInitial}</div>
+                <div class="company-name">${j.company}</div>
+              </div>
+              <button class="card-bookmark-btn ${isSaved ? 'saved' : ''}" onclick="event.stopPropagation(); toggleSave('${j.id}')">
+                ${isSaved ? '★' : '☆'}
+              </button>
+            </div>
+            <div class="card-title">${j.title}</div>
+            <div class="card-tags">
+              <span class="tag-chip batch">${batchTag}</span>
+              <span class="tag-chip">${j.location || 'India'}</span>
+              <span class="tag-chip ${j.workplace_type === 'Remote' ? 'remote' : ''}">${j.workplace_type || 'On-site'}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     function selectJob(id, targetPaneId = 'job-detail-pane') {
