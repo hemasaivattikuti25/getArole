@@ -52,13 +52,21 @@ async def scrape_internshala_category(client: httpx.AsyncClient, category: str, 
         cards = soup.find_all("div", class_="individual_internship")
         
         for card in cards:
-            title_tag = card.find("h3", class_="job-internship-name") or card.find("a", class_="view_detail_button")
+            # Internshala changed markup: h2 instead of h3, job-title-href instead of view_detail_button
+            title_tag = (card.find("h2", class_="job-internship-name") or
+                         card.find("h3", class_="job-internship-name") or
+                         card.find("a", class_="job-title-href"))
             if not title_tag:
                 continue
             
             title = title_tag.get_text(strip=True)
-            link_tag = card.find("a", class_="view_detail_button")
-            rel_link = link_tag.get("href", "") if link_tag else ""
+            link_tag = (card.find("a", class_="job-title-href") or
+                        card.find("a", class_="view_detail_button"))
+            if not link_tag:
+                # fallback: data-href on the card itself
+                rel_link = card.get("data-href", "")
+            else:
+                rel_link = link_tag.get("href", "")
             full_url = f"https://internshala.com{rel_link}" if rel_link.startswith("/") else rel_link
             
             company_tag = card.find("p", class_="company-name") or card.find("a", class_="link_display_like_text")
