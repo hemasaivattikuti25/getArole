@@ -864,11 +864,22 @@
             }
           }
 
+          localStorage.setItem('getarole_uploaded_resume', JSON.stringify({
+            filename: data.filename || file.name,
+            uploadedAt: new Date().toLocaleDateString(),
+            raw_text: data.resume_text,
+            skills: parsedProf.skills || []
+          }));
+          if (data.resume_data) {
+            localStorage.setItem('getarole_resume_v2', JSON.stringify(data.resume_data));
+          }
+
           renderLeftProfile();
           renderStaticCards();
           alert(`✅ Resume analyzed successfully! Extracted ${(parsedProf.skills || []).length} skills and synced to your profile.`);
         } else {
-          alert('Could not parse resume file. Please ensure it is a valid PDF or Word document.');
+          const errData = await res.json().catch(() => ({}));
+          alert(errData.error || 'Could not parse resume file. Please ensure it is a valid PDF or Word document.');
         }
       } catch (err) {
         console.error('Resume upload error:', err);
@@ -923,16 +934,41 @@
     function renderStaticCards() {
       const container = document.getElementById('static-cards-container');
       
-      const resumeHTML = `
+      const savedResume = JSON.parse(localStorage.getItem('getarole_uploaded_resume') || localStorage.getItem('getarole_resume_v2') || 'null');
+      const resumeName = savedResume ? (savedResume.filename || (savedResume.header && savedResume.header.name ? `${savedResume.header.name}_Resume.pdf` : 'Candidate_Resume.pdf')) : null;
+      const skillCount = (profileData.skills || []).length;
+
+      const resumeHTML = savedResume ? `
+        <div class="summary-card" style="border-color: var(--primary-border); background: linear-gradient(145deg, #ffffff, #f8fafc);">
+          <div class="summary-card-header">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:24px;">📄</span>
+              <div>
+                <h3 class="summary-card-title" style="margin:0; font-size:16px;">${resumeName}</h3>
+                <span style="font-size:12px; color:var(--primary); font-weight:700;">✓ Active Resume · ${skillCount} Skills Detected</span>
+              </div>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-refresh" onclick="openResumePreviewModal()" style="padding:6px 14px; font-size:12.5px; background:var(--primary-light); color:var(--primary); border:1px solid var(--primary-border);">
+                👁️ Preview Resume
+              </button>
+              <button class="btn-refresh" onclick="document.getElementById('hidden-resume-file').click()" style="padding:6px 14px; font-size:12.5px;">
+                🔄 Replace
+              </button>
+              <button class="edit-icon-btn" onclick="window.location.href='/resume-builder/'" title="Open ATS Resume Builder">✏️</button>
+            </div>
+          </div>
+        </div>
+      ` : `
         <div class="summary-card">
           <div class="summary-card-header">
             <h3 class="summary-card-title">Resume</h3>
-            <button class="edit-icon-btn" onclick="window.location.href='/resume-builder/'">✏️</button>
+            <button class="edit-icon-btn" onclick="document.getElementById('hidden-resume-file').click()">📤</button>
           </div>
-          <div style="border: 2px dashed var(--border); border-radius: var(--radius-lg); padding:32px; text-align:center; color:var(--text-muted);">
+          <div style="border: 2px dashed var(--border); border-radius: var(--radius-lg); padding:32px; text-align:center; color:var(--text-muted); cursor:pointer;" onclick="document.getElementById('hidden-resume-file').click()">
             <div style="font-size:40px; margin-bottom:12px;">📄</div>
-            <div style="font-size:15px; font-weight:700; margin-bottom:8px;">No resume uploaded yet</div>
-            <div style="font-size:13px; font-weight:600;">Upload your resume to auto-fill your Work Experience, Education, Skills, and Links</div>
+            <div style="font-size:15px; font-weight:700; margin-bottom:8px; color:var(--text-main);">Upload your resume (PDF / DOCX)</div>
+            <div style="font-size:13px; font-weight:600;">Click to upload and instantly auto-fill your Profile, Skills, and ATS Matches</div>
           </div>
         </div>
       `;

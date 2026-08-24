@@ -693,6 +693,174 @@ async def save_user_resume_endpoint(request: Request, resume_data: Dict[str, Any
     result = await supabase.save_user_resume(uid, resume_data)
     return JSONResponse({"status": "ok", "data": result})
 
+
+# ── Resume Parsing & PDF Matcher Endpoints ──────────────────────────────
+@app.post("/api/match-resume")
+@app.post("/api/parse-resume")
+async def parse_and_match_resume(file: UploadFile = File(...)):
+    """
+    Parses an uploaded PDF / DOCX resume, extracts text and key profile fields
+    (name, email, phone, headline, skills, summary, experience), and returns structured candidate profile.
+    """
+    try:
+        contents = await file.read()
+        filename = file.filename or "resume.pdf"
+        text = ""
+
+        # 1. Extract text using PyMuPDF (PDF)
+        if filename.lower().endswith(".pdf") or file.content_type == "application/pdf" or contents.startswith(b"%PDF"):
+            try:
+                import pymupdf
+                doc = pymupdf.open(stream=contents, filetype="pdf")
+                pages_text = [page.get_text() for page in doc]
+                text = "\n".join(pages_text).strip()
+            except Exception as pe:
+                try:
+                    import fitz
+                    doc = fitz.open(stream=contents, filetype="pdf")
+                    pages_text = [page.get_text() for page in doc]
+                    text = "\n".join(pages_text).strip()
+                except Exception as fe:
+                    print(f"[PDF Parse Error] {fe}")
+
+        if not text:
+            # Fallback text decoding
+            try:
+                text = contents.decode("utf-8", errors="ignore").strip()
+            except Exception:
+                text = ""
+
+        if not text or len(text) < 20:
+            return JSONResponse(
+                status_code=400,
+                content={"error": "Could not extract text from document. Please ensure it is a valid text-based PDF or document."}
+            )
+
+        # 2. Extract Basic Fields with RegEx
+        import re
+        email_match = re.search(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', text)
+        email = email_match.group(0) if email_match else ""
+
+        phone_match = re.search(r'(?:(?:\+|0{0,2})\d{1,3}[\s-]*)?(?:\(?\d{2,5}\)?[\s-]*)?\d{3,4}[\s-]*\d{4}', text)
+        phone = phone_match.group(0).strip() if phone_match else ""
+
+        lines = [l.strip() for l in text.splitlines() if l.strip()]
+        first_few_lines = lines[:5]
+        candidate_name = first_few_lines[0] if first_few_lines and len(first_few_lines[0].split()) <= 4 else "Candidate"
+        
+        # 3. Extract Skills Taxonomy
+        common_tech_skills = [
+            "python", "java", "c++", "c#", "c", "rust", "golang", "go", "typescript", "javascript",
+            "kotlin", "swift", "php", "ruby", "scala", "sql", "r", "dart", "bash", "shell",
+            "react", "react.js", "next.js", "vue", "vue.js", "angular", "svelte", "react native",
+            "flutter", "ios", "android", "tailwind css", "tailwind", "html5", "css3", "redux", "vite",
+            "fastapi", "flask", "django", "node.js", "express", "express.js", "spring boot", "spring",
+            "asp.net", ".net", "nest.js", "graphql", "rest api", "grpc", "microservices",
+            "pytorch", "tensorflow", "keras", "scikit-learn", "langchain", "llamaindex", "rag",
+            "hugging face", "transformers", "nlp", "computer vision", "llm", "large language models",
+            "pandas", "numpy", "apache spark", "spark", "kafka", "airflow", "snowflake", "databricks",
+            "postgresql", "postgres", "mysql", "mongodb", "redis", "cassandra", "dynamodb",
+            "pinecone", "chromadb", "pgvector", "elasticsearch", "supabase", "sqlite",
+            "aws", "amazon web services", "gcp", "google cloud", "azure", "docker", "kubernetes", "k8s",
+            "terraform", "ansible", "ci/cd", "github actions", "linux", "nginx", "prometheus", "grafana",
+            "system design", "distributed systems", "agile", "scrum", "git"
+        ]
+        lower_text = text.lower()
+        extracted_skills = sorted(list(set([s for s in common_tech_skills if s in lower_text])))
+
+        # 4. Extract Headline & Summary
+        headline = "Software Engineer"
+        for candidate_headline in ["Full Stack Developer", "Backend Engineer", "Frontend Engineer", "AI/ML Engineer", "Data Scientist", "DevOps Engineer", "Mobile Developer", "Software Development Engineer"]:
+            if candidate_headline.lower() in lower_text:
+                headline = candidate_headline
+                break
+
+        summary = ""
+        for i, l in enumerate(lines[:10]):
+            if any(k in l.lower() for k in ["summary", "profile", "about", "objective"]):
+                summary = " ".join(lines[i+1:i+4])
+                break
+        if not summary and len(lines) > 2:
+            summary = " ".join(lines[1:4])
+
+        # 5. Attempt LLM Enhancement if available
+        try:
+            llm = get_llm_service()
+            prompt = f"""You are an expert HR Parser. Extract structured candidate profile from this resume:
+Resume Text (First 1500 chars):
+{text[:1500]}
+
+Return valid JSON:
+{{
+  "name": "Candidate Full Name",
+  "headline": "Target Title e.g. Full Stack Engineer",
+  "email": "email@example.com",
+  "phone": "+1234567890",
+  "location": "City, Country",
+  "summary": "2-3 sentence executive summary",
+  "skills": ["Python", "React", "AWS", ...],
+  "experience": [
+    {{"company": "Company Name", "title": "Role Title", "dates": "2023 - Present", "bullets": ["Built X...", "Optimized Y..."]}}
+  ],
+  "education": [
+    {{"school": "University Name", "degree": "B.Tech Computer Science", "year": "2025"}}
+  ]
+}}"""
+            resp = await llm.a_call_chat([{"role": "user", "content": prompt}], max_tokens=600)
+            start_idx = resp.find("{")
+            end_idx = resp.rfind("}") + 1
+            if start_idx != -1 and end_idx > start_idx:
+                llm_parsed = json.loads(resp[start_idx:end_idx])
+                if llm_parsed.get("name") and llm_parsed["name"] != "Candidate Full Name":
+                    candidate_name = llm_parsed["name"]
+                if llm_parsed.get("headline"):
+                    headline = llm_parsed["headline"]
+                if llm_parsed.get("summary"):
+                    summary = llm_parsed["summary"]
+                if llm_parsed.get("skills"):
+                    extracted_skills = sorted(list(set(extracted_skills + [s.lower() for s in llm_parsed["skills"] if isinstance(s, str)])))
+        except Exception as llm_err:
+            print(f"[ResumeParser LLM Notice] {llm_err}")
+
+        candidate_profile = {
+            "name": candidate_name,
+            "email": email,
+            "phone": phone,
+            "headline": headline,
+            "location": "India",
+            "skills": extracted_skills,
+            "summary": summary
+        }
+
+        resume_data = {
+            "header": {
+                "name": candidate_name,
+                "email": email,
+                "phone": phone,
+                "location": "India",
+                "title": headline
+            },
+            "summary": { "text": summary },
+            "skills": {
+                "languages": ", ".join(extracted_skills[:10]),
+                "all": ", ".join(extracted_skills)
+            },
+            "raw_text": text
+        }
+
+        return JSONResponse({
+            "success": True,
+            "filename": filename,
+            "resume_text": text,
+            "candidate_profile": candidate_profile,
+            "resume_data": resume_data
+        })
+
+    except Exception as e:
+        print(f"[Resume Parse Error] {e}")
+        return JSONResponse(status_code=500, content={"error": f"Error parsing resume: {str(e)}"})
+
+
 @app.get("/preferences", response_class=HTMLResponse)
 @app.get("/preferences/", response_class=HTMLResponse)
 async def serve_preferences():
