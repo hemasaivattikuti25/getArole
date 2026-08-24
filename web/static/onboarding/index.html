@@ -3,753 +3,439 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Get Started — getArole | Your AI Job Search Partner</title>
+  <title>Onboarding — getArole</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="apple-touch-icon" href="/logo.svg">
-
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #4f46e5;
       --primary-hover: #4338ca;
       --primary-light: #eef2ff;
       --primary-border: #c7d2fe;
-      --bg: #ffffff;
-      --bg-subtle: #f8fafc;
+      --bg: #f8fafc;
+      --surface: #ffffff;
       --text-main: #0f172a;
       --text-muted: #475569;
-      --text-subtle: #94a3b8;
       --border: #e2e8f0;
-      --border-strong: #cbd5e1;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 20px -2px rgba(0,0,0,0.06);
-      --shadow-lg: 0 12px 36px -4px rgba(0,0,0,0.08);
-      --radius-sm: 8px;
-      --radius-md: 14px;
-      --radius-lg: 20px;
+      --shadow: 0 4px 20px -2px rgba(0,0,0,0.06);
     }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+    
+    .wizard-container {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 680px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .progress-bar { position: absolute; top: 0; left: 0; height: 6px; background: var(--primary); transition: width 0.3s; }
+    .step-header { margin-bottom: 24px; text-align: center; }
+    .step-header h2 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+    .step-header p { color: var(--text-muted); font-size: 15px; }
+    
+    .wizard-step { display: none; animation: fadeIn 0.3s; }
+    .wizard-step.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-subtle);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex; flex-direction: column;
-      -webkit-font-smoothing: antialiased;
-    }
-    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
-
-    /* ── TOP HEADER ── */
-    header {
-      background: #ffffff; border-bottom: 1px solid var(--border);
-      height: 64px; display: flex; align-items: center; position: sticky; top: 0; z-index: 100;
-    }
-    .header-inner {
-      max-width: 960px; width: 100%; margin: 0 auto; padding: 0 24px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .brand-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .brand-logo-img { width: 32px; height: 32px; border-radius: 8px; }
-    .brand-title { font-family: 'Outfit', sans-serif; font-size: 19px; font-weight: 800; color: var(--text-main); }
-    .brand-title span { color: var(--primary); }
-
-    /* ── PROGRESS BAR ── */
-    .progress-bar-wrap {
-      width: 100%; height: 4px; background: var(--border); position: relative;
-    }
-    .progress-bar-fill {
-      height: 100%; width: 14%; background: var(--primary); transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    /* ── ONBOARDING CONTAINER ── */
-    .onboarding-main {
-      flex: 1; max-width: 720px; width: 100%; margin: 32px auto 60px; padding: 0 20px;
-    }
-    .step-card {
-      background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-lg);
-      padding: 36px 32px; box-shadow: var(--shadow-md); animation: fadeIn 0.25s ease;
-    }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-    .step-number-tag {
-      font-size: 12px; font-weight: 800; color: var(--primary);
-      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
-    }
-    .step-title {
-      font-size: clamp(23px, 3vw, 30px); font-weight: 800; color: var(--text-main); margin-bottom: 8px; line-height: 1.25;
-    }
-    .step-tagline {
-      font-size: 14.5px; color: var(--text-muted); margin-bottom: 24px;
-    }
-
-    /* ── FOUNDER NOTE CARD ── */
-    .founder-card {
-      background: var(--primary-light); border: 1px solid var(--primary-border);
-      border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 24px;
-      display: flex; align-items: flex-start; gap: 12px;
-    }
-    .founder-avatar {
-      width: 38px; height: 38px; border-radius: 50%; background: var(--primary);
-      color: white; font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .founder-text { font-size: 13.5px; color: var(--text-main); line-height: 1.5; }
-    .founder-name { font-weight: 700; color: var(--primary); font-size: 12px; margin-top: 2px; }
-
-    /* ── SELECTABLE OPTIONS (Cards) ── */
-    .options-stack { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .grid-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px; }
     .option-card {
-      padding: 16px 20px; border-radius: 12px; border: 1.5px solid var(--border);
-      background: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-      transition: all 0.15s ease; font-size: 15px; font-weight: 700; color: var(--text-main);
+      border: 2px solid var(--border); padding: 16px; border-radius: 12px;
+      cursor: pointer; font-weight: 700; color: var(--text-muted); text-align: center; transition: all 0.2s;
     }
-    .option-card:hover { border-color: var(--primary); background: var(--bg-subtle); }
-    .option-card.selected {
-      border-color: var(--primary); background: var(--primary-light); color: var(--primary);
-      box-shadow: 0 0 0 1px var(--primary);
-    }
-    .option-card.selected::after {
-      content: "✓"; font-weight: 900; color: var(--primary); font-size: 16px;
-    }
+    .option-card:hover { border-color: var(--primary-border); background: var(--primary-light); }
+    .option-card.selected { border-color: var(--primary); background: var(--primary); color: white; }
 
-    /* ── LOCATIONS CHIPS & CATEGORIES ── */
-    .location-tabs-row {
-      display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+    .input-field {
+      width: 100%; padding: 14px; border: 2px solid var(--border); border-radius: 10px;
+      font-size: 15px; margin-bottom: 16px; outline: none; transition: border-color 0.2s;
     }
-    .loc-tab-btn {
-      padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border);
-      background: #ffffff; font-size: 12.5px; font-weight: 700; color: var(--text-muted); cursor: pointer;
-    }
-    .loc-tab-btn.active {
-      background: var(--primary-light); border-color: var(--primary-border); color: var(--primary);
-    }
+    .input-field:focus { border-color: var(--primary); }
 
-    .chips-grid {
-      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
-      max-height: 280px; overflow-y: auto; padding: 6px;
-      border: 1px solid var(--border); border-radius: 12px; background: var(--bg-subtle);
+    .skills-chip-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .skill-chip {
+      padding: 6px 14px; border-radius: 99px; background: var(--surface);
+      border: 1.5px solid var(--border); font-size: 13.5px; font-weight: 600; cursor: pointer;
     }
-    .choice-chip {
-      padding: 8px 14px; border-radius: 99px; border: 1.5px solid var(--border);
-      background: #ffffff; font-size: 13px; font-weight: 700; color: var(--text-main);
-      cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px;
-      user-select: none;
-    }
-    .choice-chip:hover { border-color: var(--primary); color: var(--primary); }
-    .choice-chip.selected {
-      background: var(--primary); color: #ffffff; border-color: var(--primary);
-      box-shadow: 0 2px 6px rgba(5,150,105,0.25);
-    }
+    .skill-chip:hover { border-color: var(--primary); color: var(--primary); }
+    .skill-chip.selected { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* ── SEARCH INPUT ── */
-    .filter-input-wrap {
-      margin-bottom: 14px; position: relative;
+    .search-results {
+      max-height: 200px; overflow-y: auto; border: 1.5px solid var(--border);
+      border-radius: 10px; display: none; margin-top: -12px; margin-bottom: 16px;
     }
-    .filter-input {
-      width: 100%; padding: 12px 16px 12px 40px; border-radius: 10px;
-      border: 1.5px solid var(--border-strong); font-size: 14.5px; font-family: inherit;
-      outline: none; transition: border-color 0.15s;
-    }
-    .filter-input:focus { border-color: var(--primary); }
-    .search-icon-inside {
-      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-      color: var(--text-subtle); font-size: 15px; pointer-events: none;
-    }
+    .search-item { padding: 12px; cursor: pointer; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .search-item:hover { background: var(--primary-light); }
 
-    /* ── RESUME DROPZONE ── */
-    .dropzone-box {
-      border: 2px dashed var(--border-strong); border-radius: 16px; padding: 36px 20px;
-      text-align: center; background: var(--bg-subtle); cursor: pointer; transition: all 0.2s;
-      margin-bottom: 18px; position: relative;
+    .btn-row { display: flex; justify-content: space-between; margin-top: 32px; }
+    .btn {
+      padding: 12px 24px; border-radius: 10px; font-weight: 700; cursor: pointer; border: none; font-size: 15px; transition: all 0.2s;
     }
-    .dropzone-box:hover {
-      border-color: var(--primary); background: var(--primary-light);
-    }
-    .drop-icon { font-size: 34px; margin-bottom: 8px; color: var(--primary); }
-    .drop-title { font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
-    .drop-sub { font-size: 13px; color: var(--text-muted); }
-
-    /* ── BENEFIT BULLETS ── */
-    .benefits-row {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;
-    }
-    @media (max-width: 580px) { .benefits-row { grid-template-columns: 1fr; } }
-    .benefit-item {
-      padding: 10px 14px; border-radius: 10px; background: #ffffff; border: 1px solid var(--border);
-      font-size: 13px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 8px;
-    }
-
-    /* ── SALARY TOGGLE ── */
-    .salary-toggle {
-      display: inline-flex; padding: 4px; background: var(--bg-subtle);
-      border: 1px solid var(--border); border-radius: 10px; margin-bottom: 20px;
-    }
-    .salary-tab {
-      padding: 6px 16px; border-radius: 7px; font-size: 13.5px; font-weight: 700;
-      color: var(--text-muted); cursor: pointer; border: none; background: none; transition: all 0.15s;
-    }
-    .salary-tab.active {
-      background: #ffffff; color: var(--primary); box-shadow: var(--shadow-sm);
-    }
-
-    /* ── CELEBRATION RESULT ── */
-    .celebration-wrap { text-align: center; padding: 16px 0; }
-    .celeb-badge { font-size: 42px; margin-bottom: 8px; }
-    .celeb-count {
-      font-size: 48px; font-weight: 900; color: var(--primary); font-family: 'Outfit', sans-serif;
-      line-height: 1; margin-bottom: 6px;
-    }
-    .celeb-summary-pills {
-      display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 18px 0;
-    }
-    .celeb-pill {
-      padding: 6px 14px; border-radius: 20px; background: var(--primary-light);
-      border: 1px solid var(--primary-border); font-size: 13px; font-weight: 700; color: var(--primary);
-    }
-
-    /* ── ACTIONS FOOTER ── */
-    .step-footer {
-      display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 24px;
-    }
-    .btn-back {
-      padding: 12px 20px; border-radius: 10px; border: 1px solid var(--border);
-      background: #ffffff; color: var(--text-muted); font-size: 14px; font-weight: 700;
-      cursor: pointer; transition: all 0.15s;
-    }
-    .btn-back:hover { background: var(--bg-subtle); color: var(--text-main); }
-    .btn-next {
-      padding: 13px 28px; border-radius: 10px; border: none;
-      background: var(--primary); color: #ffffff; font-size: 15px; font-weight: 800;
-      cursor: pointer; transition: all 0.15s; box-shadow: 0 4px 14px rgba(5,150,105,0.25);
-    }
-    .btn-next:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    .btn-back { background: var(--bg); color: var(--text-muted); border: 1.5px solid var(--border); }
+    .btn-next { background: var(--primary); color: white; }
+    .btn-next:disabled { opacity: 0.5; cursor: not-allowed; }
   </style>
 </head>
 <body>
 
-  <!-- ═══════ HEADER ═══════ -->
-  <header>
-    <div class="header-inner">
-      <a href="/" class="brand-wrap">
-        <img src="/logo.svg" alt="getArole Logo" class="brand-logo-img">
-        <span class="brand-title">get<span>A</span>role</span>
-      </a>
-      <div style="font-size:13px; font-weight:700; color:var(--text-muted);" id="step-indicator-text">
-        Step 1 of 7
+  <div class="wizard-container">
+    <div class="progress-bar" id="progress" style="width: 12.5%;"></div>
+
+    <!-- Step 1: Department -->
+    <div class="wizard-step active" id="step-1">
+      <div class="step-header">
+        <h2>What department are you interested in?</h2>
+        <p>Select your primary field to get personalized matches.</p>
+      </div>
+      <div class="grid-options" id="options-department">
+        <!-- Rendered via JS -->
       </div>
     </div>
-  </header>
 
-  <!-- ── PROGRESS BAR ── -->
-  <div class="progress-bar-wrap">
-    <div class="progress-bar-fill" id="progress-fill"></div>
+    <!-- Step 2: Specialization -->
+    <div class="wizard-step" id="step-2">
+      <div class="step-header">
+        <h2>Select your specializations</h2>
+        <p>What specific roles within <span id="dep-label" style="color:var(--primary);font-weight:800;"></span> are you targeting?</p>
+      </div>
+      <div class="grid-options" id="options-specialization">
+        <!-- Rendered via JS based on Step 1 -->
+      </div>
+    </div>
+
+    <!-- Step 3: Location -->
+    <div class="wizard-step" id="step-3">
+      <div class="step-header">
+        <h2>Where do you want to work?</h2>
+        <p>Type your preferred cities (e.g. Bangalore, Remote, New York).</p>
+      </div>
+      <input type="text" id="input-locations" class="input-field" placeholder="E.g., Remote, Hyderabad, London...">
+      <div class="skills-chip-container">
+        <div class="skill-chip loc-chip">Remote</div>
+        <div class="skill-chip loc-chip">Bengaluru</div>
+        <div class="skill-chip loc-chip">Hyderabad</div>
+        <div class="skill-chip loc-chip">Pune</div>
+        <div class="skill-chip loc-chip">Delhi NCR</div>
+      </div>
+    </div>
+
+    <!-- Step 4: Employment Type & Size -->
+    <div class="wizard-step" id="step-4">
+      <div class="step-header">
+        <h2>What type of role?</h2>
+        <p>Select your preferred employment types.</p>
+      </div>
+      <div class="grid-options">
+        <div class="option-card emp-chip">Internship</div>
+        <div class="option-card emp-chip">Full-Time</div>
+        <div class="option-card emp-chip">Part-Time</div>
+        <div class="option-card emp-chip">Contract</div>
+      </div>
+      <div class="step-header" style="margin-top:24px;">
+        <h2>Preferred Company Size?</h2>
+      </div>
+      <div class="grid-options">
+        <div class="option-card size-chip">1-10</div>
+        <div class="option-card size-chip">11-50</div>
+        <div class="option-card size-chip">51-200</div>
+        <div class="option-card size-chip">200-1000</div>
+        <div class="option-card size-chip">10000+</div>
+        <div class="option-card size-chip">Any Size</div>
+      </div>
+    </div>
+
+    <!-- Step 5: Industries -->
+    <div class="wizard-step" id="step-5">
+      <div class="step-header">
+        <h2>Any specific industries?</h2>
+        <p>Select up to 3 industries you are most passionate about.</p>
+      </div>
+      <div class="skills-chip-container" id="industry-chips">
+        <!-- JS Rendered -->
+      </div>
+    </div>
+
+    <!-- Step 6: Skills -->
+    <div class="wizard-step" id="step-6">
+      <div class="step-header">
+        <h2>What are your top skills?</h2>
+        <p>Add the tools and technologies you enjoy working with.</p>
+      </div>
+      <input type="text" id="skill-search" class="input-field" placeholder="Search from 700+ tech skills...">
+      <div id="skill-results" class="search-results"></div>
+      
+      <div style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:8px;">Popular Shortcuts</div>
+      <div class="skills-chip-container" id="shortcut-chips">
+        <!-- JS Rendered -->
+      </div>
+      
+      <div style="font-size:13px; font-weight:700; color:var(--text-main); margin-bottom:8px; margin-top:16px;">Your Selected Skills</div>
+      <div class="skills-chip-container" id="selected-skills-container"></div>
+    </div>
+
+    <!-- Step 7: Search Status -->
+    <div class="wizard-step" id="step-7">
+      <div class="step-header">
+        <h2>What's your job search status?</h2>
+        <p>This helps us prioritize how many matches to send you.</p>
+      </div>
+      <div class="grid-options" style="grid-template-columns: 1fr;">
+        <div class="option-card status-card">🚀 Actively looking right now</div>
+        <div class="option-card status-card">👀 Casually browsing for opportunities</div>
+        <div class="option-card status-card">🛑 Not looking, but open to offers</div>
+      </div>
+    </div>
+
+    <!-- Step 8: Resume -->
+    <div class="wizard-step" id="step-8" style="text-align:center;">
+      <div class="step-header">
+        <h2>Final Step: Your Resume</h2>
+        <p>Upload your ATS resume to instantly match with jobs.</p>
+      </div>
+      
+      <div style="border: 2px dashed var(--border); padding: 40px; border-radius: 16px; background:var(--bg); margin-bottom: 24px;">
+        <div style="font-size:40px; margin-bottom:12px;">📄</div>
+        <h3 style="font-weight:800; margin-bottom:8px;">Upload PDF Resume</h3>
+        <p style="font-size:13px; color:var(--text-muted);">Max 5MB</p>
+      </div>
+      
+      <div style="display:flex; align-items:center; gap:16px; justify-content:center;">
+        <button class="btn" style="background:white; border:2px solid var(--border);" onclick="window.location.href='/resume-builder'">I don't have a resume (Build one)</button>
+        <button class="btn btn-next" onclick="finishOnboarding()">Save & Go to Dashboard</button>
+      </div>
+    </div>
+
+    <div class="btn-row" id="navigation-row">
+      <button class="btn btn-back" id="btn-back" onclick="prevStep()" style="visibility:hidden;">← Back</button>
+      <button class="btn btn-next" id="btn-next" onclick="nextStep()">Continue →</button>
+    </div>
   </div>
 
-  <!-- ═══════ ONBOARDING FORM WIZARD ═══════ -->
-  <main class="onboarding-main">
-
-    <!-- ═══════ STEP 1: TIMELINE / URGENCY ═══════ -->
-    <div class="step-card" id="step-1">
-      <div class="step-number-tag">Step 1 • Job Search Timeline</div>
-      <h2 class="step-title">How soon are you looking to land your job?</h2>
-      <p class="step-tagline">Find your dream job 5x faster using getArole.</p>
-
-      <div class="options-stack" id="timeline-options">
-        <div class="option-card selected" onclick="selectTimeline(this, 'ASAP')">
-          <span>⚡ ASAP (Actively interviewing)</span>
-        </div>
-        <div class="option-card" onclick="selectTimeline(this, 'Within 3 months')">
-          <span>📅 Within 3 months</span>
-        </div>
-        <div class="option-card" onclick="selectTimeline(this, 'Within 6 months')">
-          <span>⏳ Within 6 months</span>
-        </div>
-        <div class="option-card" onclick="selectTimeline(this, 'Passively browsing')">
-          <span>👀 Passively browsing</span>
-        </div>
-      </div>
-
-      <div class="step-footer" style="justify-content: flex-end;">
-        <button class="btn-next" onclick="goToStep(2)">Next: Location Preferences →</button>
-      </div>
-    </div>
-
-    <!-- ═══════ STEP 2: LOCATIONS (120+ INDIAN CITIES) ═══════ -->
-    <div class="step-card" id="step-2" style="display:none;">
-      <div class="step-number-tag">Step 2 • Location Preferences</div>
-      <h2 class="step-title">What locations do you want to work in?</h2>
-      <p class="step-tagline">Search any city in India or select from popular tech regions below.</p>
-
-      <div class="filter-input-wrap">
-        <span class="search-icon-inside">🔍</span>
-        <input type="text" id="city-search" placeholder="Type city name (e.g. Pune, Tirupati, Gurgaon, Kochi...)" class="filter-input" oninput="filterCities()">
-      </div>
-
-      <!-- Quick Category Tabs -->
-      <div class="location-tabs-row">
-        <button class="loc-tab-btn active" id="tab-all" onclick="filterByRegion('all')">All Locations</button>
-        <button class="loc-tab-btn" id="tab-top" onclick="filterByRegion('top')">Top Tech Hubs</button>
-        <button class="loc-tab-btn" id="tab-remote" onclick="filterByRegion('remote')">Remote & Anywhere</button>
-        <button class="loc-tab-btn" id="tab-south" onclick="filterByRegion('south')">South India</button>
-        <button class="loc-tab-btn" id="tab-north" onclick="filterByRegion('north')">North / NCR</button>
-      </div>
-
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <span style="font-size:13px; font-weight:700; color:var(--text-main);" id="location-selected-count">4 Locations Selected</span>
-        <div style="display:flex; gap:12px;">
-          <button onclick="selectAllLocations(true)" style="background:none; border:none; color:var(--primary); font-size:12.5px; font-weight:700; cursor:pointer;">Select All</button>
-          <button onclick="selectAllLocations(false)" style="background:none; border:none; color:var(--text-subtle); font-size:12.5px; font-weight:700; cursor:pointer;">Unselect All</button>
-        </div>
-      </div>
-
-      <div class="chips-grid" id="city-chips-container">
-        <!-- Dynamically rendered -->
-      </div>
-
-      <div class="step-footer">
-        <button class="btn-back" onclick="goToStep(1)">← Back</button>
-        <button class="btn-next" onclick="goToStep(3)">Next: Resume Upload →</button>
-      </div>
-    </div>
-
-    <!-- ═══════ STEP 3: RESUME UPLOAD ═══════ -->
-    <div class="step-card" id="step-3" style="display:none;">
-      <div class="step-number-tag">Step 3 • AI Resume Matcher</div>
-      <h2 class="step-title">Upload your resume to get matched with jobs!</h2>
-
-      <!-- Founder Note -->
-      <div class="founder-card">
-        <div class="founder-avatar">HV</div>
-        <div>
-          <div class="founder-text">
-            "We'll analyze your resume and match you with verified roles that fit your exact background. We take data privacy very seriously — your resume is never shared with advertisers."
-          </div>
-          <div class="founder-name">Hemasaivattikuti, Founder</div>
-        </div>
-      </div>
-
-      <!-- Upload Dropzone -->
-      <div class="dropzone-box" onclick="document.getElementById('resume-file-input').click()">
-        <div class="drop-icon">📄</div>
-        <div class="drop-title">Click to upload your resume or drag & drop</div>
-        <div class="drop-sub">PDF, DOC, DOCX up to 5 MB</div>
-        <input type="file" id="resume-file-input" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleResumeUpload(event)">
-        <div id="resume-upload-badge" style="display:none; font-size:13.5px; font-weight:700; color:var(--primary); margin-top:10px;"></div>
-      </div>
-
-      <div class="benefits-row">
-        <div class="benefit-item">
-          <span>🔍</span>
-          <span>Automatic 70B AI Match Scoring</span>
-        </div>
-        <div class="benefit-item">
-          <span>📝</span>
-          <span>Instant ATS Keyword Verification</span>
-        </div>
-      </div>
-
-      <div style="text-align:center; margin-bottom:16px;">
-        <button onclick="goToStep(4)" style="background:none; border:none; color:var(--text-muted); font-size:13px; font-weight:600; cursor:pointer; text-decoration:underline;">
-          I don't have a resume right now → getArole will autofill your profile
-        </button>
-      </div>
-
-      <div class="step-footer">
-        <button class="btn-back" onclick="goToStep(2)">← Back</button>
-        <button class="btn-next" onclick="goToStep(4)">Next: Experience Level →</button>
-      </div>
-    </div>
-
-    <!-- ═══════ STEP 4: EXPERIENCE LEVEL ═══════ -->
-    <div class="step-card" id="step-4" style="display:none;">
-      <div class="step-number-tag">Step 4 • Experience Level</div>
-      <h2 class="step-title">How much experience do you have?</h2>
-      <p class="step-tagline">Select up to 2 options describing your background.</p>
-
-      <div class="options-stack" id="experience-options">
-        <div class="option-card" onclick="toggleExp(this, 'No experience')">
-          <span>🎓 No experience / College Student</span>
-        </div>
-        <div class="option-card" onclick="toggleExp(this, 'Internship')">
-          <span>💼 Internship</span>
-        </div>
-        <div class="option-card selected" onclick="toggleExp(this, 'Entry Level')">
-          <span>🌱 0-1 yrs • Entry Level & New Grad (Batch 2025/2026)</span>
-        </div>
-        <div class="option-card" onclick="toggleExp(this, 'Junior (1 to 2 years)')">
-          <span>⚡ Junior (1 to 2 years)</span>
-        </div>
-        <div class="option-card" onclick="toggleExp(this, 'Mid-level (3 to 4 years)')">
-          <span>🚀 Mid-level (3 to 4 years)</span>
-        </div>
-        <div class="option-card" onclick="toggleExp(this, 'Senior (5 to 8 years)')">
-          <span>🏆 Senior (5 to 8 years)</span>
-        </div>
-        <div class="option-card" onclick="toggleExp(this, 'Expert & Leadership (9+ years)')">
-          <span>👑 Expert & Leadership (9+ years)</span>
-        </div>
-      </div>
-
-      <div class="step-footer">
-        <button class="btn-back" onclick="goToStep(3)">← Back</button>
-        <button class="btn-next" onclick="goToStep(5)">Next: Desired Roles →</button>
-      </div>
-    </div>
-
-    <!-- ═══════ STEP 5: ROLES & SPECIALIZATION ═══════ -->
-    <div class="step-card" id="step-5" style="display:none;">
-      <div class="step-number-tag">Step 5 • Target Specialization</div>
-      <h2 class="step-title">What kind of role are you interested in?</h2>
-
-      <div class="founder-card">
-        <div class="founder-avatar">HV</div>
-        <div>
-          <div class="founder-text">
-            "Pick your primary specialization to get started – you can always add more or explore other roles later!"
-          </div>
-          <div class="founder-name">Hemasaivattikuti, Founder</div>
-        </div>
-      </div>
-
-      <div class="filter-input-wrap">
-        <span class="search-icon-inside">🔍</span>
-        <input type="text" id="role-search" placeholder="Search by job title (e.g. Python, Full Stack, Product Manager...)" class="filter-input" oninput="filterRoles()">
-      </div>
-
-      <div style="font-size:12.5px; font-weight:800; color:var(--text-subtle); text-transform:uppercase; margin-bottom:10px;">
-        Popular Specializations:
-      </div>
-
-      <div class="chips-grid" id="role-chips-container">
-        <!-- Injected via JS -->
-      </div>
-
-      <div class="step-footer">
-        <button class="btn-back" onclick="goToStep(4)">← Back</button>
-        <button class="btn-next" onclick="goToStep(6)">Next: Compensation →</button>
-      </div>
-    </div>
-
-    <!-- ═══════ STEP 6: EXPECTED SALARY ═══════ -->
-    <div class="step-card" id="step-6" style="display:none;">
-      <div class="step-number-tag">Step 6 • Compensation Threshold</div>
-      <h2 class="step-title">What is your minimum expected compensation?</h2>
-
-      <div class="founder-card">
-        <div class="founder-avatar">HV</div>
-        <div>
-          <div class="founder-text">
-            "We'll only use this to match you with high-paying opportunities meeting your threshold."
-          </div>
-          <div class="founder-name">Hemasaivattikuti, Founder</div>
-        </div>
-      </div>
-
-      <div class="salary-toggle">
-        <button class="salary-tab active" onclick="setCurrency('INR')">₹ INR (Lakhs / Year)</button>
-        <button class="salary-tab" onclick="setCurrency('USD')">$ USD (k / Year)</button>
-      </div>
-
-      <div class="options-stack" id="salary-options-container">
-        <!-- Dynamic INR / USD options -->
-      </div>
-
-      <div class="step-footer">
-        <button class="btn-back" onclick="goToStep(5)">← Back</button>
-        <button class="btn-next" onclick="finishAndCelebrate()">Calculate Matching Jobs 🎉</button>
-      </div>
-    </div>
-
-    <!-- ═══════ STEP 7: CELEBRATION ═══════ -->
-    <div class="step-card" id="step-7" style="display:none;">
-      <div class="celebration-wrap">
-        <div class="celeb-badge">🎉</div>
-        <div class="step-number-tag">Matched Successfully</div>
-        <h2 style="font-size:26px; font-weight:900; margin-bottom:4px;">We Found Live Matching Roles!</h2>
-        
-        <div class="celeb-count" id="match-counter-display">1K+</div>
-        <p style="font-size:15px; color:var(--text-muted); max-width:440px; margin:0 auto 16px;">
-          verified engineering jobs matching your exact location, role, and compensation criteria.
-        </p>
-
-        <div class="celeb-summary-pills" id="celeb-pills-list">
-          <!-- Summary pills -->
-        </div>
-
-        <div style="font-size:12.5px; color:var(--text-subtle); margin-bottom:28px;">
-          ⚡ Updated every 3 hours. New jobs matching your profile are scraped continuously.
-        </div>
-
-        <button class="btn-next" onclick="launchDashboard()" style="padding:16px 36px; font-size:16px; width:100%;">
-          Launch Your Personalized Dashboard →
-        </button>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- ═══════ DATA & WIZARD LOGIC ═══════ -->
   <script>
+    // DATA
+    const departments = [
+      "Technical & Engineering", "Aerospace Engineering", "AI & Machine Learning", 
+      "Architecture & Civil Engineering", "Data & Analytics", "Developer Relations", 
+      "DevOps & Infrastructure", "Electrical Engineering", "Engineering Management", 
+      "Hardware Engineering", "IT & Security", "Mechanical Engineering", 
+      "Process Engineering", "QA & Testing", "Quantitative Finance", "Quantum Computing", "Software Engineering"
+    ];
+    
+    const specializations = {
+      "Software Engineering": ["AI/ML/GenAI Engineering", "Backend Engineering", "Desktop Application Development", "Embedded Engineering", "Frontend Engineering", "Full-Stack Engineering", "Game Engineering", "IT & Support", "Low Level System Software", "Mobile Engineering", "Security Engineering", "Software QA & Testing"]
+    };
+    
+    const industries = ["FinTech", "HealthTech", "EdTech", "E-commerce", "SaaS", "Web3/Crypto", "AI/ML", "Cybersecurity", "Gaming", "CleanTech", "PropTech", "SpaceTech", "Automotive", "Defense", "Logistics", "Entertainment"];
+    
+    const ALL_SKILLS = ["12-Factor App", "3D Modeling", "3ds Max", "A/B Testing", "ABAC", "AES", "API Documentation", "ARM", "ASIC", "ASP.NET Core", "AWS", "AWS EC2", "AWS ECS", "AWS EKS", "AWS Fargate", "AWS IAM", "AWS Lambda", "AWS RDS", "AWS S3", "AWS VPC", "Ableton Live", "Account Management", "Accounting", "ActiveMQ", "Actix", "Adobe XD", "Adyen", "Aerospace Engineering", "After Effects", "Agile", "Airbyte", "Airflow", "Akamai", "Algorithmic Trading", "Algorithms", "Alpine", "Alteryx", "Altium", "Amplitude", "Angular", "Animation", "Ansible", "Apache", "Apollo", "AppDynamics", "Appium", "Appwrite", "ArangoDB", "ArcGIS", "Architecture", "Arduino", "ArgoCD", "Arweave", "Asana", "Athena", "Audio Engineering", "Audit", "Auth0", "AutoCAD", "AutoCAD Civil 3D", "Automation Anywhere", "Avalanche", "Avionics", "Avro", "Azure AD", "Azure AKS", "Azure App Service", "Azure Blob", "Azure Functions", "Azure SQL", "Azure VM", "BDD", "BGP", "BIM", "BSON", "Babel", "Backbone.js", "Bamboo", "Bash", "Beego", "Behave", "BigCommerce", "BigQuery", "Bioinformatics", "Bitbucket", "Bitbucket Pipelines", "Bitcoin", "Blazor", "Blender", "Blue Prism", "Bookkeeping", "Boomi", "Bootstrap", "Braintree", "Branding", "Brownie", "Builder.io", "Burp Suite", "Business Development", "C", "C#", "C++", "CAD", "CATIA", "CCPA", "CFD", "CI/CD", "CQRS", "CRM", "CSV", "CUDA", "Caddy", "CakePHP", "Cap'n Proto", "Capacitor", "Capybara", "Cassandra", "CentOS", "Chai", "Chef", "Chemical Engineering", "Chemoinformatics", "Chroma", "Cinematography", "CircleCI", "Circuit Design", "Cirq", "Civil Engineering", "Clojure", "Cloud Functions", "Cloud Native", "Cloud Run", "Cloud SQL", "Cloud Spanner", "CloudFormation", "Cloudflare", "Cocos2d", "CodeIgniter", "Cognito", "Color Grading", "Community Management", "Compensation & Benefits", "Compliance", "Computational Biology", "Confluence", "Consul", "Content Marketing", "Contentful", "Control Systems", "Conversion Rate Optimization", "Copywriting", "Cordova", "Core Data", "Corporate Law", "Cosmos", "Cosmos DB", "CouchDB", "Couchbase", "Creative Writing", "Creo", "Cryptography", "Cucumber", "Customer Success", "Customer Support", "Cypress", "D3.js", "DB2", "DDD", "DHCP", "DICOM", "DNS", "DRY", "DaVinci Resolve", "Dagster", "Dart", "Data Entry", "Data Structures", "Datadog", "Debian", "Decap CMS", "Derivatives Pricing", "Design Patterns", "Detox", "DevOps", "DevRel", "DevSecOps", "Developer Advocacy", "Developer Relations", "Diesel", "Digital Art", "DigitalOcean", "DirectX", "Directus", "Disaster Recovery", "Discord", "Django", "Docker", "Docker Swarm", "Drone", "Drupal", "DynamoDB", "Dynatrace", "E-Learning", "E-commerce", "ECC", "EHR", "EMR", "ESP32", "Eagle", "Echo", "Econometrics", "EdTech", "Editing", "Elasticsearch", "Electrical Engineering", "Electron", "Elixir", "Email Marketing", "Ember.js", "Employee Relations", "Entity Framework", "Entrepreneurship", "Environmental Engineering", "Envoy", "Enzyme", "Erlang", "Espresso", "Ethereum", "Ethers.js", "Event Planning", "Event Sourcing", "Event-Driven", "EventBridge", "Express.js", "F#", "FAISS", "FEA", "FHIR", "FL Studio", "FP&A", "FPGA", "FastAPI", "Fastify", "Fastly", "Fault Tolerance", "Fiber", "Figma", "Filecoin", "FinOps", "Final Cut Pro", "Financial Analysis", "Financial Modeling", "Firebase Auth", "Firebase Realtime DB", "Firestore", "Firewalls", "Fivetran", "Flask", "FlatBuffers", "Fleet Management", "Flight Dynamics", "Flink", "Fluentd", "Fluid Mechanics", "Flutter", "Flux", "Foundry", "FreeRTOS", "Fusion 360", "GCP GCE", "GCS", "GDPR", "GIS", "GKE", "Game Design", "Gatling", "Genomics", "Geotechnical Engineering", "Ghost", "Gin", "Git", "GitHub", "GitHub Actions", "GitLab", "GitLab CI", "GitOps", "Go", "Godot", "Google Analytics", "Grafana", "GraphQL", "GraphQL Playground", "Graphic Design", "Grasshopper", "Groovy", "Growth Hacking", "Grunt", "Gulp", "HAProxy", "HIPAA", "HL7", "HMI", "HTTP", "HTTPS", "Hadoop", "Hanami", "Hapi", "Hardhat", "Haskell", "Health Informatics", "Heap", "Heat Transfer", "Helm", "Help Desk", "Heroku", "Hibernate", "High Availability", "High-Frequency Trading", "Hive", "Hospitality", "Hotjar", "HubSpot", "Hugging Face", "Human Resources", "IAM", "IDS/IPS", "IPFS", "IPsec", "ISO 14001", "ISO 27001", "ISO 9001", "ITIL", "ITSM", "IaC", "Illustration", "Illustrator", "InVision", "Industrial Engineering", "Informatica", "Information Architecture", "Infrastructure as Code", "Insomnia", "Instructional Design", "Intellectual Property", "Intercom", "Inventor", "Inventory Management", "Investment Banking", "Ionic", "Istio", "JMeter", "JPA", "JSF", "JSON", "JUnit", "JWT", "Jaeger", "Jasmine", "Java", "JavaScript", "Jenkins", "Jest", "Jira", "Joomla", "Journalism", "Julia", "K6", "K8s", "KISS", "Kafka", "Kanban", "Karma", "Keras", "Keycloak", "KeystoneJS", "KiCad", "Kibana", "Kinesis", "Koa", "Kotlin", "Kubeflow", "Kubernetes", "Kustomize", "LLMs", "LMS", "LangChain", "Laravel", "Leadership", "Lean", "Lean Manufacturing", "Legal Writing", "Less", "Level Design", "Lighting", "Lightroom", "Linear", "Linkerd", "Linode", "Linux", "LlamaIndex", "Localization", "Locust", "Logic Pro", "Logistics", "Logistics Management", "Logstash", "Looker", "Luigi", "MATLAB", "MAUI", "MLflow", "Magento", "Mailgun", "Make (Integromat)", "Management", "Manufacturing", "MariaDB", "Marketing Automation", "Material Science", "Matplotlib", "Maya", "Mechanical Engineering", "Mechatronics", "Medical Imaging", "Memcached", "Merchandising", "Mercurial", "Mesos", "Metabase", "Metal", "Metallurgy", "Metasploit", "Microcontrollers", "Microservices", "Microsoft Teams", "Milvus", "Mixpanel", "MobX", "Mocha", "Mockito", "Molecular Dynamics", "MongoDB", "Monolith", "Monte Carlo Methods", "MsgPack", "MuleSoft", "Music Production", "MySQL", "NATS", "NLTK", "NW.js", "NX", "Navisworks", "Neo4j", "NestJS", "NetSuite", "Netlify", "Netlify CMS", "New Relic", "Next.js", "Nginx", "Nmap", "Node.js", "Nomad", "Notion", "NumPy", "Nuxt.js", "OAuth", "OCaml", "OIDC", "ONNX", "ORC", "OSPF", "OWASP", "Objective-C", "Okta", "Open Source", "OpenAPI", "OpenCV", "OpenGL", "OpenShift", "OpenTelemetry", "OpenVPN", "Operations Research", "Optimizely", "OrCAD", "Oracle DB", "Oracle ERP", "Organizational Development", "OrientDB", "PACS", "PCB Design", "PID", "PKI", "PLC", "PWA", "Packer", "Pandas", "Paralegal", "Parcel", "Parquet", "Partnerships", "Passport.js", "PayPal", "Payload CMS", "Payroll", "Penetration Testing", "PennyLane", "Pentaho", "Perforce", "Performance Optimization", "Petroleum Engineering", "Phaser", "Phoenix", "Photography", "Photoshop", "Pinecone", "Pinia", "Plaid", "Platform Engineering", "Playwright", "Plotly", "Polkadot", "Polygon", "PostgreSQL", "Postman", "Power BI", "PowerShell", "Prefect", "Premiere Pro", "Presto", "Prismic", "Private Equity", "Pro Tools", "Process Engineering", "Procurement", "Product Management", "Project Management", "Prometheus", "Proofreading", "Property Management", "Propulsion", "Proteomics", "Protobuf", "Prototyping", "Public Speaking", "Pulsar", "Pulumi", "Puppet", "Puppeteer", "PyQt", "PyTest", "PyTorch", "Pyramid", "Python", "Q#", "QGIS", "Qdrant", "Qiskit", "Qlik", "Quality Assurance", "Quality Control", "Quantitative Finance", "Quantum Algorithms", "Quantum Computing", "Quantum Error Correction", "R", "RBAC", "REST", "REST APIs", "RHEL", "RISC-V", "RPA", "RSA", "RSpec", "RTOS", "RabbitMQ", "Rancher", "Raspberry Pi", "React", "React Native", "Real Estate", "Realm", "Recoil", "Recruiting", "Redis", "Redshift", "Redux", "Relay", "Rendering", "Retail", "Revel", "Revit", "Rhino", "Rigging", "Risk Management", "Robotics", "Rocket", "Rollbar", "Rollup", "Ruby on Rails", "Rust", "Rust (Smart Contracts)", "RxJS", "SAFe", "SAML", "SAP", "SCADA", "SCORM", "SEM", "SEO", "SES", "SHA", "SIEM", "SNS", "SOAP", "SOLID", "SQL", "SQL Server", "SQLite", "SQS", "SRE", "SSH", "SSL", "STM32", "SVN", "Sales", "Salesforce", "SaltStack", "Sanity", "Sass", "Scala", "Scalability", "SciPy", "Scikit-learn", "Screenwriting", "Scrum", "ScyllaDB", "Seaborn", "Segment", "Selenium", "SendGrid", "Sentry", "Serverless", "Service Workers", "ServiceNow", "Shopify", "Sinatra", "Six Sigma", "Sketch", "SketchUp", "Slack", "Snowflake", "SoC", "Social Media Marketing", "Solana", "SolidWorks", "Solidity", "Solr", "Sound Design", "Spacy", "Spark", "Spice", "Spinnaker", "Splunk", "Spring Boot", "Spring MVC", "Square", "Stitch", "Stochastic Calculus", "Storyblok", "Strapi", "Strategy", "Stripe", "Structural Analysis", "Structural Engineering", "Struts", "Stylus", "Supabase", "Superset", "Supply Chain", "Supply Chain Management", "Surveying", "Svelte", "Swagger", "Swift", "Symfony", "System Design", "Systems Engineering", "TCP/IP", "TDD", "TLS", "TOML", "Tableau", "Tailwind CSS", "Talend", "Talent Acquisition", "Tauri", "Taxation", "TeamCity", "Technical Support", "Technical Writing", "Tekton", "Telemedicine", "TensorFlow", "TensorRT", "Terraform", "TestNG", "Testing Library", "Texturing", "Thermodynamics", "Thrift", "Time Series Analysis", "Tkinter", "Tokio", "Tornado", "Traefik", "Training & Development", "Transcription", "Transformers", "Translation", "Transportation Engineering", "Travis CI", "Trello", "Trino", "Truffle", "Twilio", "TypeScript", "Typography", "UDP", "UI/UX Design", "Ubuntu", "UiPath", "Unity", "Unreal Engine", "Urban Planning", "Usability Testing", "User Research", "VFX", "VHDL", "VLAN", "VLSI", "VPN", "Vagrant", "Vector", "Venture Capital", "Vercel", "Verilog", "Video Editing", "Virtual Assistance", "Vite", "Vue.js", "Vuex", "Vulkan", "Vulnerability Scanning", "Vultr", "VxWorks", "Vyper", "WAF", "WASM", "Water Resources", "Waterfall", "Wealth Management", "Weaviate", "Web3.js", "WebAssembly", "WebGL", "WebRTC", "WebSockets", "Webpack", "Windows Server", "WireGuard", "Wireframing", "Wireshark", "WooCommerce", "WordPress", "Workday", "XCUITest", "XML", "Xamarin", "YAGNI", "YAML", "Yii", "Zapier", "Zend", "Zendesk", "Zephyr", "Zero Trust", "ZeroMQ", "Zipkin", "Zoom", "Zsh", "Zustand", "cuDNN", "dbt", "gRPC", "jQuery", "macOS", "n8n", "unittest", "x86", "xAPI"];
+    const SHORTCUTS = ["Python", "JavaScript", "React", "Node.js", "SQL", "AWS", "Java", "C++", "TypeScript", "Docker"];
+    
+    // STATE
     let currentStep = 1;
-    let currentRegion = 'all';
-
-    const userPrefs = {
-      timeline: 'ASAP',
-      locations: ['Bengaluru', 'Hyderabad', 'Remote in India', 'Global Remote'],
-      experience: ['Entry Level'],
-      role: 'Software Engineering',
-      currency: 'INR',
-      minSalary: '₹8 LPA'
+    let prefs = {
+      department: "",
+      specializations: [],
+      locations: [],
+      employmentTypes: [],
+      companySizes: [],
+      industries: [],
+      skills: [],
+      searchStatus: ""
     };
 
-    const regionalCities = {
-      top: ["Bengaluru", "Hyderabad", "Pune", "Delhi NCR", "Mumbai", "Chennai", "Gurgaon (Gurugram)", "Noida", "Remote in India"],
-      remote: ["India (Anywhere)", "Remote in India", "Global Remote", "Hybrid"],
-      south: ["Bengaluru", "Hyderabad", "Chennai", "Kochi (Cochin)", "Visakhapatnam", "Vijayawada", "Coimbatore", "Mysuru (Mysore)", "Mangalore", "Tirupati", "Guntur", "Madurai", "Thiruvananthapuram", "Kozhikode (Calicut)", "Warangal", "Nellore"],
-      north: ["Delhi NCR", "Gurgaon (Gurugram)", "Noida", "Greater Noida", "Chandigarh", "Mohali", "Jaipur", "Lucknow", "Kanpur", "Dehradun", "Faridabad", "Ghaziabad", "Agra", "Varanasi", "Ludhiana", "Amritsar"]
-    };
+    // INIT UI
+    const depGrid = document.getElementById('options-department');
+    departments.forEach(d => {
+      const div = document.createElement('div');
+      div.className = 'option-card';
+      div.innerText = d;
+      div.onclick = () => {
+        document.querySelectorAll('#options-department .option-card').forEach(el => el.classList.remove('selected'));
+        div.classList.add('selected');
+        prefs.department = d;
+      };
+      depGrid.appendChild(div);
+    });
 
-    const allIndianCities = [
-      "India (Anywhere)", "Remote in India", "Global Remote", "Hybrid",
-      "Bengaluru", "Hyderabad", "Pune", "Delhi NCR", "Mumbai", "Chennai", "Gurgaon (Gurugram)", "Noida", "Kolkata", "Ahmedabad",
-      "Visakhapatnam", "Vijayawada", "Guntur", "Tirupati", "Nellore", "Kakinada", "Rajahmundry", "Kurnool", "Kadapa", "Anantapur", "Warangal", "Nizamabad", "Karimnagar", "Khammam",
-      "Mysuru (Mysore)", "Mangalore", "Hubli-Dharwad", "Belagavi", "Kochi (Cochin)", "Thiruvananthapuram", "Kozhikode (Calicut)", "Thrissur", "Kollam", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tirunelveli", "Vellore", "Erode",
-      "Navi Mumbai", "Thane", "Nagpur", "Nashik", "Aurangabad", "Solapur", "Kolhapur", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Gandhinagar", "Goa (Panaji / Margao)",
-      "Faridabad", "Ghaziabad", "Greater Noida", "Lucknow", "Kanpur", "Agra", "Varanasi", "Prayagraj (Allahabad)", "Meerut", "Bareilly", "Aligarh", "Moradabad", "Gorakhpur", "Noida Extension", "Dehradun", "Haridwar", "Roorkee",
-      "Chandigarh", "Mohali", "Panchkula", "Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Jaipur", "Jodhpur", "Kota", "Udaipur", "Bikaner", "Ajmer", "Shimla", "Dharamshala", "Jammu", "Srinagar",
-      "Indore", "Bhopal", "Gwalior", "Jabalpur", "Ujjain", "Raipur", "Bilaspur", "Bhilai", "Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Ranchi", "Jamshedpur", "Dhanbad", "Bokaro",
-      "Howrah", "Siliguri", "Durgapur", "Asansol", "Bhubaneswar", "Cuttack", "Rourkela", "Guwahati", "Shillong", "Agartala", "Imphal", "Aizawl", "Dimapur"
-    ];
+    const indGrid = document.getElementById('industry-chips');
+    industries.forEach(i => {
+      const div = document.createElement('div');
+      div.className = 'skill-chip';
+      div.innerText = i;
+      div.onclick = () => {
+        div.classList.toggle('selected');
+        if (div.classList.contains('selected')) prefs.industries.push(i);
+        else prefs.industries = prefs.industries.filter(x => x !== i);
+      };
+      indGrid.appendChild(div);
+    });
+    
+    const shortcutGrid = document.getElementById('shortcut-chips');
+    SHORTCUTS.forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'skill-chip';
+      div.innerText = "+ " + s;
+      div.onclick = () => addSkill(s);
+      shortcutGrid.appendChild(div);
+    });
 
-    const allRoles = [
-      "Software Engineering", "Full Stack Developer", "Backend Developer",
-      "Frontend Developer", "AI & Machine Learning", "Data Science",
-      "DevOps & Cloud Engineer", "Product Management", "Mobile (iOS/Android)",
-      "UI/UX Design", "QA / Automation Engineer", "Cyber Security",
-      "Business & Strategy", "Growth & Marketing", "Fintech & Banking", "Consulting"
-    ];
+    // Selection logic for generic chips
+    document.querySelectorAll('.loc-chip').forEach(el => el.onclick = () => {
+      el.classList.toggle('selected');
+      const val = el.innerText;
+      if (el.classList.contains('selected')) prefs.locations.push(val);
+      else prefs.locations = prefs.locations.filter(x => x !== val);
+    });
+    
+    document.querySelectorAll('.emp-chip').forEach(el => el.onclick = () => {
+      el.classList.toggle('selected');
+      const val = el.innerText;
+      if (el.classList.contains('selected')) prefs.employmentTypes.push(val);
+      else prefs.employmentTypes = prefs.employmentTypes.filter(x => x !== val);
+    });
 
-    const salaryINR = ["Any Compensation", "₹6 LPA+", "₹10 LPA+", "₹15 LPA+", "₹25 LPA+", "₹40 LPA+"];
-    const salaryUSD = ["Any Compensation", "$60k+", "$80k+", "$100k+", "$140k+", "$200k+"];
-
-    function goToStep(step) {
-      document.querySelectorAll('.step-card').forEach(card => card.style.display = 'none');
-      const nextCard = document.getElementById(`step-${step}`);
-      if (nextCard) nextCard.style.display = 'block';
-      
-      currentStep = step;
-      document.getElementById('step-indicator-text').textContent = `Step ${step} of 7`;
-      document.getElementById('progress-fill').style.width = `${(step / 7) * 100}%`;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // Step 1: Timeline
-    function selectTimeline(el, val) {
-      document.querySelectorAll('#timeline-options .option-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.size-chip').forEach(el => el.onclick = () => {
+      el.classList.toggle('selected');
+      const val = el.innerText;
+      if (el.classList.contains('selected')) prefs.companySizes.push(val);
+      else prefs.companySizes = prefs.companySizes.filter(x => x !== val);
+    });
+    
+    document.querySelectorAll('.status-card').forEach(el => el.onclick = () => {
+      document.querySelectorAll('.status-card').forEach(x => x.classList.remove('selected'));
       el.classList.add('selected');
-      userPrefs.timeline = val;
-    }
+      prefs.searchStatus = el.innerText.substring(3).trim();
+    });
 
-    // Step 2: Locations
-    function filterByRegion(region) {
-      currentRegion = region;
-      document.querySelectorAll('.loc-tab-btn').forEach(btn => btn.classList.remove('active'));
-      const activeBtn = document.getElementById(`tab-${region}`);
-      if (activeBtn) activeBtn.classList.add('active');
-      renderCities(document.getElementById('city-search').value);
-    }
-
-    function renderCities(filter = '') {
-      const container = document.getElementById('city-chips-container');
-      const query = filter.trim().toLowerCase();
+    // Skills Autocomplete
+    const searchInput = document.getElementById('skill-search');
+    const searchResults = document.getElementById('skill-results');
+    
+    searchInput.addEventListener('input', (e) => {
+      const val = e.target.value.toLowerCase();
+      searchResults.innerHTML = '';
+      if (!val) { searchResults.style.display = 'none'; return; }
       
-      let baseList = allIndianCities;
-      if (currentRegion !== 'all' && regionalCities[currentRegion]) {
-        baseList = regionalCities[currentRegion];
-      }
-
-      const filtered = baseList.filter(c => c.toLowerCase().includes(query));
-      let html = '';
-      
-      // Custom Add Chip if typing a unique city
-      if (query && !allIndianCities.some(c => c.toLowerCase() === query)) {
-        const customTitle = filter.trim();
-        const isCustomSel = userPrefs.locations.includes(customTitle);
-        html += `<div class="choice-chip ${isCustomSel ? 'selected' : ''}" style="background:${isCustomSel ? 'var(--primary)' : '#ffffff'}; border-color:var(--primary);" onclick="toggleLocation('${customTitle}')">
-          + Add "${customTitle}" ${isCustomSel ? '✓' : ''}
-        </div>`;
-      }
-      
-      html += filtered.map(c => {
-        const isSel = userPrefs.locations.includes(c);
-        return `<div class="choice-chip ${isSel ? 'selected' : ''}" onclick="toggleLocation('${c}')">${c} ${isSel ? '✓' : ''}</div>`;
-      }).join('');
-      
-      if (filtered.length === 0 && !query) {
-        html = '<div style="font-size:13px; color:var(--text-muted); padding:10px;">No locations in this category.</div>';
-      }
-      
-      container.innerHTML = html;
-      document.getElementById('location-selected-count').textContent = `${userPrefs.locations.length} Locations Selected`;
-    }
-
-    function toggleLocation(c) {
-      const idx = userPrefs.locations.indexOf(c);
-      if (idx > -1) userPrefs.locations.splice(idx, 1);
-      else userPrefs.locations.push(c);
-      renderCities(document.getElementById('city-search').value);
-    }
-
-    function selectAllLocations(select) {
-      userPrefs.locations = select ? [...allIndianCities] : [];
-      renderCities(document.getElementById('city-search').value);
-    }
-
-    function filterCities() {
-      renderCities(document.getElementById('city-search').value);
-    }
-
-    // Step 3: Resume
-    function handleResumeUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const badge = document.getElementById('resume-upload-badge');
-      badge.style.display = 'block';
-      badge.textContent = `✓ ${file.name} uploaded & parsed!`;
-      localStorage.setItem('getarole_resume_uploaded', 'true');
-    }
-
-    // Step 4: Experience
-    function toggleExp(el, val) {
-      const idx = userPrefs.experience.indexOf(val);
-      if (idx > -1) {
-        userPrefs.experience.splice(idx, 1);
-        el.classList.remove('selected');
+      const matches = ALL_SKILLS.filter(s => s.toLowerCase().includes(val)).slice(0, 15);
+      if (matches.length > 0) {
+        searchResults.style.display = 'block';
+        matches.forEach(m => {
+          const div = document.createElement('div');
+          div.className = 'search-item';
+          div.innerText = m;
+          div.onclick = () => { addSkill(m); searchInput.value = ''; searchResults.style.display = 'none'; };
+          searchResults.appendChild(div);
+        });
       } else {
-        if (userPrefs.experience.length >= 2) {
-          const first = userPrefs.experience.shift();
-          document.querySelectorAll('#experience-options .option-card').forEach(c => {
-            if (c.textContent.includes(first)) c.classList.remove('selected');
-          });
-        }
-        userPrefs.experience.push(val);
-        el.classList.add('selected');
+        searchResults.style.display = 'none';
+      }
+    });
+
+    function addSkill(skill) {
+      if (!prefs.skills.includes(skill)) {
+        prefs.skills.push(skill);
+        renderSelectedSkills();
       }
     }
-
-    // Step 5: Roles
-    function renderRoles(filter = '') {
-      const container = document.getElementById('role-chips-container');
-      const filtered = allRoles.filter(r => r.toLowerCase().includes(filter.toLowerCase()));
-      container.innerHTML = filtered.map(r => {
-        const isSel = userPrefs.role === r;
-        return `<div class="choice-chip ${isSel ? 'selected' : ''}" onclick="selectRole('${r}')">${r} ${isSel ? '✓' : ''}</div>`;
-      }).join('');
-    }
-
-    function selectRole(r) {
-      userPrefs.role = r;
-      renderRoles(document.getElementById('role-search').value);
-    }
-
-    function filterRoles() {
-      renderRoles(document.getElementById('role-search').value);
-    }
-
-    // Step 6: Salary
-    function setCurrency(curr) {
-      userPrefs.currency = curr;
-      document.querySelectorAll('.salary-tab').forEach((t, i) => {
-        t.classList.toggle('active', (curr === 'INR' && i === 0) || (curr === 'USD' && i === 1));
+    function renderSelectedSkills() {
+      const container = document.getElementById('selected-skills-container');
+      container.innerHTML = '';
+      prefs.skills.forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'skill-chip selected';
+        div.innerText = s + " ✕";
+        div.onclick = () => {
+          prefs.skills = prefs.skills.filter(x => x !== s);
+          renderSelectedSkills();
+        };
+        container.appendChild(div);
       });
-      renderSalaryOptions();
     }
 
-    function renderSalaryOptions() {
-      const list = userPrefs.currency === 'INR' ? salaryINR : salaryUSD;
-      const container = document.getElementById('salary-options-container');
-      container.innerHTML = list.map((sal, idx) => `
-        <div class="option-card ${idx === 2 ? 'selected' : ''}" onclick="selectSalary(this, '${sal}')">
-          <span>At least ${sal}</span>
-        </div>
-      `).join('');
-      userPrefs.minSalary = list[2];
-    }
-
-    function selectSalary(el, sal) {
-      document.querySelectorAll('#salary-options-container .option-card').forEach(c => c.classList.remove('selected'));
-      el.classList.add('selected');
-      userPrefs.minSalary = sal;
-    }
-
-    function getFirebaseUID() {
-      const directUid = localStorage.getItem('firebase_uid') || sessionStorage.getItem('firebase_uid');
-      if (directUid) return directUid;
-      const raw = localStorage.getItem('getarole_user');
-      if (!raw) return null;
-      try {
-        const parsed = JSON.parse(raw);
-        return parsed.uid || parsed.id || null;
-      } catch (e) {
-        return raw.trim() || null;
-      }
-    }
-
-    // Step 7: Finish
-    async function finishAndCelebrate() {
-      localStorage.setItem('getarole_prefs', JSON.stringify(userPrefs));
+    // NAVIGATION
+    function updateUI() {
+      document.querySelectorAll('.wizard-step').forEach((el, i) => {
+        el.classList.toggle('active', i + 1 === currentStep);
+      });
+      document.getElementById('progress').style.width = `${(currentStep / 8) * 100}%`;
+      document.getElementById('btn-back').style.visibility = currentStep === 1 ? 'hidden' : 'visible';
       
-      // Real-time Cloud Sync to Supabase
-      const uid = getFirebaseUID();
-      if (uid) {
-        try {
-          fetch('/api/user/preferences', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-            body: JSON.stringify(userPrefs)
-          }).catch(e => console.warn('Onboarding prefs sync notice:', e));
-
-          fetch('/api/user/profile', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-            body: JSON.stringify({
-              headline: userPrefs.role || 'Software Engineer',
-              city: (userPrefs.locations && userPrefs.locations[0]) || 'India'
-            })
-          }).catch(e => console.warn('Onboarding profile sync notice:', e));
-        } catch (err) {
-          console.warn('Onboarding sync error:', err);
-        }
-      }
-      
-      document.getElementById('celeb-pills-list').innerHTML = `
-        <span class="celeb-pill">📍 ${userPrefs.locations.slice(0, 2).join(', ')}${userPrefs.locations.length > 2 ? ' +' + (userPrefs.locations.length - 2) : ''}</span>
-        <span class="celeb-pill">💻 ${userPrefs.role}</span>
-        <span class="celeb-pill">💰 ${userPrefs.minSalary}</span>
-        <span class="celeb-pill">⚡ ${userPrefs.timeline}</span>
-      `;
-      goToStep(7);
-    }
-
-    function launchDashboard() {
-      const user = localStorage.getItem('getarole_user');
-      if (!user) {
-        window.location.href = '/?auth=1';
+      if (currentStep === 8) {
+        document.getElementById('navigation-row').style.display = 'none';
       } else {
-        window.location.href = '/dashboard/';
+        document.getElementById('navigation-row').style.display = 'flex';
       }
     }
 
-    // Boot
-    (function init() {
-      renderCities();
-      renderRoles();
-      renderSalaryOptions();
-    })();
+    function nextStep() {
+      if (currentStep === 1 && !prefs.department) return alert("Please select a department");
+      
+      if (currentStep === 1) {
+        // Setup Step 2 dynamically
+        const specGrid = document.getElementById('options-specialization');
+        specGrid.innerHTML = '';
+        document.getElementById('dep-label').innerText = prefs.department;
+        const specs = specializations[prefs.department] || ["Generalist", "Manager", "Analyst", "Lead", "Architect", "Consultant"];
+        
+        specs.forEach(s => {
+          const div = document.createElement('div');
+          div.className = 'option-card';
+          div.innerText = s;
+          if (prefs.specializations.includes(s)) div.classList.add('selected');
+          div.onclick = () => {
+            div.classList.toggle('selected');
+            if (div.classList.contains('selected')) prefs.specializations.push(s);
+            else prefs.specializations = prefs.specializations.filter(x => x !== s);
+          };
+          specGrid.appendChild(div);
+        });
+      }
+      
+      if (currentStep === 3) {
+        const customLoc = document.getElementById('input-locations').value;
+        if (customLoc) prefs.locations.push(...customLoc.split(',').map(x => x.trim()).filter(Boolean));
+      }
+
+      if (currentStep < 8) currentStep++;
+      updateUI();
+    }
+
+    function prevStep() {
+      if (currentStep > 1) currentStep--;
+      updateUI();
+    }
+    
+    function finishOnboarding() {
+      // Map preferences to dashboard schema
+      const dashboardPrefs = {
+        role: prefs.specializations.length > 0 ? prefs.specializations[0] : prefs.department,
+        target_role: prefs.specializations.join(', '),
+        city: prefs.locations[0] || '',
+        locations: prefs.locations,
+        remoteOnly: prefs.locations.includes('Remote'),
+        workplaceType: prefs.locations.includes('Remote') ? 'Remote' : 'Hybrid',
+        companySizes: prefs.companySizes,
+        industries: prefs.industries,
+        employmentTypes: prefs.employmentTypes
+      };
+      
+      const dashboardProfile = {
+        headline: dashboardPrefs.role,
+        skills: prefs.skills,
+        searchStatus: prefs.searchStatus
+      };
+
+      localStorage.setItem('getarole_prefs', JSON.stringify(dashboardPrefs));
+      localStorage.setItem('getarole_profile', JSON.stringify(dashboardProfile));
+      
+      window.location.href = '/dashboard';
+    }
   </script>
 </body>
 </html>
