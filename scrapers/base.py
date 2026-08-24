@@ -1,49 +1,46 @@
 import os
 import random
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 import httpx
 from scrapers.models import JobListing
+from scrapers.stealth import (
+    BrowserProfile,
+    BROWSER_PROFILES,
+    get_random_profile,
+    get_profile_headers,
+    async_rate_limit_delay
+)
 
-USER_AGENTS = [
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 Edg/126.0.0.0"
-]
+USER_AGENTS = [p.user_agent for p in BROWSER_PROFILES]
 
 def get_random_user_agent() -> str:
     """Returns a randomized modern desktop user agent."""
-    return random.choice(USER_AGENTS)
+    return get_random_profile().user_agent
 
-def get_scraper_headers(custom_headers: Optional[Dict[str, str]] = None) -> Dict[str, str]:
-    """Generates standard browser headers with rotated user agent and anti-fingerprinting tokens."""
-    headers = {
-        "User-Agent": get_random_user_agent(),
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,application/json,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Sec-Ch-Ua": '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
-        "Sec-Ch-Ua-Mobile": "?0",
-        "Sec-Ch-Ua-Platform": '"macOS"',
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-origin",
-        "DNT": "1"
-    }
-    if custom_headers:
-        headers.update(custom_headers)
-    return headers
+def get_scraper_headers(custom_headers: Optional[Dict[str, str]] = None, profile: Optional[BrowserProfile] = None) -> Dict[str, str]:
+    """Generates standard browser headers with synchronized user agent, client hints and anti-fingerprinting tokens."""
+    selected_profile = profile or get_random_profile()
+    return get_profile_headers(selected_profile, custom_headers)
 
-def create_scraper_client(timeout: float = 6.0) -> httpx.AsyncClient:
-    """Creates a hardened AsyncClient with proxy support and connection pooling."""
+def create_scraper_client(timeout: float = 6.0, profile: Optional[BrowserProfile] = None) -> httpx.AsyncClient:
+    """
+    Creates a hardened AsyncClient with:
+    1. Session-pinned BrowserProfile (consistent User-Agent, Sec-Ch-Ua, and Accept-Language throughout session)
+    2. Connection pooling & Keep-Alive tuning
+    3. Transparent proxy support (ROTATING_PROXY_URL / HTTP_PROXY)
+    4. HTTP Cookie persistence
+    """
+    active_profile = profile or get_random_profile()
+    default_headers = get_profile_headers(active_profile)
+    
     proxy_url = os.getenv("ROTATING_PROXY_URL") or os.getenv("HTTPS_PROXY") or os.getenv("HTTP_PROXY")
     limits = httpx.Limits(max_keepalive_connections=15, max_connections=30)
     
     kwargs = {
         "limits": limits,
         "timeout": timeout,
+        "headers": default_headers,
         "follow_redirects": True
     }
     if proxy_url:
