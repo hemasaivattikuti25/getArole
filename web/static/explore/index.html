@@ -415,6 +415,7 @@
 <body>
 
   <!-- ════════════════════ HEADER (SIMPLIFY NAVIGATION) ════════════════════ -->
+  <!-- ════════════════════ UNIFORM HEADER ════════════════════ -->
   <header>
     <div class="header-inner">
       <div class="brand-group">
@@ -434,21 +435,19 @@
       </div>
 
       <div class="header-actions">
-        
-
-        <button class="btn-refresh" id="btn-refresh-scrape" onclick="triggerScrape()">
+        <button class="btn-refresh" id="btn-refresh-scrape" onclick="typeof triggerScrape === 'function' ? triggerScrape() : window.location.reload()">
           Sync
         </button>
 
-        <div class="user-profile-btn" onclick="toggleUserDropdown()">
+        <div class="user-profile-btn" onclick="document.getElementById('user-dropdown') && document.getElementById('user-dropdown').classList.toggle('show')">
           <div class="user-avatar" id="nav-avatar">U</div>
           <span class="user-name-text" id="nav-username">User</span>
-          <span style="font-size: 10px; color: var(--text-subtle)">▼</span>
+          <span style="font-size: 10px; color: var(--text-subtle, #94a3b8)">▼</span>
 
           <div class="user-dropdown" id="user-dropdown">
-            <a href="#" class="dropdown-item">⚙️ Settings</a>
-            <div style="height:1px; background:var(--border); margin:4px 0;"></div>
-            <a href="#" onclick="handleLogout()" class="dropdown-item" style="color:#ef4444">Sign Out</a>
+            <a href="/profile" class="dropdown-item">⚙️ Profile & Preferences</a>
+            <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
+            <a href="#" onclick="typeof handleLogout === 'function' ? handleLogout() : (localStorage.clear(), window.location.href='/')" class="dropdown-item" style="color:#ef4444">Sign Out</a>
           </div>
         </div>
       </div>
@@ -1609,5 +1608,25 @@
       loadJobs();
     })();
   </script>
+
+  <script>
+    function updateNavUser() {
+      try {
+        const userObj = JSON.parse(localStorage.getItem('getarole_user') || '{}');
+        const profObj = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+        const name = profObj.name || userObj.displayName || userObj.name || localStorage.getItem('getarole_username') || 'User';
+        const nameEl = document.getElementById('nav-username');
+        if (nameEl && name) nameEl.textContent = name;
+        const avatarEl = document.getElementById('nav-avatar');
+        if (avatarEl && name) avatarEl.textContent = name[0].toUpperCase();
+      } catch(e) {}
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', updateNavUser);
+    } else {
+      updateNavUser();
+    }
+  </script>
+
 </body>
 </html>

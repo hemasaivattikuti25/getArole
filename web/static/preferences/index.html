@@ -272,22 +272,119 @@
 
 
   </style>
+
+    /* ════════════════════ TOP NAVIGATION BAR (UNIFORM STYLE) ════════════════════ */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--surface, #ffffff);
+      border-bottom: 1px solid var(--border, #e2e8f0);
+      height: var(--nav-height, 64px);
+      display: flex; align-items: center;
+    }
+    .header-inner {
+      max-width: 1500px; width: 100%; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand-group { display: flex; align-items: center; gap: 32px; }
+    .brand-logo {
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
+    }
+    .brand-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 19px; color: var(--text-main, #0f172a); }
+    .brand-title span { color: var(--primary, #4f46e5); }
+
+    /* Nav Links */
+    .nav-tabs { display: flex; align-items: center; gap: 4px; }
+    .nav-tab {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 14px; border-radius: 8px;
+      font-size: 13.5px; font-weight: 600; color: var(--text-muted, #64748b);
+      text-decoration: none; cursor: pointer; transition: all 0.15s ease;
+    }
+    .nav-tab:hover { background: var(--border-subtle, #f8fafc); color: var(--text-main, #0f172a); }
+    .nav-tab.active {
+      background: var(--primary-light, #e0e7ff); color: var(--primary, #4f46e5); font-weight: 700;
+    }
+    .nav-badge {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+      padding: 1px 7px; border-radius: 99px; background: var(--primary, #4f46e5); color: white;
+    }
+
+    /* Right Actions & User Menu */
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .btn-refresh {
+      background: var(--surface, #ffffff); border: 1.5px solid var(--border, #e2e8f0);
+      padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 700;
+      color: var(--text-main, #0f172a); cursor: pointer; display: flex; align-items: center; gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn-refresh:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
+
+    .user-profile-btn {
+      display: flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px;
+      border-radius: 20px; border: 1.5px solid var(--border, #e2e8f0);
+      background: var(--surface, #ffffff); cursor: pointer; position: relative;
+    }
+    .user-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+      color: white; font-weight: 800; font-size: 12px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .user-name-text { font-size: 13px; font-weight: 700; color: var(--text-main, #0f172a); }
+
+    .user-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 0; width: 220px;
+      background: var(--surface, #ffffff); border: 1px solid var(--border, #e2e8f0);
+      border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 8px; display: none; flex-direction: column; gap: 4px; z-index: 200;
+    }
+    .user-dropdown.show { display: flex; }
+    .dropdown-item {
+      padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 600;
+      color: var(--text-main, #0f172a); text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
+    }
+    .dropdown-item:hover { background: var(--background, #f8fafc); color: var(--primary, #4f46e5); }
+
 </head>
 <body>
 
   <!-- HEADER -->
+  <!-- ════════════════════ UNIFORM HEADER ════════════════════ -->
   <header>
     <div class="header-inner">
-      <a href="/dashboard" class="brand-wrap">
-        <img src="/logo.svg" alt="getArole Logo" class="brand-logo-img">
-        <span class="brand-title">get<span>A</span>role</span>
-      </a>
-      <div class="header-actions nav-links">
-        <a href="/dashboard">Overview</a>
-        <a href="/matches">Matches</a>
-        <a href="/explore">Explore Jobs</a>
-        <button onclick="handleSignOut()" style="background:transparent; border:1px solid var(--border); padding:6px 14px; border-radius:99px; font-weight:700; font-size:13px; color:var(--text-muted); cursor:pointer;">Sign Out</button>
-        <div class="avatar-mini" id="nav-avatar">?</div>
+      <div class="brand-group">
+        <a href="/dashboard" class="brand-logo">
+          <img src="/logo.svg" alt="getArole" style="width:34px;height:34px;object-fit:contain;">
+          <span class="brand-title">get<span>A</span>role</span>
+        </a>
+
+        <nav class="nav-tabs">
+          <a class="nav-tab" href="/dashboard" id="tab-btn-home">Overview</a>
+          <a class="nav-tab" href="/matches" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
+          <a class="nav-tab" href="/explore" id="tab-btn-jobs">Explore Jobs</a>
+          <a class="nav-tab" href="/resume-builder" id="tab-btn-resume">📄 ATS Resume</a>
+          <a class="nav-tab" href="/cover-letter-builder" id="tab-btn-cover-letter">✉️ Cover Letter</a>
+          <a class="nav-tab active" href="/profile" id="tab-btn-profile">Profile</a>
+        </nav>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-refresh" id="btn-refresh-scrape" onclick="typeof triggerScrape === 'function' ? triggerScrape() : window.location.reload()">
+          Sync
+        </button>
+
+        <div class="user-profile-btn" onclick="document.getElementById('user-dropdown') && document.getElementById('user-dropdown').classList.toggle('show')">
+          <div class="user-avatar" id="nav-avatar">U</div>
+          <span class="user-name-text" id="nav-username">User</span>
+          <span style="font-size: 10px; color: var(--text-subtle, #94a3b8)">▼</span>
+
+          <div class="user-dropdown" id="user-dropdown">
+            <a href="/profile" class="dropdown-item">⚙️ Profile & Preferences</a>
+            <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
+            <a href="#" onclick="typeof handleLogout === 'function' ? handleLogout() : (localStorage.clear(), window.location.href='/')" class="dropdown-item" style="color:#ef4444">Sign Out</a>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -1220,5 +1317,25 @@
 
     initData();
   </script>
+
+  <script>
+    function updateNavUser() {
+      try {
+        const userObj = JSON.parse(localStorage.getItem('getarole_user') || '{}');
+        const profObj = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+        const name = profObj.name || userObj.displayName || userObj.name || localStorage.getItem('getarole_username') || 'User';
+        const nameEl = document.getElementById('nav-username');
+        if (nameEl && name) nameEl.textContent = name;
+        const avatarEl = document.getElementById('nav-avatar');
+        if (avatarEl && name) avatarEl.textContent = name[0].toUpperCase();
+      } catch(e) {}
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', updateNavUser);
+    } else {
+      updateNavUser();
+    }
+  </script>
+
 </body>
 </html>
