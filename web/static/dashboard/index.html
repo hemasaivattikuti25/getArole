@@ -428,12 +428,13 @@
           <a class="nav-tab" onclick="showTab('matches')" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
           <a class="nav-tab" onclick="showTab('jobs')" id="tab-btn-jobs">Explore</a>
           <a class="nav-tab" href="/resume-builder" id="tab-btn-resume">Resume</a>
+          <a class="nav-tab" href="/profile" id="tab-btn-profile">Profile</a>
         </nav>
       </div>
 
       <div class="header-actions">
-        <a href="/preferences" class="btn-refresh" style="background:#ffffff; border:1px solid var(--border); color:var(--text-main); font-weight:700; text-decoration:none; display:inline-flex; align-items:center;">
-          ⚙️ Preferences
+        <a href="/profile" class="btn-refresh" style="background:#ffffff; border:1px solid var(--border); color:var(--text-main); font-weight:700; text-decoration:none; display:inline-flex; align-items:center;">
+          👤 Profile
         </a>
 
         <button class="btn-refresh" id="btn-refresh-scrape" onclick="triggerScrape()">
@@ -446,7 +447,7 @@
           <span style="font-size: 10px; color: var(--text-subtle)">▼</span>
 
           <div class="user-dropdown" id="user-dropdown">
-            <a href="/preferences" class="dropdown-item">⚙️ Job Preferences & Profile</a>
+            <a href="/profile" class="dropdown-item">👤 My Profile & Preferences</a>
             <a href="/onboarding" class="dropdown-item">📝 Re-run Onboarding</a>
             <a href="#" onclick="openCandidateDatabaseModal()" class="dropdown-item">👥 Database</a>
             <div style="height:1px; background:var(--border); margin:4px 0;"></div>
@@ -489,7 +490,7 @@
           <h1 class="home-hero-title">Welcome back, <span id="home-user-name">Engineer</span></h1>
           <p class="home-hero-sub">Your personalized AI job matcher and application pipeline across India and global remote tech hubs.</p>
         </div>
-        <a href="/onboarding" class="btn-hero-action">Search Preferences →</a>
+        <a href="/profile" class="btn-hero-action">My Profile & Preferences →</a>
       </div>
 
       <!-- Application Tracker Pipeline (Professional UI) -->
