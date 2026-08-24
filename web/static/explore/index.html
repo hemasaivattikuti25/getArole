@@ -909,9 +909,9 @@
       document.getElementById(`view-${tabName}`).classList.add('active');
 
       document.getElementById('filter-bar').style.display = (tabName === 'jobs') ? 'block' : 'none';
-      if (tabName === 'home') renderHomeView();
-      if (tabName === 'tracker') renderTracker();
-      if (tabName === 'matches') renderMatchesSplitView();
+      if (tabName === 'home' && typeof renderHomeView === 'function') renderHomeView();
+      if (tabName === 'tracker' && typeof renderTracker === 'function') renderTracker();
+      if (tabName === 'matches' && typeof renderMatchesSplitView === 'function') renderMatchesSplitView();
     }
 
     const SUPABASE_REST_URL = "https://tgmhtlqcjgcjedlnthfk.supabase.co/rest/v1/jobs?select=*&order=created_at.desc&limit=1500";
@@ -1021,8 +1021,6 @@
         if (filteredJobs.length > 0) {
           selectJob(filteredJobs[0].id);
         }
-        updateCounts();
-        renderHomeView();
       } catch (e) {
         console.error('Job load error:', e);
         if (feed) {
