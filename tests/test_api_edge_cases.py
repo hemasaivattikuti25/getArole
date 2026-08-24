@@ -290,3 +290,18 @@ def test_service_worker_and_cache_control_headers():
     assert res_static.status_code == 200
     assert "max-age=3600" in res_static.headers.get("cache-control", "")
     assert "immutable" not in res_static.headers.get("cache-control", "")
+
+
+# ── 10. Frontend Enterprise Security Headers (OWASP & W3C) ───────────────────
+
+def test_enterprise_frontend_security_headers():
+    """Test that enterprise frontend security headers are attached to responses."""
+    res = client.get("/dashboard")
+    assert res.status_code == 200
+    assert res.headers.get("x-frame-options") == "DENY"
+    assert res.headers.get("x-content-type-options") == "nosniff"
+    assert res.headers.get("referrer-policy") == "strict-origin-when-cross-origin"
+    assert "camera=()" in res.headers.get("permissions-policy", "")
+    assert "max-age=31536000" in res.headers.get("strict-transport-security", "")
+    assert "default-src 'self'" in res.headers.get("content-security-policy", "")
+    assert "frame-ancestors 'none'" in res.headers.get("content-security-policy", "")
