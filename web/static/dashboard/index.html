@@ -35,11 +35,11 @@
 
   <style>
     :root {
-      --primary: #059669;
-      --primary-hover: #047857;
-      --primary-accent: #10b981;
-      --primary-light: #ecfdf5;
-      --primary-border: #a7f3d0;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-accent: #6366f1;
+      --primary-light: #eef2ff;
+      --primary-border: #c7d2fe;
       --surface: #ffffff;
       --background: #f8fafc;
       --border-subtle: #f1f5f9;
@@ -86,11 +86,11 @@
     }
     .brand-icon {
       width: 32px; height: 32px;
-      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
       border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
       color: white; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 16px;
-      box-shadow: 0 2px 8px rgba(5,150,105,0.25);
+      box-shadow: 0 2px 8px rgba(79,70,229,0.25);
     }
     .brand-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 19px; color: var(--text-main); }
     .brand-title span { color: var(--primary); }
@@ -129,7 +129,7 @@
     }
     .user-avatar {
       width: 28px; height: 28px; border-radius: 50%;
-      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
       color: white; font-weight: 800; font-size: 12px;
       display: flex; align-items: center; justify-content: center;
       overflow: hidden;
@@ -246,7 +246,7 @@
     }
     .tag-chip.batch { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; font-weight: 700; }
     .tag-chip.remote { background: var(--primary-light); border-color: var(--primary-border); color: var(--primary); font-weight: 700; }
-    .tag-chip.match-score-chip { background: #ecfdf5; border-color: #a7f3d0; color: #059669; font-weight: 800; }
+    .tag-chip.match-score-chip { background: #eef2ff; border-color: #c7d2fe; color: #4f46e5; font-weight: 800; }
 
     /* Right Column: Rich Detail Pane */
     .job-detail-col {
@@ -282,7 +282,7 @@
     .btn-apply-primary {
       padding: 8px 20px; border-radius: 8px; border: none;
       background: var(--primary); font-size: 13.5px; font-weight: 800; color: white; cursor: pointer;
-      display: flex; align-items: center; gap: 6px; text-decoration: none; box-shadow: 0 2px 8px rgba(5,150,105,0.25);
+      display: flex; align-items: center; gap: 6px; text-decoration: none; box-shadow: 0 2px 8px rgba(79,70,229,0.25);
     }
     .btn-apply-primary:hover { background: var(--primary-hover); }
     
@@ -367,9 +367,9 @@
 
     /* ════════════════════ HOME VIEW STYLES ════════════════════ */
     .home-hero-card {
-      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
       border-radius: 18px; padding: 36px 40px; color: white; margin-bottom: 28px;
-      box-shadow: 0 10px 30px -5px rgba(5,150,105,0.3);
+      box-shadow: 0 10px 30px -5px rgba(79,70,229,0.3);
       display: flex; justify-content: space-between; align-items: center; gap: 24px;
     }
     .home-hero-title { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
@@ -478,7 +478,7 @@
         <button class="filter-pill" id="pill-parttime"  onclick="togglePillFilter('parttime')">Contract</button>
         <button class="btn-clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
         <a href="/resume-builder" style="margin-left:auto;padding:6px 14px;border-radius:8px;background:linear-gradient(135deg,#4f46e5,#6366f1);color:white;font-size:12.5px;font-weight:800;text-decoration:none;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(79,70,229,.2);">📄 Resume Builder</a>
-        <a href="/cover-letter-builder" style="padding:6px 14px;border-radius:8px;background:linear-gradient(135deg,#059669,#10b981);color:white;font-size:12.5px;font-weight:800;text-decoration:none;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(5,150,105,.2);">✉️ Cover Letter</a>
+        <a href="/cover-letter-builder" style="padding:6px 14px;border-radius:8px;background:linear-gradient(135deg,#4338ca,#4f46e5);color:white;font-size:12.5px;font-weight:800;text-decoration:none;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(79,70,229,.2);">✉️ Cover Letter</a>
       </div>
     </div>
   </div>

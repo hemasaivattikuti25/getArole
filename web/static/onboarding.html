@@ -12,10 +12,10 @@
 
   <style>
     :root {
-      --primary: #059669;
-      --primary-hover: #047857;
-      --primary-light: #ecfdf5;
-      --primary-border: #a7f3d0;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --primary-border: #c7d2fe;
       --bg: #ffffff;
       --bg-subtle: #f8fafc;
       --text-main: #0f172a;
@@ -579,7 +579,7 @@
       if (query && !allIndianCities.some(c => c.toLowerCase() === query)) {
         const customTitle = filter.trim();
         const isCustomSel = userPrefs.locations.includes(customTitle);
-        html += `<div class="choice-chip ${isCustomSel ? 'selected' : ''}" style="background:${isCustomSel ? '#059669' : '#ffffff'}; border-color:#059669;" onclick="toggleLocation('${customTitle}')">
+        html += `<div class="choice-chip ${isCustomSel ? 'selected' : ''}" style="background:${isCustomSel ? 'var(--primary)' : '#ffffff'}; border-color:var(--primary);" onclick="toggleLocation('${customTitle}')">
           + Add "${customTitle}" ${isCustomSel ? '✓' : ''}
         </div>`;
       }
