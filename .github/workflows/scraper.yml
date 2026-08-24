@@ -27,11 +27,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install Playwright Browsers
-        run: |
-          cd cron_scraper
-          python -m playwright install --with-deps chromium
-
       - name: Run Scraper & Supabase Sync Engine
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://tgmhtlqcjgcjedlnthfk.supabase.co' }}

@@ -32,6 +32,12 @@ class IndianITScraper:
             "Sec-Fetch-Dest": "document",
             "Sec-Fetch-Mode": "navigate"
         })
+        IGNORED_TERMS = [
+            "clear filters", "view all", "deutsch", "english", "español", "privacy",
+            "terms", "cookie", "talent community", "subscribe", "contact us", "about us",
+            "home", "search", "careers", "learn more", "read more", "be in the know",
+            "see all", "apply now", "join us", "francais", "italiano", "japanese"
+        ]
         try:
             resp = await client.get(url, headers=headers, timeout=10.0)
             if resp.status_code == 200 and resp.text:
@@ -40,7 +46,13 @@ class IndianITScraper:
                 for a in links:
                     href = a["href"]
                     text = a.get_text(strip=True)
-                    if len(text) > 4 and len(text) < 65 and any(k in href.lower() for k in ["/job", "/career", "/role", "/opening"]):
+                    text_lower = text.lower()
+                    if (
+                        len(text) > 4
+                        and len(text) < 65
+                        and not any(term in text_lower for term in IGNORED_TERMS)
+                        and any(k in href.lower() for k in ["/job", "/career", "/role", "/opening"])
+                    ):
                         full_url = href if href.startswith("http") else f"{url.rstrip('/')}/{href.lstrip('/')}"
                         uid = hashlib.md5(f"it_{name}_{text}_{full_url}".encode()).hexdigest()[:12]
                         
