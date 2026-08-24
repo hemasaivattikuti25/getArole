@@ -977,7 +977,15 @@
     const SUPABASE_REST_URL = "https://tgmhtlqcjgcjedlnthfk.supabase.co/rest/v1/jobs?select=*&order=created_at.desc&limit=1500";
     const SUPABASE_ANON_KEY = "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn";
 
+    let searchAbortController = null;
+
     async function loadJobs() {
+      if (searchAbortController) {
+        searchAbortController.abort();
+      }
+      searchAbortController = new AbortController();
+      const signal = searchAbortController.signal;
+
       const feed = document.getElementById('job-feed-list');
       if (feed) {
         feed.innerHTML = `
@@ -990,7 +998,7 @@
         let loadedList = [];
         // 1. Try Backend API endpoint
         try {
-          const res = await fetch('/api/jobs');
+          const res = await fetch('/api/jobs', { signal });
           if (res.ok) {
             const data = await res.json();
             if (data.jobs && data.jobs.length > 0) {
@@ -998,12 +1006,14 @@
             }
           }
         } catch (err) {
+          if (err.name === 'AbortError') return;
           console.warn('API fetch notice, falling back to direct Supabase cloud:', err);
         }
 
         // 2. Direct Supabase Fallback if backend returned empty or was sleeping
         if (!loadedList || loadedList.length === 0) {
           const supaRes = await fetch(SUPABASE_REST_URL, {
+            signal,
             headers: {
               'apikey': SUPABASE_ANON_KEY,
               'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
