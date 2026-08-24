@@ -610,12 +610,31 @@ async def serve_onboarding():
     return "<h1>getArole Onboarding</h1>"
 
 @app.get("/dashboard", response_class=HTMLResponse)
+@app.get("/dashboard/", response_class=HTMLResponse)
 async def serve_dashboard():
     dash_file = os.path.join(STATIC_DIR, "dashboard", "index.html")
     if os.path.exists(dash_file):
         with open(dash_file, "r", encoding="utf-8") as f:
             return f.read()
     return "<h1>getArole Dashboard</h1>"
+
+@app.get("/explore", response_class=HTMLResponse)
+@app.get("/explore/", response_class=HTMLResponse)
+async def serve_explore():
+    exp_file = os.path.join(STATIC_DIR, "explore", "index.html")
+    if os.path.exists(exp_file):
+        with open(exp_file, "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h1>getArole Explore</h1>"
+
+@app.get("/matches", response_class=HTMLResponse)
+@app.get("/matches/", response_class=HTMLResponse)
+async def serve_matches():
+    match_file = os.path.join(STATIC_DIR, "matches", "index.html")
+    if os.path.exists(match_file):
+        with open(match_file, "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h1>getArole Matches</h1>"
 
 @app.get("/profile", response_class=HTMLResponse)
 @app.get("/profile/", response_class=HTMLResponse)

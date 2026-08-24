@@ -191,7 +191,6 @@
     main { flex: 1; max-width: 1500px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; min-height: 0; }
     .page-view { display: none; flex: 1; flex-direction: column; min-height: 0; }
     .page-view.active { display: flex; }
-    #view-home { overflow-y: auto; }
 
     /* ════════════════════ SPLIT-PANE LAYOUT ════════════════════ */
     .jobs-split-container {
@@ -425,8 +424,8 @@
         </a>
 
                 <nav class="nav-tabs">
-          <a class="nav-tab active" href="/dashboard" id="tab-btn-home">Overview</a>
-          <a class="nav-tab" href="/matches" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
+          <a class="nav-tab" href="/dashboard" id="tab-btn-home">Overview</a>
+          <a class="nav-tab active" href="/matches" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
           <a class="nav-tab" href="/explore" id="tab-btn-jobs">Explore Jobs</a>
           <a class="nav-tab" href="/resume-builder" id="tab-btn-resume">📄 ATS Resume</a>
           <a class="nav-tab" href="/cover-letter-builder" id="tab-btn-cover-letter">✉️ Cover Letter</a>
@@ -456,78 +455,40 @@
     </div>
   </header>
 
-  <!-- ════════════════════ MAIN CONTENT ════════════════════ -->
+    <!-- ════════════════════ MAIN CONTENT ════════════════════ -->
   <main>
-    <!-- 0. HOME VIEW -->
-    <div id="view-home" class="page-view active" style="padding: 32px 24px;">
-      
-      <!-- Welcome Hero Banner -->
-      <div class="home-hero-card">
-        <div>
-          <h1 class="home-hero-title">Welcome back, <span id="home-user-name">Engineer</span></h1>
-          <p class="home-hero-sub">Your personalized AI job matcher and application pipeline across India and global remote tech hubs.</p>
+    <div id="view-matches" class="page-view active">
+      <div class="jobs-split-container">
+        <!-- Left Column: Top Matched Jobs List -->
+        <div class="jobs-feed-col">
+          <div class="feed-header">
+            <span>🎯 <strong id="matches-count-header">0</strong> Calibrated AI Matches</span>
+            <span style="font-size:12px; color:var(--primary); font-weight:700;">Ranked by Fit</span>
+          </div>
+          <div class="feed-list" id="matches-feed-list"></div>
         </div>
-        <a href="/profile" class="btn-hero-action">My Profile & Preferences →</a>
-      </div>
 
-      <!-- Quick Metrics Grid -->
-      <div style="margin-top: 32px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
-        <h2 style="font-size: 20px; font-weight: 800; color: var(--text-main);">Performance Metrics</h2>
-        <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">Real-time Platform Data</span>
-      </div>
-      <div class="stats-cards-grid">
-        <div class="stat-metric-card">
-          <div class="stat-metric-icon">💼</div>
-          <div>
-            <div class="stat-metric-num" id="home-total-jobs">1K+</div>
-            <div class="stat-metric-label">Live Active Jobs</div>
-          </div>
-        </div>
-        <div class="stat-metric-card">
-          <div class="stat-metric-icon">🎯</div>
-          <div>
-            <div class="stat-metric-num" id="home-matches-count">16</div>
-            <div class="stat-metric-label">High-Fit AI Matches</div>
-          </div>
-        </div>
-        <div class="stat-metric-card">
-          <div class="stat-metric-icon">🔖</div>
-          <div>
-            <div class="stat-metric-num" id="home-saved-count">0</div>
-            <div class="stat-metric-label">Saved Opportunities</div>
-          </div>
-        </div>
-        <div class="stat-metric-card">
-          <div class="stat-metric-icon">✅</div>
-          <div>
-            <div class="stat-metric-num" id="home-applied-count">0</div>
-            <div class="stat-metric-label">Applications Sent</div>
+        <!-- Right Column: Matched Job Detail Pane -->
+        <div class="job-detail-col" id="matches-detail-pane">
+          <div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--text-subtle); font-size:14px; font-weight:600">
+            Select an AI-matched opportunity on the left to view fit breakdown and 70B ATS highlights.
           </div>
         </div>
       </div>
-
-
-      <!-- Top AI Matches Preview Section -->
-      <div style="margin-bottom: 40px; background: linear-gradient(145deg, #ffffff, #f8fafc); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
-          <div>
-            <h2 style="font-size:22px; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
-              ✨ Top AI Recommended Opportunities
-            </h2>
-            <p style="font-size:14px; color:var(--text-muted); margin-top:4px;">
-              Calibrated by dense semantic vector similarity to your profile.
-            </p>
-          </div>
-          <button class="btn-refresh" onclick="window.location.href='/matches'" style="padding: 10px 20px; background: var(--primary-light); color: var(--primary-hover); border: 1px solid var(--primary-border);">
-            View All Matches →
-          </button>
-        </div>
-        <div id="home-matches-preview-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px;"></div>
-      </div>
-
     </div>
+  </main>
 
-      </main>
+  <div style="display:none">
+    <span id="home-user-name"></span>
+    <span id="home-matches-count"></span>
+    <span id="home-total-jobs"></span>
+    <span id="tracker-saved-count"></span>
+    <span id="tracker-applied-count"></span>
+    <span id="matches-count-header"></span>
+    <span id="matches-feed-list"></span>
+    <span id="matches-detail-pane"></span>
+    <span id="home-matches-preview-grid"></span>
+  </div>
 
   <div id="toast"></div>
 
@@ -1014,12 +975,11 @@
           .sort((a, b) => b.fit_score - a.fit_score)
           .slice(0, 60);
 
-        // renderFeed();
-        if (filteredJobs.length > 0) {
-          selectJob(filteredJobs[0].id);
+        renderMatchesSplitView();
+        if (matchedJobs.length > 0) {
+          selectMatchJob(matchedJobs[0].id);
         }
         updateCounts();
-        renderHomeView();
       } catch (e) {
         console.error('Job load error:', e);
         if (feed) {
@@ -1049,7 +1009,7 @@
         activePills.add(filterKey);
         btn.classList.add('active');
       }
-      // filterJobs();
+      filterJobs();
     }
 
     function clearAllFilters() {
@@ -1061,13 +1021,79 @@
       if (filteredJobs.length > 0) selectJob(filteredJobs[0].id);
     }
 
+    function filterJobs() {
+      const q = document.getElementById('main-search-input').value.toLowerCase().trim();
+      
+      filteredJobs = allJobs.filter(j => {
+        const textMatch = !q || `${j.title} ${j.company} ${j.location} ${j.description}`.toLowerCase().includes(q);
+        
+        let pillMatch = true;
+        if (activePills.has('remote') && !(j.workplace_type || '').toLowerCase().includes('remote')) pillMatch = false;
+        if (activePills.has('bengaluru') && !(j.location || '').toLowerCase().includes('bengaluru') && !(j.city || '').toLowerCase().includes('bengaluru')) pillMatch = false;
+        if (activePills.has('hyderabad') && !(j.location || '').toLowerCase().includes('hyderabad') && !(j.city || '').toLowerCase().includes('hyderabad')) pillMatch = false;
+        if (activePills.has('internship') && !(j.employment_type || '').toLowerCase().includes('intern')) pillMatch = false;
+        if (activePills.has('fulltime') && !(j.employment_type || '').toLowerCase().includes('full')) pillMatch = false;
+        if (activePills.has('parttime')) {
+          const pt = `${j.employment_type || ''} ${j.title || ''} ${j.description || ''}`.toLowerCase();
+          if (!pt.includes('part') && !pt.includes('contract') && !pt.includes('freelance') && !pt.includes('fractional')) pillMatch = false;
+        }
+
+        return textMatch && pillMatch;
+      });
+
+      renderFeed();
+      if (filteredJobs.length > 0) {
+        selectJob(filteredJobs[0].id);
+      } else {
+        document.getElementById('job-detail-pane').innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-subtle);font-size:14px;font-weight:600">
+            No opportunities match the selected criteria. Try clearing filters.
+          </div>`;
+      }
+    }
+
+    function renderFeed() {
+      const feed = document.getElementById('job-feed-list');
+      document.getElementById('jobs-count-text').textContent = filteredJobs.length.toLocaleString('en-IN');
+
+      feed.innerHTML = filteredJobs.map(j => {
+        const isSelected = j.id === selectedJobId;
+        const isSaved = tracker.saved.includes(j.id);
+        const compInitial = j.company ? j.company[0].toUpperCase() : 'G';
+        const batchTag = j.title.toLowerCase().includes('intern') ? 'Batch 2026/2027' : 'Immediate';
+
+        return `
+          <div class="job-card ${isSelected ? 'selected' : ''}" onclick="selectJob('${j.id}')">
+            <div class="card-top">
+              <div class="company-badge-wrap">
+                <div class="company-logo">${compInitial}</div>
+                <div class="company-name">${j.company}</div>
+              </div>
+              <button class="card-bookmark-btn ${isSaved ? 'saved' : ''}" onclick="event.stopPropagation(); toggleSave('${j.id}')">
+                ${isSaved ? '★' : '☆'}
+              </button>
+            </div>
+            <div class="card-title">${j.title}</div>
+            <div class="card-tags">
+              <span class="tag-chip batch">${batchTag}</span>
+              <span class="tag-chip">${j.location || 'India'}</span>
+              <span class="tag-chip ${j.workplace_type === 'Remote' ? 'remote' : ''}">${j.workplace_type || 'On-site'}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
     function selectJob(id, targetPaneId = 'job-detail-pane') {
       selectedJobId = id;
       const job = allJobs.find(j => j.id === id);
       if (!job) return;
+      
+      const detailCol = document.getElementById(targetPaneId);
+      if (detailCol) detailCol.scrollTop = 0;
 
       document.querySelectorAll('.job-card').forEach(c => c.classList.remove('selected'));
-      // renderFeed is handled by matches separately in dashboard
+      renderMatchesSplitView();
 
       const pane = document.getElementById(targetPaneId);
       const isSaved = tracker.saved.includes(job.id);
@@ -1266,7 +1292,7 @@
 
       const grid = document.getElementById('home-matches-preview-grid');
       grid.innerHTML = matchedJobs.slice(0, 6).map(j => `
-        <div style="background:white; border:1.5px solid var(--border); border-radius:14px; padding:18px; cursor:pointer;" onclick="window.location.href='/matches'">
+        <div style="background:white; border:1.5px solid var(--border); border-radius:14px; padding:18px; cursor:pointer;" onclick="showTab('jobs'); selectJob('${j.id}')">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <span style="font-size:11px; font-weight:800; color:var(--primary); text-transform:uppercase;">${j.company}</span>
             ${localStorage.getItem('getarole_resume_v2') ? `<span class="tag-chip match-score-chip">🎯 ${Math.round(j.fit_score)}% Fit</span>` : ''}
