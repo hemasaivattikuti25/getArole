@@ -156,6 +156,61 @@ def test_dynamic_batch_year_regex_evaluation():
     assert batch_pattern.search("Looking for Class of 2029 freshers") is not None
     assert batch_pattern.search("Senior Staff Engineer with 10 years experience") is None
 
+# ── 7. Candidate Endpoints Access Control Gating ─────────────────────────────
+def test_candidates_endpoint_admin_key_protection():
+    """Validates that GET /api/candidates and GET /api/candidate/{id} require valid X-Admin-Key."""
+    with patch.dict(os.environ, {"SCRAPER_ADMIN_KEY": "staff_audit_admin_key_999"}):
+        # 1. /api/candidates without key -> 403 Forbidden
+        res_no_key = client.get("/api/candidates")
+        assert res_no_key.status_code == 403
+        
+        # 2. /api/candidates with invalid key -> 403 Forbidden
+        res_bad_key = client.get("/api/candidates", headers={"X-Admin-Key": "wrong_key"})
+        assert res_bad_key.status_code == 403
+        
+        # 3. /api/candidates with valid key -> 200 OK (mocking fetch_all_candidates)
+        with patch("services.supabase_service.SupabaseService.fetch_all_candidates", new_callable=AsyncMock, return_value=[]):
+            res_valid = client.get("/api/candidates", headers={"X-Admin-Key": "staff_audit_admin_key_999"})
+            assert res_valid.status_code == 200
+            assert "total_candidates" in res_valid.json()
+
+        # 4. /api/candidate/{id} without key -> 403 Forbidden
+        res_cand_no_key = client.get("/api/candidate/cand-123")
+        assert res_cand_no_key.status_code == 403
+
+# ── 8. Generative AI Endpoints Rate Limiting Verification ────────────────────
+def test_ai_endpoints_rate_limiting():
+    """Validates that POST /api/ai/suggest-skills and /api/ai/generate-summary enforce token limits."""
+    # Test suggest-skills endpoint accepts requests under limit
+    res = client.post("/api/ai/suggest-skills", json={"target_role": "Backend Engineer", "current_skills": "Python, SQL"})
+    assert res.status_code == 200
+    assert "suggestions" in res.json()
+
+    # Test generate-summary endpoint
+    res_summary = client.post("/api/ai/generate-summary", json={"style": "technical", "target_role": "Systems Engineer"})
+    assert res_summary.status_code == 200
+    assert "summaries" in res_summary.json()
+
+# ── 9. Centralized LLM JSON Extraction ───────────────────────────────────────
+def test_extract_json_payload_centralized():
+    """Validates NvidiaLLMService.extract_json_payload handles markdown fences and raw text."""
+    from services.llm_service import NvidiaLLMService
+
+    # 1. Array in markdown code block
+    fenced_arr = "Here is your output:\n```json\n[{\"category\": \"Backend\", \"skills\": \"FastAPI, Redis\"}]\n```"
+    parsed_arr = NvidiaLLMService.extract_json_payload(fenced_arr)
+    assert isinstance(parsed_arr, list)
+    assert parsed_arr[0]["category"] == "Backend"
+
+    # 2. Object in markdown code block
+    fenced_obj = "```json\n{\"option_1\": \"Tailored summary 1\", \"option_2\": \"Tailored summary 2\"}\n```"
+    parsed_obj = NvidiaLLMService.extract_json_payload(fenced_obj)
+    assert isinstance(parsed_obj, dict)
+    assert parsed_obj["option_1"] == "Tailored summary 1"
+
+    # 3. Invalid payload returns None
+    assert NvidiaLLMService.extract_json_payload("Plain non-json text response") is None
+
 # ── Standalone Runner ────────────────────────────────────────────────────────
 if __name__ == "__main__":
     asyncio.run(test_l1_cache_isolation_prevents_filtered_query_poisoning())
@@ -164,4 +219,7 @@ if __name__ == "__main__":
     test_privacy_and_terms_pages_served()
     test_seo_static_assets_exist()
     test_dynamic_batch_year_regex_evaluation()
-    print("✅ ALL 6 AUDIT FIXES & COMPLIANCE VERIFICATION TESTS PASSED GREEN!")
+    test_candidates_endpoint_admin_key_protection()
+    test_ai_endpoints_rate_limiting()
+    test_extract_json_payload_centralized()
+    print("✅ ALL 9 AUDIT FIXES & COMPLIANCE VERIFICATION TESTS PASSED GREEN!")

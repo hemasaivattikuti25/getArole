@@ -265,8 +265,16 @@ if ('serviceWorker' in navigator && window.location.protocol.startsWith('http') 
   window._pwaServiceWorkerRegistered = true;
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js', { scope: '/' })
-      .then((reg) => console.log('[getArole PWA] Service Worker registered with scope:', reg.scope))
-      .catch((err) => console.warn('[getArole PWA] Service Worker registration failed:', err));
+      .then((reg) => {
+        if (window.GETAROLE_DEBUG) {
+          console.log('[getArole PWA] Service Worker registered with scope:', reg.scope);
+        }
+      })
+      .catch((err) => {
+        if (window.GETAROLE_DEBUG) {
+          console.warn('[getArole PWA] Service Worker registration failed:', err);
+        }
+      });
   });
 }
 

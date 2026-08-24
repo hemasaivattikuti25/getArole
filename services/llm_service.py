@@ -208,6 +208,41 @@ Tone: Professional, confident, specific, no generic buzzwords."""
             max_tokens=max_tokens
         )
 
+    @staticmethod
+    def extract_json_payload(response_text: str) -> Optional[Any]:
+        """
+        Reliably extracts and parses JSON objects or arrays from markdown code fences
+        or raw LLM output strings (DRY Architecture).
+        """
+        if not response_text or not isinstance(response_text, str):
+            return None
+        cleaned = response_text.strip()
+        # Direct parse attempt
+        try:
+            return json.loads(cleaned)
+        except Exception:
+            pass
+
+        # Check for JSON array brackets
+        start_arr = cleaned.find("[")
+        end_arr = cleaned.rfind("]") + 1
+        if start_arr != -1 and end_arr > start_arr:
+            try:
+                return json.loads(cleaned[start_arr:end_arr])
+            except Exception:
+                pass
+
+        # Check for JSON object braces
+        start_obj = cleaned.find("{")
+        end_obj = cleaned.rfind("}") + 1
+        if start_obj != -1 and end_obj > start_obj:
+            try:
+                return json.loads(cleaned[start_obj:end_obj])
+            except Exception:
+                pass
+
+        return None
+
     def evaluate_candidate_match(self, *args, **kwargs):
         import asyncio
         return asyncio.run(self.a_evaluate_candidate_match(*args, **kwargs))

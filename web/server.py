@@ -15,7 +15,7 @@ from pydantic import BaseModel, Field
 from scrapers.models import JobListing, CandidateProfile
 from scrapers.aggregator import JobAggregator
 from scrapers.matcher import ResumeMatcher
-from services.llm_service import get_llm_service
+from services.llm_service import get_llm_service, NvidiaLLMService
 from services.supabase_service import get_supabase_service, get_user_lock
 from core.logging_config import configure_logging
 from core.observability_middleware import ObservabilityMiddleware
@@ -324,10 +324,22 @@ async def get_jobs(
 
 
 @app.get("/api/candidates")
-async def get_all_candidates():
+async def get_all_candidates(
+    request: Request,
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")
+) -> Dict[str, Any]:
     """
-    Returns all registered candidate profiles and their full resume data.
+    Returns all registered candidate profiles.
+    Protected endpoint: Requires valid X-Admin-Key header.
     """
+    expected_key = os.getenv("SCRAPER_ADMIN_KEY") or os.getenv("ADMIN_API_KEY", "")
+    if not expected_key or x_admin_key != expected_key:
+        logging.getLogger("sre.security").warning(
+            "unauthorized_candidate_directory_access_attempt",
+            extra={"client_ip": request.client.host if request.client else "unknown"}
+        )
+        raise HTTPException(status_code=403, detail="Unauthorized: Invalid or missing X-Admin-Key header.")
+
     supabase = get_supabase_service()
     candidates = await supabase.fetch_all_candidates()
     
@@ -349,10 +361,23 @@ async def get_all_candidates():
     }
 
 @app.get("/api/candidate/{cand_id}")
-async def get_candidate_by_id(cand_id: str):
+async def get_candidate_by_id(
+    cand_id: str,
+    request: Request,
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")
+) -> Dict[str, Any]:
     """
-    Returns a single candidate by UUID for public sharing.
+    Returns a single candidate by UUID.
+    Protected endpoint: Requires valid X-Admin-Key header.
     """
+    expected_key = os.getenv("SCRAPER_ADMIN_KEY") or os.getenv("ADMIN_API_KEY", "")
+    if not expected_key or x_admin_key != expected_key:
+        logging.getLogger("sre.security").warning(
+            "unauthorized_candidate_detail_access_attempt",
+            extra={"client_ip": request.client.host if request.client else "unknown", "cand_id": cand_id}
+        )
+        raise HTTPException(status_code=403, detail="Unauthorized: Invalid or missing X-Admin-Key header.")
+
     supabase = get_supabase_service()
     candidate = await supabase.fetch_candidate(cand_id)
     if not candidate:
@@ -463,10 +488,12 @@ class SuggestSkillsRequest(BaseModel):
     custom_instruction: str = ""
 
 @app.post("/api/ai/suggest-skills")
-async def suggest_skills_api(req: SuggestSkillsRequest):
+async def suggest_skills_api(req: SuggestSkillsRequest, request: Request) -> Dict[str, Any]:
     """
     Recommends high-demand missing industry skills categorized by technical domain.
+    Rate-limited per client IP/UID token bucket.
     """
+    enforce_ai_rate_limit(request, max_requests=25, window_seconds=60.0)
     role = req.target_role.strip() or "Software Engineer"
     curr = req.current_skills.lower()
 
@@ -494,14 +521,16 @@ async def suggest_skills_api(req: SuggestSkillsRequest):
 Candidate Current Skills: {req.current_skills}{user_guidance}
 Return a JSON array of objects with keys 'category' and 'skills' (comma-separated string of 3-5 top skills)."""
         resp_text = await llm.generate_text(prompt, max_tokens=300)
-        start_idx = resp_text.find("[")
-        end_idx = resp_text.rfind("]") + 1
-        if start_idx != -1 and end_idx > start_idx:
-            parsed = json.loads(resp_text[start_idx:end_idx])
+        parsed = NvidiaLLMService.extract_json_payload(resp_text)
+        if parsed and isinstance(parsed, list):
             return {"suggestions": parsed, "target_role": role}
+    except HTTPException:
+        raise
     except Exception as e:
         print(f"[SuggestSkills] LLM Error: {e}")
         raise HTTPException(status_code=500, detail="AI skill suggestion failed.")
+
+    return {"suggestions": missing_suggestions, "target_role": role}
 
 
 class GenerateSummaryRequest(BaseModel):
@@ -513,11 +542,12 @@ class GenerateSummaryRequest(BaseModel):
     custom_instruction: str = ""
 
 @app.post("/api/ai/generate-summary")
-async def generate_summary_api(req: GenerateSummaryRequest):
+async def generate_summary_api(req: GenerateSummaryRequest, request: Request) -> Dict[str, Any]:
     """
     Generates 2 highly personalized, high-signal summary variations based on candidate background,
-    target tone, and custom instructions.
+    target tone, and custom instructions. Rate-limited.
     """
+    enforce_ai_rate_limit(request, max_requests=25, window_seconds=60.0)
     role = req.target_role.strip() or "Software Engineer"
     skills = req.skills_context or "Software Engineering, Problem Solving, System Design"
 
@@ -547,17 +577,22 @@ Return JSON:
   "option_2": "Second alternative tailored summary..."
 }}"""
         resp_text = await llm.generate_text(prompt, max_tokens=350)
-        start_idx = resp_text.find("{")
-        end_idx = resp_text.rfind("}") + 1
-        if start_idx != -1 and end_idx > start_idx:
-            parsed = json.loads(resp_text[start_idx:end_idx])
+        parsed = NvidiaLLMService.extract_json_payload(resp_text)
+        if parsed and isinstance(parsed, dict):
             return {
                 "summaries": [parsed.get("option_1", selected_fallback), parsed.get("option_2", fallbacks["general"])],
                 "style": req.style
             }
+    except HTTPException:
+        raise
     except Exception as e:
         print(f"[GenerateSummary] LLM Error: {e}")
         raise HTTPException(status_code=500, detail="AI summary generation failed.")
+
+    return {
+        "summaries": [selected_fallback, fallbacks["general"]],
+        "style": req.style
+    }
 
 
 class TailorResumeRequest(BaseModel):
@@ -587,11 +622,12 @@ def _calculate_rule_based_tailoring(jd: str, resume_text: str) -> Tuple[int, Lis
     return score, matched, missing, summary
 
 @app.post("/api/ai/tailor-resume")
-async def tailor_resume_api(req: TailorResumeRequest):
+async def tailor_resume_api(req: TailorResumeRequest, request: Request) -> Dict[str, Any]:
     """
-    Analyzes candidate resume against a target JD.
+    Analyzes candidate resume against a target JD. Rate-limited.
     Delegates rule-based matching to _calculate_rule_based_tailoring (<50 lines).
     """
+    enforce_ai_rate_limit(request, max_requests=25, window_seconds=60.0)
     jd = req.job_description.lower()
     resume_data = req.resume_data
     resume_text = json.dumps(resume_data).lower()
@@ -617,10 +653,11 @@ Return JSON:
   ]
 }}"""
         resp_text = await llm.generate_text(prompt, max_tokens=450)
-        start_idx = resp_text.find("{")
-        end_idx = resp_text.rfind("}") + 1
-        if start_idx != -1 and end_idx > start_idx:
-            return json.loads(resp_text[start_idx:end_idx])
+        parsed = NvidiaLLMService.extract_json_payload(resp_text)
+        if parsed and isinstance(parsed, dict):
+            return parsed
+    except HTTPException:
+        raise
     except Exception as e:
         print(f"[TailorResume] LLM fallback: {e}")
 
@@ -644,10 +681,12 @@ class PolishCoverLetterRequest(BaseModel):
     custom_instruction: str = ""
 
 @app.post("/api/ai/polish-cover-letter")
-async def polish_cover_letter_api(req: PolishCoverLetterRequest):
+async def polish_cover_letter_api(req: PolishCoverLetterRequest, request: Request) -> Dict[str, Any]:
     """
     Polishes an existing cover letter with specific stylistic transformations or personalized user instructions.
+    Rate-limited per client IP/UID.
     """
+    enforce_ai_rate_limit(request, max_requests=25, window_seconds=60.0)
     text = req.current_text.strip()
     if not text:
         return {"polished_text": text, "message": "No text provided"}
@@ -674,6 +713,8 @@ Return ONLY the polished letter text, maintaining complete professional structur
         resp_text = await llm.generate_text(prompt, max_tokens=750)
         polished = resp_text.strip()
         return {"polished_text": polished, "action": req.action}
+    except HTTPException:
+        raise
     except Exception as e:
         print(f"[PolishCoverLetter] LLM Error: {e}")
         raise HTTPException(status_code=500, detail="AI cover letter polish failed.")
@@ -721,11 +762,12 @@ Letter Structure:
 Tone: Authentic, highly personalized, persuasive, crisp, tailored to the specific role and company. Zero filler. Return ONLY the letter text."""
 
 @app.post("/api/generate-cover-letter")
-async def generate_cover_letter_api(req: CoverLetterRequest):
+async def generate_cover_letter_api(req: CoverLetterRequest, request: Request):
     """
-    Generates a personalized, professional 3-paragraph Cover Letter.
+    Generates a personalized, professional 3-paragraph Cover Letter. Rate-limited.
     Delegates prompt assembly to _build_cover_letter_prompt (<50 lines).
     """
+    enforce_ai_rate_limit(request, max_requests=25, window_seconds=60.0)
     llm = get_llm_service()
     prompt = _build_cover_letter_prompt(req)
 
