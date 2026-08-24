@@ -15,6 +15,8 @@ const PRECACHE_ASSETS = [
   '/explore',
   '/matches',
   '/profile',
+  '/preferences',
+  '/onboarding',
   '/logo.svg',
   '/js/getarole-core.js'
 ];
