@@ -167,6 +167,56 @@ class SupabaseService:
             print(f"[Supabase] Fetch candidate error: {e}")
             return None
 
+    async def save_user_profile(self, firebase_uid: str, profile: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """Upsert a user's profile into user_profiles table, keyed by firebase_uid."""
+        client = await self._get_client()
+        if not client:
+            return None
+        try:
+            record = {"firebase_uid": firebase_uid, **profile}
+            res = await client.table("user_profiles").upsert(record, on_conflict="firebase_uid").execute()
+            return res.data[0] if res.data else record
+        except Exception as e:
+            print(f"[Supabase] save_user_profile error: {e}")
+            return None
+
+    async def load_user_profile(self, firebase_uid: str) -> Optional[Dict[str, Any]]:
+        """Fetch a user's profile from user_profiles table."""
+        client = await self._get_client()
+        if not client:
+            return None
+        try:
+            res = await client.table("user_profiles").select("*").eq("firebase_uid", firebase_uid).limit(1).execute()
+            return res.data[0] if res.data else None
+        except Exception as e:
+            print(f"[Supabase] load_user_profile error: {e}")
+            return None
+
+    async def save_user_preferences(self, firebase_uid: str, prefs: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """Upsert a user's job preferences into user_preferences table, keyed by firebase_uid."""
+        client = await self._get_client()
+        if not client:
+            return None
+        try:
+            record = {"firebase_uid": firebase_uid, **prefs}
+            res = await client.table("user_preferences").upsert(record, on_conflict="firebase_uid").execute()
+            return res.data[0] if res.data else record
+        except Exception as e:
+            print(f"[Supabase] save_user_preferences error: {e}")
+            return None
+
+    async def load_user_preferences(self, firebase_uid: str) -> Optional[Dict[str, Any]]:
+        """Fetch a user's job preferences from user_preferences table."""
+        client = await self._get_client()
+        if not client:
+            return None
+        try:
+            res = await client.table("user_preferences").select("*").eq("firebase_uid", firebase_uid).limit(1).execute()
+            return res.data[0] if res.data else None
+        except Exception as e:
+            print(f"[Supabase] load_user_preferences error: {e}")
+            return None
+
 # Global Singleton
 _supabase_service: Optional[SupabaseService] = None
 

@@ -570,6 +570,44 @@ async def serve_profile():
             return f.read()
     return "<h1>getArole Profile</h1>"
 
+# ─── User Profile & Preferences API (Supabase-backed, Firebase UID keyed) ───
+
+@app.get("/api/user/profile")
+async def get_user_profile(request: Request):
+    uid = request.headers.get("X-Firebase-UID")
+    if not uid:
+        return JSONResponse({"error": "Missing X-Firebase-UID header"}, status_code=401)
+    supabase = get_supabase_service()
+    data = await supabase.load_user_profile(uid)
+    return JSONResponse(data or {})
+
+@app.post("/api/user/profile")
+async def save_user_profile_endpoint(request: Request, profile: Dict[str, Any] = Body(...)):
+    uid = request.headers.get("X-Firebase-UID")
+    if not uid:
+        return JSONResponse({"error": "Missing X-Firebase-UID header"}, status_code=401)
+    supabase = get_supabase_service()
+    result = await supabase.save_user_profile(uid, profile)
+    return JSONResponse({"status": "ok", "data": result})
+
+@app.get("/api/user/preferences")
+async def get_user_preferences(request: Request):
+    uid = request.headers.get("X-Firebase-UID")
+    if not uid:
+        return JSONResponse({"error": "Missing X-Firebase-UID header"}, status_code=401)
+    supabase = get_supabase_service()
+    data = await supabase.load_user_preferences(uid)
+    return JSONResponse(data or {})
+
+@app.post("/api/user/preferences")
+async def save_user_preferences_endpoint(request: Request, prefs: Dict[str, Any] = Body(...)):
+    uid = request.headers.get("X-Firebase-UID")
+    if not uid:
+        return JSONResponse({"error": "Missing X-Firebase-UID header"}, status_code=401)
+    supabase = get_supabase_service()
+    result = await supabase.save_user_preferences(uid, prefs)
+    return JSONResponse({"status": "ok", "data": result})
+
 @app.get("/preferences", response_class=HTMLResponse)
 @app.get("/preferences/", response_class=HTMLResponse)
 async def serve_preferences():
