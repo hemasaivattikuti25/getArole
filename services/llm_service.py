@@ -28,7 +28,8 @@ class NvidiaLLMService:
             "temperature": temperature,
             "max_tokens": max_tokens
         }
-        async with httpx.AsyncClient(timeout=45.0) as client:
+        timeout_cfg = httpx.Timeout(connect=2.5, read=4.0, write=2.0, pool=2.0)
+        async with httpx.AsyncClient(timeout=timeout_cfg) as client:
             resp = await client.post(f"{self.base_url}/chat/completions", headers=headers, json=payload)
             resp.raise_for_status()
             data = resp.json()

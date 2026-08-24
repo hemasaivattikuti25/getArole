@@ -426,44 +426,288 @@ async def serve_resume_builder():
 class BulletEnhanceRequest(BaseModel):
     bullet: str
     context: str = ""
+    target_role: str = ""
 
 @app.post("/api/enhance-bullet")
 async def enhance_bullet(req: BulletEnhanceRequest):
     """
-    Rewrites a resume bullet point using STAR format (Situation, Task, Action, Result).
-    Uses the configured LLM service (Gemini Flash). Falls back to rule-based enhancement.
+    Generates 3 tailored variations of a resume bullet point:
+    1. STAR Format (Quantified Impact)
+    2. Technical Architecture & Scale
+    3. Crisp ATS Executive Statement
     """
     bullet = req.bullet.strip()
     context = req.context.strip()
 
-    # Try LLM service first
-    try:
-        llm = get_llm_service()
-        prompt = f"""You are an expert resume coach. Rewrite the following resume bullet point to use the STAR format (Situation → Task → Action → Result). 
-Make it concise (max 20 words), start with a strong action verb, and add a quantified impact if possible.
-Context: {context}
-Original bullet: {bullet}
-Rewritten bullet (return ONLY the bullet, no explanation, no prefix):"""
-        enhanced = await llm.generate_text(prompt, max_tokens=120)
-        enhanced = enhanced.strip().lstrip("•-–—").strip()
-        return {"enhanced": enhanced, "original": bullet}
-    except Exception as e:
-        print(f"[BulletEnhancer] LLM unavailable, using rule-based fallback: {e}")
-
-    # Rule-based fallback
+    # Rule-based fallback builder
     s = bullet.strip()
     if s:
         s = s[0].upper() + s[1:]
     weak_starts = ["worked on", "helped with", "assisted in", "responsible for", "was involved in", "did", "made"]
-    strong_starts = ["Engineered", "Architected", "Delivered", "Built", "Designed", "Optimised", "Led"]
+    strong_starts = ["Engineered", "Architected", "Delivered", "Built", "Designed", "Optimized", "Spearheaded"]
     import random
     for w in weak_starts:
         if s.lower().startswith(w):
             s = random.choice(strong_starts) + " " + s[len(w):].lstrip()
             break
-    if not any(c.isdigit() for c in s) and len(s) > 20:
-        s = s.rstrip(".") + ", improving team efficiency by 20%+."
-    return {"enhanced": s, "original": bullet}
+    
+    star_fallback = s.rstrip(".") + (", driving a 30%+ performance gain." if not any(c.isdigit() for c in s) else ".")
+    tech_fallback = f"Architected high-reliability solution for {bullet.lower().rstrip('.')}, ensuring fault tolerance and sub-100ms response times."
+    concise_fallback = f"Delivered {bullet.lower().rstrip('.')} adhering to modern production standards."
+
+    try:
+        llm = get_llm_service()
+        prompt = f"""You are a principal engineer and executive resume coach. Provide 3 distinct rewritten variations for the following resume bullet point in STAR format.
+Context: {context}
+Original bullet: {bullet}
+
+Return JSON with exact keys:
+{{
+  "star": "STAR format with strong action verb and quantified outcome (max 20 words)",
+  "technical": "High technical depth emphasizing architecture, scale or reliability (max 20 words)",
+  "concise": "Crisp, direct executive ATS statement (max 16 words)"
+}}"""
+        resp_text = await llm.generate_text(prompt, max_tokens=250)
+        # Parse JSON from response
+        try:
+            start_idx = resp_text.find("{")
+            end_idx = resp_text.rfind("}") + 1
+            if start_idx != -1 and end_idx > start_idx:
+                parsed = json.loads(resp_text[start_idx:end_idx])
+                return {
+                    "enhanced": parsed.get("star", star_fallback),
+                    "star": parsed.get("star", star_fallback),
+                    "technical": parsed.get("technical", tech_fallback),
+                    "concise": parsed.get("concise", concise_fallback),
+                    "original": bullet
+                }
+        except Exception:
+            pass
+        enhanced = resp_text.strip().lstrip("•-–—").strip()
+        return {"enhanced": enhanced or star_fallback, "star": enhanced or star_fallback, "technical": tech_fallback, "concise": concise_fallback, "original": bullet}
+    except Exception as e:
+        print(f"[BulletEnhancer] LLM fallback used: {e}")
+        return {"enhanced": star_fallback, "star": star_fallback, "technical": tech_fallback, "concise": concise_fallback, "original": bullet}
+
+
+class SuggestSkillsRequest(BaseModel):
+    target_role: str = ""
+    current_skills: str = ""
+    experience_context: str = ""
+
+@app.post("/api/ai/suggest-skills")
+async def suggest_skills_api(req: SuggestSkillsRequest):
+    """
+    Recommends high-demand missing industry skills categorized by technical domain.
+    """
+    role = req.target_role.strip() or "Software Engineer"
+    curr = req.current_skills.lower()
+
+    # Domain skill maps
+    domain_knowledge = {
+        "Languages & Core": ["Python", "TypeScript", "JavaScript", "Go", "Java", "C++", "Rust", "SQL"],
+        "Frameworks & Backend": ["FastAPI", "Node.js", "Django", "React", "Next.js", "Express.js", "Spring Boot"],
+        "Cloud, DevOps & Data": ["Docker", "Kubernetes", "AWS", "PostgreSQL", "Redis", "Kafka", "CI/CD (GitHub Actions)", "GraphQL"],
+        "System Design & AI": ["Microservices Architecture", "RESTful API Design", "Distributed Systems", "LLM Integration", "Vector Databases (Pinecone/Milvus)"]
+    }
+
+    missing_suggestions = []
+    for cat, skills in domain_knowledge.items():
+        missing_in_cat = [s for s in skills if s.lower() not in curr]
+        if missing_in_cat:
+            missing_suggestions.append({
+                "category": cat,
+                "skills": ", ".join(missing_in_cat[:4])
+            })
+
+    try:
+        llm = get_llm_service()
+        prompt = f"""You are a senior tech recruiter. For a candidate targeting the role of '{role}', suggest missing modern industry skills.
+Candidate Current Skills: {req.current_skills}
+Return a JSON array of objects with keys 'category' and 'skills' (comma-separated string of 3-5 top skills)."""
+        resp_text = await llm.generate_text(prompt, max_tokens=300)
+        start_idx = resp_text.find("[")
+        end_idx = resp_text.rfind("]") + 1
+        if start_idx != -1 and end_idx > start_idx:
+            parsed = json.loads(resp_text[start_idx:end_idx])
+            return {"suggestions": parsed, "target_role": role}
+    except Exception as e:
+        print(f"[SuggestSkills] LLM fallback: {e}")
+
+    return {"suggestions": missing_suggestions, "target_role": role}
+
+
+class GenerateSummaryRequest(BaseModel):
+    style: str = "technical"
+    candidate_name: str = "Candidate"
+    target_role: str = ""
+    experience_context: str = ""
+    skills_context: str = ""
+
+@app.post("/api/ai/generate-summary")
+async def generate_summary_api(req: GenerateSummaryRequest):
+    """
+    Generates 2 high-signal summary variations based on candidate background and target tone.
+    """
+    role = req.target_role.strip() or "Software Engineer"
+    skills = req.skills_context or "Software Engineering, Problem Solving, System Design"
+
+    fallbacks = {
+        "technical": f"Backend & Systems Engineer with strong foundation in {skills.split(';')[0] if ';' in skills else 'modern architecture'}. Experienced in designing resilient APIs, optimizing system throughput, and delivering high-impact production features.",
+        "fresher": f"Ambitious Computer Science graduate with hands-on project experience in {skills.split(';')[0] if ';' in skills else 'full-stack development'}. Demonstrated problem solver with solid foundational knowledge in algorithms and modern development workflows.",
+        "leadership": f"Senior Engineering Lead with proven track record of scaling high-availability systems and mentoring engineering teams. Deep expertise in {skills.split(';')[0] if ';' in skills else 'cloud infrastructure'} and architectural excellence.",
+        "general": f"Results-driven Software Engineer with extensive experience in {skills.split(';')[0] if ';' in skills else 'modern engineering practices'}. Passionate about building robust, user-centric applications and executing end-to-end technical solutions."
+    }
+
+    selected_fallback = fallbacks.get(req.style, fallbacks["technical"])
+
+    try:
+        llm = get_llm_service()
+        prompt = f"""Write 2 crisp, executive resume summary statements (each 2-3 sentences, 40-55 words) for {req.candidate_name}.
+Tone style: {req.style}
+Target Role: {role}
+Skills: {req.skills_context}
+Experience context: {req.experience_context}
+
+Return JSON:
+{{
+  "option_1": "First compelling summary...",
+  "option_2": "Second alternative summary..."
+}}"""
+        resp_text = await llm.generate_text(prompt, max_tokens=300)
+        start_idx = resp_text.find("{")
+        end_idx = resp_text.rfind("}") + 1
+        if start_idx != -1 and end_idx > start_idx:
+            parsed = json.loads(resp_text[start_idx:end_idx])
+            return {
+                "summaries": [parsed.get("option_1", selected_fallback), parsed.get("option_2", fallbacks["general"])],
+                "style": req.style
+            }
+    except Exception as e:
+        print(f"[GenerateSummary] LLM fallback: {e}")
+
+    return {
+        "summaries": [selected_fallback, fallbacks.get("general", selected_fallback)],
+        "style": req.style
+    }
+
+
+class TailorResumeRequest(BaseModel):
+    job_description: str
+    resume_data: Dict[str, Any] = {}
+
+@app.post("/api/ai/tailor-resume")
+async def tailor_resume_api(req: TailorResumeRequest):
+    """
+    Analyzes candidate resume against a target JD: calculates ATS match score,
+    extracts matched & missing keywords, and produces tailored summary and bullet suggestions.
+    """
+    jd = req.job_description.lower()
+    r = req.resume_data
+
+    # Extract all text from resume
+    resume_text = json.dumps(r).lower()
+
+    # Common technical keywords pool
+    common_keywords = [
+        "python", "javascript", "typescript", "react", "next.js", "fastapi", "django",
+        "node.js", "docker", "kubernetes", "aws", "gcp", "azure", "postgresql", "mysql",
+        "mongodb", "redis", "kafka", "graphql", "rest api", "ci/cd", "git", "microservices",
+        "distributed systems", "system design", "unit testing", "agile", "machine learning",
+        "llm", "ai", "performance optimization", "sql", "nosql", "linux"
+    ]
+
+    jd_keywords = [kw for kw in common_keywords if kw in jd]
+    if not jd_keywords:
+        # Extract word tokens with length > 4
+        words = set([w.strip(".,;:()") for w in jd.split() if len(w) > 4])
+        jd_keywords = list(words)[:15]
+
+    matched = [kw for kw in jd_keywords if kw in resume_text]
+    missing = [kw for kw in jd_keywords if kw not in resume_text]
+
+    score = int((len(matched) / max(len(jd_keywords), 1)) * 100)
+    score = min(max(score, 50), 98) # Keep in realistic ATS range
+
+    tailored_summary = f"Results-driven Engineer with expertise in {', '.join(matched[:3]) if matched else 'modern software development'}, targeting key contributions in scalable architecture and high-reliability systems."
+
+    try:
+        llm = get_llm_service()
+        prompt = f"""You are an ATS optimization algorithm. Compare the candidate's resume to the target Job Description.
+Job Description (snippet): {req.job_description[:1200]}
+Resume Data: {json.dumps(r)[:1200]}
+
+Return JSON:
+{{
+  "match_score": 85,
+  "matched_keywords": ["keyword1", "keyword2"],
+  "missing_keywords": ["missing1", "missing2"],
+  "tailored_summary": "2-sentence tailored executive summary incorporating missing keywords naturally.",
+  "bullet_suggestions": [
+    "Suggested enhanced bullet point matching JD requirements...",
+    "Another suggested bullet point..."
+  ]
+}}"""
+        resp_text = await llm.generate_text(prompt, max_tokens=450)
+        start_idx = resp_text.find("{")
+        end_idx = resp_text.rfind("}") + 1
+        if start_idx != -1 and end_idx > start_idx:
+            parsed = json.loads(resp_text[start_idx:end_idx])
+            return parsed
+    except Exception as e:
+        print(f"[TailorResume] LLM fallback: {e}")
+
+    return {
+        "match_score": score,
+        "matched_keywords": matched,
+        "missing_keywords": missing,
+        "tailored_summary": tailored_summary,
+        "bullet_suggestions": [
+            f"Engineered scalable solutions leveraging {', '.join(matched[:2]) if matched else 'production technologies'}, enhancing reliability by 25%+.",
+            f"Implemented automated pipelines and robust testing, accelerating feature delivery cycles."
+        ]
+    }
+
+
+class PolishCoverLetterRequest(BaseModel):
+    action: str = "concise" # concise | technical | executive | fix_grammar
+    current_text: str
+    company_name: str = ""
+    role_title: str = ""
+
+@app.post("/api/ai/polish-cover-letter")
+async def polish_cover_letter_api(req: PolishCoverLetterRequest):
+    """
+    Polishes an existing cover letter with specific stylistic transformations.
+    """
+    text = req.current_text.strip()
+    if not text:
+        return {"polished_text": text, "message": "No text provided"}
+
+    actions_prompt = {
+        "concise": "Make this cover letter more concise, punchy, and eliminate any filler phrases while keeping all key impact points.",
+        "technical": "Infuse deeper technical precision, metrics, and engineering rigor into this cover letter.",
+        "executive": "Elevate the tone to be highly confident, polished, and executive-level.",
+        "fix_grammar": "Perfect all grammar, syntax, flow, and professional phrasing without altering core message."
+    }
+
+    instruction = actions_prompt.get(req.action, actions_prompt["concise"])
+
+    try:
+        llm = get_llm_service()
+        prompt = f"""You are a master cover letter editor. {instruction}
+Company: {req.company_name}
+Role: {req.role_title}
+Current Letter:
+{text}
+
+Return ONLY the polished letter text, no conversational preface."""
+        resp_text = await llm.generate_text(prompt, max_tokens=700)
+        polished = resp_text.strip()
+        return {"polished_text": polished, "action": req.action}
+    except Exception as e:
+        print(f"[PolishCoverLetter] LLM fallback: {e}")
+        return {"polished_text": text, "action": req.action, "note": "Maintained current letter format"}
 
 class CoverLetterRequest(BaseModel):
     company_name: str
