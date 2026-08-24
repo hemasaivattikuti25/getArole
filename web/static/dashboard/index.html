@@ -426,8 +426,9 @@
         <nav class="nav-tabs">
           <a class="nav-tab active" onclick="showTab('home')" id="tab-btn-home">Overview</a>
           <a class="nav-tab" onclick="showTab('matches')" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
-          <a class="nav-tab" onclick="showTab('jobs')" id="tab-btn-jobs">Explore</a>
-          <a class="nav-tab" href="/resume-builder" id="tab-btn-resume">Resume</a>
+          <a class="nav-tab" onclick="showTab('jobs')" id="tab-btn-jobs">Explore Jobs</a>
+          <a class="nav-tab" href="/resume-builder" id="tab-btn-resume">📄 ATS Resume</a>
+          <a class="nav-tab" href="/cover-letter-builder" id="tab-btn-cover-letter">✉️ Cover Letter</a>
           <a class="nav-tab" href="/profile" id="tab-btn-profile">Profile</a>
         </nav>
       </div>
@@ -447,9 +448,11 @@
           <span style="font-size: 10px; color: var(--text-subtle)">▼</span>
 
           <div class="user-dropdown" id="user-dropdown">
-            <a href="/profile" class="dropdown-item">👤 My Profile & Preferences</a>
+            <a href="/profile" class="dropdown-item">👤 Profile &amp; Career Preferences</a>
+            <a href="/resume-builder" class="dropdown-item">📄 ATS Resume Builder</a>
+            <a href="/cover-letter-builder" class="dropdown-item">✉️ Overleaf Cover Letter Builder</a>
             <a href="/onboarding" class="dropdown-item">📝 Re-run Onboarding</a>
-            <a href="#" onclick="openCandidateDatabaseModal()" class="dropdown-item">👥 Database</a>
+            <a href="#" onclick="openCandidateDatabaseModal()" class="dropdown-item">👥 Candidate Directory</a>
             <div style="height:1px; background:var(--border); margin:4px 0;"></div>
             <a href="#" onclick="handleLogout()" class="dropdown-item" style="color:#ef4444">Sign Out</a>
           </div>
@@ -474,7 +477,8 @@
         <button class="filter-pill" id="pill-fulltime"  onclick="togglePillFilter('fulltime')">Full-Time</button>
         <button class="filter-pill" id="pill-parttime"  onclick="togglePillFilter('parttime')">Contract</button>
         <button class="btn-clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
-        <a href="/resume-builder" style="margin-left:auto;padding:6px 14px;border-radius:8px;background:linear-gradient(135deg,#059669,#10b981);color:white;font-size:12.5px;font-weight:800;text-decoration:none;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(5,150,105,.2);">Resume</a>
+        <a href="/resume-builder" style="margin-left:auto;padding:6px 14px;border-radius:8px;background:linear-gradient(135deg,#4f46e5,#6366f1);color:white;font-size:12.5px;font-weight:800;text-decoration:none;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(79,70,229,.2);">📄 Resume Builder</a>
+        <a href="/cover-letter-builder" style="padding:6px 14px;border-radius:8px;background:linear-gradient(135deg,#059669,#10b981);color:white;font-size:12.5px;font-weight:800;text-decoration:none;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(5,150,105,.2);">✉️ Cover Letter</a>
       </div>
     </div>
   </div>

@@ -413,14 +413,28 @@ async def get_candidate_by_id(cand_id: str):
     
     return {"candidate": candidate}
 
-# ── Resume Builder page ──────────────────────────────────────────────────────
+# ── Resume Builder & Cover Letter Builder Pages ───────────────────────────────
 @app.get("/resume-builder", response_class=HTMLResponse)
+@app.get("/resume-builder/", response_class=HTMLResponse)
 async def serve_resume_builder():
     rb_file = os.path.join(STATIC_DIR, "resume-builder.html")
+    if not os.path.exists(rb_file):
+        rb_file = os.path.join(STATIC_DIR, "resume-builder", "index.html")
     if os.path.exists(rb_file):
         with open(rb_file, "r", encoding="utf-8") as f:
             return f.read()
     return "<h1>Resume Builder — Starting Up</h1>"
+
+@app.get("/cover-letter-builder", response_class=HTMLResponse)
+@app.get("/cover-letter-builder/", response_class=HTMLResponse)
+async def serve_cover_letter_builder():
+    cl_file = os.path.join(STATIC_DIR, "cover-letter-builder.html")
+    if not os.path.exists(cl_file):
+        cl_file = os.path.join(STATIC_DIR, "cover-letter-builder", "index.html")
+    if os.path.exists(cl_file):
+        with open(cl_file, "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h1>Cover Letter Builder — Starting Up</h1>"
 
 # ── AI Bullet Enhancer ───────────────────────────────────────────────────────
 class BulletEnhanceRequest(BaseModel):

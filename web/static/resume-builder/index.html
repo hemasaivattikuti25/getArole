@@ -1169,14 +1169,14 @@
     </a>
     <div class="dv"></div>
 
-    <!-- 2 Options Switcher -->
+    <!-- Dedicated Builder Switcher Tabs -->
     <div class="mode-switch">
-      <button class="btn-mode active" id="btn-mode-resume" onclick="switchDocMode('resume')">
-        1-Page ATS Resume
-      </button>
-      <button class="btn-mode" id="btn-mode-cl" onclick="switchDocMode('cover_letter')">
-        Tailored Cover Letter
-      </button>
+      <a class="btn-mode active" href="/resume-builder" style="text-decoration:none;">
+        📄 ATS Resume Builder
+      </a>
+      <a class="btn-mode" href="/cover-letter-builder" style="text-decoration:none;">
+        ✉️ Cover Letter Builder
+      </a>
     </div>
 
     <div class="tbr">
@@ -1194,43 +1194,27 @@
   <div class="ly" id="app-layout">
     <!-- 1. SECTIONS SIDEBAR -->
     <aside class="sn">
-      <!-- RESUME SECTIONS -->
-      <div class="snl resume-only">Resume Sections</div>
-      <div class="si active resume-only" id="nav-header" onclick="gS('header')"><span class="sic"></span>1. Header &amp;
-        Info<span class="dot done" id="dot-header"></span></div>
-      <div class="si resume-only" id="nav-summary" onclick="gS('summary')"><span class="sic">📝</span>2. Summary<span
-          class="dot done" id="dot-summary"></span></div>
-      <div class="si resume-only" id="nav-skills" onclick="gS('skills')"><span class="sic"></span>3. Technical
-        Skills<span class="dot done" id="dot-skills"></span></div>
-      <div class="si resume-only" id="nav-exp" onclick="gS('exp')"><span class="sic"></span>4. Experience<span
-          class="dot done" id="dot-exp"></span></div>
-      <div class="si resume-only" id="nav-proj" onclick="gS('proj')"><span class="sic"></span>5. Projects<span
-          class="dot done" id="dot-proj"></span></div>
-      <div class="si resume-only" id="nav-achieve" onclick="gS('achieve')"><span class="sic">🏅</span>6.
-        Achievements<span class="dot done" id="dot-achieve"></span></div>
-      <div class="si resume-only" id="nav-certs" onclick="gS('certs')"><span class="sic">🏆</span>7. Certifications<span
-          class="dot done" id="dot-certs"></span></div>
-      <div class="si resume-only" id="nav-edu" onclick="gS('edu')"><span class="sic">🎓</span>8. Education<span
-          class="dot done" id="dot-edu"></span></div>
+      <div class="snl">Document Sections</div>
+      <div class="si active" id="nav-header" onclick="gS('header')"><span class="sic">👤</span>1. Contact &amp; Header<span class="dot done" id="dot-header"></span></div>
+      <div class="si" id="nav-summary" onclick="gS('summary')"><span class="sic">📝</span>2. Executive Summary<span class="dot done" id="dot-summary"></span></div>
+      <div class="si" id="nav-skills" onclick="gS('skills')"><span class="sic">⚡</span>3. Technical Competencies<span class="dot done" id="dot-skills"></span></div>
+      <div class="si" id="nav-exp" onclick="gS('exp')"><span class="sic">💼</span>4. Professional Experience<span class="dot done" id="dot-exp"></span></div>
+      <div class="si" id="nav-proj" onclick="gS('proj')"><span class="sic">🚀</span>5. Technical Projects<span class="dot done" id="dot-proj"></span></div>
+      <div class="si" id="nav-achieve" onclick="gS('achieve')"><span class="sic">🏅</span>6. Key Achievements<span class="dot done" id="dot-achieve"></span></div>
+      <div class="si" id="nav-certs" onclick="gS('certs')"><span class="sic">🏆</span>7. Certifications &amp; Licenses<span class="dot done" id="dot-certs"></span></div>
+      <div class="si" id="nav-edu" onclick="gS('edu')"><span class="sic">🎓</span>8. Academic Credentials<span class="dot done" id="dot-edu"></span></div>
 
-      <!-- COVER LETTER SECTIONS -->
-      <div class="snl cl-only">Cover Letter Details</div>
-      <div class="si cl-only active" id="nav-cl-target" onclick="gS('cl-target')"><span class="sic">🎯</span>Target Role
-        &amp; Company<span class="dot done"></span></div>
-      <div class="si cl-only" id="nav-cl-body" onclick="gS('cl-body')"><span class="sic">✍️</span>Letter Content<span
-          class="dot done"></span></div>
-
-      <div class="snl" style="margin-top:8px;">AI Optimizers</div>
-      <div class="si" id="nav-ats" onclick="gS('ats')"><span class="sic"></span>ATS Check</div>
-      <div class="si" id="nav-tailor" onclick="gS('tailor')"><span class="sic"></span>AI Job Matcher</div>
+      <div class="snl" style="margin-top:10px;">AI Optimization &amp; Analysis</div>
+      <div class="si" id="nav-ats" onclick="gS('ats')"><span class="sic">📊</span>9. ATS Compatibility Score</div>
+      <div class="si" id="nav-tailor" onclick="gS('tailor')"><span class="sic">🎯</span>10. Role &amp; Keyword Matcher</div>
     </aside>
 
     <!-- 2. FORM EDITOR COLUMN -->
     <div class="ep">
       <div class="eh">
         <div>
-          <h2 id="ed-t">Header &amp; Contact Info</h2>
-          <p id="ed-s">Personal links &amp; contact details</p>
+          <h2 id="ed-t">1. Contact &amp; Header Information</h2>
+          <p id="ed-s">Personal links, phone number, email &amp; professional portfolio</p>
         </div>
         <span
           style="font-size:11px;font-weight:700;color:var(--txs);background:var(--bg);padding:3px 8px;border-radius:6px;"
@@ -2326,18 +2310,16 @@ ${r.header?.name || 'Candidate Name'}`
     }
 
     const SM = {
-      header: { t: '1. Header & Info', s: 'Personal details and web handles' },
-      summary: { t: '2. Summary', s: 'Professional executive statement' },
-      skills: { t: '3. Technical Skills', s: 'Categorized technical domains & core competencies' },
-      exp: { t: '4. Experience', s: 'Work history, roles and quantifiable impact' },
-      proj: { t: '5. Projects', s: 'Featured builds, repositories and products' },
-      achieve: { t: '6. Achievements', s: 'Awards, competitions and open source' },
-      certs: { t: '7. Certifications', s: 'Professional credentials and accreditations' },
-      edu: { t: '8. Education', s: 'Degrees, institutions & academic coursework' },
-      'cl-target': { t: 'Target Role & Company', s: 'Specify recipient company, title and job description' },
-      'cl-body': { t: 'Cover Letter Text', s: 'High-impact 3-paragraph tailored cover letter' },
-      ats: { t: 'ATS Check', s: 'Verified ATS-compliant LaTeX typography' },
-      tailor: { t: 'AI Job Tailor', s: 'Tailor resume for target company job descriptions' }
+      header: { t: '1. Contact & Header Information', s: 'Personal links, phone number, email & professional portfolio' },
+      summary: { t: '2. Professional Executive Summary', s: 'High-signal career overview and core technical specialization' },
+      skills: { t: '3. Technical Competencies & Skill Groups', s: 'Languages, frameworks, developer tools, platforms & architecture' },
+      exp: { t: '4. Professional Work Experience', s: 'Employment history, engineering achievements & quantified impact' },
+      proj: { t: '5. Technical Projects & Open Source', s: 'Featured applications, distributed systems & live deployments' },
+      achieve: { t: '6. Honors, Awards & Achievements', s: 'Hackathons, engineering honors, competitions & publications' },
+      certs: { t: '7. Professional Certifications & Licenses', s: 'Accredited credentials, issuing authorities & verification' },
+      edu: { t: '8. Academic Background & Education', s: 'Degree, university, graduation timeline & key coursework' },
+      ats: { t: '9. ATS Compatibility & Parse Analysis', s: 'Real-time scoring against modern applicant tracking systems' },
+      tailor: { t: '10. Target Role & Keyword Matcher', s: 'Personalized job description alignment, match score & keyword analysis' }
     };
 
     function gS(n) {
