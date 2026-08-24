@@ -30,12 +30,12 @@ jobs:
       - name: Install Playwright Browsers
         run: |
           cd cron_scraper
-          playwright install chromium --with-deps
+          python -m playwright install --with-deps chromium
 
       - name: Run Scraper & Supabase Sync Engine
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://tgmhtlqcjgcjedlnthfk.supabase.co' }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY || 'sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn' }}
         run: |
           cd cron_scraper
           python main.py

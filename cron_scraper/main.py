@@ -12,10 +12,8 @@ from scrapers.workday import WorkdayScraper
 from scrapers.indian_it import IndianITScraper
 
 def get_supabase_client() -> Client:
-    url = os.environ.get("SUPABASE_URL")
-    key = os.environ.get("SUPABASE_KEY")
-    if not url or not key:
-        raise ValueError("Missing SUPABASE_URL or SUPABASE_KEY environment variables")
+    url = os.environ.get("SUPABASE_URL") or "https://tgmhtlqcjgcjedlnthfk.supabase.co"
+    key = os.environ.get("SUPABASE_KEY") or "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn"
     return create_client(url, key)
 
 async def run_scrapers():
@@ -51,14 +49,28 @@ async def run_scrapers():
     successful_upserts = 0
     for job in all_jobs:
         try:
-            job_data = job.model_dump() if hasattr(job, 'model_dump') else job
-            job_data["last_seen_at"] = start_time.isoformat()
+            job_record = {
+                "id": getattr(job, "id", None) or str(uuid.uuid4()),
+                "title": getattr(job, "title", "Job Role"),
+                "company": getattr(job, "company", "Enterprise"),
+                "location": getattr(job, "location", "India"),
+                "city": getattr(job, "city", "India") or "India",
+                "platform": getattr(job, "platform", "Enterprise"),
+                "url": getattr(job, "url", ""),
+                "workplace_type": getattr(job, "workplace_type", "Onsite") or "Onsite",
+                "employment_type": getattr(job, "employment_type", "Full-Time") or "Full-Time",
+                "stipend_or_salary": getattr(job, "stipend_or_salary", None),
+                "stipend_amount_min": getattr(job, "stipend_amount_min", None),
+                "description": (getattr(job, "description", "") or "")[:4000],
+                "skills": getattr(job, "skills", []) or [],
+                "last_seen_at": start_time.isoformat()
+            }
             
             # The 'id' column in Supabase is the primary key (usually URL or hash)
-            supabase.table("jobs").upsert(job_data, on_conflict="id").execute()
+            supabase.table("jobs").upsert(job_record, on_conflict="id").execute()
             successful_upserts += 1
         except Exception as e:
-            print(f"Error upserting job {job_data.get('title', 'Unknown')}: {e}")
+            print(f"Error upserting job: {e}")
             
     print(f"Successfully upserted {successful_upserts}/{len(all_jobs)} jobs.")
     
