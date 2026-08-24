@@ -59,6 +59,19 @@ class ObservabilityMiddleware(BaseHTTPMiddleware):
         # 3. Attach X-Request-ID response header
         response.headers["X-Request-ID"] = request_id
 
+        # 4. Content-Hash Aware Cache-Control Policy
+        if "Cache-Control" not in response.headers:
+            path = request.url.path
+            import re
+            if re.search(r'\.[a-f0-9]{8,}\.(js|css|woff2)$', path):
+                response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+            elif path.endswith(('.js', '.css')):
+                response.headers["Cache-Control"] = "public, max-age=3600, must-revalidate"
+            elif path.endswith(('.svg', '.png', '.jpg', '.ico', '.woff2')):
+                response.headers["Cache-Control"] = "public, max-age=86400"
+            elif path.startswith('/api/') or path.endswith(('.html', '/')) or path in ['/dashboard', '/explore', '/matches', '/profile', '/onboarding', '/candidate']:
+                response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+
         # 4. Emit structured JSON access log
         logger.info(
             "http_request_completed",

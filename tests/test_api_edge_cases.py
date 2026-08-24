@@ -268,3 +268,25 @@ def test_comprehensive_pii_redaction_and_field_blocking():
     filt.filter(r7)
     assert r7.extra["resume_text"] == "[RESUME_TEXT_BLOCKED]"
     assert r7.extra["user_id"] == "u123"
+
+
+# ── 9. Service Worker & Cache-Control Policies ───────────────────────────────
+
+def test_service_worker_and_cache_control_headers():
+    """Test that /sw.js is served and Cache-Control headers match file hashing state."""
+    # 1. Test /sw.js
+    res_sw = client.get("/sw.js")
+    assert res_sw.status_code == 200
+    assert "Service Worker" in res_sw.text
+    assert "no-cache" in res_sw.headers.get("cache-control", "")
+
+    # 2. Test API no-store policy
+    res_api = client.get("/api/jobs")
+    assert res_api.status_code == 200
+    assert "no-cache, no-store" in res_api.headers.get("cache-control", "")
+
+    # 3. Test Static fixed-name revalidation policy
+    res_static = client.get("/static/js/getarole-core.js")
+    assert res_static.status_code == 200
+    assert "max-age=3600" in res_static.headers.get("cache-control", "")
+    assert "immutable" not in res_static.headers.get("cache-control", "")

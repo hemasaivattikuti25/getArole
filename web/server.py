@@ -682,6 +682,14 @@ async def generate_cover_letter_api(req: CoverLetterRequest):
 if os.path.exists(STATIC_DIR):
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
+@app.get("/sw.js")
+async def serve_service_worker():
+    sw_path = os.path.join(STATIC_DIR, "sw.js")
+    if os.path.exists(sw_path):
+        with open(sw_path, "r", encoding="utf-8") as f:
+            return Response(content=f.read(), media_type="application/javascript", headers={"Cache-Control": "no-cache, must-revalidate", "Service-Worker-Allowed": "/"})
+    raise HTTPException(status_code=404, detail="Service worker not found.")
+
 @app.get("/", response_class=HTMLResponse)
 async def serve_landing():
     landing_file = os.path.join(STATIC_DIR, "landing.html")

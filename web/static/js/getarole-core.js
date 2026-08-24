@@ -202,3 +202,12 @@ async function handleModalResumeUpload(event, onComplete) {
   }
   event.target.value = '';
 }
+
+// Register Progressive Web App Service Worker
+if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then((reg) => console.log('[getArole PWA] Service Worker registered with scope:', reg.scope))
+      .catch((err) => console.warn('[getArole PWA] Service Worker registration failed:', err));
+  });
+}
