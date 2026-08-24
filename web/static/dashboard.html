@@ -717,7 +717,7 @@
   <script type="module">
     import { initAuthListener, logoutUser } from "/firebase-auth.js";
 
-    initAuthListener((user) => {
+    initAuthListener(async (user) => {
       if (user) {
         const name = user.displayName || user.email.split('@')[0];
         document.getElementById('nav-username').textContent = name;
@@ -727,6 +727,32 @@
           avatar.innerHTML = `<img src="${user.photoURL}" style="width:100%;height:100%;border-radius:50%">`;
         } else {
           avatar.textContent = (user.displayName || user.email)[0].toUpperCase();
+        }
+
+        // Hydrate data from backend
+        try {
+          const [profRes, prefRes, resRes] = await Promise.all([
+            fetch('/api/user/profile', { headers: { 'X-Firebase-UID': user.uid } }),
+            fetch('/api/user/preferences', { headers: { 'X-Firebase-UID': user.uid } }),
+            fetch('/api/user/resume', { headers: { 'X-Firebase-UID': user.uid } })
+          ]);
+          
+          if (profRes.ok) {
+            const data = await profRes.json();
+            if (Object.keys(data).length > 0) localStorage.setItem('getarole_profile', JSON.stringify(data));
+          }
+          if (prefRes.ok) {
+            const data = await prefRes.json();
+            if (Object.keys(data).length > 0) localStorage.setItem('getarole_prefs', JSON.stringify(data));
+          }
+          if (resRes.ok) {
+            const data = await resRes.json();
+            if (Object.keys(data).length > 0) localStorage.setItem('getarole_resume_v2', JSON.stringify(data));
+          }
+          
+          if (typeof loadJobs === 'function') loadJobs();
+        } catch (e) {
+          console.error("Failed to hydrate user data:", e);
         }
       }
     });
