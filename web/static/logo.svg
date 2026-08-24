@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="primary" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3730a3"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="secondary" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#a5b4fc"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Handle -->
+  <line x1="75" y1="75" x2="105" y2="105" stroke="url(#primary)" stroke-width="16" stroke-linecap="round"/>
+  
+  <!-- Lens rim -->
+  <circle cx="50" cy="50" r="40" fill="none" stroke="url(#primary)" stroke-width="12"/>
+  
+  <!-- Inner clipping path for people -->
+  <clipPath id="lensClip">
+    <circle cx="50" cy="50" r="34"/>
+  </clipPath>
+  
+  <!-- People inside the magnifying glass -->
+  <g clip-path="url(#lensClip)">
+    <!-- Left Person -->
+    <circle cx="28" cy="48" r="8" fill="url(#secondary)"/>
+    <path d="M 12 75 C 12 60 44 60 44 75" fill="url(#secondary)"/>
+    
+    <!-- Right Person -->
+    <circle cx="72" cy="48" r="8" fill="url(#secondary)"/>
+    <path d="M 56 75 C 56 60 88 60 88 75" fill="url(#secondary)"/>
+    
+    <!-- Center Person -->
+    <circle cx="50" cy="40" r="10" fill="url(#primary)"/>
+    <path d="M 28 80 C 28 55 72 55 72 80" fill="url(#primary)"/>
+  </g>
+</svg>
