@@ -15,8 +15,8 @@ from enterprise_scrapers.workday import WorkdayScraper
 from enterprise_scrapers.indian_it import IndianITScraper
 
 def get_supabase_client() -> Client:
-    url = os.environ.get("SUPABASE_URL") or "https://tgmhtlqcjgcjedlnthfk.supabase.co"
-    key = os.environ.get("SUPABASE_KEY") or "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn"
+    url = os.environ.get("SUPABASE_URL", "")
+    key = os.environ.get("SUPABASE_KEY", "")
     return create_client(url, key)
 
 async def run_scrapers():

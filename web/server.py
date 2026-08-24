@@ -31,11 +31,14 @@ app = FastAPI(
     version="1.1.0"
 )
 
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000,https://getarole.com,https://*.vercel.app")
+allowed_origins = [o.strip() for o in allowed_origins_env.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins if allowed_origins else ["*"],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -64,8 +67,8 @@ def get_matcher() -> ResumeMatcher:
         MATCHER = ResumeMatcher()
     return MATCHER
 
-SUPABASE_URL = os.getenv("SUPABASE_URL", "https://tgmhtlqcjgcjedlnthfk.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn")
+SUPABASE_URL = os.getenv("SUPABASE_URL", "")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
 
 def _fetch_jobs_from_supabase_rest(limit: int = 1500) -> list:
     """Directly call Supabase REST API using httpx (sync). Always works regardless of async client state."""

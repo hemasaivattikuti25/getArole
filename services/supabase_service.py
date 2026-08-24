@@ -10,8 +10,8 @@ load_dotenv()
 
 class SupabaseService:
     def __init__(self):
-        self.url = os.getenv("SUPABASE_URL", "https://tgmhtlqcjgcjedlnthfk.supabase.co")
-        self.key = os.getenv("SUPABASE_KEY", "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn")
+        self.url = os.getenv("SUPABASE_URL", "")
+        self.key = os.getenv("SUPABASE_KEY", "")
         self.client: Optional[Any] = None
         
     async def _get_client(self):
