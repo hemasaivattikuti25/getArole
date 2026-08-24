@@ -37,6 +37,24 @@ function getFirebaseUID() {
  */
 async function apiSaveProfile(profileData) {
   const uid = getFirebaseUID();
+  // Atomic sync with getarole_resume_v2
+  try {
+    const r2Raw = localStorage.getItem('getarole_resume_v2');
+    if (r2Raw) {
+      const r2 = JSON.parse(r2Raw);
+      if (!r2.header) r2.header = {};
+      if (profileData.name) r2.header.name = profileData.name;
+      if (profileData.first) r2.header.first_name = profileData.first;
+      if (profileData.last) r2.header.last_name = profileData.last;
+      if (profileData.email) r2.header.email = profileData.email;
+      if (profileData.phone) r2.header.phone = profileData.phone;
+      if (profileData.headline) r2.header.title = profileData.headline;
+      localStorage.setItem('getarole_resume_v2', JSON.stringify(r2));
+    }
+  } catch (syncErr) {
+    console.warn('[apiSaveProfile] Resume V2 header sync notice:', syncErr);
+  }
+
   try {
     const response = await fetch('/api/user/profile', {
       method: 'POST',
