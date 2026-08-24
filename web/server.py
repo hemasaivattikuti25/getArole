@@ -427,6 +427,7 @@ class BulletEnhanceRequest(BaseModel):
     bullet: str
     context: str = ""
     target_role: str = ""
+    custom_instruction: str = ""
 
 @app.post("/api/enhance-bullet")
 async def enhance_bullet(req: BulletEnhanceRequest):
@@ -435,9 +436,11 @@ async def enhance_bullet(req: BulletEnhanceRequest):
     1. STAR Format (Quantified Impact)
     2. Technical Architecture & Scale
     3. Crisp ATS Executive Statement
+    Supports personalized user instructions.
     """
     bullet = req.bullet.strip()
     context = req.context.strip()
+    custom_inst = req.custom_instruction.strip()
 
     # Rule-based fallback builder
     s = bullet.strip()
@@ -451,23 +454,26 @@ async def enhance_bullet(req: BulletEnhanceRequest):
             s = random.choice(strong_starts) + " " + s[len(w):].lstrip()
             break
     
-    star_fallback = s.rstrip(".") + (", driving a 30%+ performance gain." if not any(c.isdigit() for c in s) else ".")
+    extra_metric = f" ({custom_inst})" if custom_inst else ", driving a 30%+ performance gain."
+    star_fallback = s.rstrip(".") + (extra_metric if not any(c.isdigit() for c in s) else ".")
     tech_fallback = f"Architected high-reliability solution for {bullet.lower().rstrip('.')}, ensuring fault tolerance and sub-100ms response times."
     concise_fallback = f"Delivered {bullet.lower().rstrip('.')} adhering to modern production standards."
 
     try:
         llm = get_llm_service()
+        user_guidance = f"\nUSER'S PERSONALIZED INSTRUCTION / SPECIFIC DIRECTION: {custom_inst}\nStrictly adhere to this custom instruction across all 3 variations." if custom_inst else ""
         prompt = f"""You are a principal engineer and executive resume coach. Provide 3 distinct rewritten variations for the following resume bullet point in STAR format.
 Context: {context}
 Original bullet: {bullet}
+Target Role: {req.target_role or "Software Engineer / Technical Role"}{user_guidance}
 
 Return JSON with exact keys:
 {{
-  "star": "STAR format with strong action verb and quantified outcome (max 20 words)",
-  "technical": "High technical depth emphasizing architecture, scale or reliability (max 20 words)",
-  "concise": "Crisp, direct executive ATS statement (max 16 words)"
+  "star": "STAR format with strong action verb and quantified outcome (max 22 words)",
+  "technical": "High technical depth emphasizing architecture, scale or reliability (max 22 words)",
+  "concise": "Crisp, direct executive ATS statement (max 18 words)"
 }}"""
-        resp_text = await llm.generate_text(prompt, max_tokens=250)
+        resp_text = await llm.generate_text(prompt, max_tokens=300)
         # Parse JSON from response
         try:
             start_idx = resp_text.find("{")
@@ -494,6 +500,7 @@ class SuggestSkillsRequest(BaseModel):
     target_role: str = ""
     current_skills: str = ""
     experience_context: str = ""
+    custom_instruction: str = ""
 
 @app.post("/api/ai/suggest-skills")
 async def suggest_skills_api(req: SuggestSkillsRequest):
@@ -522,8 +529,9 @@ async def suggest_skills_api(req: SuggestSkillsRequest):
 
     try:
         llm = get_llm_service()
+        user_guidance = f"\nCandidate Focus / Custom Instruction: {req.custom_instruction}" if req.custom_instruction else ""
         prompt = f"""You are a senior tech recruiter. For a candidate targeting the role of '{role}', suggest missing modern industry skills.
-Candidate Current Skills: {req.current_skills}
+Candidate Current Skills: {req.current_skills}{user_guidance}
 Return a JSON array of objects with keys 'category' and 'skills' (comma-separated string of 3-5 top skills)."""
         resp_text = await llm.generate_text(prompt, max_tokens=300)
         start_idx = resp_text.find("[")
@@ -543,11 +551,13 @@ class GenerateSummaryRequest(BaseModel):
     target_role: str = ""
     experience_context: str = ""
     skills_context: str = ""
+    custom_instruction: str = ""
 
 @app.post("/api/ai/generate-summary")
 async def generate_summary_api(req: GenerateSummaryRequest):
     """
-    Generates 2 high-signal summary variations based on candidate background and target tone.
+    Generates 2 highly personalized, high-signal summary variations based on candidate background,
+    target tone, and custom instructions.
     """
     role = req.target_role.strip() or "Software Engineer"
     skills = req.skills_context or "Software Engineering, Problem Solving, System Design"
@@ -560,21 +570,24 @@ async def generate_summary_api(req: GenerateSummaryRequest):
     }
 
     selected_fallback = fallbacks.get(req.style, fallbacks["technical"])
+    if req.custom_instruction:
+        selected_fallback = f"{selected_fallback} Specifically focused on {req.custom_instruction}."
 
     try:
         llm = get_llm_service()
-        prompt = f"""Write 2 crisp, executive resume summary statements (each 2-3 sentences, 40-55 words) for {req.candidate_name}.
+        user_guidance = f"\nUSER'S PERSONALIZED INSTRUCTION & FOCUS:\n{req.custom_instruction}\nDeeply incorporate this instruction into both summary options." if req.custom_instruction else ""
+        prompt = f"""You are an executive resume strategist. Write 2 crisp, personalized executive resume summary statements (each 2-3 sentences, 40-55 words) for {req.candidate_name}.
 Tone style: {req.style}
 Target Role: {role}
 Skills: {req.skills_context}
-Experience context: {req.experience_context}
+Experience context: {req.experience_context}{user_guidance}
 
 Return JSON:
 {{
-  "option_1": "First compelling summary...",
-  "option_2": "Second alternative summary..."
+  "option_1": "First compelling tailored summary...",
+  "option_2": "Second alternative tailored summary..."
 }}"""
-        resp_text = await llm.generate_text(prompt, max_tokens=300)
+        resp_text = await llm.generate_text(prompt, max_tokens=350)
         start_idx = resp_text.find("{")
         end_idx = resp_text.rfind("}") + 1
         if start_idx != -1 and end_idx > start_idx:
@@ -595,12 +608,13 @@ Return JSON:
 class TailorResumeRequest(BaseModel):
     job_description: str
     resume_data: Dict[str, Any] = {}
+    custom_instruction: str = ""
 
 @app.post("/api/ai/tailor-resume")
 async def tailor_resume_api(req: TailorResumeRequest):
     """
     Analyzes candidate resume against a target JD: calculates ATS match score,
-    extracts matched & missing keywords, and produces tailored summary and bullet suggestions.
+    extracts matched & missing keywords, and produces personalized tailored summary and bullet suggestions.
     """
     jd = req.job_description.lower()
     r = req.resume_data
@@ -619,7 +633,6 @@ async def tailor_resume_api(req: TailorResumeRequest):
 
     jd_keywords = [kw for kw in common_keywords if kw in jd]
     if not jd_keywords:
-        # Extract word tokens with length > 4
         words = set([w.strip(".,;:()") for w in jd.split() if len(w) > 4])
         jd_keywords = list(words)[:15]
 
@@ -627,15 +640,16 @@ async def tailor_resume_api(req: TailorResumeRequest):
     missing = [kw for kw in jd_keywords if kw not in resume_text]
 
     score = int((len(matched) / max(len(jd_keywords), 1)) * 100)
-    score = min(max(score, 50), 98) # Keep in realistic ATS range
+    score = min(max(score, 50), 98)
 
     tailored_summary = f"Results-driven Engineer with expertise in {', '.join(matched[:3]) if matched else 'modern software development'}, targeting key contributions in scalable architecture and high-reliability systems."
 
     try:
         llm = get_llm_service()
-        prompt = f"""You are an ATS optimization algorithm. Compare the candidate's resume to the target Job Description.
+        user_guidance = f"\nUSER'S CUSTOM TAILORING INSTRUCTION: {req.custom_instruction}" if req.custom_instruction else ""
+        prompt = f"""You are an elite ATS optimization engine. Compare the candidate's resume to the target Job Description and provide personalized recommendations.
 Job Description (snippet): {req.job_description[:1200]}
-Resume Data: {json.dumps(r)[:1200]}
+Resume Data: {json.dumps(r)[:1200]}{user_guidance}
 
 Return JSON:
 {{
@@ -670,15 +684,16 @@ Return JSON:
 
 
 class PolishCoverLetterRequest(BaseModel):
-    action: str = "concise" # concise | technical | executive | fix_grammar
+    action: str = "concise" # concise | technical | executive | fix_grammar | custom
     current_text: str
     company_name: str = ""
     role_title: str = ""
+    custom_instruction: str = ""
 
 @app.post("/api/ai/polish-cover-letter")
 async def polish_cover_letter_api(req: PolishCoverLetterRequest):
     """
-    Polishes an existing cover letter with specific stylistic transformations.
+    Polishes an existing cover letter with specific stylistic transformations or personalized user instructions.
     """
     text = req.current_text.strip()
     if not text:
@@ -691,18 +706,19 @@ async def polish_cover_letter_api(req: PolishCoverLetterRequest):
         "fix_grammar": "Perfect all grammar, syntax, flow, and professional phrasing without altering core message."
     }
 
-    instruction = actions_prompt.get(req.action, actions_prompt["concise"])
+    instruction = req.custom_instruction.strip() if req.custom_instruction else actions_prompt.get(req.action, actions_prompt["concise"])
 
     try:
         llm = get_llm_service()
-        prompt = f"""You are a master cover letter editor. {instruction}
+        prompt = f"""You are a master cover letter editor and career strategist.
+TASK / EDITING INSTRUCTION: {instruction}
 Company: {req.company_name}
 Role: {req.role_title}
 Current Letter:
 {text}
 
-Return ONLY the polished letter text, no conversational preface."""
-        resp_text = await llm.generate_text(prompt, max_tokens=700)
+Return ONLY the polished letter text, maintaining complete professional structure."""
+        resp_text = await llm.generate_text(prompt, max_tokens=750)
         polished = resp_text.strip()
         return {"polished_text": polished, "action": req.action}
     except Exception as e:
@@ -719,35 +735,42 @@ class CoverLetterRequest(BaseModel):
     candidate_phone: str = ""
     candidate_experience: str = ""
     candidate_skills: str = ""
+    custom_instruction: str = ""
 
 @app.post("/api/generate-cover-letter")
 async def generate_cover_letter_api(req: CoverLetterRequest):
     """
-    Generates a personalized, professional 3-paragraph Cover Letter using NVIDIA Llama 3.1 70B
-    for any candidate and any role worldwide.
+    Generates a personalized, professional 3-paragraph Cover Letter using NVIDIA Llama 3.1 70B,
+    deeply integrating any specific user instructions or talking points.
     """
     llm = get_llm_service()
+    user_guidance = f"""
+SPECIFIC USER INSTRUCTIONS & TALKING POINTS:
+{req.custom_instruction}
+Ensure the candidate's custom instructions and specific personal talking points are seamlessly woven into the letter body.
+""" if req.custom_instruction else ""
+
     prompt = f"""You are an elite career strategist and executive recruiter. Write a compelling, tailored, high-signal 3-paragraph Cover Letter for {req.candidate_name} applying for the {req.role_title} position at {req.company_name}.
 
-CANDIDATE PROFILE:
+CANDIDATE DOSSIER:
 Name: {req.candidate_name}
 Summary / Background: {req.candidate_summary or "Experienced professional with proven track record in executing high-impact technical initiatives, building reliable solutions, and driving team success."}
 Skills & Competencies: {req.candidate_skills or "System architecture, modern engineering practices, problem solving, cross-functional collaboration"}
-Key Experience Context: {req.candidate_experience[:600] if req.candidate_experience else "Hands-on delivery in production environments, measurable performance improvements, and end-to-end project execution."}
+Key Experience Context: {req.candidate_experience[:700] if req.candidate_experience else "Hands-on delivery in production environments, measurable performance improvements, and end-to-end project execution."}
 
-TARGET ROLE & COMPANY:
+TARGET SPECIFICATION:
 Company: {req.company_name}
 Role Title: {req.role_title}
-Job Requirements / Description: {req.job_description[:1000] if req.job_description else "Looking for a high-performing professional to drive key projects and contribute to team goals."}
+Job Requirements / Description: {req.job_description[:1000] if req.job_description else "Looking for a high-performing professional to drive key projects and contribute to team goals."}{user_guidance}
 
 Letter Structure:
 - Salutation: Dear {req.company_name} Hiring Team, (or Dear Hiring Manager,)
 - Paragraph 1 (Opening): Express enthusiasm for {req.company_name} and applying for {req.role_title}, highlighting overarching value proposition.
-- Paragraph 2 (Evidence & Alignment): Connect candidate's specific background, skills, and past accomplishments directly to the technical/business needs of {req.company_name}.
+- Paragraph 2 (Evidence & Alignment): Connect candidate's specific background, skills, and past accomplishments directly to the technical/business needs of {req.company_name}. If user provided custom talking points, highlight them here.
 - Paragraph 3 (Closing & Call to Action): Reiterate commitment, culture alignment, and polite call to action for an interview.
 - Sign-off: Sincerely,\n{req.candidate_name}
 
-Tone: Professional, persuasive, crisp, tailored to the specific role and company. Zero filler or generic clichés. Return ONLY the letter text."""
+Tone: Authentic, highly personalized, persuasive, crisp, tailored to the specific role and company. Zero filler. Return ONLY the letter text."""
 
     try:
         async def event_generator():

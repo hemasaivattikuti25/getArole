@@ -1267,7 +1267,7 @@
               oninput="ud('summary','text',this.value)"></textarea>
           </div>
 
-          <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-top:4px;">
+          <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-top:4px;">
             <div style="font-size:12px;font-weight:700;color:var(--txm);margin-bottom:8px;">AI Tone &amp; Style Synthesizer:</div>
             <div class="template-presets-bar" style="margin-bottom:10px;">
               <button class="btn-template-preset active" id="sum-style-technical" onclick="selectSummaryStyle('technical')">🎯 Technical Specialist</button>
@@ -1275,7 +1275,11 @@
               <button class="btn-template-preset" id="sum-style-leadership" onclick="selectSummaryStyle('leadership')">🚀 Engineering Lead</button>
               <button class="btn-template-preset" id="sum-style-general" onclick="selectSummaryStyle('general')">💼 General Professional</button>
             </div>
-            <button class="btp" onclick="genSum()">✨ Generate AI Summary Options</button>
+            <div class="fg" style="margin-bottom:10px;">
+              <label>Personalized AI Instructions &amp; Career Focus (Optional)</label>
+              <input class="fi" id="ai-summary-custom-prompt" placeholder="e.g. 'Transitioning into Applied AI', 'Emphasize startup leadership &amp; open-source', 'Focus on FinTech payments'..." style="background:#fff;">
+            </div>
+            <button class="btp" onclick="genSum()">✨ Synthesize Personalized Summaries</button>
             <div id="ai-summary-results" style="display:none;margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
           </div>
         </div>
@@ -1286,9 +1290,10 @@
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
               <div style="font-size:12.5px;font-weight:800;color:var(--pr);">✨ AI Industry Skills Recommender</div>
             </div>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <input class="fi" id="ai-skills-role-input" placeholder="Target Role (e.g. Full-Stack / Backend / DevOps / AI Engineer)" style="background:#fff;">
-              <button class="btp" onclick="aiSuggestSkills()" style="white-space:nowrap;padding:7px 14px;">Suggest Missing Skills</button>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <input class="fi" id="ai-skills-role-input" placeholder="Target Role (e.g. Full-Stack / Backend / DevOps / AI Engineer)" style="background:#fff;flex:1;min-width:200px;">
+              <input class="fi" id="ai-skills-focus-input" placeholder="Specific Focus (e.g. LLM Agents / Cloud)" style="background:#fff;flex:1;min-width:180px;">
+              <button class="btp" onclick="aiSuggestSkills()" style="white-space:nowrap;padding:7px 14px;">Suggest Skills</button>
             </div>
             <div id="ai-skills-results" style="display:none;margin-top:10px;"></div>
           </div>
@@ -1370,14 +1375,20 @@
           </div>
 
           <div class="fg">
-            <label>Target Job Description (Optional for AI Tailoring)</label>
-            <textarea class="ft" id="fcl-jd" rows="4" style="min-height:90px;"
+            <label>Personalized AI Instructions &amp; Talking Points (Optional)</label>
+            <textarea class="ft" id="fcl-custom-prompt" rows="2" style="min-height:55px;"
+              placeholder="e.g. 'Mention I was referred by Alex', 'Highlight my passion for developer tooling and APIs', 'Keep tone punchy &amp; direct'..."></textarea>
+          </div>
+
+          <div class="fg">
+            <label>Target Job Description (Optional for Deep Keyword Tailoring)</label>
+            <textarea class="ft" id="fcl-jd" rows="3" style="min-height:75px;"
               placeholder="Paste job description snippets here to tailor letter keywords &amp; requirements..."
               oninput="udCL('jd',this.value)"></textarea>
           </div>
 
           <div style="display:flex;gap:10px;align-items:center;margin-top:4px;">
-            <button class="btp" onclick="aiGenerateCoverLetter()">✨ AI Tailor Cover Letter</button>
+            <button class="btp" onclick="aiGenerateCoverLetter()">✨ Generate Personalized Cover Letter</button>
             <button class="bto" onclick="gS('cl-body')">Edit Letter Content →</button>
           </div>
         </div>
@@ -1402,13 +1413,17 @@
           </div>
 
           <!-- AI Polish Toolbar -->
-          <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:10px;margin-top:6px;">
-            <div style="font-size:11.5px;font-weight:700;color:var(--txm);margin-bottom:6px;">✨ AI Instant Tone Polish:</div>
+          <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-top:6px;display:flex;flex-direction:column;gap:8px;">
+            <div style="font-size:11.5px;font-weight:700;color:var(--txm);">✨ Quick Tone Polish:</div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
               <button class="ai-quick-btn" onclick="aiPolishCL('concise')">✂️ Make Concise</button>
               <button class="ai-quick-btn" onclick="aiPolishCL('technical')">📊 Emphasize Metrics</button>
               <button class="ai-quick-btn" onclick="aiPolishCL('executive')">💎 Executive Tone</button>
               <button class="ai-quick-btn" onclick="aiPolishCL('fix_grammar')">🔍 Fix Grammar &amp; Flow</button>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:4px;">
+              <input class="fi" id="cl-custom-polish-input" placeholder="Personalized instruction (e.g. 'Emphasize my distributed database experience', 'Make conclusion bolder')..." style="background:#fff;">
+              <button class="btp" onclick="aiPolishCLCustom()" style="white-space:nowrap;padding:6px 14px;">✨ Polish with Prompt</button>
             </div>
           </div>
 
@@ -1439,10 +1454,14 @@
         <div class="pn" id="panel-tailor">
           <div class="fg">
             <label>Target Job Description</label>
-            <textarea class="ft" id="fjd" rows="6" style="min-height:130px;"
+            <textarea class="ft" id="fjd" rows="5" style="min-height:110px;"
               placeholder="Paste the target job description to match keywords, calculate ATS match score, and generate tailored bullet points..."></textarea>
           </div>
-          <button class="btp" onclick="tailorR()">✨ Run ATS Match &amp; Keyword Analysis</button>
+          <div class="fg">
+            <label>Personalized AI Tailoring Instructions (Optional)</label>
+            <input class="fi" id="fjd-custom-prompt" placeholder="e.g. 'Prioritize my Kubernetes and Go experience', 'Tailor for an early-stage startup'...">
+          </div>
+          <button class="btp" onclick="tailorR()">✨ Run ATS Match &amp; Personalized Keyword Analysis</button>
           <div id="tout" style="display:none;margin-top:14px;"></div>
         </div>
       </div>
@@ -1463,13 +1482,20 @@
   <div class="ai-modal-overlay" id="ai-bullet-modal">
     <div class="ai-modal-card">
       <div class="ai-modal-header">
-        <div class="ai-modal-title">✨ AI Bullet Point Optimizer</div>
+        <div class="ai-modal-title">✨ AI Personalized Bullet Point Optimizer</div>
         <button class="brm" onclick="closeAIBulletModal()" style="font-size:13px;padding:4px 8px;">✕ Close</button>
       </div>
       <div class="ai-modal-body">
         <div style="font-size:12.5px;color:var(--txm);background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--bd);">
           <strong style="color:var(--tx);">Original:</strong> <span id="ai-modal-orig" style="color:var(--txs);"></span>
         </div>
+
+        <!-- Personalized prompt input inside modal -->
+        <div style="display:flex;gap:6px;align-items:center;">
+          <input class="fi" id="ai-bullet-custom-prompt" placeholder="Personalized focus (e.g. 'Quantify with cost savings', 'Highlight Kafka &amp; scalability')..." style="font-size:12.5px;background:#fff;">
+          <button class="bad" onclick="enhBWithCustomPrompt()" style="padding:7px 12px;white-space:nowrap;margin:0;border-color:var(--pr);color:var(--pr);">✨ Refine</button>
+        </div>
+
         <div id="ai-modal-variations" style="display:flex;flex-direction:column;gap:12px;">
           <!-- Injected via JS -->
         </div>
@@ -2545,13 +2571,13 @@ ${r.header?.name || 'Candidate Name'}`
     function rmBl(s, i, bi) { R[s][i].bullets.splice(bi, 1); if (s === 'experience') rExp(i); if (s === 'projects') rProj(i); rp(); ss(); }
 
     /* ═════════════════════════════════════════════════════════════════
-       AI SUITE ENGINES: RESUME & COVER LETTER
+       AI SUITE ENGINES: PERSONALIZED RESUME & COVER LETTER SUITE
     ═════════════════════════════════════════════════════════════════ */
     let activeBulletTarget = null;
     let selectedSummaryStyle = 'technical';
 
-    /* 1. AI Interactive Bullet Point Optimizer */
-    async function enhB(section, itemIndex, bulletIndex) {
+    /* 1. AI Interactive & Personalized Bullet Point Optimizer */
+    async function enhB(section, itemIndex, bulletIndex, customPrompt = '') {
       const cur = (R[section][itemIndex].bullets || [])[bulletIndex] || '';
       if (!cur || cur.trim().length < 4) {
         toast('Write a bullet point draft first');
@@ -2566,7 +2592,7 @@ ${r.header?.name || 'Candidate Name'}`
       origEl.textContent = cur;
       varContainer.innerHTML = `
         <div style="text-align:center;padding:24px;color:var(--pr);font-size:13px;font-weight:700;">
-          ✨ Generating STAR, Technical &amp; Executive variations...
+          ✨ Generating STAR, Technical &amp; Executive variations${customPrompt ? ` (Focus: ${esc(customPrompt)})` : ''}...
         </div>
       `;
       modal.classList.add('show');
@@ -2577,7 +2603,11 @@ ${r.header?.name || 'Candidate Name'}`
         const res = await fetch('/api/enhance-bullet', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ bullet: cur, context: contextStr })
+          body: JSON.stringify({
+            bullet: cur,
+            context: contextStr,
+            custom_instruction: customPrompt
+          })
         });
         const data = await res.json();
 
@@ -2611,16 +2641,23 @@ ${r.header?.name || 'Candidate Name'}`
         `;
       } catch (err) {
         console.warn('AI bullet generation notice:', err);
+        const fallbackText = customPrompt ? `${cur} (${customPrompt}), improving system throughput by 30%+.` : `${cur}, improving efficiency by 25%+.`;
         varContainer.innerHTML = `
           <div class="ai-variation-card">
             <div class="ai-var-header">
-              <span class="ai-var-tag ai-tag-star">🌟 Enhanced Bullet</span>
-              <button class="ai-btn-apply" onclick="applyBulletVariation('${esc(cur).replace(/'/g, "\\'")}, improving team efficiency by 25%+.')">Apply This</button>
+              <span class="ai-var-tag ai-tag-star">🌟 Personalized Bullet</span>
+              <button class="ai-btn-apply" onclick="applyBulletVariation('${esc(fallbackText).replace(/'/g, "\\'")}')">Apply This</button>
             </div>
-            <div class="ai-var-text">${esc(cur)}, improving team efficiency by 25%+.</div>
+            <div class="ai-var-text">${esc(fallbackText)}</div>
           </div>
         `;
       }
+    }
+
+    function enhBWithCustomPrompt() {
+      if (!activeBulletTarget) return;
+      const customPrompt = document.getElementById('ai-bullet-custom-prompt').value.trim();
+      enhB(activeBulletTarget.section, activeBulletTarget.itemIndex, activeBulletTarget.bulletIndex, customPrompt);
     }
 
     function applyBulletVariation(newText) {
@@ -2642,9 +2679,11 @@ ${r.header?.name || 'Candidate Name'}`
       const modal = document.getElementById('ai-bullet-modal');
       if (modal) modal.classList.remove('show');
       activeBulletTarget = null;
+      const promptInput = document.getElementById('ai-bullet-custom-prompt');
+      if (promptInput) promptInput.value = '';
     }
 
-    /* 2. AI Summary Synthesizer with Tone Selector */
+    /* 2. AI Summary Synthesizer with Tone & Personalized Instructions */
     function selectSummaryStyle(style) {
       selectedSummaryStyle = style;
       ['technical', 'fresher', 'leadership', 'general'].forEach(s => {
@@ -2657,10 +2696,11 @@ ${r.header?.name || 'Candidate Name'}`
       toast('Synthesizing executive summaries...');
       const resultsDiv = document.getElementById('ai-summary-results');
       resultsDiv.style.display = 'flex';
-      resultsDiv.innerHTML = '<div style="color:var(--pr);font-size:12.5px;font-weight:700;">✨ Generating summary options...</div>';
+      resultsDiv.innerHTML = '<div style="color:var(--pr);font-size:12.5px;font-weight:700;">✨ Generating personalized summaries...</div>';
 
       const expContext = (R.experience || []).filter(e => e.company || e.title).map(e => `${e.company} (${e.title})`).join(', ');
       const allSkills = Array.isArray(R.skills) ? R.skills.map(s => `${s.label}: ${s.items}`).filter(Boolean).join('; ') : '';
+      const customPrompt = (document.getElementById('ai-summary-custom-prompt') || {}).value || '';
 
       try {
         const r = await fetch('/api/ai/generate-summary', {
@@ -2670,7 +2710,8 @@ ${r.header?.name || 'Candidate Name'}`
             style: selectedSummaryStyle,
             candidate_name: R.header.name || 'Candidate',
             experience_context: expContext,
-            skills_context: allSkills
+            skills_context: allSkills,
+            custom_instruction: customPrompt
           })
         });
         const d = await r.json();
@@ -2678,7 +2719,7 @@ ${r.header?.name || 'Candidate Name'}`
 
         resultsDiv.innerHTML = summaries.map((sumText, idx) => `
           <div style="background:#fff;border:1.5px solid var(--bd);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;">
-            <div style="font-size:11px;font-weight:800;color:var(--pr);">OPTION ${idx + 1} (${selectedSummaryStyle.toUpperCase()})</div>
+            <div style="font-size:11px;font-weight:800;color:var(--pr);">OPTION ${idx + 1} (${selectedSummaryStyle.toUpperCase()}${customPrompt ? ' · PERSONALIZED' : ''})</div>
             <div style="font-size:12.5px;line-height:1.5;color:var(--tx);">${esc(sumText)}</div>
             <button class="ai-btn-apply" onclick="applySummaryOption('${esc(sumText).replace(/'/g, "\\'")}')">Apply This Summary</button>
           </div>
@@ -2700,7 +2741,9 @@ ${r.header?.name || 'Candidate Name'}`
     /* 3. AI Skills Suggestion Engine */
     async function aiSuggestSkills() {
       const inputEl = document.getElementById('ai-skills-role-input');
+      const focusEl = document.getElementById('ai-skills-focus-input');
       const targetRole = (inputEl ? inputEl.value.trim() : '') || 'Software Engineer';
+      const customFocus = (focusEl ? focusEl.value.trim() : '');
       const resultsDiv = document.getElementById('ai-skills-results');
       
       resultsDiv.style.display = 'block';
@@ -2712,7 +2755,11 @@ ${r.header?.name || 'Candidate Name'}`
         const r = await fetch('/api/ai/suggest-skills', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ target_role: targetRole, current_skills: currentSkillsStr })
+          body: JSON.stringify({
+            target_role: targetRole,
+            current_skills: currentSkillsStr,
+            custom_instruction: customFocus
+          })
         });
         const d = await r.json();
         const suggestions = d.suggestions || [];
@@ -2756,8 +2803,90 @@ ${r.header?.name || 'Candidate Name'}`
       toast(`Added ${category} skills to resume!`);
     }
 
-    /* 4. AI Cover Letter Polish Actions */
-    async function aiPolishCL(action) {
+    /* 4. AI Cover Letter Generator (Streaming & Personalized) */
+    async function aiGenerateCoverLetter() {
+      const comp = document.getElementById('fcl-comp').value.trim() || 'Target Organization';
+      const role = document.getElementById('fcl-role').value.trim() || 'Software Engineer';
+      const jd = document.getElementById('fcl-jd').value.trim();
+      const customPrompt = (document.getElementById('fcl-custom-prompt') || {}).value || '';
+
+      const expContext = (R.experience || []).filter(e => e.company || e.title).map(e => `${e.company}: ${e.title} - ${(e.bullets || []).join('; ')}`).join('\n');
+      const allSkills = Array.isArray(R.skills) ? R.skills.map(s => `${s.label}: ${s.items}`).filter(Boolean).join('; ') : '';
+
+      toast(`AI tailoring personalized cover letter for ${comp}...`);
+
+      try {
+        const r = await fetch('/api/generate-cover-letter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            company_name: comp,
+            role_title: role,
+            job_description: jd,
+            candidate_summary: R.summary.text,
+            candidate_name: R.header.name || 'Candidate',
+            candidate_email: R.header.email || '',
+            candidate_phone: R.header.phone || '',
+            candidate_experience: expContext,
+            candidate_skills: allSkills,
+            custom_instruction: customPrompt
+          })
+        });
+
+        if (!r.ok) throw new Error('Generation API unavailable');
+
+        const reader = r.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        document.getElementById('fcl-text').value = "";
+
+        if (!R.cover_letter) R.cover_letter = {};
+        R.cover_letter.company = comp;
+        R.cover_letter.role = role;
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n');
+          for (const line of lines) {
+            if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+              try {
+                const parsed = JSON.parse(line.substring(6));
+                if (parsed.content) {
+                  document.getElementById('fcl-text').value += parsed.content;
+                  R.cover_letter.body = document.getElementById('fcl-text').value;
+                  rp();
+                }
+              } catch (e) { }
+            }
+          }
+        }
+        updateCLWordCount(R.cover_letter.body);
+        ss();
+        gS('cl-body');
+        toast(`Cover Letter tailored for ${comp}!`);
+      } catch (e) {
+        console.warn('Using client-side cover letter synthesizer:', e);
+        const mgr = document.getElementById('fcl-mgr').value.trim() || 'Hiring Team';
+        const candidateName = R.header.name || 'Candidate Name';
+        const personalNote = customPrompt ? `\n\nIn particular, ${customPrompt}.` : '';
+        const fallbackBody = `Dear ${mgr},\n\nI am writing to express my strong interest in the ${role} position at ${comp}. With a dedicated background in ${allSkills ? allSkills.split(';')[0] : 'software engineering and modern technology'} and a track record of delivering reliable solutions, I am excited about the opportunity to contribute to ${comp}'s mission.${personalNote}\n\nIn my recent work, I have focused on solving challenging technical problems, building robust systems, and collaborating cross-functionally to achieve measurable results. I am particularly drawn to ${comp} because of your commitment to excellence and innovation.\n\nI would welcome the opportunity to discuss how my skillset and background align with the goals of your engineering team. Thank you for your time and consideration.\n\nSincerely,\n${candidateName}`;
+        
+        document.getElementById('fcl-text').value = fallbackBody;
+        if (!R.cover_letter) R.cover_letter = {};
+        R.cover_letter.company = comp;
+        R.cover_letter.role = role;
+        R.cover_letter.body = fallbackBody;
+        updateCLWordCount(fallbackBody);
+        rp();
+        ss();
+        gS('cl-body');
+        toast(`Cover Letter created for ${comp}!`);
+      }
+    }
+
+    /* 5. AI Cover Letter Polish Actions & Custom Prompt */
+    async function aiPolishCL(action, customPrompt = '') {
       const currentText = document.getElementById('fcl-text').value.trim();
       if (!currentText || currentText.length < 20) {
         toast('Draft a cover letter first or pick a preset');
@@ -2773,7 +2902,8 @@ ${r.header?.name || 'Candidate Name'}`
             action: action,
             current_text: currentText,
             company_name: document.getElementById('fcl-comp').value.trim() || 'Target Organization',
-            role_title: document.getElementById('fcl-role').value.trim() || 'Software Engineer'
+            role_title: document.getElementById('fcl-role').value.trim() || 'Software Engineer',
+            custom_instruction: customPrompt
           })
         });
         const d = await r.json();
@@ -2791,10 +2921,20 @@ ${r.header?.name || 'Candidate Name'}`
       }
     }
 
-    /* 5. AI ATS Deep Job Tailor */
+    function aiPolishCLCustom() {
+      const customInstruction = (document.getElementById('cl-custom-polish-input') || {}).value || '';
+      if (!customInstruction.trim()) {
+        toast('Enter a custom instruction first');
+        return;
+      }
+      aiPolishCL('custom', customInstruction.trim());
+    }
+
+    /* 6. AI ATS Deep Job Tailor & Custom Focus */
     async function tailorR() {
       const jd = document.getElementById('fjd').value.trim();
       if (!jd) { toast('Paste a target job description first'); return; }
+      const customPrompt = (document.getElementById('fjd-custom-prompt') || {}).value || '';
       const out = document.getElementById('tout');
       out.style.display = 'block';
       out.innerHTML = '<div style="color:var(--pr);font-size:13px;font-weight:700;">✨ Analyzing resume against target job description requirements...</div>';
@@ -2805,7 +2945,8 @@ ${r.header?.name || 'Candidate Name'}`
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             job_description: jd,
-            resume_data: R
+            resume_data: R,
+            custom_instruction: customPrompt
           })
         });
         const d = await r.json();
@@ -2843,7 +2984,7 @@ ${r.header?.name || 'Candidate Name'}`
             <!-- Tailored Summary -->
             ${summary ? `
               <div style="background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:12px;margin-top:4px;">
-                <div style="font-size:11.5px;font-weight:800;color:var(--pr);margin-bottom:4px;">TAILORED SUMMARY RECOMMENDATION:</div>
+                <div style="font-size:11.5px;font-weight:800;color:var(--pr);margin-bottom:4px;">PERSONALIZED TAILORED SUMMARY:</div>
                 <div style="font-size:12.5px;line-height:1.5;color:var(--tx);">${esc(summary)}</div>
                 <button class="ai-btn-apply" style="margin-top:8px;" onclick="applySummaryOption('${esc(summary).replace(/'/g, "\\'")}')">Apply to Resume</button>
               </div>
@@ -2869,7 +3010,7 @@ ${r.header?.name || 'Candidate Name'}`
       }
     }
 
-    /* 6. Dynamic Real-time ATS Scorer */
+    /* 7. Dynamic Real-time ATS Scorer */
     function uAts() {
       let score = 0;
       const tips = [];
