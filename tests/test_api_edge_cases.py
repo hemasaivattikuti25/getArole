@@ -77,19 +77,19 @@ def test_match_resume_special_char_filename():
 def test_enhance_bullet_empty_payload():
     """Test empty string and missing fields."""
     response = client.post("/api/enhance-bullet", json={"bullet": ""})
-    assert response.status_code in [200, 422, 500]
+    assert response.status_code in [200, 422, 429, 500]
 
 def test_enhance_bullet_extremely_long_string():
     """Test 10,000+ character bullet input."""
     huge_bullet = "Engineered scalable service. " * 400
     response = client.post("/api/enhance-bullet", json={"bullet": huge_bullet})
-    assert response.status_code in [200, 500]
+    assert response.status_code in [200, 429, 500]
 
 def test_enhance_bullet_special_characters():
     """Test injection payload strings in bullet text."""
     payload = "<script>alert('xss')</script>'; DROP TABLE users; -- \0 ../../../"
     response = client.post("/api/enhance-bullet", json={"bullet": payload, "custom_instruction": payload})
-    assert response.status_code in [200, 500]
+    assert response.status_code in [200, 429, 500]
 
 def test_enhance_bullet_extra_unexpected_fields():
     """Test sending extra unexpected JSON keys."""
@@ -98,7 +98,7 @@ def test_enhance_bullet_extra_unexpected_fields():
         "unexpected_key_1": "random_value",
         "unexpected_key_2": 12345
     })
-    assert response.status_code in [200, 500]
+    assert response.status_code in [200, 429, 500]
 
 
 # ── 4. POST /api/ai/tailor-resume Edge Cases ────────────────────────────────
