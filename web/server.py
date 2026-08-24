@@ -168,11 +168,10 @@ async def trigger_scrape(
     )
     AGGREGATOR.cached_jobs = jobs
     
-    
     return {
         "status": "success",
-        "message": "Candidate profile and resume stored successfully.",
-        "candidate": supa_record or profile
+        "message": "Scrape completed successfully",
+        "jobs_found": len(jobs) if jobs else 0
     }
 
 @app.get("/api/jobs")

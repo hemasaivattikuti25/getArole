@@ -834,14 +834,42 @@
       renderModalSalary();
     }
 
-    function handleModalResumeUpload(e) {
+    async function handleModalResumeUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
-      document.getElementById('pref-resume-status').textContent = `✓ ${file.name} uploaded`;
-      toast(`Resume ${file.name} uploaded!`);
+      const statusEl = document.getElementById('pref-resume-status');
+      if (statusEl) statusEl.textContent = `⏳ Parsing ${file.name}...`;
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        const res = await fetch('/api/match-resume', { method: 'POST', body: formData }).catch(() => null);
+
+        if (res && res.ok) {
+          const data = await res.json();
+          const parsedProf = data.candidate_profile || {};
+          const existing = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+          if (parsedProf.skills && parsedProf.skills.length > 0) {
+            existing.skills = Array.from(new Set([...(existing.skills || []), ...parsedProf.skills]));
+          }
+          if (parsedProf.name && parsedProf.name !== 'Candidate' && !existing.name) existing.name = parsedProf.name;
+          localStorage.setItem('getarole_profile', JSON.stringify(existing));
+          localStorage.setItem('getarole_uploaded_resume', JSON.stringify({ filename: file.name, uploadedAt: new Date().toLocaleDateString(), raw_text: data.resume_text || '', skills: parsedProf.skills || [] }));
+          if (data.resume_data) localStorage.setItem('getarole_resume_v2', JSON.stringify(data.resume_data));
+          if (statusEl) statusEl.textContent = `✓ ${file.name} parsed · ${(parsedProf.skills || []).length} skills`;
+          toast(`✅ Resume parsed! ${(parsedProf.skills || []).length} skills extracted.`);
+        } else {
+          if (statusEl) statusEl.textContent = `✓ ${file.name} uploaded`;
+          toast(`Resume ${file.name} uploaded!`);
+        }
+      } catch(err) {
+        if (statusEl) statusEl.textContent = `✓ ${file.name} uploaded`;
+        toast(`Resume ${file.name} uploaded!`);
+      }
+      e.target.value = '';
     }
 
-    function savePreferencesFromModal() {
+    async function savePreferencesFromModal() {
       const name = document.getElementById('pref-fullname').value.trim();
       const targetTitle = document.getElementById('pref-target-title').value.trim();
       
@@ -858,10 +886,34 @@
       
       // Update UI title if changed
       if (name) {
-        document.getElementById('nav-username').textContent = name;
+        const navUser = document.getElementById('nav-username');
+        if (navUser) navUser.textContent = name;
         const homeName = document.getElementById('home-user-name');
         if (homeName) homeName.textContent = name;
       }
+
+      // Sync to backend (fire and forget)
+      const uid = (function() {
+        const u = sessionStorage.getItem('firebase_uid') || localStorage.getItem('firebase_uid');
+        if (u) return u;
+        try { const raw = localStorage.getItem('getarole_user'); if (raw) { const p = JSON.parse(raw); if (p && p.uid) return p.uid; } } catch(e) {}
+        let id = localStorage.getItem('getarole_user_id');
+        if (!id) { id = 'usr_' + Math.random().toString(36).substring(2, 11); localStorage.setItem('getarole_user_id', id); }
+        return id;
+      })();
+
+      Promise.all([
+        fetch('/api/user/profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+          body: JSON.stringify(profile)
+        }).catch(e => console.warn('[Profile sync]', e)),
+        fetch('/api/user/preferences', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+          body: JSON.stringify(modalPrefs)
+        }).catch(e => console.warn('[Prefs sync]', e))
+      ]);
     }
   </script>
 
@@ -1082,6 +1134,14 @@
       activePills.clear();
       document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
       document.getElementById('main-search-input').value = '';
+      if (document.getElementById('filter-location')) document.getElementById('filter-location').value = '';
+      if (document.getElementById('filter-category')) document.getElementById('filter-category').value = '';
+      if (document.getElementById('filter-jobtype')) document.getElementById('filter-jobtype').value = '';
+      if (document.getElementById('filter-experience')) document.getElementById('filter-experience').value = '';
+      quickFilters.last24h = false;
+      quickFilters.highfit = false;
+      if (document.getElementById('toggle-24h')) document.getElementById('toggle-24h').classList.remove('active');
+      if (document.getElementById('toggle-highfit')) document.getElementById('toggle-highfit').classList.remove('active');
       filteredJobs = [...allJobs];
       renderFeed();
       if (filteredJobs.length > 0) selectJob(filteredJobs[0].id);
@@ -1248,20 +1308,7 @@
       }
     }
 
-    function clearAllFilters() {
-      document.getElementById('main-search-input').value = '';
-      if (document.getElementById('filter-location')) document.getElementById('filter-location').value = '';
-      if (document.getElementById('filter-category')) document.getElementById('filter-category').value = '';
-      if (document.getElementById('filter-jobtype')) document.getElementById('filter-jobtype').value = '';
-      if (document.getElementById('filter-experience')) document.getElementById('filter-experience').value = '';
-      quickFilters.last24h = false;
-      quickFilters.highfit = false;
-      document.getElementById('toggle-24h').classList.remove('active');
-      document.getElementById('toggle-highfit').classList.remove('active');
-      filteredJobs = [...allJobs];
-      renderFeed();
-      if (filteredJobs.length > 0) selectJob(filteredJobs[0].id);
-    }
+
 
     function saveSearch() {
       toast('Search criteria saved to your profile!');
@@ -1456,6 +1503,42 @@
       }).catch(() => {
         toast("Failed to copy link.");
       });
+    }
+
+    function toggleSave(id) {
+      if (tracker.saved.includes(id)) {
+        tracker.saved = tracker.saved.filter(x => x !== id);
+        toast('Removed from saved list.');
+      } else {
+        tracker.saved.push(id);
+        toast('Saved to tracker!');
+      }
+      localStorage.setItem('getarole_tracker', JSON.stringify(tracker));
+      renderFeed();
+      if (selectedJobId === id) selectJob(id);
+      updateCounts();
+    }
+
+    function toggleApplied(id) {
+      if (tracker.applied.includes(id)) {
+        tracker.applied = tracker.applied.filter(x => x !== id);
+        toast('Unmarked application.');
+      } else {
+        tracker.applied.push(id);
+        toast('Marked as Applied! Added to Kanban tracker.');
+      }
+      localStorage.setItem('getarole_tracker', JSON.stringify(tracker));
+      if (selectedJobId === id) selectJob(id);
+      updateCounts();
+    }
+
+    function updateCounts() {
+      if (document.getElementById('tracker-saved-count')) {
+        document.getElementById('tracker-saved-count').textContent = tracker.saved.length;
+      }
+      if (document.getElementById('tracker-applied-count')) {
+        document.getElementById('tracker-applied-count').textContent = tracker.applied.length;
+      }
     }
 
     (function init() {

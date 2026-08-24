@@ -874,11 +874,39 @@
       renderModalSalary();
     }
 
-    function handleModalResumeUpload(e) {
+    async function handleModalResumeUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
-      document.getElementById('pref-resume-status').textContent = `✓ ${file.name} uploaded`;
-      toast(`Resume ${file.name} uploaded!`);
+      const statusEl = document.getElementById('pref-resume-status');
+      if (statusEl) statusEl.textContent = `⏳ Parsing ${file.name}...`;
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        const res = await fetch('/api/match-resume', { method: 'POST', body: formData }).catch(() => null);
+
+        if (res && res.ok) {
+          const data = await res.json();
+          const parsedProf = data.candidate_profile || {};
+          const existing = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+          if (parsedProf.skills && parsedProf.skills.length > 0) {
+            existing.skills = Array.from(new Set([...(existing.skills || []), ...parsedProf.skills]));
+          }
+          if (parsedProf.name && parsedProf.name !== 'Candidate' && !existing.name) existing.name = parsedProf.name;
+          localStorage.setItem('getarole_profile', JSON.stringify(existing));
+          localStorage.setItem('getarole_uploaded_resume', JSON.stringify({ filename: file.name, uploadedAt: new Date().toLocaleDateString(), raw_text: data.resume_text || '', skills: parsedProf.skills || [] }));
+          if (data.resume_data) localStorage.setItem('getarole_resume_v2', JSON.stringify(data.resume_data));
+          if (statusEl) statusEl.textContent = `✓ ${file.name} parsed · ${(parsedProf.skills || []).length} skills`;
+          toast(`✅ Resume parsed! ${(parsedProf.skills || []).length} skills extracted.`);
+        } else {
+          if (statusEl) statusEl.textContent = `✓ ${file.name} uploaded`;
+          toast(`Resume ${file.name} uploaded!`);
+        }
+      } catch(err) {
+        if (statusEl) statusEl.textContent = `✓ ${file.name} uploaded`;
+        toast(`Resume ${file.name} uploaded!`);
+      }
+      e.target.value = '';
     }
 
     async function savePreferencesFromModal() {
