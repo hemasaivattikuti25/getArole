@@ -173,7 +173,26 @@ class SupabaseService:
         if not client:
             return None
         try:
-            record = {"firebase_uid": firebase_uid, **profile}
+            valid_cols = {
+                "firebase_uid", "email", "first", "last", "pref_name", "suffix", "phone", "dob", "loc",
+                "add1", "add2", "add3", "zip", "headline", "linkedin_url", "github_url", "portfolio_url", "other_url"
+            }
+            # Map common aliases if present
+            flat_profile = {**profile}
+            if "pref" in flat_profile and "pref_name" not in flat_profile:
+                flat_profile["pref_name"] = flat_profile.pop("pref")
+            if "links" in flat_profile and isinstance(flat_profile["links"], dict):
+                links = flat_profile["links"]
+                if links.get("linkedin"): flat_profile["linkedin_url"] = links["linkedin"]
+                if links.get("github"): flat_profile["github_url"] = links["github"]
+                if links.get("portfolio"): flat_profile["portfolio_url"] = links["portfolio"]
+                if links.get("other"): flat_profile["other_url"] = links["other"]
+
+            record = {"firebase_uid": firebase_uid}
+            for k, v in flat_profile.items():
+                if k in valid_cols and v is not None:
+                    record[k] = v
+
             res = await client.table("user_profiles").upsert(record, on_conflict="firebase_uid").execute()
             return res.data[0] if res.data else record
         except Exception as e:
@@ -187,7 +206,11 @@ class SupabaseService:
             return None
         try:
             res = await client.table("user_profiles").select("*").eq("firebase_uid", firebase_uid).limit(1).execute()
-            return res.data[0] if res.data else None
+            data = res.data[0] if res.data else None
+            if data:
+                if "pref_name" in data and "pref" not in data:
+                    data["pref"] = data["pref_name"]
+            return data
         except Exception as e:
             print(f"[Supabase] load_user_profile error: {e}")
             return None
@@ -198,7 +221,20 @@ class SupabaseService:
         if not client:
             return None
         try:
-            record = {"firebase_uid": firebase_uid, **prefs}
+            valid_cols = {
+                "firebase_uid", "values", "roles", "locations", "roletype", "rolelevel",
+                "compsize", "industries", "skills_inc", "salary_amt", "salary_curr", "status"
+            }
+            flat_prefs = {**prefs}
+            # Map aliases
+            if "industries_inc" in flat_prefs and "industries" not in flat_prefs:
+                flat_prefs["industries"] = flat_prefs.pop("industries_inc")
+
+            record = {"firebase_uid": firebase_uid}
+            for k, v in flat_prefs.items():
+                if k in valid_cols and v is not None:
+                    record[k] = v
+
             res = await client.table("user_preferences").upsert(record, on_conflict="firebase_uid").execute()
             return res.data[0] if res.data else record
         except Exception as e:
@@ -212,7 +248,11 @@ class SupabaseService:
             return None
         try:
             res = await client.table("user_preferences").select("*").eq("firebase_uid", firebase_uid).limit(1).execute()
-            return res.data[0] if res.data else None
+            data = res.data[0] if res.data else None
+            if data:
+                if "industries" in data and "industries_inc" not in data:
+                    data["industries_inc"] = data["industries"]
+            return data
         except Exception as e:
             print(f"[Supabase] load_user_preferences error: {e}")
             return None
