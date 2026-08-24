@@ -9,12 +9,14 @@ from .internshala import scrape_all_internshala_jobs
 from .linkedin import scrape_all_linkedin_jobs
 from .unstop import fetch_unstop_jobs
 
-class JobAggregator:
-    def __init__(self, scrapers: Optional[List[Any]] = None):
-        self.cached_jobs: List[JobListing] = []
-        self.registered_scrapers: List[Any] = scrapers or []
+from .base import BaseScraper
 
-    def register_scraper(self, scraper: Any):
+class JobAggregator:
+    def __init__(self, scrapers: Optional[List[BaseScraper]] = None):
+        self.cached_jobs: List[JobListing] = []
+        self.registered_scrapers: List[BaseScraper] = scrapers or []
+
+    def register_scraper(self, scraper: BaseScraper):
         """Register a new scraper strategy dynamically (Open/Closed Principle)."""
         self.registered_scrapers.append(scraper)
 

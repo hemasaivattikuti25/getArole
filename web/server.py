@@ -736,6 +736,35 @@ async def get_user_profile(request: Request, x_firebase_uid: Optional[str] = Hea
     data = await supabase.load_user_profile(uid)
     return JSONResponse(data or {})
 
+class UserProfileSchema(BaseModel):
+    name: Optional[str] = None
+    first: Optional[str] = None
+    last: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    pref_name: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    headline: Optional[str] = None
+    location: Optional[str] = None
+    summary: Optional[str] = None
+    skills: List[str] = []
+    experience: List[Dict[str, Any]] = []
+    education: List[Dict[str, Any]] = []
+    projects: List[Dict[str, Any]] = []
+    links: Dict[str, Any] = {}
+    preferences: Dict[str, Any] = {}
+
+class UserPreferencesSchema(BaseModel):
+    query: Optional[str] = None
+    target_title: Optional[str] = None
+    locations: List[str] = []
+    workplace_type: List[str] = []
+    employment_type: List[str] = []
+    skills_inc: List[str] = []
+    salary_min_inr: Optional[str] = None
+    salary_min_usd: Optional[str] = None
+
 @app.post("/api/user/profile")
 async def save_user_profile_endpoint(request: Request, profile: Dict[str, Any] = Body(...), x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
     uid = x_firebase_uid or request.headers.get("X-Firebase-UID") or "guest_user"
