@@ -4,6 +4,10 @@
  * and resume upload modal handlers across static pages.
  */
 
+/**
+ * Resolves the candidate's unique user identifier from session or localStorage.
+ * @returns {string} The active user identifier.
+ */
 function getFirebaseUID() {
   const sessionUID = sessionStorage.getItem('firebase_uid');
   if (sessionUID) return sessionUID;
@@ -12,10 +16,12 @@ function getFirebaseUID() {
   try {
     const userRaw = localStorage.getItem('getarole_user');
     if (userRaw) {
-      const parsed = JSON.parse(userRaw);
-      if (parsed && parsed.uid) return parsed.uid;
+      const parsedUser = JSON.parse(userRaw);
+      if (parsedUser && parsedUser.uid) return parsedUser.uid;
     }
-  } catch(e) {}
+  } catch (err) {
+    console.warn('[getFirebaseUID] Failed to parse user JSON:', err);
+  }
   let userId = localStorage.getItem('getarole_user_id');
   if (!userId) {
     userId = 'usr_' + Math.random().toString(36).substring(2, 11);
@@ -24,70 +30,94 @@ function getFirebaseUID() {
   return userId;
 }
 
+/**
+ * Saves candidate profile data to Supabase REST API backend.
+ * @param {Object} profileData - Candidate demographic & section profile object.
+ * @returns {Promise<boolean>} True if save succeeded.
+ */
 async function apiSaveProfile(profileData) {
   const uid = getFirebaseUID();
   try {
-    const res = await fetch('/api/user/profile', {
+    const response = await fetch('/api/user/profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
       body: JSON.stringify(profileData)
     });
-    return res.ok;
-  } catch(e) {
-    console.warn('[apiSaveProfile]', e);
+    return response.ok;
+  } catch (err) {
+    console.warn('[apiSaveProfile] Save error:', err);
     return false;
   }
 }
 
+/**
+ * Loads candidate profile data from Supabase REST API backend.
+ * @returns {Promise<Object|null>} Candidate profile object or null if not found.
+ */
 async function apiLoadProfile() {
   const uid = getFirebaseUID();
   try {
-    const res = await fetch('/api/user/profile', {
+    const response = await fetch('/api/user/profile', {
       headers: { 'X-Firebase-UID': uid }
     });
-    if (res.ok) {
-      const data = await res.json();
-      return data.profile || {};
+    if (response.ok) {
+      const result = await response.json();
+      return result.profile || null;
     }
-  } catch(e) {
-    console.warn('[apiLoadProfile]', e);
+  } catch (err) {
+    console.warn('[apiLoadProfile] Fetch error:', err);
   }
-  return {};
+  return null;
 }
 
+/**
+ * Saves candidate job search preferences to Supabase REST API.
+ * @param {Object} prefsData - Target titles, location, and workplace preferences.
+ * @returns {Promise<boolean>} True if save succeeded.
+ */
 async function apiSavePreferences(prefsData) {
   const uid = getFirebaseUID();
   try {
-    const res = await fetch('/api/user/preferences', {
+    const response = await fetch('/api/user/preferences', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
       body: JSON.stringify(prefsData)
     });
-    return res.ok;
-  } catch(e) {
-    console.warn('[apiSavePreferences]', e);
+    return response.ok;
+  } catch (err) {
+    console.warn('[apiSavePreferences] Save error:', err);
     return false;
   }
 }
 
+/**
+ * Loads candidate job search preferences from Supabase REST API.
+ * @returns {Promise<Object|null>} Preferences object or null.
+ */
 async function apiLoadPreferences() {
   const uid = getFirebaseUID();
   try {
-    const res = await fetch('/api/user/preferences', {
+    const response = await fetch('/api/user/preferences', {
       headers: { 'X-Firebase-UID': uid }
     });
-    if (res.ok) {
-      const data = await res.json();
-      return data.preferences || {};
+    if (response.ok) {
+      const result = await response.json();
+      return result.preferences || null;
     }
-  } catch(e) {
-    console.warn('[apiLoadPreferences]', e);
+  } catch (err) {
+    console.warn('[apiLoadPreferences] Fetch error:', err);
   }
-  return {};
+  return null;
 }
 
-async function handleModalResumeUpload(e, onComplete) {
-  const file = e.target.files && e.target.files[0];
+/**
+ * Handles resume upload file selection from preferences/profile modals.
+ * Parses PDF/Word binary, syncs profile state, and updates status UI.
+ * @param {Event} event - File input change event.
+ * @param {Function} [onComplete] - Optional completion callback.
+ */
+async function handleModalResumeUpload(event, onComplete) {
+  const file = event.target.files && event.target.files[0];
   if (!file) return;
   const statusEl = document.getElementById('pref-resume-status');
   if (statusEl) statusEl.textContent = `⏳ Parsing ${file.name}...`;
@@ -95,13 +125,13 @@ async function handleModalResumeUpload(e, onComplete) {
   try {
     const formData = new FormData();
     formData.append('file', file);
-    const res = await fetch('/api/match-resume', { method: 'POST', body: formData }).catch(err => {
+    const response = await fetch('/api/match-resume', { method: 'POST', body: formData }).catch(err => {
       console.error('[ResumeUpload Network Error]', err);
       return null;
     });
 
-    if (res && res.ok) {
-      const data = await res.json();
+    if (response && response.ok) {
+      const data = await response.json();
       const parsedProf = data.candidate_profile || {};
       const existing = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
       
@@ -128,29 +158,29 @@ async function handleModalResumeUpload(e, onComplete) {
       localStorage.setItem('getarole_uploaded_resume', JSON.stringify({ filename: file.name, uploadedAt: new Date().toLocaleDateString(), raw_text: data.resume_text || '', skills: parsedProf.skills || [] }));
       
       if (data.resume_data) {
-        const rv2 = data.resume_data;
-        rv2.experience = parsedProf.experience || rv2.experience || [];
-        rv2.education = parsedProf.education || rv2.education || [];
-        rv2.projects = parsedProf.projects || rv2.projects || [];
-        rv2.links = parsedProf.links || rv2.links || {};
-        localStorage.setItem('getarole_resume_v2', JSON.stringify(rv2));
+        const resumeV2 = data.resume_data;
+        resumeV2.experience = parsedProf.experience || resumeV2.experience || [];
+        resumeV2.education = parsedProf.education || resumeV2.education || [];
+        resumeV2.projects = parsedProf.projects || resumeV2.projects || [];
+        resumeV2.links = parsedProf.links || resumeV2.links || {};
+        localStorage.setItem('getarole_resume_v2', JSON.stringify(resumeV2));
       }
 
       await apiSaveProfile(existing);
 
-      const expC = (parsedProf.experience || []).length;
-      const eduC = (parsedProf.education || []).length;
-      if (statusEl) statusEl.textContent = `✓ ${file.name} parsed · ${(parsedProf.skills || []).length} skills, ${expC} exp, ${eduC} edu`;
-      if (typeof toast === 'function') toast(`✅ Resume parsed! ${(parsedProf.skills || []).length} skills, ${expC} experiences extracted.`);
+      const experienceCount = (parsedProf.experience || []).length;
+      const educationCount = (parsedProf.education || []).length;
+      if (statusEl) statusEl.textContent = `✓ ${file.name} parsed · ${(parsedProf.skills || []).length} skills, ${experienceCount} exp, ${educationCount} edu`;
+      if (typeof toast === 'function') toast(`✅ Resume parsed! ${(parsedProf.skills || []).length} skills, ${experienceCount} experiences extracted.`);
       if (typeof onComplete === 'function') onComplete(parsedProf);
     } else {
       if (statusEl) statusEl.textContent = `⚠️ Error parsing ${file.name}`;
       if (typeof toast === 'function') toast(`❌ Resume upload failed. Please ensure file is a valid text PDF or Word document.`);
     }
-  } catch(err) {
+  } catch (err) {
     console.error('handleModalResumeUpload Error:', err);
     if (statusEl) statusEl.textContent = `⚠️ ${file.name} upload error`;
     if (typeof toast === 'function') toast(`❌ Network error while uploading ${file.name}`);
   }
-  e.target.value = '';
+  event.target.value = '';
 }

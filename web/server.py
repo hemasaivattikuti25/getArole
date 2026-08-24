@@ -496,8 +496,8 @@ async def tailor_resume_api(req: TailorResumeRequest):
     Delegates rule-based matching to _calculate_rule_based_tailoring (<50 lines).
     """
     jd = req.job_description.lower()
-    r = req.resume_data
-    resume_text = json.dumps(r).lower()
+    resume_data = req.resume_data
+    resume_text = json.dumps(resume_data).lower()
 
     score, matched, missing, summary = _calculate_rule_based_tailoring(jd, resume_text)
 
@@ -506,7 +506,7 @@ async def tailor_resume_api(req: TailorResumeRequest):
         user_guidance = f"\nUSER'S CUSTOM TAILORING INSTRUCTION: {req.custom_instruction}" if req.custom_instruction else ""
         prompt = f"""You are an elite ATS optimization engine. Compare the candidate's resume to the target Job Description and provide personalized recommendations.
 Job Description (snippet): {req.job_description[:1200]}
-Resume Data: {json.dumps(r)[:1200]}{user_guidance}
+Resume Data: {json.dumps(resume_data)[:1200]}{user_guidance}
 
 Return JSON:
 {{

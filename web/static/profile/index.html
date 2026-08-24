@@ -1064,12 +1064,12 @@
       }
     }
 
-    let editingPersonal = false;
+    let isEditingPersonal = false;
 
     function toggleEditPersonal() {
-      editingPersonal = !editingPersonal;
+      isEditingPersonal = !isEditingPersonal;
       renderStaticCards();
-      if (editingPersonal) {
+      if (isEditingPersonal) {
         setTimeout(() => {
           const el = document.getElementById('section-personal');
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1095,7 +1095,7 @@
       document.getElementById('prof-avatar').textContent = initials;
       document.getElementById('nav-avatar').textContent = initials;
       
-      editingPersonal = false;
+      isEditingPersonal = false;
       renderStaticCards();
     }
 
@@ -1144,7 +1144,7 @@
       // ── PERSONAL INFO (inline editable) ──
       const p = state.profile;
       let piHTML;
-      if (editingPersonal) {
+      if (isEditingPersonal) {
         piHTML = `
           <div class="summary-card" id="section-personal">
             <div class="summary-card-header">
