@@ -95,7 +95,10 @@ async function handleModalResumeUpload(e, onComplete) {
   try {
     const formData = new FormData();
     formData.append('file', file);
-    const res = await fetch('/api/match-resume', { method: 'POST', body: formData }).catch(() => null);
+    const res = await fetch('/api/match-resume', { method: 'POST', body: formData }).catch(err => {
+      console.error('[ResumeUpload Network Error]', err);
+      return null;
+    });
 
     if (res && res.ok) {
       const data = await res.json();
@@ -141,12 +144,13 @@ async function handleModalResumeUpload(e, onComplete) {
       if (typeof toast === 'function') toast(`✅ Resume parsed! ${(parsedProf.skills || []).length} skills, ${expC} experiences extracted.`);
       if (typeof onComplete === 'function') onComplete(parsedProf);
     } else {
-      if (statusEl) statusEl.textContent = `✓ ${file.name} uploaded`;
-      if (typeof toast === 'function') toast(`Resume ${file.name} uploaded!`);
+      if (statusEl) statusEl.textContent = `⚠️ Error parsing ${file.name}`;
+      if (typeof toast === 'function') toast(`❌ Resume upload failed. Please ensure file is a valid text PDF or Word document.`);
     }
   } catch(err) {
     console.error('handleModalResumeUpload Error:', err);
-    if (statusEl) statusEl.textContent = `✓ ${file.name} uploaded`;
+    if (statusEl) statusEl.textContent = `⚠️ ${file.name} upload error`;
+    if (typeof toast === 'function') toast(`❌ Network error while uploading ${file.name}`);
   }
   e.target.value = '';
 }

@@ -57,8 +57,8 @@ async def scrape_single_lever_board(client: httpx.AsyncClient, company: str) -> 
             )
             listings.append(job_obj)
             
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[Lever Scraper Warning] Exception during scraping {company_slug}: {e}")
     
     return listings
 

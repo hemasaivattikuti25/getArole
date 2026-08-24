@@ -59,8 +59,8 @@ async def scrape_single_linkedin_query(client: httpx.AsyncClient, keywords: str,
                 employment_type="Internship" if any(w in title.lower() for w in ["intern", "trainee"]) else "Full-Time",
                 description=f"Live LinkedIn opening: {title} at {company} in {loc}."
             ))
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[LinkedIn Scraper Warning] Exception during scraping: {e}")
     return listings
 
 async def scrape_all_linkedin_jobs() -> List[JobListing]:

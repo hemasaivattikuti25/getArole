@@ -39,6 +39,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Global exception boundary to prevent raw stack trace leakage."""
+    print(f"[Global Exception Boundary] Unhandled error at {request.url.path}: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={"success": False, "error": "An internal server error occurred. Please try again."}
+    )
+
+@app.exception_handler(404)
+async def custom_404_handler(request: Request, exc: Exception):
+    """SPA fallback for invalid frontend routes."""
+    if request.url.path.startswith("/api/"):
+        return JSONResponse(status_code=404, content={"success": False, "error": "API route not found."})
+    return HTMLResponse("<h1>404 — Page Not Found</h1><p>Return to <a href='/'>getArole Home</a></p>", status_code=404)
+
 AGGREGATOR = JobAggregator()
 MATCHER: Optional[ResumeMatcher] = None
 

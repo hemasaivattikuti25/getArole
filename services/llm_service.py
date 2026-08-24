@@ -58,7 +58,8 @@ class NvidiaLLMService:
                             content = data["choices"][0]["delta"].get("content")
                             if content:
                                 yield content
-                        except Exception:
+                        except Exception as e:
+                            print(f"[LLMStream] Skipping non-JSON chunk line: {e}")
                             continue
 
     def call_chat_sync(self, messages: List[Dict[str, str]], temperature: float = 0.2, max_tokens: int = 800) -> str:

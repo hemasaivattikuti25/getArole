@@ -13,7 +13,8 @@ class EmbeddingService:
             cache_dir = os.environ.get("FASTEMBED_CACHE_DIR", "/tmp/fastembed_cache")
             try:
                 cls._instance.model = TextEmbedding(model_name=settings.EMBEDDING_MODEL_NAME, cache_dir=cache_dir)
-            except Exception:
+            except Exception as e:
+                print(f"[EmbeddingService Warning] Custom cache_dir failed ({e}), falling back to default FastEmbed model initialization.")
                 cls._instance.model = TextEmbedding(model_name=settings.EMBEDDING_MODEL_NAME)
         return cls._instance
 
