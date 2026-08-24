@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS public.jobs (
     description         TEXT,
     skills              TEXT[],
     embedding           vector(384),
+    is_deleted          BOOLEAN DEFAULT FALSE,
     last_seen_at        TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
     created_at          TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at          TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
@@ -116,7 +117,7 @@ CREATE TABLE IF NOT EXISTS public.user_profiles (
 -- ─────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.user_preferences (
     id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    firebase_uid    TEXT UNIQUE NOT NULL,
+    firebase_uid    TEXT UNIQUE NOT NULL REFERENCES public.user_profiles(firebase_uid) ON DELETE CASCADE,
     values          TEXT[],
     roles           TEXT[],
     locations       TEXT[],
@@ -138,7 +139,7 @@ CREATE TABLE IF NOT EXISTS public.user_preferences (
 -- ─────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.user_resumes (
     id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    firebase_uid    TEXT NOT NULL,
+    firebase_uid    TEXT NOT NULL REFERENCES public.user_profiles(firebase_uid) ON DELETE CASCADE,
     is_default      BOOLEAN DEFAULT TRUE,
     filename        TEXT,
     file_url        TEXT,
@@ -161,7 +162,10 @@ CREATE INDEX IF NOT EXISTS idx_jobs_company         ON public.jobs (company);
 CREATE INDEX IF NOT EXISTS idx_jobs_city            ON public.jobs (city);
 CREATE INDEX IF NOT EXISTS idx_jobs_platform        ON public.jobs (platform);
 CREATE INDEX IF NOT EXISTS idx_jobs_workplace_type  ON public.jobs (workplace_type);
+CREATE INDEX IF NOT EXISTS idx_jobs_workplace_loc   ON public.jobs (workplace_type, location);
 CREATE INDEX IF NOT EXISTS idx_jobs_created_at      ON public.jobs (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_jobs_active          ON public.jobs (is_deleted) WHERE is_deleted = false;
+CREATE INDEX IF NOT EXISTS idx_jobs_title_gin       ON public.jobs USING gin (to_tsvector('english', title));
 CREATE INDEX IF NOT EXISTS idx_jobs_embedding       ON public.jobs USING hnsw (embedding vector_cosine_ops);
 CREATE INDEX IF NOT EXISTS idx_user_profiles_uid    ON public.user_profiles(firebase_uid);
 CREATE INDEX IF NOT EXISTS idx_user_preferences_uid ON public.user_preferences(firebase_uid);

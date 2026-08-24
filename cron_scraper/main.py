@@ -56,31 +56,35 @@ async def run_scrapers():
     # Upsert jobs into Supabase
     print("Upserting jobs to database...")
     successful_upserts = 0
+    job_records = []
     for job in all_jobs:
+        job_records.append({
+            "id": getattr(job, "id", None) or getattr(job, "url", ""),
+            "title": getattr(job, "title", "Software Engineer"),
+            "company": getattr(job, "company", "Company"),
+            "location": getattr(job, "location", "India"),
+            "city": getattr(job, "city", "India") or "India",
+            "platform": getattr(job, "platform", "Enterprise"),
+            "url": getattr(job, "url", ""),
+            "workplace_type": getattr(job, "workplace_type", "Onsite") or "Onsite",
+            "employment_type": getattr(job, "employment_type", "Full-Time") or "Full-Time",
+            "stipend_or_salary": getattr(job, "stipend_or_salary", None),
+            "stipend_amount_min": getattr(job, "stipend_amount_min", None),
+            "description": (getattr(job, "description", "") or "")[:4000],
+            "skills": getattr(job, "skills", []) or [],
+            "updated_at": start_time.isoformat()
+        })
+
+    # Bulk batch upsert in chunks of 100 records
+    batch_size = 100
+    for i in range(0, len(job_records), batch_size):
+        chunk = job_records[i:i + batch_size]
         try:
-            job_record = {
-                "id": getattr(job, "id", None) or str(uuid.uuid4()),
-                "title": getattr(job, "title", "Job Role"),
-                "company": getattr(job, "company", "Enterprise"),
-                "location": getattr(job, "location", "India"),
-                "city": getattr(job, "city", "India") or "India",
-                "platform": getattr(job, "platform", "Enterprise"),
-                "url": getattr(job, "url", ""),
-                "workplace_type": getattr(job, "workplace_type", "Onsite") or "Onsite",
-                "employment_type": getattr(job, "employment_type", "Full-Time") or "Full-Time",
-                "stipend_or_salary": getattr(job, "stipend_or_salary", None),
-                "stipend_amount_min": getattr(job, "stipend_amount_min", None),
-                "description": (getattr(job, "description", "") or "")[:4000],
-                "skills": getattr(job, "skills", []) or [],
-                "updated_at": start_time.isoformat()
-            }
-            
-            # The 'id' column in Supabase is the primary key (usually URL or hash)
-            supabase.table("jobs").upsert(job_record, on_conflict="id").execute()
-            successful_upserts += 1
+            supabase.table("jobs").upsert(chunk, on_conflict="id").execute()
+            successful_upserts += len(chunk)
         except Exception as e:
-            print(f"Error upserting job: {e}")
-            
+            print(f"Error bulk upserting job batch {i}-{i+len(chunk)}: {e}")
+
     print(f"Successfully upserted {successful_upserts}/{len(all_jobs)} jobs.")
     
     print(f"[{datetime.now(timezone.utc).isoformat()}] Enterprise Scrape Job Completed Successfully.")
