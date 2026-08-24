@@ -824,9 +824,15 @@
     }
 
     async function finishOnboarding() {
+      const finishBtn = document.querySelector('#step-8 .btn-next') || document.querySelector('#btn-next');
+      if (finishBtn) {
+        finishBtn.disabled = true;
+        finishBtn.textContent = 'Saving Preferences...';
+      }
+
       // Map preferences to dashboard schema
       const dashboardPrefs = {
-        role: prefs.specializations.length > 0 ? prefs.specializations[0] : prefs.department,
+        role: prefs.specializations.length > 0 ? prefs.specializations[0] : (prefs.department || 'Software Engineering'),
         target_role: prefs.specializations.join(', '),
         city: prefs.locations[0] || '',
         locations: prefs.locations,
@@ -869,9 +875,9 @@
         ]);
       } catch (err) {
         console.warn('Supabase sync warning:', err);
+      } finally {
+        window.location.href = '/dashboard';
       }
-
-      window.location.href = '/dashboard';
     }
 
     function syncUIToState() {
