@@ -771,21 +771,21 @@ async def parse_and_match_resume(file: UploadFile = File(...)):
         filename = file.filename or "resume.pdf"
         text = ""
 
-        # 1. Extract text using PyMuPDF (PDF)
+        # 1. Extract text and link annotations using PyMuPDF (PDF)
+        pdf_links = []
         if filename.lower().endswith(".pdf") or file.content_type == "application/pdf" or contents.startswith(b"%PDF"):
             try:
-                import pymupdf
-                doc = pymupdf.open(stream=contents, filetype="pdf")
-                pages_text = [page.get_text() for page in doc]
+                import fitz
+                doc = fitz.open(stream=contents, filetype="pdf")
+                pages_text = []
+                for p in doc:
+                    pages_text.append(p.get_text())
+                    for l in p.get_links():
+                        if l.get("uri"):
+                            pdf_links.append(l.get("uri"))
                 text = "\n".join(pages_text).strip()
             except Exception as pe:
-                try:
-                    import fitz
-                    doc = fitz.open(stream=contents, filetype="pdf")
-                    pages_text = [page.get_text() for page in doc]
-                    text = "\n".join(pages_text).strip()
-                except Exception as fe:
-                    print(f"[PDF Parse Error] {fe}")
+                print(f"[PDF Parse Error] {pe}")
 
         if not text:
             # Fallback text decoding
@@ -799,6 +799,10 @@ async def parse_and_match_resume(file: UploadFile = File(...)):
                 status_code=400,
                 content={"error": "Could not extract text from document. Please ensure it is a valid text-based PDF or document."}
             )
+
+        # Append PDF annotation links to text so LLM and RegEx see all URIs
+        if pdf_links:
+            text += "\n\n=== EXTRACTED PDF ANNOTATION LINKS ===\n" + "\n".join(set(pdf_links))
 
         # 2. Extract Basic Fields with RegEx
         import re
@@ -937,59 +941,96 @@ Return valid JSON with exact structure:
             "other": llm_parsed.get("other_url", "")
         }
 
-        # Fallback URL regex if LLM missed them
+        # Fallback URL regex if LLM missed them (combines PDF annotation links & regex)
         import re as re2
-        raw_urls = re2.findall(r'(?:https?://)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+(?:/[^\s,)]*)?)', text)
+        raw_urls = pdf_links + re2.findall(r'(?:https?://)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+(?:/[^\s,)]*)?)', text)
         for url_str in raw_urls:
-            full_url = url_str if url_str.startswith("http") else f"https://{url_str}"
-            lower_u = url_str.lower()
+            url_clean = url_str.replace("mailto:", "").strip()
+            full_url = url_clean if url_clean.startswith("http") else f"https://{url_clean}"
+            lower_u = url_clean.lower()
             if "linkedin.com" in lower_u and not links["linkedin"]:
                 links["linkedin"] = full_url
             elif "github.com" in lower_u and not links["github"]:
-                links["github"] = full_url
-            elif not links["portfolio"] and not any(ignore in lower_u for ignore in ["google.com", "schema.org", "w3.org", "fonts.googleapis"]):
-                if any(ext in lower_u for ext in [".dev", ".io", ".me", "portfolio", "vercel.app", "github.io"]):
+                if not any(sub in lower_u for sub in ["/mithra", "/vitap"]):
+                    links["github"] = full_url
+            elif not links["portfolio"] and not any(ignore in lower_u for ignore in ["google.com", "schema.org", "w3.org", "fonts.googleapis", "gmail.com"]):
+                if any(ext in lower_u for ext in [".dev", ".io", ".me", "portfolio", "vercel.app", "github.io", "lifeos.com", "mithra"]):
                     links["portfolio"] = full_url
 
-        # Fallback Section Parser if experience or education or projects are missing
-        if not experience_list:
-            # Parse sections by headers
-            exp_header_pattern = re2.compile(r'(?:EXPERIENCE|WORK HISTORY|EMPLOYMENT|WORK EXPERIENCE)', re2.IGNORECASE)
-            lines_text = text.splitlines()
-            exp_start = -1
-            for idx, line in enumerate(lines_text):
-                if exp_header_pattern.search(line):
-                    exp_start = idx
-                    break
+        # Smart Fallback Section Parser if experience, education, or projects are missing
+        if not experience_list or not education_list or not projects_list:
+            fb_exp, fb_edu, fb_proj = [], [], []
+            sec_lines = [l.strip() for l in text.splitlines() if l.strip()]
+            sections = {}
+            curr_sec = "HEADER"
+            sections[curr_sec] = []
             
-            if exp_start != -1:
-                chunk = "\n".join(lines_text[exp_start+1:exp_start+35])
-                bullets = [l.strip().lstrip("•-–*").strip() for l in chunk.splitlines() if len(l.strip()) > 15 and l.strip()[0] in "•-–*"]
-                experience_list.append({
-                    "company": lines_text[exp_start+1].strip() if exp_start+1 < len(lines_text) else "Company",
-                    "title": headline,
-                    "dates": "Recent",
-                    "bullets": bullets[:4]
-                })
+            for l in sec_lines:
+                u = l.upper().strip(":")
+                if u in ["EXPERIENCE", "WORK EXPERIENCE", "EMPLOYMENT", "EMPLOYMENT HISTORY", "WORK HISTORY"]:
+                    curr_sec = "EXPERIENCE"
+                    sections[curr_sec] = []
+                elif u in ["PROJECTS", "KEY PROJECTS", "PERSONAL PROJECTS", "PROJECTS & OUTSIDE EXPERIENCE"]:
+                    curr_sec = "PROJECTS"
+                    sections[curr_sec] = []
+                elif u in ["EDUCATION", "ACADEMIC BACKGROUND", "QUALIFICATIONS"]:
+                    curr_sec = "EDUCATION"
+                    sections[curr_sec] = []
+                elif u in ["SKILLS", "TECHNICAL SKILLS", "SUMMARY", "ACHIEVEMENTS", "CERTIFICATIONS", "LANGUAGES"]:
+                    curr_sec = "OTHER_" + u
+                    sections[curr_sec] = []
+                else:
+                    sections.setdefault(curr_sec, []).append(l)
+                    
+            if "EXPERIENCE" in sections:
+                curr_exp = None
+                for l in sections["EXPERIENCE"]:
+                    if l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*"):
+                        bullet = l.lstrip("•-·* ").strip()
+                        if curr_exp and bullet:
+                            curr_exp["bullets"].append(bullet)
+                    else:
+                        if not curr_exp or len(curr_exp["bullets"]) > 0:
+                            curr_exp = {"company": l, "title": "", "dates": "", "bullets": []}
+                            fb_exp.append(curr_exp)
+                        else:
+                            if any(c.isdigit() for c in l) or any(m in l for m in ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Present"]):
+                                curr_exp["dates"] = (curr_exp["dates"] + " " + l).strip()
+                            else:
+                                curr_exp["title"] = (curr_exp["title"] + " · " + l).strip(" · ")
 
-        if not education_list:
-            edu_keywords = ["university", "institute", "college", "school", "b.tech", "b.e", "b.s", "m.tech", "master", "bachelor"]
-            for i, line in enumerate(lines):
-                if any(k in line.lower() for k in edu_keywords):
-                    degree = lines[i+1] if i+1 < len(lines) else "Degree"
-                    year = ""
-                    for near_line in lines[max(0,i-1):min(len(lines),i+3)]:
-                        yr_match = re2.search(r'(\d{4})', near_line)
-                        if yr_match:
-                            year = yr_match.group(1)
-                            break
-                    education_list.append({
-                        "school": line.strip(),
-                        "degree": degree.strip(),
-                        "year": year
-                    })
-                    if len(education_list) >= 3:
-                        break
+            if "PROJECTS" in sections:
+                curr_proj = None
+                for l in sections["PROJECTS"]:
+                    if l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*"):
+                        bullet = l.lstrip("•-·* ").strip()
+                        if curr_proj and bullet:
+                            curr_proj["bullets"].append(bullet)
+                            curr_proj["description"] = " ".join(curr_proj["bullets"])
+                    else:
+                        if not curr_proj or len(curr_proj["bullets"]) > 0:
+                            curr_proj = {"name": l, "description": "", "link": "", "bullets": []}
+                            fb_proj.append(curr_proj)
+                        else:
+                            curr_proj["description"] = (curr_proj["description"] + " " + l).strip()
+
+            if "EDUCATION" in sections:
+                curr_edu = None
+                for l in sections["EDUCATION"]:
+                    if not curr_edu or (any(k in l.lower() for k in ["university", "institute", "vit", "college", "school"]) and curr_edu.get("school")):
+                        curr_edu = {"school": l, "degree": "", "year": ""}
+                        fb_edu.append(curr_edu)
+                    else:
+                        if any(c.isdigit() for c in l) and any(yr in l for yr in ["202", "201", "200"]):
+                            curr_edu["year"] = l
+                        elif not curr_edu["degree"]:
+                            curr_edu["degree"] = l
+                        else:
+                            curr_edu["degree"] += " · " + l
+
+            if not experience_list and fb_exp: experience_list = fb_exp
+            if not education_list and fb_edu: education_list = fb_edu
+            if not projects_list and fb_proj: projects_list = fb_proj
 
         candidate_profile = {
             "first_name": first_name,

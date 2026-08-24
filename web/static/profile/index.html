@@ -1171,8 +1171,8 @@
         `;
       }
 
-      // ── EXPERIENCE (from resume data) ──
-      const expData = (resumeV2 && resumeV2.experience) || (profileData.experience) || [];
+      // ── EXPERIENCE (from state or resume data) ──
+      const expData = (state.profile.experience && state.profile.experience.length > 0) ? state.profile.experience : ((resumeV2 && resumeV2.experience) || (profileData.experience) || []);
       let expContent = '';
       if (expData.length > 0) {
         expContent = expData.map(exp => `
@@ -1199,8 +1199,8 @@
         </div>
       `;
 
-      // ── EDUCATION (from resume data) ──
-      const eduData = (resumeV2 && resumeV2.education) || (profileData.education) || [];
+      // ── EDUCATION (from state or resume data) ──
+      const eduData = (state.profile.education && state.profile.education.length > 0) ? state.profile.education : ((resumeV2 && resumeV2.education) || (profileData.education) || []);
       let eduContent = '';
       if (eduData.length > 0) {
         eduContent = eduData.map(edu => `
@@ -1222,8 +1222,8 @@
         </div>
       `;
 
-      // ── PROJECTS (from resume data) ──
-      const projData = (resumeV2 && resumeV2.projects) || (profileData.projects) || [];
+      // ── PROJECTS (from state or resume data) ──
+      const projData = (state.profile.projects && state.profile.projects.length > 0) ? state.profile.projects : ((resumeV2 && resumeV2.projects) || (profileData.projects) || []);
       let projContent = '';
       if (projData.length > 0) {
         projContent = projData.map(proj => `
@@ -1244,8 +1244,8 @@
         </div>
       `;
 
-      // ── LINKS (from resume data) ──
-      const linksData = (resumeV2 && resumeV2.links) || (profileData.links) || {};
+      // ── LINKS (from state or resume data) ──
+      const linksData = (state.profile.links && (state.profile.links.linkedin || state.profile.links.github || state.profile.links.portfolio)) ? state.profile.links : ((resumeV2 && resumeV2.links) || (profileData.links) || {});
       const linksHTML = `
         <div class="summary-card">
           <div class="summary-card-header">
@@ -1280,7 +1280,7 @@
       container.innerHTML = resumeHTML + piHTML + expHTML + eduHTML + projHTML + linksHTML + skillsHTML + prefHeader;
     }
 
-        async function initData() {
+    async function initData() {
       const savedPrefs = await apiLoadPreferences();
       const savedProfile = await apiLoadProfile();
 
@@ -1290,7 +1290,18 @@
           if(!Array.isArray(state.prefs[k])) state.prefs[k] = [];
         });
       }
-      if(Object.keys(savedProfile).length > 0) state.profile = { ...state.profile, ...savedProfile };
+      if(Object.keys(savedProfile).length > 0) {
+        const currentExp = state.profile.experience || [];
+        const currentEdu = state.profile.education || [];
+        const currentProj = state.profile.projects || [];
+        const currentLinks = state.profile.links || {};
+
+        state.profile = { ...state.profile, ...savedProfile };
+        if (!state.profile.experience || state.profile.experience.length === 0) state.profile.experience = currentExp;
+        if (!state.profile.education || state.profile.education.length === 0) state.profile.education = currentEdu;
+        if (!state.profile.projects || state.profile.projects.length === 0) state.profile.projects = currentProj;
+        if (!state.profile.links || !state.profile.links.linkedin) state.profile.links = currentLinks;
+      }
 
 
       // Set Profile Left Card
