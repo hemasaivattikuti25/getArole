@@ -203,6 +203,61 @@ async function handleModalResumeUpload(event, onComplete) {
   event.target.value = '';
 }
 
+/**
+ * WCAG 2.2 Compliant Focus Trap with Cleanup & Trigger Focus Return
+ * @param {HTMLElement} modalEl - Active modal dialog element.
+ * @param {Function} [onCloseCallback] - Optional close callback on Escape.
+ * @returns {Function} Cleanup function to call when modal closes.
+ */
+function trapModalFocus(modalEl, onCloseCallback) {
+  if (!modalEl) return () => {};
+  const focusableSelectors = [
+    'a[href]', 'button:not([disabled])',
+    'input:not([disabled])', 'select:not([disabled])',
+    'textarea:not([disabled])', '[tabindex]:not([tabindex="-1"])'
+  ].join(',');
+
+  const getFocusable = () => Array.from(modalEl.querySelectorAll(focusableSelectors));
+  const triggerElement = document.activeElement;
+
+  // Make background inert
+  const backgroundElements = Array.from(document.querySelectorAll('body > *:not([role="dialog"]):not([data-modal-container])'));
+  backgroundElements.forEach(el => el.setAttribute('inert', ''));
+
+  const handleKeydown = (e) => {
+    const focusable = getFocusable();
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (e.key === 'Tab') {
+      if (e.shiftKey && document.activeElement === first) {
+        last.focus();
+        e.preventDefault();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        first.focus();
+        e.preventDefault();
+      }
+    } else if (e.key === 'Escape') {
+      if (typeof onCloseCallback === 'function') {
+        onCloseCallback();
+      }
+    }
+  };
+
+  modalEl.addEventListener('keydown', handleKeydown);
+  const firstFocusable = getFocusable()[0];
+  if (firstFocusable) firstFocusable.focus();
+
+  return function cleanup() {
+    modalEl.removeEventListener('keydown', handleKeydown);
+    backgroundElements.forEach(el => el.removeAttribute('inert'));
+    if (triggerElement && typeof triggerElement.focus === 'function') {
+      triggerElement.focus();
+    }
+  };
+}
+
 // Register Progressive Web App Service Worker
 if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
   window.addEventListener('load', () => {
