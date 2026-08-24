@@ -155,9 +155,9 @@ CREATE TABLE IF NOT EXISTS public.user_resumes (
     updated_at      TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- ─────────────────────────────────────────────────────────────
--- 8. Indexes
--- ─────────────────────────────────────────────────────────────
+-- Migration helpers for existing tables
+ALTER TABLE public.jobs ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT FALSE;
+
 CREATE INDEX IF NOT EXISTS idx_jobs_company         ON public.jobs (company);
 CREATE INDEX IF NOT EXISTS idx_jobs_city            ON public.jobs (city);
 CREATE INDEX IF NOT EXISTS idx_jobs_platform        ON public.jobs (platform);
