@@ -966,22 +966,22 @@
       <div class="eb">
         <!-- 1. HEADER & INFO -->
         <div class="pn active" id="panel-header">
-          <div class="fg"><label>Full Name</label><input class="fi" id="ffn" placeholder="Hemasai Vattikuti"
+          <div class="fg"><label>Full Name</label><input class="fi" id="ffn" placeholder="e.g. Jane Doe"
               oninput="ud('header','name',this.value)"></div>
           <div class="fr2">
-            <div class="fg"><label>Phone Number</label><input class="fi" id="fph" placeholder="+91 79937 40469"
+            <div class="fg"><label>Phone Number</label><input class="fi" id="fph" placeholder="+91 98765 43210"
                 oninput="ud('header','phone',this.value)"></div>
             <div class="fg"><label>Email Address</label><input class="fi" id="fem" type="email"
-                placeholder="hemasai@example.com" oninput="ud('header','email',this.value)"></div>
+                placeholder="you@example.com" oninput="ud('header','email',this.value)"></div>
           </div>
           <div class="fr2">
             <div class="fg"><label>LinkedIn Handle / URL</label><input class="fi" id="fli"
-                placeholder="linkedin.com/in/hemasai" oninput="ud('header','linkedin',this.value)"></div>
+                placeholder="linkedin.com/in/yourhandle" oninput="ud('header','linkedin',this.value)"></div>
             <div class="fg"><label>GitHub Handle / URL</label><input class="fi" id="fgh"
-                placeholder="github.com/hemasaivattikuti25" oninput="ud('header','github',this.value)"></div>
+                placeholder="github.com/yourhandle" oninput="ud('header','github',this.value)"></div>
           </div>
           <div class="fg"><label>Personal Portfolio / Website</label><input class="fi" id="fpo"
-              placeholder="mithra-lifeos.com" oninput="ud('header','portfolio',this.value)"></div>
+              placeholder="yourportfolio.dev" oninput="ud('header','portfolio',this.value)"></div>
         </div>
 
         <!-- 2. SUMMARY -->
@@ -1135,107 +1135,59 @@
 
     let R = {
       header: {
-        name: 'Hemasai Vattikuti',
-        phone: '+91 79937 40469',
-        email: 'Email',
-        linkedin: 'LinkedIn',
-        github: 'GitHub',
-        portfolio: 'mithra-lifeos.com'
+        name: '',
+        phone: '',
+        email: '',
+        linkedin: '',
+        github: '',
+        portfolio: ''
       },
       summary: {
-        text: 'Backend Applied AI Engineer building scalable, high-availability distributed systems and production LLM infrastructure — from mission-critical defense systems to AI products serving real users.'
+        text: ''
       },
       skills: {
-        languages: 'Python, Java, SQL',
-        ai_llm: 'LangChain, Agentic AI, RAG Pipelines, Vector Embeddings, Semantic Search, Prompt Engineering, OpenAI API, Gemini API, Groq API, Hugging Face, Qdrant',
-        backend: 'FastAPI, REST APIs, JWT Authentication, RBAC, Rate Limiting, Async Programming, Docker',
-        databases: 'PostgreSQL, MongoDB (Replica Sets, Failover), Supabase, pgvector, Qdrant',
-        systems: 'Distributed Systems, High Availability, Row-Level Security, Zero-Trust Architecture',
-        tools: 'Git, React.js, Next.js, Vercel, Google Cloud'
+        languages: '',
+        ai_llm: '',
+        backend: '',
+        databases: '',
+        systems: '',
+        tools: ''
       },
       experience: [
         {
-          company: 'Defence Research and Development Laboratory (DRDL – DRDO)',
-          dates: 'Aug – Nov 2025',
-          title: 'Project Intern · Backend & Distributed Systems · Hyderabad, India',
-          bullets: [
-            'Architected a 3-node MongoDB Replica Set with automatic PRIMARY election and sub-10s failover for a mission-critical Defence Asset Management System under Scientist E, Ministry of Defence',
-            'Built production-grade FastAPI backend with JWT authentication, RBAC, and rate limiting; engineered auto-switch to standalone mode on replica failure',
-            'Dockerized full stack (MongoDB + FastAPI + React) with health monitors polling CPU/DB every 30s, auto-triggering failover on breach'
-          ]
-        },
-        {
-          company: 'Embrizon Technologies Pvt. Ltd.',
-          dates: 'Nov 2024 – Jan 2025',
-          title: 'Artificial Intelligence Intern · Remote',
-          bullets: [
-            'Engineered AI-powered automation workflows using LangChain, Llama-3, and Gemini models for customer support',
-            'Developed FastAPI backend services for AI applications and integrated production-ready LLM pipelines',
-            'Improved operational efficiency through automated routing and intelligent response generation'
-          ]
+          company: '',
+          dates: '',
+          title: '',
+          bullets: ['']
         }
       ],
       projects: [
         {
-          name: 'Mithra Life OS',
-          liveLink: 'https://mithra-lifeos.com',
-          githubLink: 'https://github.com/hemasaivattikuti25/mithra-lifeos',
-          dates: '2025 – Present',
-          stack: 'React · FastAPI · Supabase · PostgreSQL · Gemini API · pgvector · Docker',
-          bullets: [
-            'Deployed full-stack AI productivity platform serving 900+ registered users',
-            'Designed a zero-trust architecture using PostgreSQL Row-Level Security enforcing strict user-level data isolation',
-            'Implemented Retrieval-Augmented Generation (RAG) using 768-dimensional Gemini embeddings stored in pgvector for semantic search'
-          ]
-        },
-        {
-          name: 'VITAP-UniOS',
-          liveLink: 'https://vitap-unios.vercel.app',
-          githubLink: 'https://github.com/hemasaivattikuti25/vitap-unios',
-          dates: '2026',
-          stack: 'Next.js · FastAPI · Qdrant · Groq Llama · RAG',
-          bullets: [
-            'Built an AI-powered campus assistant for VIT-AP students using Retrieval-Augmented Generation over university resources, notices, and academic documents',
-            'Developed FastAPI retrieval services integrated with Qdrant vector database for semantic search and contextual retrieval',
-            'Implemented scoped retrieval and filtering strategies to improve answer relevance and reduce hallucinations',
-            'Successfully served 1490+ production queries while maintaining low-latency response times'
-          ]
+          name: '',
+          liveLink: '',
+          githubLink: '',
+          dates: '',
+          stack: '',
+          bullets: ['']
         }
       ],
-      achievements: [
-        { text: '4th Place — Google Cloud Hackathon (GoogleDevs Sprint 2K25) · VIT-AP · 486 participants', date: 'Mar 2025' },
-        { text: '7th Place — Simverse Hackathon · VIT-AP University · 200+ participants', date: 'Jan 2026' },
-        { text: 'GSSoC 2025 — Tech Contributor · GirlScript Summer of Code · DataSentience-AIML', date: '2025' }
-      ],
-      certifications: [
-        { name: 'AI Agents and Agentic AI with Python & Generative AI', issuer: 'Vanderbilt University (Coursera)', date: 'Oct 2025' },
-        { name: 'Advanced Learning Algorithms', issuer: 'Stanford / DeepLearning.AI', date: 'Jul 2025' },
-        { name: 'Supervised ML: Regression & Classification', issuer: 'Stanford / DeepLearning.AI', date: 'Apr 2025' }
-      ],
+      achievements: [],
+      certifications: [],
       education: [
         {
-          school: 'Vellore Institute of Technology – Andhra Pradesh (VIT-AP)',
-          dates: '2023 – 2027',
-          degree: 'B.Tech, Computer Science and Engineering · Amaravati, AP',
-          coursework: 'Data Structures & Algorithms, Machine Learning, NLP, DBMS, Linear Algebra, Web Technologies'
+          school: '',
+          dates: '',
+          degree: '',
+          coursework: ''
         }
       ],
       cover_letter: {
-        company: 'Google',
-        role: 'Applied AI Systems Engineer',
+        company: 'Target Company',
+        role: 'Software Engineer',
         manager: 'Hiring Team',
-        date: 'October 2025',
+        date: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
         jd: '',
-        body: `Dear Hiring Team at Google,
-
-I am writing to express my strong interest in the Applied AI Systems Engineer role at Google. With hands-on experience engineering mission-critical high-availability distributed systems at DRDO and deploying production LLM infrastructure serving real users, I am eager to contribute to Google's world-class engineering initiatives.
-
-At the Defence Research and Development Laboratory (DRDL – DRDO), I architected a 3-node MongoDB Replica Set achieving sub-10s automatic failover for a mission-critical defense asset management system, complemented by a production-grade FastAPI backend with zero-trust RBAC and rate limiting. In parallel, I built and deployed scalable platforms like Mithra Life OS (serving 900+ users via pgvector RAG) and VITAP-UniOS (processing 1490+ queries with Qdrant vector retrieval).
-
-Google's relentless focus on high-throughput, low-latency distributed intelligence resonates deeply with my technical journey. I look forward to discussing how my experience in distributed reliability and applied AI systems can drive immediate value for your engineering team.
-
-Sincerely,
-Hemasai Vattikuti`
+        body: `Dear Hiring Team,\n\nI am writing to express my strong interest in the opportunity at your company. With a solid foundation in modern software engineering and building reliable systems, I am excited about the prospect of contributing to your team's mission.\n\nThroughout my work, I have focused on writing clean, maintainable code, solving complex technical challenges, and collaborating effectively across teams to deliver high-impact results.\n\nThank you for your time and consideration. I look forward to the opportunity to discuss how my experience aligns with your goals.\n\nSincerely,\nCandidate`
       }
     };
 
