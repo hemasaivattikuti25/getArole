@@ -84,7 +84,7 @@ async def scrape_internshala_category(client: httpx.AsyncClient, category: str, 
             stipend_num = parse_stipend(stipend_str)
             
             job_id_str = f"internshala_{company}_{title}_{location_name}"
-            uid = hashlib.md5(job_id_str.encode()).hexdigest()[:12]
+            uid = hashlib.sha256(job_id_str.encode("utf-8")).hexdigest()[:12]
             
             is_wfh = "work from home" in location_name.lower() or "remote" in location_name.lower() or city == "work-from-home"
             

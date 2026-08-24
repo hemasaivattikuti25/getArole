@@ -80,7 +80,7 @@ async def scrape_single_greenhouse_board(client: httpx.AsyncClient, company: str
             workplace = "Remote" if "remote" in loc_lower or "remote" in title.lower() else "Onsite"
             
             job_id_str = f"gh_{company}_{job.get('id', title)}"
-            uid = hashlib.md5(job_id_str.encode()).hexdigest()[:12]
+            uid = hashlib.sha256(job_id_str.encode("utf-8")).hexdigest()[:12]
             
             job_obj = JobListing(
                 id=uid,

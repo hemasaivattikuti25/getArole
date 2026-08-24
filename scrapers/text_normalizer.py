@@ -353,5 +353,5 @@ def generate_idempotent_job_id(platform: str, company: str, title: str, url: str
     clean_url = normalize_job_url(url)
     c_key = semantic_dedup_key(company, title)
     raw_signature = f"{platform.lower()}_{c_key}_{clean_url}"
-    return f"job_{hashlib.md5(raw_signature.encode('utf-8')).hexdigest()[:16]}"
+    return f"job_{hashlib.sha256(raw_signature.encode('utf-8')).hexdigest()[:16]}"
 

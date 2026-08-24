@@ -12,7 +12,9 @@ class EmbeddingService:
         if cls._instance is None:
             cls._instance = super(EmbeddingService, cls).__new__(cls)
             import os
-            cache_dir = os.environ.get("FASTEMBED_CACHE_DIR", "/tmp/fastembed_cache")
+            import tempfile
+            default_cache = os.path.join(tempfile.gettempdir(), "fastembed_cache")
+            cache_dir = os.environ.get("FASTEMBED_CACHE_DIR", default_cache)
             try:
                 cls._instance.model = TextEmbedding(model_name=settings.EMBEDDING_MODEL_NAME, cache_dir=cache_dir)
                 # Startup probe validating 384 dimensions

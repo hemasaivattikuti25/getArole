@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import shutil
+import tempfile
 from typing import List, Optional, Dict, Any
 from fastapi import FastAPI, UploadFile, File, Form, Query, HTTPException, Body, Request, Header, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,7 +32,7 @@ STATIC_DIR = os.path.join(BASE_DIR, "web", "static")
 DATA_DIR = os.path.join(BASE_DIR, "data")
 os.makedirs(DATA_DIR, exist_ok=True)
 SAVED_JOBS_FILE = os.path.join(DATA_DIR, "jobs.json")
-TMP_JOBS_FILE = "/tmp/jobs.json"
+TMP_JOBS_FILE = os.path.join(tempfile.gettempdir(), "jobs.json")
 
 app = FastAPI(
     title="getArole — Smart Resume Screener & Job Discovery Engine",
@@ -318,7 +319,7 @@ async def get_all_candidates():
     
     if not candidates:
         cand_file = os.path.join(BASE_DIR, "candidates.json")
-        for fp in [cand_file, "/tmp/candidates.json"]:
+        for fp in [cand_file, os.path.join(tempfile.gettempdir(), "candidates.json")]:
             if os.path.exists(fp):
                 try:
                     with open(fp, "r", encoding="utf-8") as f:

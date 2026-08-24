@@ -1,0 +1,24 @@
+# Git & Local tooling
+.git
+.gitignore
+.github
+.pytest_cache
+.coverage
+htmlcov/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local secrets & temporary data
+.env
+.env.*
+data/
+*.log
+*.sqlite3
+
+# Test artifacts
+tests/
+playwright-report/
+test-results/

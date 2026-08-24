@@ -5,10 +5,13 @@ from typing import List, Tuple, Dict, Any
 from fastembed import TextEmbedding
 from .models import JobListing, CandidateProfile
 
+import tempfile
+
 class ResumeMatcher:
     def __init__(self, model_name: str = "BAAI/bge-small-en-v1.5"):
         # Fast, lightweight ONNX embedding model (runs completely local on CPU)
-        cache_dir = os.environ.get("FASTEMBED_CACHE_DIR", "/tmp/fastembed_cache")
+        default_cache = os.path.join(tempfile.gettempdir(), "fastembed_cache")
+        cache_dir = os.environ.get("FASTEMBED_CACHE_DIR", default_cache)
         try:
             self.embed_model = TextEmbedding(model_name=model_name, cache_dir=cache_dir)
         except Exception:

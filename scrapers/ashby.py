@@ -43,7 +43,7 @@ async def scrape_single_ashby_board(client: httpx.AsyncClient, company: str) -> 
             emp_type = "Internship" if is_intern else "Full-time"
             
             job_id_str = f"ashby_{company}_{job.get('id', title)}"
-            uid = hashlib.md5(job_id_str.encode()).hexdigest()[:12]
+            uid = hashlib.sha256(job_id_str.encode("utf-8")).hexdigest()[:12]
             
             job_obj = JobListing(
                 id=uid,

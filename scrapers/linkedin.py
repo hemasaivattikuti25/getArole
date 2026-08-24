@@ -50,7 +50,7 @@ async def scrape_single_linkedin_query(client: httpx.AsyncClient, keywords: str,
             loc = location_tag.get_text(strip=True) if location_tag else location
             job_url = link_tag["href"] if link_tag and "href" in link_tag.attrs else f"https://www.linkedin.com/jobs/search?keywords={keywords}"
             
-            job_id_hash = hashlib.md5(f"linkedin_{company}_{title}_{loc}".encode()).hexdigest()[:12]
+            job_id_hash = hashlib.sha256(f"linkedin_{company}_{title}_{loc}".encode("utf-8")).hexdigest()[:12]
             
             listings.append(JobListing(
                 id=f"li_{job_id_hash}",
