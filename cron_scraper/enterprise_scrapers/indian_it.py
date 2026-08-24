@@ -1,16 +1,15 @@
 import asyncio
+import hashlib
 import json
 import uuid
 import re
 from typing import List, Dict, Any
-from playwright.async_api import async_playwright
-try:
-    from models import JobListing
-except ImportError:
-    try:
-        from scrapers.models import JobListing
-    except ImportError:
-        from cron_scraper.models import JobListing
+import httpx
+from bs4 import BeautifulSoup
+
+from scrapers.models import JobListing
+from scrapers.base import get_scraper_headers, create_scraper_client
+from scrapers.greenhouse import normalize_city
 
 class IndianITScraper:
     def __init__(self):
@@ -24,51 +23,54 @@ class IndianITScraper:
             {"name": "Capgemini", "url": "https://www.capgemini.com/in-en/careers/job-search/"},
         ]
         
-    async def scrape_all(self) -> List[JobListing]:
+    async def scrape_single_it_giant(self, client: httpx.AsyncClient, company: Dict[str, str]) -> List[JobListing]:
         jobs = []
-        async with async_playwright() as p:
-            browser = await p.chromium.launch(
-                headless=True,
-                args=["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu"]
-            )
-            for company in self.companies:
-                print(f"Scraping IT Giant {company['name']}...")
-                try:
-                    page = await browser.new_page()
-                    await page.goto(company['url'], wait_until='domcontentloaded', timeout=25000)
-                    await asyncio.sleep(3) 
-                    
-                    # Heuristic scraping for Indian IT portals (looking for 'Apply', 'Job', 'Role', etc.)
-                    links = await page.evaluate('''() => {
-                        return Array.from(document.querySelectorAll('a'))
-                            .map(a => ({ text: a.innerText, href: a.href }))
-                            .filter(l => l.href && (l.href.includes('/job') || l.href.includes('/career') || l.href.includes('/role')) && l.text.length > 5);
-                    }''')
-                    
-                    for link in links[:15]: # Limit
-                        title = link.get('text', '').strip().split('\\n')[0]
-                        if not title or len(title) > 60: # Avoid capturing entire paragraphs
-                            continue
-                            
+        name = company["name"]
+        url = company["url"]
+        headers = get_scraper_headers({
+            "Referer": "https://www.google.co.in/",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate"
+        })
+        try:
+            resp = await client.get(url, headers=headers, timeout=10.0)
+            if resp.status_code == 200 and resp.text:
+                soup = BeautifulSoup(resp.text, "html.parser")
+                links = soup.find_all("a", href=True)
+                for a in links:
+                    href = a["href"]
+                    text = a.get_text(strip=True)
+                    if len(text) > 4 and len(text) < 65 and any(k in href.lower() for k in ["/job", "/career", "/role", "/opening"]):
+                        full_url = href if href.startswith("http") else f"{url.rstrip('/')}/{href.lstrip('/')}"
+                        uid = hashlib.md5(f"it_{name}_{text}_{full_url}".encode()).hexdigest()[:12]
+                        
                         job = JobListing(
-                            id=str(uuid.uuid4()),
-                            title=title,
-                            company=company['name'],
+                            id=f"it_{uid}",
+                            title=text,
+                            company=name,
                             location="India",
                             city="India",
                             platform="Enterprise_IT",
-                            url=link['href'],
-                            workplace_type="Onsite", # Typically onsite for Indian IT
+                            url=full_url,
+                            workplace_type="Onsite",
                             employment_type="Full-Time",
-                            description=f"Opportunity at {company['name']}. Apply directly on their career portal.",
-                            skills=["Java", "C++", "SQL", "Cloud", "Testing", "Support"]
+                            description=f"Active technology role at {name}. Direct application on corporate careers portal.",
+                            skills=["Java", "C++", "Python", "SQL", "Cloud", "Testing", "Full-Stack"]
                         )
                         jobs.append(job)
-                except Exception as e:
-                    print(f"Error scraping {company['name']}: {e}")
-                
-            await browser.close()
-        return jobs
+        except Exception as e:
+            print(f"[Indian IT] Scrape note for {name}: {e}")
+        return jobs[:15]
+
+    async def scrape_all(self) -> List[JobListing]:
+        all_jobs = []
+        async with create_scraper_client(timeout=10.0) as client:
+            tasks = [self.scrape_single_it_giant(client, comp) for comp in self.companies]
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            for res in results:
+                if isinstance(res, list):
+                    all_jobs.extend(res)
+        return all_jobs
 
 if __name__ == "__main__":
     async def test():
