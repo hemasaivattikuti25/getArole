@@ -4,7 +4,13 @@ import uuid
 import re
 from typing import List, Dict, Any
 from playwright.async_api import async_playwright
-from models import JobListing
+try:
+    from models import JobListing
+except ImportError:
+    try:
+        from scrapers.models import JobListing
+    except ImportError:
+        from cron_scraper.models import JobListing
 
 class WorkdayScraper:
     def __init__(self):

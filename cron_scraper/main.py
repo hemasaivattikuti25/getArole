@@ -1,15 +1,18 @@
 import asyncio
 import os
 import sys
+import uuid
 from datetime import datetime, timezone
 from supabase import create_client, Client
 
-# Ensure we can import from the parent directory if needed
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Ensure current directory is on sys.path first
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+if CURRENT_DIR not in sys.path:
+    sys.path.insert(0, CURRENT_DIR)
 
 # Import local scraper modules
-from scrapers.workday import WorkdayScraper
-from scrapers.indian_it import IndianITScraper
+from enterprise_scrapers.workday import WorkdayScraper
+from enterprise_scrapers.indian_it import IndianITScraper
 
 def get_supabase_client() -> Client:
     url = os.environ.get("SUPABASE_URL") or "https://tgmhtlqcjgcjedlnthfk.supabase.co"
