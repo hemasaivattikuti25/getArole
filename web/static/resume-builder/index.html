@@ -1155,8 +1155,7 @@
       color: var(--pr);
       background: var(--prl);
     }
-  </style>
-
+  
     /* ════════════════════ TOP NAVIGATION BAR (UNIFORM STYLE) ════════════════════ */
     header {
       position: sticky; top: 0; z-index: 100;
@@ -1229,6 +1228,8 @@
       color: var(--text-main, #0f172a); text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
     }
     .dropdown-item:hover { background: var(--background, #f8fafc); color: var(--primary, #4f46e5); }
+
+  </style>
 
 </head>
 
@@ -2331,8 +2332,7 @@ ${r.header?.name || 'Candidate Name'}`
       w.document.write(`
     <!DOCTYPE html><html><head><meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
-    <style>${css}@page{size:A4;margin:0;}body{margin:0;padding:0;background:white;}#sh{width:794px;min-height:1123px;background:white;}</style>
-    
+    <style>${css}@page{size:A4;margin:0;}body{margin:0;padding:0;background:white;}#sh{width:794px;min-height:1123px;background:white;}
     /* ════════════════════ TOP NAVIGATION BAR (UNIFORM STYLE) ════════════════════ */
     header {
       position: sticky; top: 0; z-index: 100;
@@ -2406,6 +2406,8 @@ ${r.header?.name || 'Candidate Name'}`
     }
     .dropdown-item:hover { background: var(--background, #f8fafc); color: var(--primary, #4f46e5); }
 
+  </style>
+    
 </head><body><div id="sh">${html}</div>
     <script>window.onload=function(){setTimeout(function(){window.print();window.close();},500);};<\/script>
     
