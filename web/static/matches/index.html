@@ -1140,14 +1140,16 @@
     function clearAllFilters() {
       activePills.clear();
       document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-      document.getElementById('main-search-input').value = '';
+      const sInput = document.getElementById('main-search-input');
+      if (sInput) sInput.value = '';
       filteredJobs = [...allJobs];
       renderFeed();
       if (filteredJobs.length > 0) selectJob(filteredJobs[0].id);
     }
 
     function filterJobs() {
-      const q = document.getElementById('main-search-input').value.toLowerCase().trim();
+      const sInput = document.getElementById('main-search-input');
+      const q = sInput ? sInput.value.toLowerCase().trim() : '';
       
       filteredJobs = allJobs.filter(j => {
         const textMatch = !q || `${j.title} ${j.company} ${j.location} ${j.description}`.toLowerCase().includes(q);

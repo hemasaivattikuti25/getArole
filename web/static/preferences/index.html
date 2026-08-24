@@ -1327,7 +1327,8 @@
     }
     function renderHiddenComps() {
       const container = document.getElementById('hidden-companies-grid');
-      if(state.prefs.hidden_comps.length === 0) {
+      if (!container) return;
+      if (state.prefs.hidden_comps.length === 0) {
         container.innerHTML = '<div style="font-size:13px; color:var(--text-subtle);">No companies hidden.</div>';
         return;
       }

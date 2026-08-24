@@ -1221,7 +1221,8 @@
     function clearAllFilters() {
       activePills.clear();
       document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-      document.getElementById('main-search-input').value = '';
+      const sInput = document.getElementById('main-search-input');
+      if (sInput) sInput.value = '';
       filteredJobs = [...allJobs];
       renderFeed();
       if (filteredJobs.length > 0) selectJob(filteredJobs[0].id);

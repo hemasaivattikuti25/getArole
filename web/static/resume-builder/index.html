@@ -2111,14 +2111,18 @@ ${r.header?.name || 'Candidate Name'}`
       const layout = document.getElementById('app-layout');
 
       if (mode === 'resume') {
-        document.getElementById('btn-mode-resume').classList.add('active');
-        document.getElementById('doc-mode-label').textContent = '1-Page ATS Resume';
-        layout.classList.remove('mode-cl-active');
+        const btnR = document.getElementById('btn-mode-resume');
+        if (btnR) btnR.classList.add('active');
+        const lbl = document.getElementById('doc-mode-label');
+        if (lbl) lbl.textContent = '1-Page ATS Resume';
+        if (layout) layout.classList.remove('mode-cl-active');
         gS('header');
       } else {
-        document.getElementById('btn-mode-cl').classList.add('active');
-        document.getElementById('doc-mode-label').textContent = 'Tailored Cover Letter';
-        layout.classList.add('mode-cl-active');
+        const btnCL = document.getElementById('btn-mode-cl');
+        if (btnCL) btnCL.classList.add('active');
+        const lbl = document.getElementById('doc-mode-label');
+        if (lbl) lbl.textContent = 'Tailored Cover Letter';
+        if (layout) layout.classList.add('mode-cl-active');
         gS('cl-target');
       }
 
