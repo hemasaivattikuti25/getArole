@@ -14,6 +14,11 @@ from scrapers.aggregator import JobAggregator
 from scrapers.matcher import ResumeMatcher
 from services.llm_service import get_llm_service
 from services.supabase_service import get_supabase_service
+from core.logging_config import configure_logging
+from core.observability_middleware import ObservabilityMiddleware
+
+# Initialize Structured JSON logging
+configure_logging()
 
 # Dynamic Directory Paths (Works locally and on Vercel/Render Linux containers)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,6 +35,9 @@ app = FastAPI(
     description="Multi-platform job aggregator, local vector matcher, and AI recruiter resume screening pipeline",
     version="1.1.0"
 )
+
+# Attach Observability Middleware for Request ID tracing and Prometheus latency tracking
+app.add_middleware(ObservabilityMiddleware)
 
 allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000,https://getarole.com,https://*.vercel.app")
 allowed_origins = [o.strip() for o in allowed_origins_env.split(",") if o.strip()]
@@ -790,6 +798,10 @@ async def save_user_preferences_endpoint(request: Request, prefs: Dict[str, Any]
 async def get_user_resume(request: Request, x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
     uid = x_firebase_uid or request.headers.get("X-Firebase-UID")
     if not uid:
+        logging.getLogger("sre.security").warning(
+            "auth_missing_uid_header",
+            extra={"path": request.url.path, "client_ip": request.client.host if request.client else "unknown"}
+        )
         return JSONResponse({"error": "Missing X-Firebase-UID header"}, status_code=401)
     supabase = get_supabase_service()
     data = await supabase.load_user_resume(uid)
@@ -799,6 +811,10 @@ async def get_user_resume(request: Request, x_firebase_uid: Optional[str] = Head
 async def save_user_resume_endpoint(request: Request, resume_data: Dict[str, Any] = Body(...), x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
     uid = x_firebase_uid or request.headers.get("X-Firebase-UID")
     if not uid:
+        logging.getLogger("sre.security").warning(
+            "auth_missing_uid_header",
+            extra={"path": request.url.path, "client_ip": request.client.host if request.client else "unknown"}
+        )
         return JSONResponse({"error": "Missing X-Firebase-UID header"}, status_code=401)
     supabase = get_supabase_service()
     result = await supabase.save_user_resume(uid, resume_data)

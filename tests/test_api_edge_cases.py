@@ -204,3 +204,19 @@ def test_prometheus_metrics_and_health_probes():
     res_metrics = client.get("/metrics")
     assert res_metrics.status_code == 200
     assert "http_request_duration_seconds" in res_metrics.text or "circuit_breaker_state" in res_metrics.text
+
+
+def test_observability_middleware_request_id_and_tracing():
+    """Test that X-Request-ID correlation headers are generated and propagated."""
+    # 1. Automatic generation
+    res1 = client.get("/healthz")
+    assert res1.status_code == 200
+    assert "x-request-id" in res1.headers or "X-Request-ID" in res1.headers
+    req_id1 = res1.headers.get("x-request-id") or res1.headers.get("X-Request-ID")
+    assert len(req_id1) > 10
+
+    # 2. Client-provided trace ID propagation
+    custom_trace_id = "trace-custom-uuid-987654321"
+    res2 = client.get("/healthz", headers={"X-Request-ID": custom_trace_id})
+    assert res2.status_code == 200
+    assert (res2.headers.get("x-request-id") or res2.headers.get("X-Request-ID")) == custom_trace_id

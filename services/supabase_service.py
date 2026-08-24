@@ -83,6 +83,7 @@ class SupabaseService:
         if not client:
             return _JOB_WRITE_THROUGH_CACHE
 
+        query_start = time.time()
         try:
             async with asyncio.timeout(2.5):  # 2.5s strict timeout
                 query = client.table("jobs").select("id,title,company,location,workplace_type,salary,apply_url,created_at,source").limit(limit)
@@ -92,6 +93,15 @@ class SupabaseService:
                     query = query.ilike("workplace_type", f"%{workplace_type}%")
                     
                 res = await query.execute()
+                query_duration_ms = round((time.time() - query_start) * 1000, 2)
+                
+                # SRE Slow Query Alerting threshold (500ms)
+                if query_duration_ms > 500:
+                    logging.getLogger("sre.database").warning(
+                        "slow_database_query",
+                        extra={"table": "jobs", "duration_ms": query_duration_ms, "limit": limit}
+                    )
+
                 if res.data:
                     _JOB_WRITE_THROUGH_CACHE = res.data
                     _CACHE_TIMESTAMP = time.time()
@@ -99,13 +109,19 @@ class SupabaseService:
         except asyncio.TimeoutError:
             SUPABASE_FAILURES_TOTAL.labels(error_type="timeout_2.5s").inc()
             DEPENDENCY_ERRORS_TOTAL.labels(dependency="supabase", error_type="timeout").inc()
-            print(f"[Supabase] Timeout fetching jobs. Serving cached data (age: {time.time() - _CACHE_TIMESTAMP:.1f}s)")
+            logging.getLogger("sre.database").error(
+                "supabase_timeout_serving_cache",
+                extra={"cache_age_sec": round(time.time() - _CACHE_TIMESTAMP, 1), "timeout_limit_s": 2.5}
+            )
             return _JOB_WRITE_THROUGH_CACHE
         except Exception as e:
             error_name = type(e).__name__
             SUPABASE_FAILURES_TOTAL.labels(error_type=error_name).inc()
             DEPENDENCY_ERRORS_TOTAL.labels(dependency="supabase", error_type=error_name).inc()
-            print(f"[Supabase] Fetch error ({error_name}): {e}. Serving cached data.")
+            logging.getLogger("sre.database").error(
+                "supabase_fetch_error_serving_cache",
+                extra={"error_type": error_name, "error": str(e)}
+            )
             return _JOB_WRITE_THROUGH_CACHE
 
     async def save_candidate_screening(
