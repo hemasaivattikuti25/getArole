@@ -497,49 +497,60 @@
     };
 
     const allIndianCities = [
-      "India (Anywhere)", "Remote in India", "Global Remote",
-      "Bengaluru", "Hyderabad", "Pune", "Delhi NCR", "Mumbai",
-      "Chennai", "Gurgaon", "Noida", "Kolkata", "Ahmedabad",
-      "Kochi", "Jaipur", "Chandigarh", "Indore", "Coimbatore"
-    ];
-
-    const allRoles = [
-      "Software Engineering", "Full Stack Developer", "Backend Developer",
-      "Frontend Developer", "AI & Machine Learning", "Data Science",
-      "DevOps & Cloud Engineer", "Product Management", "Mobile (iOS/Android)",
-      "UI/UX Design", "QA / Automation Engineer", "Cyber Security",
-      "Business & Strategy", "Growth & Marketing", "Fintech & Banking", "Consulting"
-    ];
-
-    const salaryINR = ["Any Compensation", "₹6 LPA+", "₹10 LPA+", "₹15 LPA+", "₹25 LPA+", "₹40 LPA+"];
-    const salaryUSD = ["Any Compensation", "$60k+", "$80k+", "$100k+", "$140k+", "$200k+"];
-
-    function goToStep(step) {
-      document.querySelectorAll('.step-card').forEach(card => card.style.display = 'none');
-      const nextCard = document.getElementById(`step-${step}`);
-      if (nextCard) nextCard.style.display = 'block';
+      // Quick Macro Options
+      "India (Anywhere)", "Remote in India", "Global Remote", "Hybrid",
       
-      currentStep = step;
-      document.getElementById('step-indicator-text').textContent = `Step ${step} of 7`;
-      document.getElementById('progress-fill').style.width = `${(step / 7) * 100}%`;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+      // Tier 1 & Major Tech Hubs
+      "Bengaluru", "Hyderabad", "Pune", "Delhi NCR", "Mumbai", "Chennai", "Gurgaon (Gurugram)", "Noida", "Kolkata", "Ahmedabad",
+      
+      // Andhra Pradesh & Telangana
+      "Visakhapatnam", "Vijayawada", "Guntur", "Tirupati", "Nellore", "Kakinada", "Rajahmundry", "Kurnool", "Kadapa", "Anantapur", "Warangal", "Nizamabad", "Karimnagar", "Khammam",
+      
+      // Karnataka & Kerala & Tamil Nadu
+      "Mysuru (Mysore)", "Mangalore", "Hubli-Dharwad", "Belagavi", "Kochi (Cochin)", "Thiruvananthapuram", "Kozhikode (Calicut)", "Thrissur", "Kollam", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tirunelveli", "Vellore", "Erode",
+      
+      // Maharashtra & Gujarat & Goa
+      "Navi Mumbai", "Thane", "Nagpur", "Nashik", "Aurangabad", "Solapur", "Kolhapur", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Gandhinagar", "Goa (Panaji / Margao)",
+      
+      // Delhi NCR & Uttar Pradesh & Uttarakhand
+      "Faridabad", "Ghaziabad", "Greater Noida", "Lucknow", "Kanpur", "Agra", "Varanasi", "Prayagraj (Allahabad)", "Meerut", "Bareilly", "Aligarh", "Moradabad", "Gorakhpur", "Noida Extension", "Dehradun", "Haridwar", "Roorkee",
+      
+      // Punjab & Haryana & Rajasthan & Himachal / J&K
+      "Chandigarh", "Mohali", "Panchkula", "Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Jaipur", "Jodhpur", "Kota", "Udaipur", "Bikaner", "Ajmer", "Shimla", "Dharamshala", "Jammu", "Srinagar",
+      
+      // Madhya Pradesh & Chhattisgarh & Bihar & Jharkhand
+      "Indore", "Bhopal", "Gwalior", "Jabalpur", "Ujjain", "Raipur", "Bilaspur", "Bhilai", "Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Ranchi", "Jamshedpur", "Dhanbad", "Bokaro",
+      
+      // West Bengal & Odisha & North East
+      "Howrah", "Siliguri", "Durgapur", "Asansol", "Bhubaneswar", "Cuttack", "Rourkela", "Guwahati", "Shillong", "Agartala", "Imphal", "Aizawl", "Dimapur"
+    ];
 
-    // Timeline selector
-    function selectTimeline(el, val) {
-      document.querySelectorAll('#timeline-options .option-card').forEach(c => c.classList.remove('selected'));
-      el.classList.add('selected');
-      userPrefs.timeline = val;
-    }
-
-    // Location selector
     function renderCities(filter = '') {
       const container = document.getElementById('city-chips-container');
-      const filtered = allIndianCities.filter(c => c.toLowerCase().includes(filter.toLowerCase()));
-      container.innerHTML = filtered.map(c => {
+      const query = filter.trim().toLowerCase();
+      const filtered = allIndianCities.filter(c => c.toLowerCase().includes(query));
+      
+      let html = '';
+      
+      // If user typed something not matching exactly, show "+ Add Custom" chip first
+      if (query && !allIndianCities.some(c => c.toLowerCase() === query)) {
+        const customTitle = filter.trim();
+        const isCustomSel = userPrefs.locations.includes(customTitle);
+        html += `<div class="choice-chip selected" style="background:#059669; border-color:#059669;" onclick="toggleLocation('${customTitle}')">
+          + Add "${customTitle}" ✓
+        </div>`;
+      }
+      
+      html += filtered.map(c => {
         const isSel = userPrefs.locations.includes(c);
         return `<div class="choice-chip ${isSel ? 'selected' : ''}" onclick="toggleLocation('${c}')">${c}</div>`;
       }).join('');
+      
+      if (filtered.length === 0 && !query) {
+        html = '<div style="font-size:13px; color:var(--text-muted); padding:10px;">No locations found.</div>';
+      }
+      
+      container.innerHTML = html;
       document.getElementById('location-selected-count').textContent = `${userPrefs.locations.length} Locations Selected`;
     }
 
@@ -552,7 +563,7 @@
 
     function selectAllLocations(select) {
       userPrefs.locations = select ? [...allIndianCities] : [];
-      renderCities();
+      renderCities(document.getElementById('city-search').value);
     }
 
     function filterCities() {
