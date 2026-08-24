@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Onboarding — getArole</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap"
+    rel="stylesheet">
   <style>
     :root {
-      --primary: #4f46e5;
+      --primary: #7e79de;
       --primary-hover: #4338ca;
       --primary-light: #eef2ff;
       --primary-border: #c7d2fe;
@@ -18,19 +21,40 @@
       --text-main: #0f172a;
       --text-muted: #475569;
       --border: #e2e8f0;
-      --shadow: 0 4px 20px -2px rgba(0,0,0,0.06);
+      --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-    h1, h2, h3 { font-family: 'Outfit', sans-serif; }
-    
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Outfit', sans-serif;
+    }
+
     .wizard-container {
       background: var(--surface);
       border-radius: 20px;
       padding: 60px 40px;
       width: 100%;
       max-width: 800px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.04);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
       position: relative;
       overflow: hidden;
       display: flex;
@@ -47,6 +71,7 @@
       width: 100%;
       margin-bottom: 40px;
     }
+
     .progress-track {
       width: 200px;
       height: 6px;
@@ -55,6 +80,7 @@
       position: relative;
       overflow: hidden;
     }
+
     .progress-fill {
       height: 100%;
       background: var(--primary);
@@ -62,19 +88,51 @@
       border-radius: 10px;
       transition: width 0.3s ease;
     }
+
     .progress-text {
       font-size: 13px;
       font-weight: 800;
       color: var(--primary);
     }
 
-    .step-header { margin-bottom: 32px; text-align: center; }
-    .step-header h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; color: #1e293b; }
-    .step-header p { color: var(--text-muted); font-size: 15px; }
-    
-    .wizard-step { display: none; animation: fadeIn 0.3s; width: 100%; }
-    .wizard-step.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .step-header {
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .step-header h2 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+
+    .step-header p {
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    .wizard-step {
+      display: none;
+      animation: fadeIn 0.3s;
+      width: 100%;
+    }
+
+    .wizard-step.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
     /* Founder Widget */
     .founder-widget {
@@ -88,73 +146,188 @@
       margin: 0 auto 32px auto;
       background: #ffffff;
     }
+
     .founder-avatar {
       width: 48px;
       height: 48px;
       border-radius: 50%;
       object-fit: cover;
     }
-    .founder-text-wrap { text-align: left; }
-    .founder-name { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
-    .founder-msg { font-size: 14.5px; font-weight: 700; color: #1e293b; line-height: 1.4; }
+
+    .founder-text-wrap {
+      text-align: left;
+    }
+
+    .founder-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .founder-msg {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.4;
+    }
 
     /* Bubble Pills (Replacing Grid) */
-    .grid-options { 
-      display: flex; 
-      flex-wrap: wrap; 
-      justify-content: center; 
-      gap: 12px; 
-      margin-bottom: 40px; 
+    .grid-options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 40px;
       max-width: 700px;
       margin-left: auto;
       margin-right: auto;
     }
+
     .option-card {
-      border: 1.5px solid var(--border); 
-      padding: 10px 20px; 
+      border: 1.5px solid var(--border);
+      padding: 10px 20px;
       border-radius: 99px;
-      cursor: pointer; 
+      cursor: pointer;
       font-size: 13px;
-      font-weight: 600; 
-      color: var(--text-muted); 
+      font-weight: 600;
+      color: var(--text-muted);
       transition: all 0.2s ease;
       background: #ffffff;
     }
-    .option-card:hover { border-color: var(--primary-border); color: var(--text-main); }
-    .option-card.selected { border-color: var(--primary); background: var(--primary); color: white; }
+
+    .option-card:hover {
+      border-color: var(--primary-border);
+      color: var(--text-main);
+    }
+
+    .option-card.selected {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: white;
+    }
 
     .input-field {
-      width: 100%; max-width: 500px; padding: 14px 20px; border: 1.5px solid var(--border); border-radius: 99px;
-      font-size: 15px; margin: 0 auto 24px auto; outline: none; transition: border-color 0.2s; display: block;
+      width: 100%;
+      max-width: 500px;
+      padding: 14px 20px;
+      border: 1.5px solid var(--border);
+      border-radius: 99px;
+      font-size: 15px;
+      margin: 0 auto 24px auto;
+      outline: none;
+      transition: border-color 0.2s;
+      display: block;
     }
-    .input-field:focus { border-color: var(--primary); }
 
-    .skills-chip-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 24px; max-width: 600px; margin-left: auto; margin-right: auto; }
-    .skill-chip {
-      padding: 8px 16px; border-radius: 99px; background: var(--surface);
-      border: 1.5px solid var(--border); font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text-muted);
+    .input-field:focus {
+      border-color: var(--primary);
     }
-    .skill-chip:hover { border-color: var(--primary-border); color: var(--text-main); }
-    .skill-chip.selected { background: var(--primary); color: white; border-color: var(--primary); }
+
+    .skills-chip-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .skill-chip {
+      padding: 8px 16px;
+      border-radius: 99px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .skill-chip:hover {
+      border-color: var(--primary-border);
+      color: var(--text-main);
+    }
+
+    .skill-chip.selected {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
 
     .search-results {
-      max-height: 200px; overflow-y: auto; border: 1.5px solid var(--border); max-width: 500px; margin: -16px auto 24px auto;
-      border-radius: 16px; display: none; background: white; z-index: 10; position: relative;
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1.5px solid var(--border);
+      max-width: 500px;
+      margin: -16px auto 24px auto;
+      border-radius: 16px;
+      display: none;
+      background: white;
+      z-index: 10;
+      position: relative;
     }
-    .search-item { padding: 12px 20px; cursor: pointer; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 500; }
-    .search-item:hover { background: var(--primary-light); color: var(--primary); }
 
-    .btn-row { display: flex; justify-content: center; width: 100%; gap: 16px; }
-    .btn {
-      padding: 14px 32px; border-radius: 99px; font-weight: 700; cursor: pointer; border: none; font-size: 15px; transition: all 0.2s;
+    .search-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      font-weight: 500;
     }
-    .btn-back { background: transparent; color: var(--text-muted); padding: 14px 20px; }
-    .btn-back:hover { color: var(--text-main); }
-    .btn-next { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); }
-    .btn-next:hover { background: var(--primary-hover); transform: translateY(-1px); }
-    .btn-next:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .search-item:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .btn-row {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      gap: 16px;
+    }
+
+    .btn {
+      padding: 14px 32px;
+      border-radius: 99px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    .btn-back {
+      background: transparent;
+      color: var(--text-muted);
+      padding: 14px 20px;
+    }
+
+    .btn-back:hover {
+      color: var(--text-main);
+    }
+
+    .btn-next {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+    }
+
+    .btn-next:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-next:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   </style>
 </head>
+
 <body>
 
   <div class="wizard-container">
@@ -188,7 +361,8 @@
     <div class="wizard-step" id="step-2">
       <div class="step-header">
         <h2>Select your specializations</h2>
-        <p>What specific roles within <span id="dep-label" style="color:var(--primary);font-weight:800;"></span> are you targeting?</p>
+        <p>What specific roles within <span id="dep-label" style="color:var(--primary);font-weight:800;"></span> are you
+          targeting?</p>
       </div>
       <div class="grid-options" id="options-specialization">
         <!-- Rendered via JS based on Step 1 -->
@@ -255,13 +429,14 @@
       </div>
       <input type="text" id="skill-search" class="input-field" placeholder="Search from 700+ tech skills...">
       <div id="skill-results" class="search-results"></div>
-      
+
       <div style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:8px;">Popular Shortcuts</div>
       <div class="skills-chip-container" id="shortcut-chips">
         <!-- JS Rendered -->
       </div>
-      
-      <div style="font-size:13px; font-weight:700; color:var(--text-main); margin-bottom:8px; margin-top:16px;">Your Selected Skills</div>
+
+      <div style="font-size:13px; font-weight:700; color:var(--text-main); margin-bottom:8px; margin-top:16px;">Your
+        Selected Skills</div>
       <div class="skills-chip-container" id="selected-skills-container"></div>
     </div>
 
@@ -284,21 +459,24 @@
         <h2>Final Step: Your Resume</h2>
         <p>Upload your ATS resume to instantly match with jobs.</p>
       </div>
-      
-      <div style="border: 2px dashed var(--border); padding: 40px; border-radius: 16px; background:var(--bg); margin-bottom: 24px;">
+
+      <div
+        style="border: 2px dashed var(--border); padding: 40px; border-radius: 16px; background:var(--bg); margin-bottom: 24px;">
         <div style="font-size:40px; margin-bottom:12px;">📄</div>
         <h3 style="font-weight:800; margin-bottom:8px;">Upload PDF Resume</h3>
         <p style="font-size:13px; color:var(--text-muted);">Max 5MB</p>
       </div>
-      
+
       <div style="display:flex; align-items:center; gap:16px; justify-content:center;">
-        <button class="btn" style="background:white; border:2px solid var(--border);" onclick="window.location.href='/resume-builder'">I don't have a resume (Build one)</button>
+        <button class="btn" style="background:white; border:2px solid var(--border);"
+          onclick="window.location.href='/resume-builder'">I don't have a resume (Build one)</button>
         <button class="btn btn-next" onclick="finishOnboarding()">Save & Go to Dashboard</button>
       </div>
     </div>
 
     <div class="btn-row" id="navigation-row">
       <button class="btn btn-back" id="btn-back" onclick="prevStep()" style="visibility:hidden;">← Back</button>
+      <button class="btn btn-back" id="btn-skip" onclick="nextStep(true)">Skip</button>
       <button class="btn btn-next" id="btn-next" onclick="nextStep()">Save and Continue →</button>
     </div>
   </div>
@@ -306,22 +484,22 @@
   <script>
     // DATA
     const departments = [
-      "Technical & Engineering", "Aerospace Engineering", "AI & Machine Learning", 
-      "Architecture & Civil Engineering", "Data & Analytics", "Developer Relations", 
-      "DevOps & Infrastructure", "Electrical Engineering", "Engineering Management", 
-      "Hardware Engineering", "IT & Security", "Mechanical Engineering", 
+      "Technical & Engineering", "Aerospace Engineering", "AI & Machine Learning",
+      "Architecture & Civil Engineering", "Data & Analytics", "Developer Relations",
+      "DevOps & Infrastructure", "Electrical Engineering", "Engineering Management",
+      "Hardware Engineering", "IT & Security", "Mechanical Engineering",
       "Process Engineering", "QA & Testing", "Quantitative Finance", "Quantum Computing", "Software Engineering"
     ];
-    
+
     const specializations = {
       "Software Engineering": ["AI/ML/GenAI Engineering", "Backend Engineering", "Desktop Application Development", "Embedded Engineering", "Frontend Engineering", "Full-Stack Engineering", "Game Engineering", "IT & Support", "Low Level System Software", "Mobile Engineering", "Security Engineering", "Software QA & Testing"]
     };
-    
+
     const industries = ["FinTech", "HealthTech", "EdTech", "E-commerce", "SaaS", "Web3/Crypto", "AI/ML", "Cybersecurity", "Gaming", "CleanTech", "PropTech", "SpaceTech", "Automotive", "Defense", "Logistics", "Entertainment"];
-    
+
     const ALL_SKILLS = ["12-Factor App", "3D Modeling", "3ds Max", "A/B Testing", "ABAC", "AES", "API Documentation", "ARM", "ASIC", "ASP.NET Core", "AWS", "AWS EC2", "AWS ECS", "AWS EKS", "AWS Fargate", "AWS IAM", "AWS Lambda", "AWS RDS", "AWS S3", "AWS VPC", "Ableton Live", "Account Management", "Accounting", "ActiveMQ", "Actix", "Adobe XD", "Adyen", "Aerospace Engineering", "After Effects", "Agile", "Airbyte", "Airflow", "Akamai", "Algorithmic Trading", "Algorithms", "Alpine", "Alteryx", "Altium", "Amplitude", "Angular", "Animation", "Ansible", "Apache", "Apollo", "AppDynamics", "Appium", "Appwrite", "ArangoDB", "ArcGIS", "Architecture", "Arduino", "ArgoCD", "Arweave", "Asana", "Athena", "Audio Engineering", "Audit", "Auth0", "AutoCAD", "AutoCAD Civil 3D", "Automation Anywhere", "Avalanche", "Avionics", "Avro", "Azure AD", "Azure AKS", "Azure App Service", "Azure Blob", "Azure Functions", "Azure SQL", "Azure VM", "BDD", "BGP", "BIM", "BSON", "Babel", "Backbone.js", "Bamboo", "Bash", "Beego", "Behave", "BigCommerce", "BigQuery", "Bioinformatics", "Bitbucket", "Bitbucket Pipelines", "Bitcoin", "Blazor", "Blender", "Blue Prism", "Bookkeeping", "Boomi", "Bootstrap", "Braintree", "Branding", "Brownie", "Builder.io", "Burp Suite", "Business Development", "C", "C#", "C++", "CAD", "CATIA", "CCPA", "CFD", "CI/CD", "CQRS", "CRM", "CSV", "CUDA", "Caddy", "CakePHP", "Cap'n Proto", "Capacitor", "Capybara", "Cassandra", "CentOS", "Chai", "Chef", "Chemical Engineering", "Chemoinformatics", "Chroma", "Cinematography", "CircleCI", "Circuit Design", "Cirq", "Civil Engineering", "Clojure", "Cloud Functions", "Cloud Native", "Cloud Run", "Cloud SQL", "Cloud Spanner", "CloudFormation", "Cloudflare", "Cocos2d", "CodeIgniter", "Cognito", "Color Grading", "Community Management", "Compensation & Benefits", "Compliance", "Computational Biology", "Confluence", "Consul", "Content Marketing", "Contentful", "Control Systems", "Conversion Rate Optimization", "Copywriting", "Cordova", "Core Data", "Corporate Law", "Cosmos", "Cosmos DB", "CouchDB", "Couchbase", "Creative Writing", "Creo", "Cryptography", "Cucumber", "Customer Success", "Customer Support", "Cypress", "D3.js", "DB2", "DDD", "DHCP", "DICOM", "DNS", "DRY", "DaVinci Resolve", "Dagster", "Dart", "Data Entry", "Data Structures", "Datadog", "Debian", "Decap CMS", "Derivatives Pricing", "Design Patterns", "Detox", "DevOps", "DevRel", "DevSecOps", "Developer Advocacy", "Developer Relations", "Diesel", "Digital Art", "DigitalOcean", "DirectX", "Directus", "Disaster Recovery", "Discord", "Django", "Docker", "Docker Swarm", "Drone", "Drupal", "DynamoDB", "Dynatrace", "E-Learning", "E-commerce", "ECC", "EHR", "EMR", "ESP32", "Eagle", "Echo", "Econometrics", "EdTech", "Editing", "Elasticsearch", "Electrical Engineering", "Electron", "Elixir", "Email Marketing", "Ember.js", "Employee Relations", "Entity Framework", "Entrepreneurship", "Environmental Engineering", "Envoy", "Enzyme", "Erlang", "Espresso", "Ethereum", "Ethers.js", "Event Planning", "Event Sourcing", "Event-Driven", "EventBridge", "Express.js", "F#", "FAISS", "FEA", "FHIR", "FL Studio", "FP&A", "FPGA", "FastAPI", "Fastify", "Fastly", "Fault Tolerance", "Fiber", "Figma", "Filecoin", "FinOps", "Final Cut Pro", "Financial Analysis", "Financial Modeling", "Firebase Auth", "Firebase Realtime DB", "Firestore", "Firewalls", "Fivetran", "Flask", "FlatBuffers", "Fleet Management", "Flight Dynamics", "Flink", "Fluentd", "Fluid Mechanics", "Flutter", "Flux", "Foundry", "FreeRTOS", "Fusion 360", "GCP GCE", "GCS", "GDPR", "GIS", "GKE", "Game Design", "Gatling", "Genomics", "Geotechnical Engineering", "Ghost", "Gin", "Git", "GitHub", "GitHub Actions", "GitLab", "GitLab CI", "GitOps", "Go", "Godot", "Google Analytics", "Grafana", "GraphQL", "GraphQL Playground", "Graphic Design", "Grasshopper", "Groovy", "Growth Hacking", "Grunt", "Gulp", "HAProxy", "HIPAA", "HL7", "HMI", "HTTP", "HTTPS", "Hadoop", "Hanami", "Hapi", "Hardhat", "Haskell", "Health Informatics", "Heap", "Heat Transfer", "Helm", "Help Desk", "Heroku", "Hibernate", "High Availability", "High-Frequency Trading", "Hive", "Hospitality", "Hotjar", "HubSpot", "Hugging Face", "Human Resources", "IAM", "IDS/IPS", "IPFS", "IPsec", "ISO 14001", "ISO 27001", "ISO 9001", "ITIL", "ITSM", "IaC", "Illustration", "Illustrator", "InVision", "Industrial Engineering", "Informatica", "Information Architecture", "Infrastructure as Code", "Insomnia", "Instructional Design", "Intellectual Property", "Intercom", "Inventor", "Inventory Management", "Investment Banking", "Ionic", "Istio", "JMeter", "JPA", "JSF", "JSON", "JUnit", "JWT", "Jaeger", "Jasmine", "Java", "JavaScript", "Jenkins", "Jest", "Jira", "Joomla", "Journalism", "Julia", "K6", "K8s", "KISS", "Kafka", "Kanban", "Karma", "Keras", "Keycloak", "KeystoneJS", "KiCad", "Kibana", "Kinesis", "Koa", "Kotlin", "Kubeflow", "Kubernetes", "Kustomize", "LLMs", "LMS", "LangChain", "Laravel", "Leadership", "Lean", "Lean Manufacturing", "Legal Writing", "Less", "Level Design", "Lighting", "Lightroom", "Linear", "Linkerd", "Linode", "Linux", "LlamaIndex", "Localization", "Locust", "Logic Pro", "Logistics", "Logistics Management", "Logstash", "Looker", "Luigi", "MATLAB", "MAUI", "MLflow", "Magento", "Mailgun", "Make (Integromat)", "Management", "Manufacturing", "MariaDB", "Marketing Automation", "Material Science", "Matplotlib", "Maya", "Mechanical Engineering", "Mechatronics", "Medical Imaging", "Memcached", "Merchandising", "Mercurial", "Mesos", "Metabase", "Metal", "Metallurgy", "Metasploit", "Microcontrollers", "Microservices", "Microsoft Teams", "Milvus", "Mixpanel", "MobX", "Mocha", "Mockito", "Molecular Dynamics", "MongoDB", "Monolith", "Monte Carlo Methods", "MsgPack", "MuleSoft", "Music Production", "MySQL", "NATS", "NLTK", "NW.js", "NX", "Navisworks", "Neo4j", "NestJS", "NetSuite", "Netlify", "Netlify CMS", "New Relic", "Next.js", "Nginx", "Nmap", "Node.js", "Nomad", "Notion", "NumPy", "Nuxt.js", "OAuth", "OCaml", "OIDC", "ONNX", "ORC", "OSPF", "OWASP", "Objective-C", "Okta", "Open Source", "OpenAPI", "OpenCV", "OpenGL", "OpenShift", "OpenTelemetry", "OpenVPN", "Operations Research", "Optimizely", "OrCAD", "Oracle DB", "Oracle ERP", "Organizational Development", "OrientDB", "PACS", "PCB Design", "PID", "PKI", "PLC", "PWA", "Packer", "Pandas", "Paralegal", "Parcel", "Parquet", "Partnerships", "Passport.js", "PayPal", "Payload CMS", "Payroll", "Penetration Testing", "PennyLane", "Pentaho", "Perforce", "Performance Optimization", "Petroleum Engineering", "Phaser", "Phoenix", "Photography", "Photoshop", "Pinecone", "Pinia", "Plaid", "Platform Engineering", "Playwright", "Plotly", "Polkadot", "Polygon", "PostgreSQL", "Postman", "Power BI", "PowerShell", "Prefect", "Premiere Pro", "Presto", "Prismic", "Private Equity", "Pro Tools", "Process Engineering", "Procurement", "Product Management", "Project Management", "Prometheus", "Proofreading", "Property Management", "Propulsion", "Proteomics", "Protobuf", "Prototyping", "Public Speaking", "Pulsar", "Pulumi", "Puppet", "Puppeteer", "PyQt", "PyTest", "PyTorch", "Pyramid", "Python", "Q#", "QGIS", "Qdrant", "Qiskit", "Qlik", "Quality Assurance", "Quality Control", "Quantitative Finance", "Quantum Algorithms", "Quantum Computing", "Quantum Error Correction", "R", "RBAC", "REST", "REST APIs", "RHEL", "RISC-V", "RPA", "RSA", "RSpec", "RTOS", "RabbitMQ", "Rancher", "Raspberry Pi", "React", "React Native", "Real Estate", "Realm", "Recoil", "Recruiting", "Redis", "Redshift", "Redux", "Relay", "Rendering", "Retail", "Revel", "Revit", "Rhino", "Rigging", "Risk Management", "Robotics", "Rocket", "Rollbar", "Rollup", "Ruby on Rails", "Rust", "Rust (Smart Contracts)", "RxJS", "SAFe", "SAML", "SAP", "SCADA", "SCORM", "SEM", "SEO", "SES", "SHA", "SIEM", "SNS", "SOAP", "SOLID", "SQL", "SQL Server", "SQLite", "SQS", "SRE", "SSH", "SSL", "STM32", "SVN", "Sales", "Salesforce", "SaltStack", "Sanity", "Sass", "Scala", "Scalability", "SciPy", "Scikit-learn", "Screenwriting", "Scrum", "ScyllaDB", "Seaborn", "Segment", "Selenium", "SendGrid", "Sentry", "Serverless", "Service Workers", "ServiceNow", "Shopify", "Sinatra", "Six Sigma", "Sketch", "SketchUp", "Slack", "Snowflake", "SoC", "Social Media Marketing", "Solana", "SolidWorks", "Solidity", "Solr", "Sound Design", "Spacy", "Spark", "Spice", "Spinnaker", "Splunk", "Spring Boot", "Spring MVC", "Square", "Stitch", "Stochastic Calculus", "Storyblok", "Strapi", "Strategy", "Stripe", "Structural Analysis", "Structural Engineering", "Struts", "Stylus", "Supabase", "Superset", "Supply Chain", "Supply Chain Management", "Surveying", "Svelte", "Swagger", "Swift", "Symfony", "System Design", "Systems Engineering", "TCP/IP", "TDD", "TLS", "TOML", "Tableau", "Tailwind CSS", "Talend", "Talent Acquisition", "Tauri", "Taxation", "TeamCity", "Technical Support", "Technical Writing", "Tekton", "Telemedicine", "TensorFlow", "TensorRT", "Terraform", "TestNG", "Testing Library", "Texturing", "Thermodynamics", "Thrift", "Time Series Analysis", "Tkinter", "Tokio", "Tornado", "Traefik", "Training & Development", "Transcription", "Transformers", "Translation", "Transportation Engineering", "Travis CI", "Trello", "Trino", "Truffle", "Twilio", "TypeScript", "Typography", "UDP", "UI/UX Design", "Ubuntu", "UiPath", "Unity", "Unreal Engine", "Urban Planning", "Usability Testing", "User Research", "VFX", "VHDL", "VLAN", "VLSI", "VPN", "Vagrant", "Vector", "Venture Capital", "Vercel", "Verilog", "Video Editing", "Virtual Assistance", "Vite", "Vue.js", "Vuex", "Vulkan", "Vulnerability Scanning", "Vultr", "VxWorks", "Vyper", "WAF", "WASM", "Water Resources", "Waterfall", "Wealth Management", "Weaviate", "Web3.js", "WebAssembly", "WebGL", "WebRTC", "WebSockets", "Webpack", "Windows Server", "WireGuard", "Wireframing", "Wireshark", "WooCommerce", "WordPress", "Workday", "XCUITest", "XML", "Xamarin", "YAGNI", "YAML", "Yii", "Zapier", "Zend", "Zendesk", "Zephyr", "Zero Trust", "ZeroMQ", "Zipkin", "Zoom", "Zsh", "Zustand", "cuDNN", "dbt", "gRPC", "jQuery", "macOS", "n8n", "unittest", "x86", "xAPI"];
     const SHORTCUTS = ["Python", "JavaScript", "React", "Node.js", "SQL", "AWS", "Java", "C++", "TypeScript", "Docker"];
-    
+
     // STATE
     let currentStep = 1;
     let prefs = {
@@ -361,7 +539,7 @@
       };
       indGrid.appendChild(div);
     });
-    
+
     const shortcutGrid = document.getElementById('shortcut-chips');
     SHORTCUTS.forEach(s => {
       const div = document.createElement('div');
@@ -378,7 +556,7 @@
       if (el.classList.contains('selected')) prefs.locations.push(val);
       else prefs.locations = prefs.locations.filter(x => x !== val);
     });
-    
+
     document.querySelectorAll('.emp-chip').forEach(el => el.onclick = () => {
       el.classList.toggle('selected');
       const val = el.innerText;
@@ -392,7 +570,7 @@
       if (el.classList.contains('selected')) prefs.companySizes.push(val);
       else prefs.companySizes = prefs.companySizes.filter(x => x !== val);
     });
-    
+
     document.querySelectorAll('.status-card').forEach(el => el.onclick = () => {
       document.querySelectorAll('.status-card').forEach(x => x.classList.remove('selected'));
       el.classList.add('selected');
@@ -402,12 +580,12 @@
     // Skills Autocomplete
     const searchInput = document.getElementById('skill-search');
     const searchResults = document.getElementById('skill-results');
-    
+
     searchInput.addEventListener('input', (e) => {
       const val = e.target.value.toLowerCase();
       searchResults.innerHTML = '';
       if (!val) { searchResults.style.display = 'none'; return; }
-      
+
       const matches = ALL_SKILLS.filter(s => s.toLowerCase().includes(val)).slice(0, 15);
       if (matches.length > 0) {
         searchResults.style.display = 'block';
@@ -454,7 +632,7 @@
       const pText = document.getElementById('progress-percent');
       if (pText) pText.innerText = `${percent}%`;
       document.getElementById('btn-back').style.visibility = currentStep === 1 ? 'hidden' : 'visible';
-      
+
       if (currentStep === 8) {
         document.getElementById('navigation-row').style.display = 'none';
       } else {
@@ -462,16 +640,17 @@
       }
     }
 
-    function nextStep() {
-      if (currentStep === 1 && !prefs.department) return alert("Please select a department");
-      
+    function nextStep(isSkip = false) {
+      if (!isSkip && currentStep === 1 && !prefs.department) return alert("Please select a department");
+
       if (currentStep === 1) {
         // Setup Step 2 dynamically
         const specGrid = document.getElementById('options-specialization');
         specGrid.innerHTML = '';
-        document.getElementById('dep-label').innerText = prefs.department;
-        const specs = specializations[prefs.department] || ["Generalist", "Manager", "Analyst", "Lead", "Architect", "Consultant"];
-        
+        const depToUse = prefs.department || "Software Engineering";
+        document.getElementById('dep-label').innerText = depToUse;
+        const specs = specializations[depToUse] || ["Generalist", "Manager", "Analyst", "Lead", "Architect", "Consultant"];
+
         specs.forEach(s => {
           const div = document.createElement('div');
           div.className = 'option-card';
@@ -485,7 +664,7 @@
           specGrid.appendChild(div);
         });
       }
-      
+
       if (currentStep === 3) {
         const customLoc = document.getElementById('input-locations').value;
         if (customLoc) prefs.locations.push(...customLoc.split(',').map(x => x.trim()).filter(Boolean));
@@ -499,7 +678,7 @@
       if (currentStep > 1) currentStep--;
       updateUI();
     }
-    
+
     function finishOnboarding() {
       // Map preferences to dashboard schema
       const dashboardPrefs = {
@@ -513,7 +692,7 @@
         industries: prefs.industries,
         employmentTypes: prefs.employmentTypes
       };
-      
+
       const dashboardProfile = {
         headline: dashboardPrefs.role,
         skills: prefs.skills,
@@ -522,9 +701,10 @@
 
       localStorage.setItem('getarole_prefs', JSON.stringify(dashboardPrefs));
       localStorage.setItem('getarole_profile', JSON.stringify(dashboardProfile));
-      
+
       window.location.href = '/dashboard';
     }
   </script>
 </body>
+
 </html>
