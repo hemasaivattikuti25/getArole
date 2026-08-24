@@ -325,12 +325,33 @@
       opacity: 0.5;
       cursor: not-allowed;
     }
+    /* WCAG 2.2 AA Focus Visibility */
+    .skip-link {
+      position: absolute; top: -100px; left: 16px; z-index: 9999;
+      background: var(--primary, #4f46e5); color: white; padding: 10px 18px;
+      border-radius: 8px; font-weight: 700; text-decoration: none;
+      box-shadow: 0 4px 12px rgba(79,70,229,0.3);
+      transition: top 0.15s ease;
+    }
+    .skip-link:focus { top: 16px; outline: 3px solid #ffffff; }
+
+    :focus-visible {
+      outline: 2.5px solid var(--primary, #4f46e5);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    :focus:not(:focus-visible) {
+      outline: none;
+    }
   </style>
 </head>
 
 <body>
 
-  <div class="wizard-container">
+  <!-- WCAG 2.4.1 Bypass Blocks -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <main class="wizard-container" id="main-content">
     <div class="progress-wrapper">
       <div class="progress-track">
         <div class="progress-fill" id="progress"></div>
@@ -595,7 +616,7 @@
       </div>
       <button class="btn btn-next" id="btn-next" onclick="nextStep()">Save and Continue →</button>
     </div>
-  </div>
+  </main>
 
   <script>
     // DATA
