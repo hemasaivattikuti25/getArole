@@ -5,6 +5,7 @@ import httpx
 from bs4 import BeautifulSoup
 from .models import JobListing
 from .greenhouse import normalize_city, clean_html, INDIAN_LOCATIONS
+from .base import get_scraper_headers, create_scraper_client
 
 LEVER_COMPANIES = [
     "cred", "pocketfm"
@@ -15,8 +16,12 @@ async def scrape_single_lever_board(client: httpx.AsyncClient, company: str) -> 
     listings: List[JobListing] = []
     
     try:
-        response = await client.get(url, timeout=3.0)
-        if response.status_code != 200:
+        headers = get_scraper_headers()
+        response = await client.get(url, headers=headers, timeout=4.0)
+        if response.status_code == 429:
+            print(f"[Lever] ⚠️ Rate limited (429) on company {company}")
+            return listings
+        elif response.status_code != 200:
             return listings
         
         jobs = response.json()
@@ -58,7 +63,7 @@ async def scrape_single_lever_board(client: httpx.AsyncClient, company: str) -> 
             listings.append(job_obj)
             
     except Exception as e:
-        print(f"[Lever Scraper Warning] Exception during scraping {company_slug}: {e}")
+        print(f"[Lever Scraper Warning] Exception during scraping {company}: {e}")
     
     return listings
 
@@ -66,8 +71,7 @@ async def scrape_all_lever_jobs(companies: Optional[List[str]] = None) -> List[J
     target_companies = companies or LEVER_COMPANIES
     all_jobs: List[JobListing] = []
     
-    limits = httpx.Limits(max_keepalive_connections=30, max_connections=50)
-    async with httpx.AsyncClient(limits=limits, headers={"User-Agent": "Mozilla/5.0"}, follow_redirects=True) as client:
+    async with create_scraper_client(timeout=5.0) as client:
         tasks = [scrape_single_lever_board(client, comp) for comp in target_companies]
         results = await asyncio.gather(*tasks, return_exceptions=True)
         

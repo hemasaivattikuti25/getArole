@@ -4,23 +4,23 @@ from typing import List
 import httpx
 from .models import JobListing
 from .greenhouse import normalize_city
+from .base import get_scraper_headers, create_scraper_client
 
 async def fetch_unstop_jobs() -> List[JobListing]:
     jobs = []
-    
-    # We will search for 'jobs' opportunity type. We can also do 'internships' if needed.
-    # For now, let's fetch the first page of 'jobs'.
     url = "https://unstop.com/api/public/opportunity/search-result?opportunity=jobs&page=1"
     
-    # Custom headers to mimic a normal request
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+    headers = get_scraper_headers({
+        "Referer": "https://unstop.com/jobs",
         "Accept": "application/json"
-    }
+    })
 
-    async with httpx.AsyncClient(headers=headers, timeout=15.0) as client:
+    async with create_scraper_client(timeout=10.0) as client:
         try:
-            resp = await client.get(url)
+            resp = await client.get(url, headers=headers)
+            if resp.status_code == 429:
+                print("[Unstop] ⚠️ Rate limited (429)")
+                return jobs
             resp.raise_for_status()
             data = resp.json()
             

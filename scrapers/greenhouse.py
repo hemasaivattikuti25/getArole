@@ -4,6 +4,7 @@ from typing import List, Optional
 import httpx
 from bs4 import BeautifulSoup
 from .models import JobListing
+from .base import get_scraper_headers, create_scraper_client
 
 GREENHOUSE_COMPANIES = [
     "cloudsek", "postman", "togetherai", "instawork", "browserstack", "hasura",
@@ -51,8 +52,12 @@ async def scrape_single_greenhouse_board(client: httpx.AsyncClient, company: str
     listings: List[JobListing] = []
     
     try:
-        response = await client.get(url, timeout=5.0)
-        if response.status_code != 200:
+        headers = get_scraper_headers()
+        response = await client.get(url, headers=headers, timeout=5.0)
+        if response.status_code == 429:
+            print(f"[Greenhouse] ⚠️ Rate limited (429) on company {company}")
+            return listings
+        elif response.status_code != 200:
             return listings
         
         data = response.json()
@@ -101,8 +106,7 @@ async def scrape_all_greenhouse_jobs(companies: Optional[List[str]] = None) -> L
     target_companies = companies or GREENHOUSE_COMPANIES
     all_jobs: List[JobListing] = []
     
-    limits = httpx.Limits(max_keepalive_connections=30, max_connections=50)
-    async with httpx.AsyncClient(limits=limits, headers={"User-Agent": "Mozilla/5.0"}, follow_redirects=True) as client:
+    async with create_scraper_client(timeout=6.0) as client:
         tasks = [scrape_single_greenhouse_board(client, comp) for comp in target_companies]
         results = await asyncio.gather(*tasks, return_exceptions=True)
         

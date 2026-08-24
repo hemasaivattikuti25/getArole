@@ -5,6 +5,7 @@ import httpx
 from bs4 import BeautifulSoup
 from .models import JobListing
 from .greenhouse import normalize_city
+from .base import get_scraper_headers, create_scraper_client
 
 SEARCH_QUERIES = [
     ("Software Engineer", "India"),
@@ -18,14 +19,18 @@ async def scrape_single_linkedin_query(client: httpx.AsyncClient, keywords: str,
     listings: List[JobListing] = []
     url = f"https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?keywords={keywords}&location={location}&f_TPR=r86400&start=0"
     
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    }
+    headers = get_scraper_headers({
+        "Referer": "https://www.linkedin.com/jobs",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate"
+    })
     
     try:
         response = await client.get(url, headers=headers, timeout=8.0)
-        if response.status_code != 200 or not response.text.strip():
+        if response.status_code == 429:
+            print(f"[LinkedIn] ⚠️ Rate limited (429) on query {keywords}")
+            return listings
+        elif response.status_code != 200 or not response.text.strip():
             return listings
         
         soup = BeautifulSoup(response.text, "html.parser")
@@ -65,7 +70,7 @@ async def scrape_single_linkedin_query(client: httpx.AsyncClient, keywords: str,
 
 async def scrape_all_linkedin_jobs() -> List[JobListing]:
     all_jobs: List[JobListing] = []
-    async with httpx.AsyncClient(follow_redirects=True) as client:
+    async with create_scraper_client(timeout=8.0) as client:
         tasks = [
             scrape_single_linkedin_query(client, q, loc)
             for q, loc in SEARCH_QUERIES

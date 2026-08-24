@@ -6,6 +6,7 @@ import httpx
 from bs4 import BeautifulSoup
 from .models import JobListing
 from .greenhouse import normalize_city
+from .base import get_scraper_headers, create_scraper_client
 
 SEARCH_CATEGORIES = [
     "python-django",
@@ -39,13 +40,16 @@ async def scrape_internshala_category(client: httpx.AsyncClient, category: str, 
     listings: List[JobListing] = []
     
     try:
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.9",
-        }
-        response = await client.get(url, headers=headers, timeout=4.0)
-        if response.status_code != 200:
+        headers = get_scraper_headers({
+            "Referer": "https://internshala.com/",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate"
+        })
+        response = await client.get(url, headers=headers, timeout=5.0)
+        if response.status_code == 429:
+            print(f"[Internshala] ⚠️ Rate limited (429) on category {category}")
+            return listings
+        elif response.status_code != 200:
             return listings
         
         soup = BeautifulSoup(response.text, "html.parser")
@@ -109,8 +113,7 @@ async def scrape_internshala_category(client: httpx.AsyncClient, category: str, 
 async def scrape_all_internshala_jobs() -> List[JobListing]:
     all_jobs: List[JobListing] = []
     
-    limits = httpx.Limits(max_keepalive_connections=10, max_connections=20)
-    async with httpx.AsyncClient(limits=limits, follow_redirects=True) as client:
+    async with create_scraper_client(timeout=5.0) as client:
         tasks = []
         for cat in SEARCH_CATEGORIES:
             for city in CITIES:
