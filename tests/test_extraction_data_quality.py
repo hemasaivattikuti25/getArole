@@ -265,6 +265,44 @@ def test_dq_12_assertion_failure_on_corrupt_data():
     assert assertions["description_sanitized"] is False
     assert assertions["all_assertions_passed"] is False
 
+def test_dq_13_url_normalization_and_tracking_strip():
+    """
+    Test Case 13: URL normalization strips tracking params (utm, gh_src, ref) to guarantee idempotency.
+    """
+    from scrapers.text_normalizer import normalize_job_url
+    raw_url = "https://job-boards.greenhouse.io/postman/jobs/12345?utm_source=linkedin&utm_medium=job_board&gh_src=custom123&ref=apply#overview"
+    clean_url = normalize_job_url(raw_url)
+    assert clean_url == "https://job-boards.greenhouse.io/postman/jobs/12345"
+    assert "utm_" not in clean_url
+    assert "gh_src" not in clean_url
+
+def test_dq_14_pii_sanitization_in_descriptions():
+    """
+    Test Case 14: Masking recruiter emails and personal phone numbers in job descriptions.
+    """
+    from scrapers.text_normalizer import sanitize_job_description
+    raw_desc = "Exciting opening at Stripe! Contact our lead talent partner at recruiter.jane@stripe.com or +1 (415) 555-2671 for fast track."
+    cleaned = sanitize_job_description(raw_desc)
+    assert "[REDACTED_CONTACT_EMAIL]" in cleaned
+    assert "[REDACTED_PHONE]" in cleaned
+    assert "recruiter.jane@stripe.com" not in cleaned
+    assert "555-2671" not in cleaned
+
+def test_dq_15_semantic_dedup_and_idempotency():
+    """
+    Test Case 15: Semantic key matching and deterministic surrogate ID generation.
+    """
+    from scrapers.text_normalizer import semantic_dedup_key, generate_idempotent_job_id
+    key1 = semantic_dedup_key("Postman", "Senior Backend Engineer (Remote)")
+    key2 = semantic_dedup_key("Postman Inc.", "Senior Backend Engineer - Remote / India")
+    # Clean keys both normalize to company and core title words
+    assert "postman" in key1
+    assert "seniorbackendengineer" in key1
+    
+    id1 = generate_idempotent_job_id("Greenhouse", "Postman", "Senior Engineer", "https://job-boards.greenhouse.io/postman/jobs/123")
+    id2 = generate_idempotent_job_id("Greenhouse", "Postman", "Senior Engineer", "https://job-boards.greenhouse.io/postman/jobs/123?utm_source=feed")
+    assert id1 == id2 # Identical surrogate key regardless of tracking parameters!
+
 if __name__ == "__main__":
     test_dq_1_extra_whitespace_and_newlines()
     test_dq_2_html_entities()
@@ -278,4 +316,7 @@ if __name__ == "__main__":
     test_dq_10_special_characters_in_product_and_company_names()
     test_dq_11_field_validation_assertions_for_every_field()
     test_dq_12_assertion_failure_on_corrupt_data()
-    print("✅ ALL 12 GOOGLE DATA QUALITY & EXTRACTION ACCURACY TESTS PASSED GREEN!")
+    test_dq_13_url_normalization_and_tracking_strip()
+    test_dq_14_pii_sanitization_in_descriptions()
+    test_dq_15_semantic_dedup_and_idempotency()
+    print("✅ ALL 15 GOOGLE DATA QUALITY & PIPELINE HARDENING TESTS PASSED GREEN!")

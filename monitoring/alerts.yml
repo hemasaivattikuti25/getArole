@@ -40,6 +40,30 @@ groups:
           description: "No jobs fetched across scrapers in the last 15 minutes."
           runbook_url: "https://wiki.getarole.internal/runbooks/scrapers-mass-failure"
 
+      # 3b. Per-Source Scraper Volume Anomaly
+      - alert: ScraperSourceVolumeAnomaly
+        expr: sum by (platform) (rate(scraper_jobs_fetched_total[1h])) < 0.25 * (sum by (platform) (rate(scraper_jobs_fetched_total[24h])))
+        for: 30m
+        labels:
+          severity: warning
+          tier: scrapers
+        annotations:
+          summary: "Individual scraper platform volume dropped by >75% against 24h baseline."
+          description: "Upstream source schema change or anti-bot block suspected on {{ $labels.platform }}."
+          runbook_url: "https://wiki.getarole.internal/runbooks/source-volume-anomaly"
+
+      # 3c. Dead-Letter Queue (DLQ) Spikes
+      - alert: ScraperDeadLetterQueueSpike
+        expr: rate(scraper_dlq_rejected_total[10m]) > 2
+        for: 5m
+        labels:
+          severity: warning
+          tier: data_pipeline
+        annotations:
+          summary: "High volume of malformed job records quarantined in DLQ."
+          description: ">2 records/sec failing schema validation in the last 10 minutes."
+          runbook_url: "https://wiki.getarole.internal/runbooks/dlq-remediation"
+
       # 4. FastEmbed Vector Model Failure
       - alert: EmbeddingModelFailed
         expr: rate(embedding_fallback_total[2m]) > 1 or rate(dependency_errors_total{dependency="fastembed"}[2m]) > 0

@@ -295,3 +295,63 @@ def validate_job_listing_assertions(job: Any) -> Dict[str, bool]:
     # All Passed flag
     results["all_assertions_passed"] = all(results.values())
     return results
+
+def normalize_job_url(raw_url: Optional[str]) -> str:
+    """
+    Strips ephemeral tracking query params (utm_*, gh_src, ref, trackingId, position, etc.)
+    to guarantee identical URL strings across daily cron runs.
+    """
+    if not raw_url:
+        return ""
+    import urllib.parse as urlparse
+    parsed = urlparse.urlparse(raw_url.strip())
+    # Keep only significant params if needed, or strip tracking parameters
+    tracking_params = {
+        "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content",
+        "gh_src", "ref", "refid", "trackingid", "position", "pagenum", "trk",
+        "source", "fbclid", "gclid"
+    }
+    query_dict = urlparse.parse_qs(parsed.query, keep_blank_values=False)
+    filtered_query = {k: v for k, v in query_dict.items() if k.lower() not in tracking_params}
+    
+    clean_query = urlparse.urlencode(filtered_query, doseq=True)
+    clean_parsed = parsed._replace(query=clean_query, fragment="")
+    return urlparse.urlunparse(clean_parsed).rstrip("/")
+
+def sanitize_job_description(raw_desc: Optional[str]) -> str:
+    """
+    Google PII Scrubbing Standard:
+    Masks personal recruiter emails and direct phone numbers in public job descriptions.
+    """
+    if not raw_desc:
+        return ""
+    text = clean_text(raw_desc)
+    # Mask direct recruiter emails (e.g. name@company.com)
+    text = re.sub(r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+", "[REDACTED_CONTACT_EMAIL]", text)
+    # Mask direct phone numbers (international and local)
+    text = re.sub(r"(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b", "[REDACTED_PHONE]", text)
+    return text
+
+def semantic_dedup_key(company: Optional[str], title: Optional[str], location: Optional[str] = None) -> str:
+    """
+    Creates a resilient normalized semantic key:
+    e.g. ("Postman", "Senior / Staff Fullstack Engineer (Remote)") -> "postman_seniorstafffullstackengineer"
+    """
+    c_clean = re.sub(r"[^a-z0-9]", "", (company or "").lower())
+    t_clean = re.sub(r"[^a-z0-9]", "", (title or "").lower())
+    # Strip common noise words in title
+    noise = ["remote", "hybrid", "onsite", "fulltime", "parttime", "india", "usa"]
+    for n in noise:
+        t_clean = t_clean.replace(n, "")
+    return f"{c_clean}_{t_clean}"
+
+def generate_idempotent_job_id(platform: str, company: str, title: str, url: str) -> str:
+    """
+    Generates a deterministic surrogate UUID for Supabase upsert idempotency.
+    """
+    import hashlib
+    clean_url = normalize_job_url(url)
+    c_key = semantic_dedup_key(company, title)
+    raw_signature = f"{platform.lower()}_{c_key}_{clean_url}"
+    return f"job_{hashlib.md5(raw_signature.encode('utf-8')).hexdigest()[:16]}"
+
