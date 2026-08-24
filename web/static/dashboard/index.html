@@ -1014,10 +1014,6 @@
           .sort((a, b) => b.fit_score - a.fit_score)
           .slice(0, 60);
 
-        // renderFeed();
-        if (filteredJobs.length > 0) {
-          selectJob(filteredJobs[0].id);
-        }
         updateCounts();
         renderHomeView();
       } catch (e) {
@@ -1070,6 +1066,7 @@
       // renderFeed is handled by matches separately in dashboard
 
       const pane = document.getElementById(targetPaneId);
+      if (!pane) return;
       const isSaved = tracker.saved.includes(job.id);
       const isApplied = tracker.applied.includes(job.id);
       const compInitial = job.company ? job.company[0].toUpperCase() : 'G';
