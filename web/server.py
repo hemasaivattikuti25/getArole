@@ -6,6 +6,7 @@ import shutil
 from typing import List, Optional, Dict, Any
 from fastapi import FastAPI, UploadFile, File, Form, Query, HTTPException, Body, Request, Header, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -39,6 +40,8 @@ app = FastAPI(
 
 # Attach Observability Middleware for Request ID tracing and Prometheus latency tracking
 app.add_middleware(ObservabilityMiddleware)
+# Attach GZip compression for all responses > 500 bytes (LCP/PageSpeed optimization)
+app.add_middleware(GZipMiddleware, minimum_size=500)
 
 allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000,https://getarole.com,https://*.vercel.app")
 allowed_origins = [o.strip() for o in allowed_origins_env.split(",") if o.strip()]
