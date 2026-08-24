@@ -178,6 +178,20 @@ ALTER TABLE public.user_profiles     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_preferences  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_resumes      ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Public read/write - jobs"          ON public.jobs;
+DROP POLICY IF EXISTS "Public read/write - candidates"    ON public.candidates;
+DROP POLICY IF EXISTS "Public read/write - evaluations"   ON public.match_evaluations;
+DROP POLICY IF EXISTS "Public read/write - applications"  ON public.applications;
+DROP POLICY IF EXISTS "Service full access - profiles"    ON public.user_profiles;
+DROP POLICY IF EXISTS "Service full access - preferences" ON public.user_preferences;
+DROP POLICY IF EXISTS "Service full access - resumes"     ON public.user_resumes;
+-- Also drop old policy names from previous schema runs
+DROP POLICY IF EXISTS "Public Read Access for Jobs"             ON public.jobs;
+DROP POLICY IF EXISTS "Public Insert/Upsert Access for Jobs"    ON public.jobs;
+DROP POLICY IF EXISTS "Allow All Access for Candidates"         ON public.candidates;
+DROP POLICY IF EXISTS "Allow All Access for Match Evaluations"  ON public.match_evaluations;
+DROP POLICY IF EXISTS "Allow All Access for Applications"       ON public.applications;
+
 CREATE POLICY "Public read/write - jobs"            ON public.jobs              FOR ALL USING (true);
 CREATE POLICY "Public read/write - candidates"      ON public.candidates        FOR ALL USING (true);
 CREATE POLICY "Public read/write - evaluations"     ON public.match_evaluations FOR ALL USING (true);
@@ -221,6 +235,12 @@ CREATE OR REPLACE FUNCTION update_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN NEW.updated_at = now(); RETURN NEW; END;
 $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_jobs_updated              ON public.jobs;
+DROP TRIGGER IF EXISTS trg_applications_updated      ON public.applications;
+DROP TRIGGER IF EXISTS trg_user_profiles_updated     ON public.user_profiles;
+DROP TRIGGER IF EXISTS trg_user_preferences_updated  ON public.user_preferences;
+DROP TRIGGER IF EXISTS trg_user_resumes_updated      ON public.user_resumes;
 
 CREATE TRIGGER trg_jobs_updated
   BEFORE UPDATE ON public.jobs FOR EACH ROW EXECUTE FUNCTION update_updated_at();
