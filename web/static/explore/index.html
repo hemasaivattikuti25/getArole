@@ -424,9 +424,9 @@
         </a>
 
         <nav class="nav-tabs">
-          <a class="nav-tab active" onclick="showTab('home')" id="tab-btn-home">Overview</a>
-          <a class="nav-tab" onclick="showTab('matches')" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
-          <a class="nav-tab" onclick="showTab('jobs')" id="tab-btn-jobs">Explore Jobs</a>
+          <a class="nav-tab" href="/dashboard" id="tab-btn-home">Overview</a>
+          <a class="nav-tab" href="/dashboard?tab=matches" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
+          <a class="nav-tab active" href="/explore" id="tab-btn-jobs">Explore Jobs</a>
           <a class="nav-tab" href="/resume-builder" id="tab-btn-resume">📄 ATS Resume</a>
           <a class="nav-tab" href="/cover-letter-builder" id="tab-btn-cover-letter">✉️ Cover Letter</a>
           <a class="nav-tab" href="/profile" id="tab-btn-profile">Profile</a>
@@ -477,78 +477,9 @@
 
   <!-- ════════════════════ MAIN CONTENT ════════════════════ -->
   <main>
-    <!-- 0. HOME VIEW -->
-    <div id="view-home" class="page-view active" style="padding: 32px 24px;">
-      
-      <!-- Welcome Hero Banner -->
-      <div class="home-hero-card">
-        <div>
-          <h1 class="home-hero-title">Welcome back, <span id="home-user-name">Engineer</span></h1>
-          <p class="home-hero-sub">Your personalized AI job matcher and application pipeline across India and global remote tech hubs.</p>
-        </div>
-        <a href="/profile" class="btn-hero-action">My Profile & Preferences →</a>
-      </div>
-
-      <!-- Quick Metrics Grid -->
-      <div style="margin-top: 32px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
-        <h2 style="font-size: 20px; font-weight: 800; color: var(--text-main);">Performance Metrics</h2>
-        <span style="font-size: 13px; color: var(--text-muted); font-weight: 600;">Real-time Platform Data</span>
-      </div>
-      <div class="stats-cards-grid">
-        <div class="stat-metric-card">
-          <div class="stat-metric-icon">💼</div>
-          <div>
-            <div class="stat-metric-num" id="home-total-jobs">1K+</div>
-            <div class="stat-metric-label">Live Active Jobs</div>
-          </div>
-        </div>
-        <div class="stat-metric-card">
-          <div class="stat-metric-icon">🎯</div>
-          <div>
-            <div class="stat-metric-num" id="home-matches-count">16</div>
-            <div class="stat-metric-label">High-Fit AI Matches</div>
-          </div>
-        </div>
-        <div class="stat-metric-card">
-          <div class="stat-metric-icon">🔖</div>
-          <div>
-            <div class="stat-metric-num" id="home-saved-count">0</div>
-            <div class="stat-metric-label">Saved Opportunities</div>
-          </div>
-        </div>
-        <div class="stat-metric-card">
-          <div class="stat-metric-icon">✅</div>
-          <div>
-            <div class="stat-metric-num" id="home-applied-count">0</div>
-            <div class="stat-metric-label">Applications Sent</div>
-          </div>
-        </div>
-      </div>
-      </div>
-
-
-      <!-- Top AI Matches Preview Section -->
-      <div style="margin-bottom: 40px; background: linear-gradient(145deg, #ffffff, #f8fafc); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
-          <div>
-            <h2 style="font-size:22px; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
-              ✨ Top AI Recommended Opportunities
-            </h2>
-            <p style="font-size:14px; color:var(--text-muted); margin-top:4px;">
-              Calibrated by dense semantic vector similarity to your profile.
-            </p>
-          </div>
-          <button class="btn-refresh" onclick="showTab('matches')" style="padding: 10px 20px; background: var(--primary-light); color: var(--primary-hover); border: 1px solid var(--primary-border);">
-            View All Matches →
-          </button>
-        </div>
-        <div id="home-matches-preview-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:16px;"></div>
-      </div>
-
-    </div>
 
     <!-- 1. JOBS EXPLORER VIEW (SPLIT PANE) -->
-    <div id="view-jobs" class="page-view">
+    <div id="view-jobs" class="page-view active">
       <div class="jobs-split-container">
         
         <!-- Left Column: Job Feed List -->
@@ -572,30 +503,19 @@
       </div>
     </div>
 
-    <!-- 2. AI MATCHES VIEW (SPLIT PANE LIKE JOB EXPLORER) -->
-    <div id="view-matches" class="page-view">
-      <div class="jobs-split-container">
-        
-        <!-- Left Column: Top Matched Jobs List -->
-        <div class="jobs-feed-col">
-          <div class="feed-header">
-            <span>🎯 <strong id="matches-count-header">0</strong> Calibrated AI Matches</span>
-            <span style="font-size:12px; color:var(--primary); font-weight:700;">Ranked by Fit</span>
-          </div>
-          <div class="feed-list" id="matches-feed-list"></div>
-        </div>
-
-        <!-- Right Column: Matched Job Detail & Match Insights -->
-        <div class="job-detail-col" id="matches-detail-pane">
-          <div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--text-subtle); font-size:14px; font-weight:600">
-            Select an AI-matched opportunity on the left to view full requirements and 70B ATS highlights.
-          </div>
-        </div>
-
-      </div>
-    </div>
-
   </main>
+
+  <div style="display:none">
+    <span id="home-user-name"></span>
+    <span id="home-matches-count"></span>
+    <span id="home-total-jobs"></span>
+    <span id="tracker-saved-count"></span>
+    <span id="tracker-applied-count"></span>
+    <span id="matches-count-header"></span>
+    <span id="matches-feed-list"></span>
+    <span id="matches-detail-pane"></span>
+    <span id="home-matches-preview-grid"></span>
+  </div>
 
   <div id="toast"></div>
 
@@ -1196,6 +1116,9 @@
       selectedJobId = id;
       const job = allJobs.find(j => j.id === id);
       if (!job) return;
+      
+      const detailCol = document.getElementById(targetPaneId);
+      if (detailCol) detailCol.scrollTop = 0;
 
       document.querySelectorAll('.job-card').forEach(c => c.classList.remove('selected'));
       renderFeed();

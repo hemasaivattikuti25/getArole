@@ -426,7 +426,7 @@
         <nav class="nav-tabs">
           <a class="nav-tab active" onclick="showTab('home')" id="tab-btn-home">Overview</a>
           <a class="nav-tab" onclick="showTab('matches')" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
-          <a class="nav-tab" onclick="showTab('jobs')" id="tab-btn-jobs">Explore Jobs</a>
+          <a class="nav-tab" href="/explore" id="tab-btn-jobs">Explore Jobs</a>
           <a class="nav-tab" href="/resume-builder" id="tab-btn-resume">📄 ATS Resume</a>
           <a class="nav-tab" href="/cover-letter-builder" id="tab-btn-cover-letter">✉️ Cover Letter</a>
           <a class="nav-tab" href="/profile" id="tab-btn-profile">Profile</a>
@@ -503,7 +503,6 @@
             <div class="stat-metric-label">Applications Sent</div>
           </div>
         </div>
-      </div>
       </div>
 
 
@@ -1037,7 +1036,7 @@
           .sort((a, b) => b.fit_score - a.fit_score)
           .slice(0, 60);
 
-        renderFeed();
+        // renderFeed();
         if (filteredJobs.length > 0) {
           selectJob(filteredJobs[0].id);
         }
@@ -1072,7 +1071,7 @@
         activePills.add(filterKey);
         btn.classList.add('active');
       }
-      filterJobs();
+      // filterJobs();
     }
 
     function clearAllFilters() {
@@ -1090,7 +1089,7 @@
       if (!job) return;
 
       document.querySelectorAll('.job-card').forEach(c => c.classList.remove('selected'));
-      renderFeed();
+      // renderFeed is handled by matches separately in dashboard
 
       const pane = document.getElementById(targetPaneId);
       const isSaved = tracker.saved.includes(job.id);
