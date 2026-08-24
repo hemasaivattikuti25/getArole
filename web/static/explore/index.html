@@ -475,15 +475,6 @@
           <option value="lead">Lead / Staff / Executive</option>
         </select>
 
-        <select id="filter-salary" class="filter-dropdown" onchange="filterJobs()">
-          <option value="">Salary Range (All)</option>
-          <option value="6">₹6 LPA+ / $60k+</option>
-          <option value="10">₹10 LPA+ / $80k+</option>
-          <option value="15">₹15 LPA+ / $100k+</option>
-          <option value="25">₹25 LPA+ / $140k+</option>
-          <option value="40">₹40 LPA+ / $200k+</option>
-        </select>
-
         <button class="btn-filter-pill" id="toggle-24h" onclick="toggleQuickFilter('24h')">Last 24 Hours</button>
         <button class="btn-filter-pill" id="toggle-highfit" onclick="toggleQuickFilter('highfit')">High AI Fit (>80%)</button>
       </div>
@@ -1142,7 +1133,6 @@
       const catVal = document.getElementById('filter-category') ? document.getElementById('filter-category').value : '';
       const typeVal = document.getElementById('filter-jobtype') ? document.getElementById('filter-jobtype').value : '';
       const expVal = document.getElementById('filter-experience') ? document.getElementById('filter-experience').value : '';
-      const salVal = document.getElementById('filter-salary') ? document.getElementById('filter-salary').value : '';
 
       filteredJobs = allJobs.filter(j => {
         const title = (j.title || '').toLowerCase();
@@ -1186,7 +1176,11 @@
 
         // 5. Experience Level Filter
         if (expVal === 'entry') {
-          const isEntry = title.includes('intern') || title.includes('junior') || title.includes('fresher') || title.includes('associate') || title.includes('sde 1') || title.includes('sde-1') || title.includes('sde i') || desc.includes('fresher') || desc.includes('entry level') || desc.includes('0-1') || desc.includes('0-2');
+          // Strictly exclude any Senior, Lead, Staff, Principal, Director, Head, or Manager titles
+          const isSeniorWord = title.includes('senior') || title.includes('sr.') || title.includes('sr ') || title.includes('lead') || title.includes('staff') || title.includes('principal') || title.includes('director') || title.includes('head') || title.includes('manager') || title.includes('architect') || title.includes('iii') || title.includes('iv') || title.includes('ii');
+          if (isSeniorWord) return false;
+
+          const isEntry = title.includes('intern') || title.includes('junior') || title.includes('fresher') || title.includes('graduate') || title.includes('trainee') || title.includes('associate') || title.includes('entry') || title.includes('sde 1') || title.includes('sde-1') || title.includes('sde i') || title.includes('engineer 1') || title.includes('engineer i') || desc.includes('fresher') || desc.includes('entry level') || desc.includes('batch 2025') || desc.includes('batch 2026') || desc.includes('batch 2027') || desc.includes('0-1') || desc.includes('0-2');
           if (!isEntry) return false;
         } else if (expVal === 'mid') {
           const isMid = !title.includes('intern') && !title.includes('director') && !title.includes('vp') && !title.includes('head') && !title.includes('chief');
@@ -1199,18 +1193,7 @@
           if (!isLead) return false;
         }
 
-                // 6. Salary Filter
-        if (salVal) {
-          const targetSal = parseInt(salVal, 10);
-          const salStr = `${j.salary || ''} ${j.description || ''}`.toLowerCase();
-          let salMatched = false;
-          if (j.min_salary && j.min_salary >= targetSal) salMatched = true;
-          else if (salStr.includes(`${targetSal} lpa`) || salStr.includes(`${targetSal}lpa`) || salStr.includes(`${targetSal}0k`) || salStr.includes(`$${targetSal * 5}k`)) salMatched = true;
-          else if (!j.salary && (j.fit_score || 0) >= 70) salMatched = true; // allow high fit roles if salary is unstated
-          if (!salMatched) return false;
-        }
-
-        // 7. Quick Toggles
+        // 6. Quick Toggles
         if (quickFilters.highfit && (j.fit_score || 0) < 80) return false;
 
         return true;
