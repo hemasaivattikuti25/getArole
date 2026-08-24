@@ -18,6 +18,7 @@ from services.llm_service import get_llm_service
 from services.supabase_service import get_supabase_service
 from core.logging_config import configure_logging
 from core.observability_middleware import ObservabilityMiddleware
+from core.security import enforce_ai_rate_limit, extract_authenticated_uid
 
 # Initialize Structured JSON logging
 configure_logging()
@@ -371,7 +372,7 @@ class BulletEnhanceRequest(BaseModel):
     custom_instruction: str = ""
 
 @app.post("/api/enhance-bullet")
-async def enhance_bullet(req: BulletEnhanceRequest):
+async def enhance_bullet(req: BulletEnhanceRequest, request: Request):
     """
     Generates 3 tailored variations of a resume bullet point:
     1. STAR Format (Quantified Impact)
@@ -379,6 +380,9 @@ async def enhance_bullet(req: BulletEnhanceRequest):
     3. Crisp ATS Executive Statement
     Supports personalized user instructions.
     """
+    # OWASP A04: DoS & Quota Preservation Rate Limiting
+    enforce_ai_rate_limit(request, max_requests=25, window_seconds=60.0)
+
     bullet = req.bullet.strip()
     context = req.context.strip()
     custom_inst = req.custom_instruction.strip()
@@ -814,7 +818,7 @@ async def serve_profile():
 
 @app.get("/api/user/profile")
 async def get_user_profile(request: Request, x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
-    uid = x_firebase_uid or request.headers.get("X-Firebase-UID") or "guest_user"
+    uid = extract_authenticated_uid(request)
     supabase = get_supabase_service()
     data = await supabase.load_user_profile(uid)
     return JSONResponse(data or {})
@@ -850,47 +854,47 @@ class UserPreferencesSchema(BaseModel):
 
 @app.post("/api/user/profile")
 async def save_user_profile_endpoint(request: Request, profile: Dict[str, Any] = Body(...), x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
-    uid = x_firebase_uid or request.headers.get("X-Firebase-UID") or "guest_user"
+    uid = extract_authenticated_uid(request)
     supabase = get_supabase_service()
     result = await supabase.save_user_profile(uid, profile)
     return JSONResponse({"status": "ok", "data": result})
 
 @app.get("/api/user/preferences")
 async def get_user_preferences(request: Request, x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
-    uid = x_firebase_uid or request.headers.get("X-Firebase-UID") or "guest_user"
+    uid = extract_authenticated_uid(request)
     supabase = get_supabase_service()
     data = await supabase.load_user_preferences(uid)
     return JSONResponse(data or {})
 
 @app.post("/api/user/preferences")
 async def save_user_preferences_endpoint(request: Request, prefs: Dict[str, Any] = Body(...), x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
-    uid = x_firebase_uid or request.headers.get("X-Firebase-UID") or "guest_user"
+    uid = extract_authenticated_uid(request)
     supabase = get_supabase_service()
     result = await supabase.save_user_preferences(uid, prefs)
     return JSONResponse({"status": "ok", "data": result})
 
 @app.get("/api/user/resume")
 async def get_user_resume(request: Request, x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
-    uid = x_firebase_uid or request.headers.get("X-Firebase-UID")
-    if not uid:
+    uid = extract_authenticated_uid(request)
+    if not uid or uid == "guest_user":
         logging.getLogger("sre.security").warning(
             "auth_missing_uid_header",
             extra={"path": request.url.path, "client_ip": request.client.host if request.client else "unknown"}
         )
-        return JSONResponse({"error": "Missing X-Firebase-UID header"}, status_code=401)
+        return JSONResponse({"error": "Missing X-Firebase-UID or Authorization header"}, status_code=401)
     supabase = get_supabase_service()
     data = await supabase.load_user_resume(uid)
     return JSONResponse(data or {})
 
 @app.post("/api/user/resume")
 async def save_user_resume_endpoint(request: Request, resume_data: Dict[str, Any] = Body(...), x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
-    uid = x_firebase_uid or request.headers.get("X-Firebase-UID")
-    if not uid:
+    uid = extract_authenticated_uid(request)
+    if not uid or uid == "guest_user":
         logging.getLogger("sre.security").warning(
             "auth_missing_uid_header",
             extra={"path": request.url.path, "client_ip": request.client.host if request.client else "unknown"}
         )
-        return JSONResponse({"error": "Missing X-Firebase-UID header"}, status_code=401)
+        return JSONResponse({"error": "Missing X-Firebase-UID or Authorization header"}, status_code=401)
     supabase = get_supabase_service()
     result = await supabase.save_user_resume(uid, resume_data)
     return JSONResponse({"status": "ok", "data": result})
