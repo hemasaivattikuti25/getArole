@@ -1,4 +1,5 @@
 import os
+import asyncio
 from typing import List, Dict, Any, Optional
 from dotenv import load_dotenv
 from supabase import create_client, Client
@@ -14,10 +15,15 @@ class SupabaseService:
         self.client: Optional[Any] = None
         
     async def _get_client(self):
-        if not self.client and self.url and self.key:
-            from supabase import create_async_client
+        if self.url and self.key:
             try:
-                self.client = await create_async_client(self.url, self.key)
+                loop = asyncio.get_running_loop()
+                if self.client and getattr(self, "_loop", None) != loop:
+                    self.client = None
+                if not self.client:
+                    from supabase import create_async_client
+                    self.client = await create_async_client(self.url, self.key)
+                    self._loop = loop
             except Exception as e:
                 print(f"[Supabase] Warning: Could not initialize Async Supabase client: {e}")
         return self.client
