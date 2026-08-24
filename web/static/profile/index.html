@@ -1077,26 +1077,66 @@
       }
     }
 
-    function savePersonalInline() {
-      ['first','last','pref','suffix','email','dob','phone','loc','add1','add2','add3','zip'].forEach(k => {
-        const el = document.getElementById('pi-'+k);
-        if (el) state.profile[k] = el.value || '';
-      });
-      // Also save headline
-      const headlineEl = document.getElementById('pi-headline');
-      if (headlineEl) state.profile.headline = headlineEl.value || '';
-      
-      state.profile.name = `${state.profile.first} ${state.profile.last}`.trim();
-      apiSaveProfile(state.profile);
-      
-      document.getElementById('disp-name').textContent = state.profile.name || 'Your Name';
-      document.getElementById('disp-headline').textContent = state.profile.headline || 'Add your headline';
-      const initials = state.profile.name ? state.profile.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : '?';
-      document.getElementById('prof-avatar').textContent = initials;
-      document.getElementById('nav-avatar').textContent = initials;
-      
-      isEditingPersonal = false;
-      renderStaticCards();
+    async function savePersonalInline() {
+      const saveBtn = document.querySelector('#section-personal .btn-save-continue');
+      const errBox = document.getElementById('pi-error-msg');
+      if (errBox) errBox.remove();
+
+      const firstInput = document.getElementById('pi-first');
+      const lastInput = document.getElementById('pi-last');
+      const emailInput = document.getElementById('pi-email');
+      const phoneInput = document.getElementById('pi-phone');
+
+      const firstName = (firstInput ? firstInput.value : '').trim();
+      const lastName = (lastInput ? lastInput.value : '').trim();
+      const email = (emailInput ? emailInput.value : '').trim();
+
+      // Inline validation
+      if (!firstName || !lastName) {
+        if (firstInput && !firstName) firstInput.style.borderColor = '#ef4444';
+        if (lastInput && !lastName) lastInput.style.borderColor = '#ef4444';
+        const errDiv = document.createElement('div');
+        errDiv.id = 'pi-error-msg';
+        errDiv.style.cssText = 'color:#ef4444; font-size:13px; font-weight:700; margin-top:12px;';
+        errDiv.textContent = '⚠️ First Name and Last Name are required fields.';
+        firstInput.closest('.summary-card').appendChild(errDiv);
+        return;
+      }
+
+      // Double-submit prevention loading state
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+      }
+
+      try {
+        ['first','last','pref','suffix','email','dob','phone','loc','add1','add2','add3','zip'].forEach(k => {
+          const el = document.getElementById('pi-'+k);
+          if (el) state.profile[k] = (el.value || '').trim();
+        });
+        
+        const headlineEl = document.getElementById('pi-headline');
+        if (headlineEl) state.profile.headline = (headlineEl.value || '').trim();
+        
+        state.profile.name = `${state.profile.first} ${state.profile.last}`.trim();
+        await apiSaveProfile(state.profile);
+        
+        document.getElementById('disp-name').textContent = state.profile.name || 'Your Name';
+        document.getElementById('disp-headline').textContent = state.profile.headline || 'Add your headline';
+        const initials = state.profile.name ? state.profile.name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : '?';
+        document.getElementById('prof-avatar').textContent = initials;
+        document.getElementById('nav-avatar').textContent = initials;
+        
+        isEditingPersonal = false;
+        renderStaticCards();
+      } catch (err) {
+        console.error('[Profile Form] Save error:', err);
+      } finally {
+        if (saveBtn) {
+          saveBtn.disabled = false;
+          saveBtn.textContent = '💾 Save';
+        }
+      }
     }
 
     function renderStaticCards() {
@@ -1155,21 +1195,21 @@
               </div>
             </div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px;">
-              <div><label class="form-label">First Name *</label><input type="text" id="pi-first" class="form-input" value="${p.first || ''}"></div>
-              <div><label class="form-label">Last Name *</label><input type="text" id="pi-last" class="form-input" value="${p.last || ''}"></div>
-              <div><label class="form-label">Headline / Title</label><input type="text" id="pi-headline" class="form-input" value="${p.headline || ''}"></div>
-              <div><label class="form-label">Email</label><input type="email" id="pi-email" class="form-input" value="${p.email || ''}"></div>
-              <div><label class="form-label">Phone</label><input type="tel" id="pi-phone" class="form-input" value="${p.phone || ''}"></div>
-              <div><label class="form-label">Date of Birth</label><input type="date" id="pi-dob" class="form-input" value="${p.dob || ''}"></div>
-              <div><label class="form-label">Location</label><input type="text" id="pi-loc" class="form-input" value="${p.loc || ''}"></div>
-              <div><label class="form-label">Preferred Name</label><input type="text" id="pi-pref" class="form-input" value="${p.pref || ''}"></div>
+              <div><label class="form-label" for="pi-first">First Name *</label><input type="text" id="pi-first" class="form-input" autocomplete="given-name" maxlength="50" placeholder="e.g. Alex" value="${p.first || ''}"></div>
+              <div><label class="form-label" for="pi-last">Last Name *</label><input type="text" id="pi-last" class="form-input" autocomplete="family-name" maxlength="50" placeholder="e.g. Chen" value="${p.last || ''}"></div>
+              <div><label class="form-label" for="pi-headline">Headline / Title</label><input type="text" id="pi-headline" class="form-input" maxlength="120" placeholder="e.g. Senior Software Engineer" value="${p.headline || ''}"></div>
+              <div><label class="form-label" for="pi-email">Email</label><input type="email" id="pi-email" class="form-input" autocomplete="email" maxlength="100" placeholder="alex.chen@example.com" value="${p.email || ''}"></div>
+              <div><label class="form-label" for="pi-phone">Phone</label><input type="tel" id="pi-phone" class="form-input" autocomplete="tel" maxlength="25" placeholder="+1 (555) 000-0000" value="${p.phone || ''}"></div>
+              <div><label class="form-label" for="pi-dob">Date of Birth</label><input type="date" id="pi-dob" class="form-input" autocomplete="bday" value="${p.dob || ''}"></div>
+              <div><label class="form-label" for="pi-loc">Location</label><input type="text" id="pi-loc" class="form-input" autocomplete="address-level2" maxlength="100" placeholder="City, Country" value="${p.loc || ''}"></div>
+              <div><label class="form-label" for="pi-pref">Preferred Name</label><input type="text" id="pi-pref" class="form-input" autocomplete="nickname" maxlength="50" value="${p.pref || ''}"></div>
             </div>
             <div style="margin-top:16px;">
-              <label class="form-label">Address</label><input type="text" id="pi-add1" class="form-input" value="${p.add1 || ''}">
+              <label class="form-label" for="pi-add1">Address</label><input type="text" id="pi-add1" class="form-input" autocomplete="street-address" maxlength="150" value="${p.add1 || ''}">
             </div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px;">
-              <div><label class="form-label">Address Line 2</label><input type="text" id="pi-add2" class="form-input" value="${p.add2 || ''}"></div>
-              <div><label class="form-label">Postal Code</label><input type="text" id="pi-zip" class="form-input" value="${p.zip || ''}"></div>
+              <div><label class="form-label" for="pi-add2">Address Line 2</label><input type="text" id="pi-add2" class="form-input" autocomplete="address-line2" maxlength="100" value="${p.add2 || ''}"></div>
+              <div><label class="form-label" for="pi-zip">Postal Code</label><input type="text" id="pi-zip" class="form-input" autocomplete="postal-code" maxlength="20" value="${p.zip || ''}"></div>
             </div>
             <input type="hidden" id="pi-suffix" value="${p.suffix || ''}">
             <input type="hidden" id="pi-add3" value="${p.add3 || ''}">
