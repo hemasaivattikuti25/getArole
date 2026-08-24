@@ -948,63 +948,97 @@
         allJobs = loadedList || [];
         
         // 3. Real Dynamic Fit Score Calculation based on user preferences & profile
-        const userProf = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+                const userProf = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
         const userPrefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
-        
-        function computeJobFitScore(job, profile, prefs) {
+        const userResume = JSON.parse(localStorage.getItem('getarole_resume_v2') || '{}');
+
+        function computeJobFitScore(job, profile, prefs, resume) {
           let score = 0;
-          const userSkills = (profile.skills || []).map(s => s.toLowerCase());
-          const targetRoles = [prefs.role, profile.headline, prefs.target_role].filter(Boolean).map(r => r.toLowerCase());
-          const preferredCities = (prefs.locations || [prefs.city, profile.city]).filter(Boolean).map(c => c.toLowerCase());
-          const remotePref = prefs.remoteOnly || prefs.workplaceType === 'Remote';
+          const resumeSkills = (resume && resume.skills && resume.skills.all) ? resume.skills.all.split(/[,;\n]/) : [];
+          const profileSkills = profile.skills || [];
+          const prefSpecializations = prefs.specializations || [prefs.role].filter(Boolean);
+
+          const allUserSkills = Array.from(new Set([...profileSkills, ...resumeSkills].map(s => s.trim().toLowerCase()).filter(Boolean)));
+          const userExperience = (resume && resume.experience) ? resume.experience.length : 0;
 
           const jobTitle = (job.title || '').toLowerCase();
           const jobDesc = (job.description || '').toLowerCase();
           const jobLoc = (job.location || '').toLowerCase();
+          const jobCity = (job.city || '').toLowerCase();
           const jobSkills = (job.skills || []).map(s => s.toLowerCase());
-          const isRemote = (job.workplace_type || '').toLowerCase() === 'remote' || jobLoc.includes('remote');
+          const jobText = `${jobTitle} ${jobDesc} ${jobSkills.join(' ')}`;
 
-          // Strict checking: Must match role/title somewhat
-          let roleMatch = false;
-          if (targetRoles.length === 0) roleMatch = true; // no preferences set
-          else if (targetRoles.some(r => jobTitle.includes(r) || r.includes(jobTitle))) roleMatch = true;
-          else if (targetRoles.some(r => jobDesc.includes(r))) roleMatch = true;
+          // 1. Role / Title Match (up to 40 points)
+          let titlePoints = 0;
+          if (prefSpecializations.length > 0) {
+            for (const role of prefSpecializations) {
+              const r = role.toLowerCase();
+              if (jobTitle.includes(r) || r.includes(jobTitle)) { titlePoints = 40; break; }
+              const words = r.split(/\s+/).filter(w => w.length > 2);
+              const matchedWords = words.filter(w => jobTitle.includes(w));
+              if (matchedWords.length > 0) {
+                titlePoints = Math.max(titlePoints, Math.round((matchedWords.length / words.length) * 35));
+              }
+            }
+          } else {
+            titlePoints = 25;
+          }
+          score += titlePoints;
 
-          if (!roleMatch) return 0; // Filter out if completely irrelevant to role preferences
+          // 2. Skills & Keywords Overlap (up to 35 points)
+          if (allUserSkills.length > 0) {
+            let skillHits = 0;
+            for (const skill of allUserSkills) {
+              if (jobSkills.includes(skill) || jobText.includes(skill)) {
+                skillHits++;
+              }
+            }
+            const skillRatio = Math.min(1, skillHits / Math.max(2, Math.min(allUserSkills.length, 8)));
+            score += Math.round(skillRatio * 35);
+          } else {
+            const techWords = ['python', 'react', 'java', 'sql', 'aws', 'node', 'c++', 'ai', 'data', 'cloud', 'javascript', 'docker', 'api'];
+            const matchedTech = techWords.filter(w => jobText.includes(w));
+            score += Math.min(25, matchedTech.length * 6);
+          }
 
-          score += 65; // Base score for matching role
+          // 3. Location & Workplace Type (up to 15 points)
+          const preferredCities = (prefs.locations || [prefs.city, profile.city]).filter(Boolean).map(c => c.toLowerCase());
+          const isRemote = (job.workplace_type || '').toLowerCase().includes('remote') || jobLoc.includes('remote');
+          const remotePref = prefs.remoteOnly || (prefs.workplaceType || '').toLowerCase().includes('remote');
 
-          // Location Match
           if (remotePref && isRemote) {
             score += 15;
-          } else if (preferredCities.length > 0 && preferredCities.some(c => jobLoc.includes(c) || (job.city && job.city.toLowerCase().includes(c)))) {
+          } else if (preferredCities.some(c => jobLoc.includes(c) || jobCity.includes(c))) {
             score += 15;
+          } else if (isRemote) {
+            score += 10;
           } else if (preferredCities.length > 0) {
-            score -= 10; // Penalty for wrong location
+            score += 5;
+          } else {
+            score += 10;
           }
 
-          // Skills Match
-          if (userSkills.length > 0) {
-            let hits = 0;
-            for (const skill of userSkills) {
-              if (jobSkills.includes(skill) || jobDesc.includes(skill) || jobTitle.includes(skill)) hits++;
-            }
-            score += Math.min(20, Math.round((hits / Math.max(1, userSkills.length)) * 20));
-          }
+          // 4. Experience Level Alignment (up to 10 points)
+          const isSeniorJob = jobTitle.includes('senior') || jobTitle.includes('lead') || jobTitle.includes('principal') || jobTitle.includes('staff') || jobTitle.includes('director');
+          const isEntryJob = jobTitle.includes('intern') || jobTitle.includes('fresher') || jobTitle.includes('junior') || jobTitle.includes('associate') || jobDesc.includes('entry level');
+          
+          if (userExperience === 0 && isEntryJob) score += 10;
+          else if (userExperience >= 3 && isSeniorJob) score += 10;
+          else if (userExperience > 0 && !isSeniorJob && !isEntryJob) score += 10;
+          else score += 5;
 
-          return Math.min(99, Math.max(0, score));
+          return Math.min(98, Math.max(45, score));
         }
 
         allJobs = allJobs.map(j => ({
           ...j,
-          fit_score: computeJobFitScore(j, userProf, userPrefs)
+          fit_score: computeJobFitScore(j, userProf, userPrefs, userResume)
         }));
 
         filteredJobs = [...allJobs];
         
-        // Only include jobs that actually match the preferences
         matchedJobs = allJobs
-          .filter(j => j.fit_score > 0)
+          .filter(j => j.fit_score > 60)
           .sort((a, b) => b.fit_score - a.fit_score)
           .slice(0, 60);
 

@@ -2412,26 +2412,8 @@ ${r.header?.name || 'Candidate Name'}`
     <script>window.onload=function(){setTimeout(function(){window.print();window.close();},500);};<\/script>
     
   <script>
-    function updateNavUser() {
-      try {
-        const userObj = JSON.parse(localStorage.getItem('getarole_user') || '{}');
-        const profObj = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
-        const name = profObj.name || userObj.displayName || userObj.name || localStorage.getItem('getarole_username') || 'User';
-        const nameEl = document.getElementById('nav-username');
-        if (nameEl && name) nameEl.textContent = name;
-        const avatarEl = document.getElementById('nav-avatar');
-        if (avatarEl && name) avatarEl.textContent = name[0].toUpperCase();
-      } catch(e) {}
-    }
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', updateNavUser);
-    } else {
-      updateNavUser();
-    }
-  </script>
-
-</body></html>
-  `);
+    </body></html>
+    `);
       w.document.close();
       toast('Print dialog opened — Save as PDF');
     }
