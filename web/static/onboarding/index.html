@@ -9,10 +9,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #00acc1; /* Simplify-like teal/cyan */
-      --primary-hover: #0097a7;
-      --primary-light: #e0f7fa;
-      --primary-border: #80deea;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --primary-border: #c7d2fe;
       --bg: #f8fafc;
       --surface: #ffffff;
       --text-main: #0f172a;
@@ -114,7 +114,7 @@
       padding: 10px 20px; 
       border-radius: 99px;
       cursor: pointer; 
-      font-size: 14.5px;
+      font-size: 13px;
       font-weight: 600; 
       color: var(--text-muted); 
       transition: all 0.2s ease;
@@ -132,7 +132,7 @@
     .skills-chip-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 24px; max-width: 600px; margin-left: auto; margin-right: auto; }
     .skill-chip {
       padding: 8px 16px; border-radius: 99px; background: var(--surface);
-      border: 1.5px solid var(--border); font-size: 13.5px; font-weight: 600; cursor: pointer; color: var(--text-muted);
+      border: 1.5px solid var(--border); font-size: 13px; font-weight: 600; cursor: pointer; color: var(--text-muted);
     }
     .skill-chip:hover { border-color: var(--primary-border); color: var(--text-main); }
     .skill-chip.selected { background: var(--primary); color: white; border-color: var(--primary); }
@@ -150,7 +150,7 @@
     }
     .btn-back { background: transparent; color: var(--text-muted); padding: 14px 20px; }
     .btn-back:hover { color: var(--text-main); }
-    .btn-next { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(0, 172, 193, 0.2); }
+    .btn-next { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); }
     .btn-next:hover { background: var(--primary-hover); transform: translateY(-1px); }
     .btn-next:disabled { opacity: 0.5; cursor: not-allowed; }
   </style>
@@ -172,7 +172,7 @@
       </div>
 
       <div class="founder-widget">
-        <img src="https://ui-avatars.com/api/?name=Sai+Vattikuti&background=00acc1&color=fff&rounded=true&bold=true" class="founder-avatar" alt="Founder">
+        <img src="/founder.png" class="founder-avatar" alt="Founder">
         <div class="founder-text-wrap">
           <div class="founder-name">Sai, Founder</div>
           <div class="founder-msg">We've pre-filled a few of your answers from earlier to save you time!</div>
