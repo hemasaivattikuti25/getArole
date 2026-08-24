@@ -19,14 +19,17 @@ class WorkdayScraper:
     async def scrape_all(self) -> List[JobListing]:
         jobs = []
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=True)
+            browser = await p.chromium.launch(
+                headless=True,
+                args=["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu"]
+            )
             for company in self.companies:
                 print(f"Scraping {company['name']}...")
+                page = None
                 try:
                     page = await browser.new_page()
-                    # We add a dummy timeout just to let dynamic rendering happen
-                    await page.goto(company['url'], wait_until='domcontentloaded', timeout=60000)
-                    await asyncio.sleep(5) # Let JSON requests complete
+                    await page.goto(company['url'], wait_until='domcontentloaded', timeout=25000)
+                    await asyncio.sleep(3)
                     
                     # Instead of complex DOM scraping, we just grab all links that look like job descriptions
                     # This is a highly resilient fallback for custom enterprise boards

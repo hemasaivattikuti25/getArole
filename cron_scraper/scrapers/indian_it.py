@@ -21,13 +21,16 @@ class IndianITScraper:
     async def scrape_all(self) -> List[JobListing]:
         jobs = []
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=True)
+            browser = await p.chromium.launch(
+                headless=True,
+                args=["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage", "--disable-gpu"]
+            )
             for company in self.companies:
                 print(f"Scraping IT Giant {company['name']}...")
                 try:
                     page = await browser.new_page()
-                    await page.goto(company['url'], wait_until='domcontentloaded', timeout=60000)
-                    await asyncio.sleep(5) 
+                    await page.goto(company['url'], wait_until='domcontentloaded', timeout=25000)
+                    await asyncio.sleep(3) 
                     
                     # Heuristic scraping for Indian IT portals (looking for 'Apply', 'Job', 'Role', etc.)
                     links = await page.evaluate('''() => {

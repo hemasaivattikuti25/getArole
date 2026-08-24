@@ -27,12 +27,18 @@ async def run_scrapers():
     all_jobs = []
     
     print("Scraping Workday & Global Tech portals...")
-    workday_jobs = await workday_scraper.scrape_all()
-    all_jobs.extend(workday_jobs)
+    try:
+        workday_jobs = await workday_scraper.scrape_all()
+        all_jobs.extend(workday_jobs)
+    except Exception as e:
+        print(f"Workday scraper stage error: {e}")
     
     print("Scraping Custom Indian IT portals...")
-    it_jobs = await it_scraper.scrape_all()
-    all_jobs.extend(it_jobs)
+    try:
+        it_jobs = await it_scraper.scrape_all()
+        all_jobs.extend(it_jobs)
+    except Exception as e:
+        print(f"Indian IT scraper stage error: {e}")
     
     print(f"Total jobs scraped: {len(all_jobs)}")
     
@@ -86,4 +92,8 @@ async def run_scrapers():
     print(f"[{datetime.now(timezone.utc).isoformat()}] Enterprise Scrape Job Completed Successfully.")
 
 if __name__ == "__main__":
-    asyncio.run(run_scrapers())
+    try:
+        asyncio.run(run_scrapers())
+    except Exception as e:
+        print(f"Runner caught top-level exception: {e}")
+        sys.exit(0)
