@@ -61,6 +61,17 @@ BROWSER_PROFILES: List[BrowserProfile] = [
         device_scale_factor=1.25,
         platform="Win32"
     ),
+    BrowserProfile(
+        user_agent="Mozilla/5.0 (X11; Linux x86_64; rv:129.0) Gecko/20100101 Firefox/129.0",
+        sec_ch_ua="",  # Firefox default
+        sec_ch_ua_platform="",
+        sec_ch_ua_mobile="",
+        accept_language="en-US,en;q=0.8,de;q=0.5",
+        viewport_width=1920,
+        viewport_height=1080,
+        device_scale_factor=1.0,
+        platform="Linux x86_64"
+    ),
 ]
 
 def get_random_profile() -> BrowserProfile:
