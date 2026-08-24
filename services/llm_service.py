@@ -46,7 +46,8 @@ class NvidiaLLMService:
             "max_tokens": max_tokens,
             "stream": True
         }
-        async with httpx.AsyncClient(timeout=45.0) as client:
+        timeout_cfg = httpx.Timeout(connect=2.5, read=3.5, write=2.0, pool=2.0)
+        async with httpx.AsyncClient(timeout=timeout_cfg) as client:
             async with client.stream("POST", f"{self.base_url}/chat/completions", headers=headers, json=payload) as resp:
                 resp.raise_for_status()
                 async for line in resp.aiter_lines():

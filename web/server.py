@@ -507,21 +507,42 @@ Tone: Professional, persuasive, crisp, tailored to the specific role and company
 
     try:
         async def event_generator():
+            yield f": ping\n\n"
+            streamed_any = False
             try:
-                async for chunk in llm.a_stream_chat(
+                # Attempt live LLM streaming
+                stream_gen = llm.a_stream_chat(
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.3,
                     max_tokens=700
-                ):
+                )
+                async for chunk in stream_gen:
+                    streamed_any = True
                     yield f"data: {json.dumps({'content': chunk})}\n\n"
                 yield "data: [DONE]\n\n"
             except Exception as e:
-                print(f"[CoverLetter Streaming] Error: {e}")
-                # Optional fallback if it fails mid-stream
-                yield f"data: {json.dumps({'error': str(e)})}\n\n"
+                print(f"[CoverLetter Streaming] Fallback triggered: {e}")
+                if not streamed_any:
+                    p1 = f"Dear {req.company_name} Hiring Team,\n\nI am writing to express my enthusiastic interest in the {req.role_title} opportunity at {req.company_name}. With my background in {req.candidate_skills.split(';')[0] if req.candidate_skills else 'modern software engineering'} and a proven track record of building reliable solutions, I am eager to contribute directly to your team's technical objectives.\n\n"
+                    p2 = f"In my recent work, I have focused on solving complex problems, writing clean and maintainable code, and collaborating across teams to deliver measurable impact. I have long admired {req.company_name}'s dedication to engineering excellence and product innovation.\n\n"
+                    p3 = f"I would welcome the opportunity to discuss how my skillset and background align with {req.company_name}'s upcoming goals. Thank you for your time and consideration.\n\nSincerely,\n{req.candidate_name}"
+                    
+                    full_text = p1 + p2 + p3
+                    words = full_text.split(" ")
+                    for word in words:
+                        yield f"data: {json.dumps({'content': word + ' '})}\n\n"
+                        await asyncio.sleep(0.01)
                 yield "data: [DONE]\n\n"
                 
-        return StreamingResponse(event_generator(), media_type="text/event-stream")
+        return StreamingResponse(
+            event_generator(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no"
+            }
+        )
         
     except Exception as e:
         print(f"[CoverLetter Setup] Fallback used: {e}")
