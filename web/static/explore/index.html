@@ -1359,7 +1359,8 @@
           const isSeniorWord = title.includes('senior') || title.includes('sr.') || title.includes('sr ') || title.includes('lead') || title.includes('staff') || title.includes('principal') || title.includes('director') || title.includes('head') || title.includes('manager') || title.includes('architect') || title.includes('iii') || title.includes('iv') || title.includes('ii');
           if (isSeniorWord) return false;
 
-          const isEntry = title.includes('intern') || title.includes('junior') || title.includes('fresher') || title.includes('graduate') || title.includes('trainee') || title.includes('associate') || title.includes('entry') || title.includes('sde 1') || title.includes('sde-1') || title.includes('sde i') || title.includes('engineer 1') || title.includes('engineer i') || desc.includes('fresher') || desc.includes('entry level') || desc.includes('batch 2025') || desc.includes('batch 2026') || desc.includes('batch 2027') || desc.includes('0-1') || desc.includes('0-2');
+          const isBatchMatch = /\b(?:batch\s*20\d\d|20\d\d\s*batch|class\s*of\s*20\d\d)\b/i.test(desc) || /\b(?:0-1|0-2|0-3)\s*(?:years?|yrs?|yr)\b/i.test(desc);
+          const isEntry = title.includes('intern') || title.includes('junior') || title.includes('fresher') || title.includes('graduate') || title.includes('trainee') || title.includes('associate') || title.includes('entry') || title.includes('sde 1') || title.includes('sde-1') || title.includes('sde i') || title.includes('engineer 1') || title.includes('engineer i') || desc.includes('fresher') || desc.includes('entry level') || isBatchMatch || desc.includes('0-1') || desc.includes('0-2');
           if (!isEntry) return false;
         } else if (expVal === 'mid') {
           const isMid = !title.includes('intern') && !title.includes('director') && !title.includes('vp') && !title.includes('head') && !title.includes('chief');

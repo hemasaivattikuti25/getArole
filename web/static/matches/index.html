@@ -1268,7 +1268,8 @@
         const isSelected = j.id === selectedJobId;
         const isSaved = tracker.saved.includes(j.id);
         const compInitial = j.company ? j.company[0].toUpperCase() : 'G';
-        const batchTag = j.title.toLowerCase().includes('intern') ? 'Batch 2026/2027' : 'Immediate';
+        const curYr = new Date().getFullYear();
+        const batchTag = j.title.toLowerCase().includes('intern') ? `Batch ${curYr}/${curYr + 1}` : 'Immediate';
 
         return `
           <div class="job-card ${isSelected ? 'selected' : ''}" onclick="selectJob('${j.id}')">

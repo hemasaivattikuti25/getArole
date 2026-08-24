@@ -26,20 +26,33 @@ class ResumeParserService:
             text += "\n\n=== EXTRACTED PDF ANNOTATION LINKS ===\n" + "\n".join(set(pdf_links))
         return text, pdf_links
 
+    def _is_safe_url(self, url: str) -> bool:
+        """Validates that a URL uses safe HTTP/HTTPS schemes and is not an internal or SSRF target."""
+        if not url:
+            return False
+        lower = url.lower().strip()
+        if any(lower.startswith(bad) for bad in ["javascript:", "data:", "file:", "ftp:", "blob:", "about:"]):
+            return False
+        if any(ip in lower for ip in ["127.0.0.1", "localhost", "169.254.169.254", "0.0.0.0", "::1", "10.0.", "192.168."]):
+            return False
+        return lower.startswith("http://") or lower.startswith("https://")
+
     def extract_links(self, text: str, pdf_links: List[str], llm_parsed: Dict[str, Any]) -> Dict[str, str]:
-        """Extracts LinkedIn, GitHub, and Portfolio URLs using annotations and regex."""
+        """Extracts LinkedIn, GitHub, and Portfolio URLs using annotations and regex securely."""
         links = {
-            "linkedin": llm_parsed.get("linkedin_url", ""),
-            "github": llm_parsed.get("github_url", ""),
-            "portfolio": llm_parsed.get("portfolio_url", ""),
-            "other": llm_parsed.get("other_url", "")
+            "linkedin": llm_parsed.get("linkedin_url", "") if self._is_safe_url(llm_parsed.get("linkedin_url", "")) else "",
+            "github": llm_parsed.get("github_url", "") if self._is_safe_url(llm_parsed.get("github_url", "")) else "",
+            "portfolio": llm_parsed.get("portfolio_url", "") if self._is_safe_url(llm_parsed.get("portfolio_url", "")) else "",
+            "other": llm_parsed.get("other_url", "") if self._is_safe_url(llm_parsed.get("other_url", "")) else ""
         }
 
         raw_urls = pdf_links + re.findall(r'(?:https?://)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+(?:/[^\s,)]*)?)', text)
         for url_str in raw_urls:
             url_clean = url_str.replace("mailto:", "").strip()
-            full_url = url_clean if url_clean.startswith("http") else f"https://{url_clean}"
-            lower_u = url_clean.lower()
+            full_url = url_clean if url_clean.startswith("http://") or url_clean.startswith("https://") else f"https://{url_clean}"
+            if not self._is_safe_url(full_url):
+                continue
+            lower_u = full_url.lower()
             if "linkedin.com" in lower_u and not links["linkedin"]:
                 links["linkedin"] = full_url
             elif "github.com" in lower_u and not links["github"]:

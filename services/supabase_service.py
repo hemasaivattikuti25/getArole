@@ -14,7 +14,14 @@ load_dotenv()
 
 _JOB_WRITE_THROUGH_CACHE: List[Dict[str, Any]] = []
 _CACHE_TIMESTAMP: float = 0.0
+_CACHE_FETCH_LOCK: Optional[asyncio.Lock] = None
 SLOW_QUERY_THRESHOLD_MS = 200.0  # 10% of 2.0s P99 Search Latency SLO
+
+def _get_cache_fetch_lock() -> asyncio.Lock:
+    global _CACHE_FETCH_LOCK
+    if _CACHE_FETCH_LOCK is None:
+        _CACHE_FETCH_LOCK = asyncio.Lock()
+    return _CACHE_FETCH_LOCK
 
 class SupabaseService:
     def __init__(self):
@@ -75,6 +82,11 @@ class SupabaseService:
                 inserted_count += len(batch)
             except Exception as e:
                 print(f"[Supabase] Batch upsert error (batch {i//batch_size + 1}): {e}")
+                DEPENDENCY_ERRORS_TOTAL.labels(dependency="supabase", error_type="batch_upsert_failure").inc()
+                logging.getLogger("sre.database").error(
+                    "supabase_batch_upsert_failure",
+                    extra={"batch_index": i // batch_size + 1, "batch_size": len(batch), "error": str(e)}
+                )
                 # Don't break on a single batch failure to ensure partial successes
                 continue
 
@@ -84,9 +96,10 @@ class SupabaseService:
         global _JOB_WRITE_THROUGH_CACHE, _CACHE_TIMESTAMP
         now = time.time()
         
-        # High-Concurrency L1 Cache Fast Path (15s TTL for general queries)
+        # High-Concurrency L1 Cache Fast Path (15s TTL for general unfiltered queries)
         # Absorbs 1k-5k VU spikes without exhausting Supabase connection pool
-        if not city and not workplace_type and _JOB_WRITE_THROUGH_CACHE and (now - _CACHE_TIMESTAMP < 15.0):
+        is_general_query = not city and not workplace_type
+        if is_general_query and _JOB_WRITE_THROUGH_CACHE and (now - _CACHE_TIMESTAMP < 15.0):
             CACHE_OPERATIONS.labels(cache="supabase_jobs", operation="l1_memory_hit").inc()
             return _JOB_WRITE_THROUGH_CACHE[:limit]
 
@@ -94,6 +107,11 @@ class SupabaseService:
         if not client:
             CACHE_OPERATIONS.labels(cache="supabase_jobs", operation="stale_serve").inc()
             return _JOB_WRITE_THROUGH_CACHE[:limit] if _JOB_WRITE_THROUGH_CACHE else []
+
+        # Acquire stampede lock for general cache refreshes
+        lock = _get_cache_fetch_lock() if is_general_query else None
+        if lock and is_general_query and _JOB_WRITE_THROUGH_CACHE and (now - _CACHE_TIMESTAMP < 15.0):
+            return _JOB_WRITE_THROUGH_CACHE[:limit]
 
         query_start = time.time()
         try:
@@ -125,11 +143,13 @@ class SupabaseService:
                         }
                     )
 
-                if res.data:
+                # CRITICAL: Only update global general cache if this was an unfiltered query!
+                # Prevents cache poisoning where a city filter overwrites general listings for all users.
+                if res.data and is_general_query:
                     _JOB_WRITE_THROUGH_CACHE = res.data
                     _CACHE_TIMESTAMP = time.time()
                     CACHE_OPERATIONS.labels(cache="supabase_jobs", operation="write_through_refresh").inc()
-                return res.data or _JOB_WRITE_THROUGH_CACHE
+                return res.data or (_JOB_WRITE_THROUGH_CACHE if is_general_query else [])
         except asyncio.TimeoutError:
             SUPABASE_FAILURES_TOTAL.labels(error_type="timeout_2.5s").inc()
             DEPENDENCY_ERRORS_TOTAL.labels(dependency="supabase", error_type="timeout").inc()

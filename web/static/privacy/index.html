@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — getArole | AI Job Discovery Engine</title>
+  <meta name="description" content="Privacy Policy for getArole. Learn how we collect, process, and protect your resume and job search data in compliance with GDPR, CCPA, and India DPDP Act 2023.">
+  <link rel="canonical" href="https://getarole.in/privacy/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Outfit:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --surface: #ffffff;
+      --background: #f8fafc;
+      --border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--background);
+      color: var(--text-main);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner {
+      max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;
+    }
+    .brand-logo {
+      display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 20px; color: var(--text-main);
+    }
+    .brand-logo span { color: var(--primary); }
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 14px; margin-left: 20px;
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .content-container {
+      max-width: 860px; margin: 48px auto; padding: 0 24px 64px;
+    }
+    h1 { font-family: 'Outfit', sans-serif; font-size: 36px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .last-updated { color: var(--text-muted); font-size: 14px; margin-bottom: 36px; }
+    h2 { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 700; margin: 32px 0 12px; color: #1e1b4b; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    p, li { color: var(--text-muted); font-size: 15px; margin-bottom: 14px; }
+    ul { padding-left: 24px; margin-bottom: 16px; }
+    .highlight-card {
+      background: #eef2ff; border-left: 4px solid var(--primary); padding: 16px 20px; border-radius: 6px; margin: 24px 0;
+    }
+    .highlight-card p { margin-bottom: 0; color: #312e81; font-weight: 500; }
+    footer {
+      background: var(--surface); border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; color: var(--text-muted); font-size: 13px;
+    }
+    footer a { color: var(--primary); text-decoration: none; margin: 0 10px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <a href="/" class="brand-logo">get<span>A</span>role</a>
+      <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/explore">Explore Jobs</a>
+        <a href="/terms">Terms of Service</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="content-container">
+    <h1>Privacy Policy</h1>
+    <div class="last-updated">Effective Date: August 25, 2026 | Compliant with GDPR, CCPA, and India DPDP Act 2023</div>
+
+    <div class="highlight-card">
+      <p>🛡️ <strong>Our Privacy Pledge</strong>: getArole processes your resume and profile data solely to calculate AI match scores, suggest resume enhancements, and connect you with job opportunities. We never sell your personal information to third-party data brokers.</p>
+    </div>
+
+    <h2>1. Information We Collect</h2>
+    <p>We collect personal information necessary to deliver personalized job discovery services:</p>
+    <ul>
+      <li><strong>Account Identification</strong>: Name, email address, and authentication identifiers provided via Google Authentication or Firebase Auth.</li>
+      <li><strong>Resume & Professional Profile Data</strong>: Resumes uploaded in PDF format, extracted work history, education, skills, projects, and portfolio links.</li>
+      <li><strong>Job Search Preferences</strong>: Target job titles, preferred work modes (Remote, Hybrid, Onsite), target cities, and salary expectations.</li>
+      <li><strong>Technical & Telemetry Data</strong>: IP address (redacted in logs), browser user-agent, error logs, and anonymized performance metrics.</li>
+    </ul>
+
+    <h2>2. How We Use Your Data</h2>
+    <p>Your information is processed for the following legitimate purposes:</p>
+    <ul>
+      <li>Matching your candidate profile against aggregated job listings using local semantic embeddings.</li>
+      <li>Providing AI-assisted resume bullet enhancements and tailored executive summaries via secure subprocessor APIs (NVIDIA NIM / OpenAI).</li>
+      <li>Persisting your profile and application preferences in Supabase for cross-device access.</li>
+      <li>Monitoring platform health, preventing denial-of-service abuse, and securing API endpoints.</li>
+    </ul>
+
+    <h2>3. Subprocessors & Data Transfers</h2>
+    <p>We partner with enterprise cloud infrastructure providers under strict Data Processing Agreements:</p>
+    <ul>
+      <li><strong>Supabase</strong>: Cloud PostgreSQL database for profile, preference, and job index persistence.</li>
+      <li><strong>Firebase / Google Cloud</strong>: User authentication and token verification.</li>
+      <li><strong>NVIDIA NIM / AI Inference APIs</strong>: Ephemeral processing of resume bullet suggestions (data is not retained for model training).</li>
+    </ul>
+
+    <h2>4. Your Rights (GDPR, CCPA & India DPDP Act 2023)</h2>
+    <p>Depending on your jurisdiction, you possess specific statutory rights regarding your personal data:</p>
+    <ul>
+      <li><strong>Right to Access & Portability</strong>: You can inspect and export your saved profile data at any time from your Profile settings.</li>
+      <li><strong>Right to Rectification</strong>: You can modify your skills, experience, and preferences directly via the getArole dashboard.</li>
+      <li><strong>Right to Erasure (Right to be Forgotten)</strong>: You can trigger immediate, permanent deletion of your profile, preferences, and uploaded resume data via <code>DELETE /api/user/account</code> or within the Profile menu.</li>
+      <li><strong>Do Not Sell My Personal Information (CCPA)</strong>: getArole does not sell or share consumer personal data.</li>
+    </ul>
+
+    <h2>5. Data Retention & Security</h2>
+    <p>We apply defense-in-depth security measures including SHA-256 integrity hashing, HTTPS TLS 1.3 encryption in transit, least-privilege database row-level security (RLS), and rate-limited API firewalls. User data is retained only for the duration of an active user account.</p>
+
+    <h2>6. Grievance Officer & Contact (India DPDP Act 2023)</h2>
+    <p>In accordance with the Digital Personal Data Protection Act, 2023 and Information Technology Rules, the contact details of our Grievance Officer are:</p>
+    <ul>
+      <li><strong>Designation</strong>: Data Protection & Grievance Redressal Officer</li>
+      <li><strong>Email</strong>: <a href="mailto:privacy@getarole.in" style="color:var(--primary)">privacy@getarole.in</a></li>
+      <li><strong>Address</strong>: getArole Engineering Team, Bengaluru, Karnataka, India</li>
+    </ul>
+  </main>
+
+  <footer>
+    <div>© <span id="year">2026</span> <strong>getArole.in</strong>. All rights reserved.</div>
+    <div style="margin-top:8px;">
+      <a href="/privacy">Privacy Policy</a>
+      <a href="/terms">Terms of Service</a>
+      <a href="/dashboard">Dashboard</a>
+    </div>
+  </footer>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

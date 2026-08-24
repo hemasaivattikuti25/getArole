@@ -45,12 +45,13 @@ app.add_middleware(ObservabilityMiddleware)
 # Attach GZip compression for all responses > 500 bytes (LCP/PageSpeed optimization)
 app.add_middleware(GZipMiddleware, minimum_size=500)
 
-allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000,https://getarole.com,https://*.vercel.app")
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000,https://getarole.in,https://getarole.com")
 allowed_origins = [o.strip() for o in allowed_origins_env.split(",") if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins if allowed_origins else ["*"],
+    allow_origins=allowed_origins if allowed_origins else ["http://localhost:8000"],
+    allow_origin_regex=r"^https:\/\/([a-zA-Z0-9-]+\.)?vercel\.app$",
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
@@ -248,13 +249,26 @@ class ScreeningResult(BaseModel):
 
 @app.post("/api/scrape")
 async def trigger_scrape(
+    request: Request,
     include_greenhouse: bool = True,
     include_lever: bool = True,
     include_ashby: bool = True,
     include_internshala: bool = True,
-    include_linkedin: bool = True
+    include_linkedin: bool = True,
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")
 ):
-    """Trigger a live scrape of all enabled job platforms."""
+    """
+    Trigger a live scrape of all enabled job platforms.
+    Protected by SCRAPER_ADMIN_KEY if configured in environment.
+    """
+    expected_key = os.getenv("SCRAPER_ADMIN_KEY", "")
+    if expected_key and x_admin_key != expected_key:
+        logging.getLogger("sre.security").warning(
+            "unauthorized_scrape_trigger_attempt",
+            extra={"client_ip": request.client.host if request.client else "unknown"}
+        )
+        return JSONResponse({"status": "error", "message": "Unauthorized: Invalid or missing X-Admin-Key header."}, status_code=403)
+
     jobs = await AGGREGATOR.aggregate_all(
         include_greenhouse=include_greenhouse,
         include_lever=include_lever,
@@ -262,7 +276,7 @@ async def trigger_scrape(
         include_internshala=include_internshala,
         include_linkedin=include_linkedin
     )
-    AGGREGATOR.cached_jobs = jobs
+    AGGREGATOR.cached_jobs = list(jobs) if jobs else []
     
     return {
         "status": "success",
@@ -814,6 +828,24 @@ async def serve_profile():
         with open(prof_file, "r", encoding="utf-8") as f:
             return f.read()
     return "<h1>getArole Profile</h1>"
+
+@app.get("/privacy", response_class=HTMLResponse)
+@app.get("/privacy/", response_class=HTMLResponse)
+async def serve_privacy():
+    priv_file = os.path.join(STATIC_DIR, "privacy", "index.html")
+    if os.path.exists(priv_file):
+        with open(priv_file, "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h1>getArole Privacy Policy</h1>"
+
+@app.get("/terms", response_class=HTMLResponse)
+@app.get("/terms/", response_class=HTMLResponse)
+async def serve_terms():
+    terms_file = os.path.join(STATIC_DIR, "terms", "index.html")
+    if os.path.exists(terms_file):
+        with open(terms_file, "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h1>getArole Terms of Service</h1>"
 
 # ─── User Profile & Preferences API (Supabase-backed, Firebase UID keyed) ───
 
