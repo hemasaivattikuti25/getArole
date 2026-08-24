@@ -18,10 +18,10 @@ class ResumeMatcher:
         if not os.path.exists(pdf_path):
             raise FileNotFoundError(f"Resume PDF not found at: {pdf_path}")
         
-        doc = fitz.open(pdf_path)
         full_text = []
-        for page in doc:
-            full_text.append(page.get_text())
+        with fitz.open(pdf_path) as doc:
+            for page in doc:
+                full_text.append(page.get_text())
         return "\n".join(full_text).strip()
 
     def parse_profile(self, pdf_path: str) -> CandidateProfile:

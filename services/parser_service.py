@@ -19,8 +19,8 @@ class ParserService:
         if not os.path.exists(pdf_path):
             raise FileNotFoundError(f"File not found: {pdf_path}")
             
-        doc = pymupdf.open(pdf_path)
-        pages_text = [page.get_text() for page in doc]
+        with pymupdf.open(pdf_path) as doc:
+            pages_text = [page.get_text() for page in doc]
         return "\n".join(pages_text).strip()
 
     @staticmethod

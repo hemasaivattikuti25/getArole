@@ -255,11 +255,14 @@ function trapModalFocus(modalEl, onCloseCallback) {
     if (triggerElement && typeof triggerElement.focus === 'function') {
       triggerElement.focus();
     }
+    // Dereference DOM nodes to prevent detached DOM memory leaks
+    backgroundElements.length = 0;
   };
 }
 
-// Register Progressive Web App Service Worker
-if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+// Register Progressive Web App Service Worker (Idempotent)
+if ('serviceWorker' in navigator && window.location.protocol.startsWith('http') && !window._pwaServiceWorkerRegistered) {
+  window._pwaServiceWorkerRegistered = true;
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js', { scope: '/' })
       .then((reg) => console.log('[getArole PWA] Service Worker registered with scope:', reg.scope))
@@ -267,8 +270,11 @@ if ('serviceWorker' in navigator && window.location.protocol.startsWith('http'))
   });
 }
 
-// Global Connection State Banner (Offline Detection)
+// Global Connection State Banner (Offline Detection with Memory-Safe Listener Registration)
 function initConnectionMonitor() {
+  if (window._connectionMonitorInitialized) return;
+  window._connectionMonitorInitialized = true;
+
   let banner = document.getElementById('offline-indicator-banner');
   if (!banner) {
     banner = document.createElement('div');

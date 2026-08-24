@@ -11,15 +11,15 @@ class ResumeParserService:
     """
 
     def parse_pdf_bytes(self, pdf_bytes: bytes) -> Tuple[str, List[str]]:
-        """Extracts plain text and link annotation URIs from raw PDF bytes."""
-        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        """Extracts plain text and link annotation URIs from raw PDF bytes safely using context manager."""
         pages_text = []
         pdf_links = []
-        for p in doc:
-            pages_text.append(p.get_text())
-            for l in p.get_links():
-                if l.get("uri"):
-                    pdf_links.append(l.get("uri"))
+        with fitz.open(stream=pdf_bytes, filetype="pdf") as doc:
+            for p in doc:
+                pages_text.append(p.get_text())
+                for l in p.get_links():
+                    if l.get("uri"):
+                        pdf_links.append(l.get("uri"))
         
         text = "\n".join(pages_text).strip()
         if pdf_links:
