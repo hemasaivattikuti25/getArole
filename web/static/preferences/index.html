@@ -347,6 +347,7 @@
 
   </style>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
 
@@ -813,68 +814,135 @@
       } catch(e) { return local; }
     }
 
+        async function extractTextFromPDFClient(file) {
+      if (typeof pdfjsLib === 'undefined') return '';
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let fullText = '';
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        fullText += textContent.items.map(item => item.str).join(' ') + '\n';
+      }
+      return fullText.trim();
+    }
+
     async function handleResumeUpload(e) {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
 
-      const promoBtn = document.querySelector('.btn-promo');
-      const originalText = promoBtn ? promoBtn.textContent : 'Upload Resume';
-      if (promoBtn) promoBtn.textContent = '⏳ Parsing Resume...';
+      const promoBtns = document.querySelectorAll('.btn-promo');
+      promoBtns.forEach(b => b.textContent = '⏳ Parsing Resume...');
 
-      const formData = new FormData();
-      formData.append('file', file);
+      let parsedProf = {};
+      let resumeText = '';
 
       try {
+        // Attempt Server-Side PyMuPDF & LLM Parse First
+        const formData = new FormData();
+        formData.append('file', file);
+
         const res = await fetch('/api/match-resume', {
           method: 'POST',
           body: formData
-        });
+        }).catch(() => null);
 
-        if (res.ok) {
+        if (res && res.ok) {
           const data = await res.json();
-          const parsedProf = data.candidate_profile || {};
-          
-          if (parsedProf.skills && parsedProf.skills.length > 0) {
-            profileData.skills = Array.from(new Set([...(profileData.skills || []), ...parsedProf.skills]));
+          parsedProf = data.candidate_profile || {};
+          resumeText = data.resume_text || '';
+          if (data.resume_data) {
+            localStorage.setItem('getarole_resume_v2', JSON.stringify(data.resume_data));
           }
-          if (parsedProf.name && parsedProf.name !== 'Candidate' && !profileData.name) {
-            profileData.name = parsedProf.name;
-          }
-          
-          localStorage.setItem('getarole_profile', JSON.stringify(profileData));
-          await apiSaveProfile(profileData);
-
-          const uid = getFirebaseUID();
-          if (uid && data.resume_text) {
-            try {
-              await fetch('/api/user/resume', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-                body: JSON.stringify({
-                  resume: {
-                    header: { name: profileData.name || parsedProf.name || 'Candidate' },
-                    summary: { text: data.resume_text.slice(0, 500) },
-                    skills: { languages: (parsedProf.skills || []).slice(0, 10).join(', ') },
-                    raw_text: data.resume_text
-                  }
-                })
-              });
-            } catch (err) {
-              console.warn('Resume table sync notice:', err);
-            }
-          }
-
-          renderLeftProfile();
-          renderStaticCards();
-          alert(`✅ Resume analyzed successfully! Extracted ${(parsedProf.skills || []).length} skills and synced to your profile.`);
         } else {
-          alert('Could not parse resume file. Please ensure it is a valid PDF or Word document.');
+          // Client-Side PDF.js Fallback
+          console.warn('Falling back to client-side PDF parser...');
+          resumeText = await extractTextFromPDFClient(file);
+          
+          if (!resumeText) {
+            throw new Error('Could not extract text from this document.');
+          }
+
+          // Client taxonomy skill extractor
+          const commonTech = [
+            "python", "java", "c++", "c#", "c", "rust", "golang", "go", "typescript", "javascript",
+            "react", "next.js", "vue", "angular", "node.js", "express", "fastapi", "django", "spring boot",
+            "aws", "gcp", "azure", "docker", "kubernetes", "sql", "postgresql", "mysql", "mongodb",
+            "redis", "pytorch", "tensorflow", "scikit-learn", "git", "linux", "html5", "css3", "tailwind"
+          ];
+          const lower = resumeText.toLowerCase();
+          const detectedSkills = commonTech.filter(s => lower.includes(s));
+          
+          const emailMatch = resumeText.match(/[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/);
+          const phoneMatch = resumeText.match(/(?:(?:\+|0{0,2})\d{1,3}[\s-]*)?(?:\(?\d{2,5}\)?[\s-]*)?\d{3,4}[\s-]*\d{4}/);
+          const lines = resumeText.split('\n').map(l => l.trim()).filter(Boolean);
+          const candidateName = lines[0] && lines[0].split(' ').length <= 4 ? lines[0] : (profileData.name || 'Candidate');
+
+          parsedProf = {
+            name: candidateName,
+            email: emailMatch ? emailMatch[0] : (profileData.email || ''),
+            phone: phoneMatch ? phoneMatch[0] : (profileData.phone || ''),
+            headline: 'Software Engineer',
+            skills: detectedSkills,
+            summary: lines.slice(1, 4).join(' ')
+          };
+
+          localStorage.setItem('getarole_resume_v2', JSON.stringify({
+            header: { name: candidateName, email: parsedProf.email, phone: parsedProf.phone, title: 'Software Engineer' },
+            summary: { text: parsedProf.summary },
+            skills: { all: detectedSkills.join(', '), languages: detectedSkills.slice(0, 10).join(', ') },
+            raw_text: resumeText
+          }));
         }
+
+        // Apply to candidate profileData
+        if (parsedProf.skills && parsedProf.skills.length > 0) {
+          profileData.skills = Array.from(new Set([...(profileData.skills || []), ...parsedProf.skills]));
+        }
+        if (parsedProf.name && parsedProf.name !== 'Candidate' && !profileData.name) {
+          profileData.name = parsedProf.name;
+        }
+        if (parsedProf.email && !profileData.email) profileData.email = parsedProf.email;
+        if (parsedProf.phone && !profileData.phone) profileData.phone = parsedProf.phone;
+        if (parsedProf.summary && !profileData.summary) profileData.summary = parsedProf.summary;
+
+        localStorage.setItem('getarole_profile', JSON.stringify(profileData));
+        localStorage.setItem('getarole_uploaded_resume', JSON.stringify({
+          filename: file.name,
+          uploadedAt: new Date().toLocaleDateString(),
+          raw_text: resumeText,
+          skills: parsedProf.skills || []
+        }));
+
+        await apiSaveProfile(profileData);
+
+        const uid = getFirebaseUID();
+        if (uid && resumeText) {
+          try {
+            await fetch('/api/user/resume', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+              body: JSON.stringify({
+                resume: {
+                  header: { name: profileData.name || parsedProf.name || 'Candidate' },
+                  summary: { text: resumeText.slice(0, 500) },
+                  skills: { languages: (parsedProf.skills || []).slice(0, 10).join(', ') },
+                  raw_text: resumeText
+                }
+              })
+            });
+          } catch(e) {}
+        }
+
+        renderLeftProfile();
+        if (typeof renderStaticCards === 'function') renderStaticCards();
+        alert(`✅ Resume analyzed successfully! Extracted ${(parsedProf.skills || []).length} skills and synced to your profile.`);
       } catch (err) {
         console.error('Resume upload error:', err);
-        alert('Upload failed. Please check your network connection.');
+        alert('Could not parse resume file. Please ensure it is a valid text PDF or Word document.');
       } finally {
-        if (promoBtn) promoBtn.textContent = originalText;
+        promoBtns.forEach(b => b.textContent = 'Upload Resume');
         e.target.value = '';
       }
     }
@@ -1335,6 +1403,81 @@
       document.addEventListener('DOMContentLoaded', updateNavUser);
     } else {
       updateNavUser();
+    }
+  </script>
+
+
+  <!-- ════════════════════ RESUME PREVIEW MODAL ════════════════════ -->
+  <div id="resume-preview-modal" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.6); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px;">
+    <div style="background:#ffffff; border:1px solid var(--border); border-radius:18px; width:100%; max-width:760px; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 25px 60px -15px rgba(0,0,0,0.25); position:relative; overflow:hidden;">
+      <div style="padding:18px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:var(--bg-subtle, #f8fafc);">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="width:34px; height:34px; border-radius:8px; background:var(--primary-light); color:var(--primary); font-size:18px; display:flex; align-items:center; justify-content:center; font-weight:800;">📄</div>
+          <div>
+            <h3 id="preview-modal-title" style="font-size:17px; font-weight:800; color:var(--text-main); line-height:1.2;">Resume Preview</h3>
+            <p style="font-size:12.5px; color:var(--text-muted);">Parsed candidate data and verified skills</p>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button onclick="window.location.href='/resume-builder/'" style="padding:7px 14px; border-radius:8px; border:1.5px solid var(--primary-border); background:var(--primary-light); color:var(--primary); font-size:12.5px; font-weight:700; cursor:pointer;">
+            ✏️ Edit in ATS Builder
+          </button>
+          <button onclick="closeResumePreviewModal()" style="background:none; border:none; font-size:22px; color:var(--text-subtle); cursor:pointer;">&times;</button>
+        </div>
+      </div>
+      <div id="resume-preview-body" style="padding:24px; overflow-y:auto; flex:1; font-size:14px; color:var(--text-main); line-height:1.6;">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openResumePreviewModal() {
+      const modal = document.getElementById('resume-preview-modal');
+      const body = document.getElementById('resume-preview-body');
+      const prof = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+      const resume = JSON.parse(localStorage.getItem('getarole_resume_v2') || localStorage.getItem('getarole_uploaded_resume') || '{}');
+      
+      const name = prof.name || (resume.header && resume.header.name) || 'Candidate';
+      const headline = prof.headline || (resume.header && resume.header.title) || 'Software Engineer';
+      const summary = (resume.summary && resume.summary.text) || prof.summary || 'Profile information synchronized with getArole candidate database.';
+      const skills = prof.skills || [];
+      const rawText = resume.raw_text || '';
+
+      body.innerHTML = `
+        <div style="margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border);">
+          <h2 style="font-size:22px; font-weight:800; color:var(--text-main); margin-bottom:4px;">${name}</h2>
+          <div style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">${headline}</div>
+          <div style="font-size:13px; color:var(--text-muted);">${prof.email || ''} ${prof.phone ? '· ' + prof.phone : ''} · ${prof.city || 'India'}</div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <h4 style="font-size:14px; font-weight:800; color:var(--text-main); text-transform:uppercase; margin-bottom:8px; letter-spacing:0.04em;">Executive Summary</h4>
+          <p style="font-size:13.5px; color:#334155; line-height:1.6; background:#f8fafc; padding:12px 16px; border-radius:8px; border:1px solid var(--border);">${summary}</p>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <h4 style="font-size:14px; font-weight:800; color:var(--text-main); text-transform:uppercase; margin-bottom:8px; letter-spacing:0.04em;">Extracted Skills (${skills.length})</h4>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;">
+            ${skills.length > 0 ? skills.map(s => `<span style="background:var(--primary-light); color:var(--primary); border:1px solid var(--primary-border); padding:4px 10px; border-radius:6px; font-size:12.5px; font-weight:700;">${s}</span>`).join('') : '<span style="color:var(--text-muted); font-size:13px;">No skills extracted yet.</span>'}
+          </div>
+        </div>
+
+        ${rawText ? `
+        <div>
+          <h4 style="font-size:14px; font-weight:800; color:var(--text-main); text-transform:uppercase; margin-bottom:8px; letter-spacing:0.04em;">Raw Extracted Document Text</h4>
+          <pre style="background:#0f172a; color:#f8fafc; padding:16px; border-radius:10px; font-size:12px; font-family:'JetBrains Mono',monospace; max-height:220px; overflow-y:auto; white-space:pre-wrap; line-height:1.5;">${rawText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+        </div>
+        ` : ''}
+      `;
+
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeResumePreviewModal() {
+      const modal = document.getElementById('resume-preview-modal');
+      if (modal) modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
     }
   </script>
 

@@ -347,6 +347,7 @@
 
   </style>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 <body>
 
@@ -813,79 +814,149 @@
       } catch(e) { return local; }
     }
 
+        async function extractTextFromPDFClient(file) {
+      if (typeof pdfjsLib === 'undefined') return '';
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let fullText = '';
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        fullText += textContent.items.map(item => item.str).join(' ') + '\n';
+      }
+      return fullText.trim();
+    }
+
+        async function extractTextFromPDFClient(file) {
+      if (typeof pdfjsLib === 'undefined') return '';
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let fullText = '';
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        fullText += textContent.items.map(item => item.str).join(' ') + '\n';
+      }
+      return fullText.trim();
+    }
+
     async function handleResumeUpload(e) {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
 
-      const promoBtn = document.querySelector('.btn-promo');
-      const originalText = promoBtn ? promoBtn.textContent : 'Upload Resume';
-      if (promoBtn) promoBtn.textContent = '⏳ Parsing Resume...';
+      const promoBtns = document.querySelectorAll('.btn-promo');
+      promoBtns.forEach(b => b.textContent = '⏳ Parsing Resume...');
 
-      const formData = new FormData();
-      formData.append('file', file);
+      let parsedProf = {};
+      let resumeText = '';
 
       try {
+        // Attempt Server-Side PyMuPDF & LLM Parse First
+        const formData = new FormData();
+        formData.append('file', file);
+
         const res = await fetch('/api/match-resume', {
           method: 'POST',
           body: formData
-        });
+        }).catch(() => null);
 
-        if (res.ok) {
+        if (res && res.ok) {
           const data = await res.json();
-          const parsedProf = data.candidate_profile || {};
-          
-          if (parsedProf.skills && parsedProf.skills.length > 0) {
-            profileData.skills = Array.from(new Set([...(profileData.skills || []), ...parsedProf.skills]));
-          }
-          if (parsedProf.name && parsedProf.name !== 'Candidate' && !profileData.name) {
-            profileData.name = parsedProf.name;
-          }
-          
-          localStorage.setItem('getarole_profile', JSON.stringify(profileData));
-          await apiSaveProfile(profileData);
-
-          const uid = getFirebaseUID();
-          if (uid && data.resume_text) {
-            try {
-              await fetch('/api/user/resume', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-                body: JSON.stringify({
-                  resume: {
-                    header: { name: profileData.name || parsedProf.name || 'Candidate' },
-                    summary: { text: data.resume_text.slice(0, 500) },
-                    skills: { languages: (parsedProf.skills || []).slice(0, 10).join(', ') },
-                    raw_text: data.resume_text
-                  }
-                })
-              });
-            } catch (err) {
-              console.warn('Resume table sync notice:', err);
-            }
-          }
-
-          localStorage.setItem('getarole_uploaded_resume', JSON.stringify({
-            filename: data.filename || file.name,
-            uploadedAt: new Date().toLocaleDateString(),
-            raw_text: data.resume_text,
-            skills: parsedProf.skills || []
-          }));
+          parsedProf = data.candidate_profile || {};
+          resumeText = data.resume_text || '';
           if (data.resume_data) {
             localStorage.setItem('getarole_resume_v2', JSON.stringify(data.resume_data));
           }
-
-          renderLeftProfile();
-          renderStaticCards();
-          alert(`✅ Resume analyzed successfully! Extracted ${(parsedProf.skills || []).length} skills and synced to your profile.`);
         } else {
-          const errData = await res.json().catch(() => ({}));
-          alert(errData.error || 'Could not parse resume file. Please ensure it is a valid PDF or Word document.');
+          // Client-Side PDF.js Fallback
+          console.warn('Falling back to client-side PDF parser...');
+          resumeText = await extractTextFromPDFClient(file);
+          
+          if (!resumeText) {
+            throw new Error('Could not extract text from this document.');
+          }
+
+          // Client taxonomy skill extractor
+          const commonTech = [
+            "python", "java", "c++", "c#", "c", "rust", "golang", "go", "typescript", "javascript",
+            "react", "next.js", "vue", "angular", "node.js", "express", "fastapi", "django", "spring boot",
+            "aws", "gcp", "azure", "docker", "kubernetes", "sql", "postgresql", "mysql", "mongodb",
+            "redis", "pytorch", "tensorflow", "scikit-learn", "git", "linux", "html5", "css3", "tailwind"
+          ];
+          const lower = resumeText.toLowerCase();
+          const detectedSkills = commonTech.filter(s => lower.includes(s));
+          
+          const emailMatch = resumeText.match(/[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/);
+          const phoneMatch = resumeText.match(/(?:(?:\+|0{0,2})\d{1,3}[\s-]*)?(?:\(?\d{2,5}\)?[\s-]*)?\d{3,4}[\s-]*\d{4}/);
+          const lines = resumeText.split('\n').map(l => l.trim()).filter(Boolean);
+          const candidateName = lines[0] && lines[0].split(' ').length <= 4 ? lines[0] : (profileData.name || 'Candidate');
+
+          parsedProf = {
+            name: candidateName,
+            email: emailMatch ? emailMatch[0] : (profileData.email || ''),
+            phone: phoneMatch ? phoneMatch[0] : (profileData.phone || ''),
+            headline: 'Software Engineer',
+            skills: detectedSkills,
+            summary: lines.slice(1, 4).join(' ')
+          };
+
+          localStorage.setItem('getarole_resume_v2', JSON.stringify({
+            header: { name: candidateName, email: parsedProf.email, phone: parsedProf.phone, title: 'Software Engineer' },
+            summary: { text: parsedProf.summary },
+            skills: { all: detectedSkills.join(', '), languages: detectedSkills.slice(0, 10).join(', ') },
+            raw_text: resumeText
+          }));
         }
+
+        // Apply to candidate profileData
+        if (parsedProf.skills && parsedProf.skills.length > 0) {
+          profileData.skills = Array.from(new Set([...(profileData.skills || []), ...parsedProf.skills]));
+        }
+        if (parsedProf.name && parsedProf.name !== 'Candidate' && !profileData.name) {
+          profileData.name = parsedProf.name;
+        }
+        if (parsedProf.email && !profileData.email) profileData.email = parsedProf.email;
+        if (parsedProf.phone && !profileData.phone) profileData.phone = parsedProf.phone;
+        if (parsedProf.summary && !profileData.summary) profileData.summary = parsedProf.summary;
+
+        localStorage.setItem('getarole_profile', JSON.stringify(profileData));
+        localStorage.setItem('getarole_uploaded_resume', JSON.stringify({
+          filename: file.name,
+          uploadedAt: new Date().toLocaleDateString(),
+          raw_text: resumeText,
+          skills: parsedProf.skills || []
+        }));
+
+        await apiSaveProfile(profileData);
+
+        const uid = getFirebaseUID();
+        if (uid && resumeText) {
+          try {
+            await fetch('/api/user/resume', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+              body: JSON.stringify({
+                resume: {
+                  header: { name: profileData.name || parsedProf.name || 'Candidate' },
+                  summary: { text: resumeText.slice(0, 500) },
+                  skills: { languages: (parsedProf.skills || []).slice(0, 10).join(', ') },
+                  raw_text: resumeText
+                }
+              })
+            });
+          } catch(e) {}
+        }
+
+        renderLeftProfile();
+        if (typeof renderStaticCards === 'function') renderStaticCards();
+        alert(`✅ Resume analyzed successfully! Extracted ${(parsedProf.skills || []).length} skills and synced to your profile.`);
       } catch (err) {
         console.error('Resume upload error:', err);
-        alert('Upload failed. Please check your network connection.');
+        alert('Could not parse resume file. Please ensure it is a valid text PDF or Word document.');
       } finally {
-        if (promoBtn) promoBtn.textContent = originalText;
+        promoBtns.forEach(b => b.textContent = 'Upload Resume');
         e.target.value = '';
       }
     }
