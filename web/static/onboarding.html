@@ -2,23 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Get Started — getArole | Your AI Job Search Partner</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="apple-touch-icon" href="/logo.png">
-
-  <script>
-    // Strict Authentication Guard
-    (function checkAuth() {
-      const user = localStorage.getItem('getarole_user');
-      if (!user) {
-        window.location.replace('/?auth=1');
-      }
-    })();
-  </script>
 
   <style>
     :root {
@@ -42,6 +32,7 @@
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg-subtle);
@@ -76,7 +67,7 @@
 
     /* ── ONBOARDING CONTAINER ── */
     .onboarding-main {
-      flex: 1; max-width: 680px; width: 100%; margin: 40px auto 60px; padding: 0 24px;
+      flex: 1; max-width: 720px; width: 100%; margin: 32px auto 60px; padding: 0 20px;
     }
     .step-card {
       background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-lg);
@@ -89,13 +80,13 @@
       text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
     }
     .step-title {
-      font-size: clamp(24px, 3vw, 32px); font-weight: 800; color: var(--text-main); margin-bottom: 8px; line-height: 1.2;
+      font-size: clamp(23px, 3vw, 30px); font-weight: 800; color: var(--text-main); margin-bottom: 8px; line-height: 1.25;
     }
     .step-tagline {
       font-size: 14.5px; color: var(--text-muted); margin-bottom: 24px;
     }
 
-    /* ── FOUNDER NOTE CARD (Simplify Style) ── */
+    /* ── FOUNDER NOTE CARD ── */
     .founder-card {
       background: var(--primary-light); border: 1px solid var(--primary-border);
       border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 24px;
@@ -109,7 +100,7 @@
     .founder-text { font-size: 13.5px; color: var(--text-main); line-height: 1.5; }
     .founder-name { font-weight: 700; color: var(--primary); font-size: 12px; margin-top: 2px; }
 
-    /* ── SELECTABLE OPTIONS (Cards & Pills) ── */
+    /* ── SELECTABLE OPTIONS (Cards) ── */
     .options-stack { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
     .option-card {
       padding: 16px 20px; border-radius: 12px; border: 1.5px solid var(--border);
@@ -125,28 +116,42 @@
       content: "✓"; font-weight: 900; color: var(--primary); font-size: 16px;
     }
 
-    /* ── MULTI-SELECT CHIPS GRID ── */
+    /* ── LOCATIONS CHIPS & CATEGORIES ── */
+    .location-tabs-row {
+      display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;
+    }
+    .loc-tab-btn {
+      padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border);
+      background: #ffffff; font-size: 12.5px; font-weight: 700; color: var(--text-muted); cursor: pointer;
+    }
+    .loc-tab-btn.active {
+      background: var(--primary-light); border-color: var(--primary-border); color: var(--primary);
+    }
+
     .chips-grid {
-      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; max-height: 240px; overflow-y: auto; padding: 4px;
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
+      max-height: 280px; overflow-y: auto; padding: 6px;
+      border: 1px solid var(--border); border-radius: 12px; background: var(--bg-subtle);
     }
     .choice-chip {
-      padding: 8px 16px; border-radius: 99px; border: 1px solid var(--border);
-      background: #ffffff; font-size: 13.5px; font-weight: 600; color: var(--text-muted);
+      padding: 8px 14px; border-radius: 99px; border: 1.5px solid var(--border);
+      background: #ffffff; font-size: 13px; font-weight: 700; color: var(--text-main);
       cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px;
+      user-select: none;
     }
     .choice-chip:hover { border-color: var(--primary); color: var(--primary); }
     .choice-chip.selected {
       background: var(--primary); color: #ffffff; border-color: var(--primary);
-      box-shadow: 0 2px 8px rgba(5,150,105,0.25);
+      box-shadow: 0 2px 6px rgba(5,150,105,0.25);
     }
 
-    /* ── SEARCH INPUT IN ONBOARDING ── */
+    /* ── SEARCH INPUT ── */
     .filter-input-wrap {
-      margin-bottom: 16px; position: relative;
+      margin-bottom: 14px; position: relative;
     }
     .filter-input {
       width: 100%; padding: 12px 16px 12px 40px; border-radius: 10px;
-      border: 1.5px solid var(--border); font-size: 14px; font-family: inherit;
+      border: 1.5px solid var(--border-strong); font-size: 14.5px; font-family: inherit;
       outline: none; transition: border-color 0.15s;
     }
     .filter-input:focus { border-color: var(--primary); }
@@ -157,28 +162,28 @@
 
     /* ── RESUME DROPZONE ── */
     .dropzone-box {
-      border: 2px dashed var(--border-strong); border-radius: 16px; padding: 40px 24px;
+      border: 2px dashed var(--border-strong); border-radius: 16px; padding: 36px 20px;
       text-align: center; background: var(--bg-subtle); cursor: pointer; transition: all 0.2s;
-      margin-bottom: 20px; position: relative;
+      margin-bottom: 18px; position: relative;
     }
-    .dropzone-box:hover, .dropzone-box.dragover {
+    .dropzone-box:hover {
       border-color: var(--primary); background: var(--primary-light);
     }
-    .drop-icon { font-size: 36px; margin-bottom: 12px; color: var(--primary); }
-    .drop-title { font-size: 17px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
-    .drop-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+    .drop-icon { font-size: 34px; margin-bottom: 8px; color: var(--primary); }
+    .drop-title { font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+    .drop-sub { font-size: 13px; color: var(--text-muted); }
 
     /* ── BENEFIT BULLETS ── */
     .benefits-row {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;
     }
     @media (max-width: 580px) { .benefits-row { grid-template-columns: 1fr; } }
     .benefit-item {
-      padding: 12px; border-radius: 10px; background: #ffffff; border: 1px solid var(--border);
+      padding: 10px 14px; border-radius: 10px; background: #ffffff; border: 1px solid var(--border);
       font-size: 13px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 8px;
     }
 
-    /* ── SALARY TOGGLE & CARDS ── */
+    /* ── SALARY TOGGLE ── */
     .salary-toggle {
       display: inline-flex; padding: 4px; background: var(--bg-subtle);
       border: 1px solid var(--border); border-radius: 10px; margin-bottom: 20px;
@@ -191,27 +196,22 @@
       background: #ffffff; color: var(--primary); box-shadow: var(--shadow-sm);
     }
 
-    /* ── CELEBRATION RESULT CARD ── */
-    .celebration-wrap {
-      text-align: center; padding: 20px 0;
-    }
-    .celeb-badge {
-      display: inline-block; font-size: 44px; margin-bottom: 12px; animation: bounce 1s infinite alternate;
-    }
-    @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-8px); } }
+    /* ── CELEBRATION RESULT ── */
+    .celebration-wrap { text-align: center; padding: 16px 0; }
+    .celeb-badge { font-size: 42px; margin-bottom: 8px; }
     .celeb-count {
-      font-size: 52px; font-weight: 900; color: var(--primary); font-family: 'Outfit', sans-serif;
+      font-size: 48px; font-weight: 900; color: var(--primary); font-family: 'Outfit', sans-serif;
       line-height: 1; margin-bottom: 6px;
     }
     .celeb-summary-pills {
-      display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 20px 0;
+      display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 18px 0;
     }
     .celeb-pill {
       padding: 6px 14px; border-radius: 20px; background: var(--primary-light);
       border: 1px solid var(--primary-border); font-size: 13px; font-weight: 700; color: var(--primary);
     }
 
-    /* ── ACTION FOOTER ── */
+    /* ── ACTIONS FOOTER ── */
     .step-footer {
       display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 24px;
     }
@@ -224,7 +224,7 @@
     .btn-next {
       padding: 13px 28px; border-radius: 10px; border: none;
       background: var(--primary); color: #ffffff; font-size: 15px; font-weight: 800;
-      cursor: pointer; transition: all 0.15s; box-shadow: 0 4px 14px rgba(5,150,105,0.3);
+      cursor: pointer; transition: all 0.15s; box-shadow: 0 4px 14px rgba(5,150,105,0.25);
     }
     .btn-next:hover { background: var(--primary-hover); transform: translateY(-1px); }
   </style>
@@ -278,27 +278,36 @@
       </div>
     </div>
 
-    <!-- ═══════ STEP 2: LOCATIONS (INDIA & REMOTE) ═══════ -->
+    <!-- ═══════ STEP 2: LOCATIONS (120+ INDIAN CITIES) ═══════ -->
     <div class="step-card" id="step-2" style="display:none;">
       <div class="step-number-tag">Step 2 • Location Preferences</div>
       <h2 class="step-title">What locations do you want to work in?</h2>
-      <p class="step-tagline">Choose all Indian tech hubs and remote preferences that interest you.</p>
+      <p class="step-tagline">Search any city in India or select from popular tech regions below.</p>
 
       <div class="filter-input-wrap">
         <span class="search-icon-inside">🔍</span>
-        <input type="text" id="city-search" placeholder="Search Indian cities (e.g. Pune, Gurgaon, Kochi...)" class="filter-input" oninput="filterCities()">
+        <input type="text" id="city-search" placeholder="Type city name (e.g. Pune, Tirupati, Gurgaon, Kochi...)" class="filter-input" oninput="filterCities()">
       </div>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <span style="font-size:12.5px; font-weight:700; color:var(--text-muted);" id="location-selected-count">4 Locations Selected</span>
-        <div style="display:flex; gap:10px;">
+      <!-- Quick Category Tabs -->
+      <div class="location-tabs-row">
+        <button class="loc-tab-btn active" id="tab-all" onclick="filterByRegion('all')">All Locations</button>
+        <button class="loc-tab-btn" id="tab-top" onclick="filterByRegion('top')">Top Tech Hubs</button>
+        <button class="loc-tab-btn" id="tab-remote" onclick="filterByRegion('remote')">Remote & Anywhere</button>
+        <button class="loc-tab-btn" id="tab-south" onclick="filterByRegion('south')">South India</button>
+        <button class="loc-tab-btn" id="tab-north" onclick="filterByRegion('north')">North / NCR</button>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <span style="font-size:13px; font-weight:700; color:var(--text-main);" id="location-selected-count">4 Locations Selected</span>
+        <div style="display:flex; gap:12px;">
           <button onclick="selectAllLocations(true)" style="background:none; border:none; color:var(--primary); font-size:12.5px; font-weight:700; cursor:pointer;">Select All</button>
           <button onclick="selectAllLocations(false)" style="background:none; border:none; color:var(--text-subtle); font-size:12.5px; font-weight:700; cursor:pointer;">Unselect All</button>
         </div>
       </div>
 
       <div class="chips-grid" id="city-chips-container">
-        <!-- Injected dynamically via JS -->
+        <!-- Dynamically rendered -->
       </div>
 
       <div class="step-footer">
@@ -307,7 +316,7 @@
       </div>
     </div>
 
-    <!-- ═══════ STEP 3: RESUME UPLOAD (FOUNDER NOTE) ═══════ -->
+    <!-- ═══════ STEP 3: RESUME UPLOAD ═══════ -->
     <div class="step-card" id="step-3" style="display:none;">
       <div class="step-number-tag">Step 3 • AI Resume Matcher</div>
       <h2 class="step-title">Upload your resume to get matched with jobs!</h2>
@@ -324,15 +333,14 @@
       </div>
 
       <!-- Upload Dropzone -->
-      <div class="dropzone-box" id="resume-dropzone" onclick="document.getElementById('resume-file-input').click()">
+      <div class="dropzone-box" onclick="document.getElementById('resume-file-input').click()">
         <div class="drop-icon">📄</div>
         <div class="drop-title">Click to upload your resume or drag & drop</div>
         <div class="drop-sub">PDF, DOC, DOCX up to 5 MB</div>
         <input type="file" id="resume-file-input" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleResumeUpload(event)">
-        <div id="resume-upload-badge" style="display:none; font-size:13px; font-weight:700; color:var(--primary); margin-top:8px;"></div>
+        <div id="resume-upload-badge" style="display:none; font-size:13.5px; font-weight:700; color:var(--primary); margin-top:10px;"></div>
       </div>
 
-      <!-- Value Props -->
       <div class="benefits-row">
         <div class="benefit-item">
           <span>🔍</span>
@@ -344,8 +352,8 @@
         </div>
       </div>
 
-      <div style="text-align:center; margin-bottom:20px;">
-        <button onclick="skipResumeUpload()" style="background:none; border:none; color:var(--text-muted); font-size:13px; font-weight:600; cursor:pointer; text-decoration:underline;">
+      <div style="text-align:center; margin-bottom:16px;">
+        <button onclick="goToStep(4)" style="background:none; border:none; color:var(--text-muted); font-size:13px; font-weight:600; cursor:pointer; text-decoration:underline;">
           I don't have a resume right now → getArole will autofill your profile
         </button>
       </div>
@@ -358,9 +366,9 @@
 
     <!-- ═══════ STEP 4: EXPERIENCE LEVEL ═══════ -->
     <div class="step-card" id="step-4" style="display:none;">
-      <div class="step-number-tag">Step 4 • Seniority & Background</div>
+      <div class="step-number-tag">Step 4 • Experience Level</div>
       <h2 class="step-title">How much experience do you have?</h2>
-      <p class="step-tagline">Select up to 2 options that describe your current career stage.</p>
+      <p class="step-tagline">Select up to 2 options describing your background.</p>
 
       <div class="options-stack" id="experience-options">
         <div class="option-card" onclick="toggleExp(this, 'No experience')">
@@ -394,14 +402,14 @@
 
     <!-- ═══════ STEP 5: ROLES & SPECIALIZATION ═══════ -->
     <div class="step-card" id="step-5" style="display:none;">
-      <div class="step-number-tag">Step 5 • Specialization</div>
+      <div class="step-number-tag">Step 5 • Target Specialization</div>
       <h2 class="step-title">What kind of role are you interested in?</h2>
 
       <div class="founder-card">
         <div class="founder-avatar">HV</div>
         <div>
           <div class="founder-text">
-            "Pick your primary specialization to get started — you can always refine and explore all other roles later!"
+            "Pick your primary specialization to get started – you can always add more or explore other roles later!"
           </div>
           <div class="founder-name">Hemasaivattikuti, Founder</div>
         </div>
@@ -409,7 +417,7 @@
 
       <div class="filter-input-wrap">
         <span class="search-icon-inside">🔍</span>
-        <input type="text" id="role-search" placeholder="Search by job title (e.g. React, Python, Product Manager...)" class="filter-input" oninput="filterRoles()">
+        <input type="text" id="role-search" placeholder="Search by job title (e.g. Python, Full Stack, Product Manager...)" class="filter-input" oninput="filterRoles()">
       </div>
 
       <div style="font-size:12.5px; font-weight:800; color:var(--text-subtle); text-transform:uppercase; margin-bottom:10px;">
@@ -428,14 +436,14 @@
 
     <!-- ═══════ STEP 6: EXPECTED SALARY ═══════ -->
     <div class="step-card" id="step-6" style="display:none;">
-      <div class="step-number-tag">Step 6 • Compensation</div>
+      <div class="step-number-tag">Step 6 • Compensation Threshold</div>
       <h2 class="step-title">What is your minimum expected compensation?</h2>
 
       <div class="founder-card">
         <div class="founder-avatar">HV</div>
         <div>
           <div class="founder-text">
-            "We'll only use this to match you with high-paying jobs meeting your threshold. We will never share this data."
+            "We'll only use this to match you with high-paying opportunities meeting your threshold."
           </div>
           <div class="founder-name">Hemasaivattikuti, Founder</div>
         </div>
@@ -456,7 +464,7 @@
       </div>
     </div>
 
-    <!-- ═══════ STEP 7: CELEBRATION & MATCH RESULTS ═══════ -->
+    <!-- ═══════ STEP 7: CELEBRATION ═══════ -->
     <div class="step-card" id="step-7" style="display:none;">
       <div class="celebration-wrap">
         <div class="celeb-badge">🎉</div>
@@ -465,11 +473,11 @@
         
         <div class="celeb-count" id="match-counter-display">1K+</div>
         <p style="font-size:15px; color:var(--text-muted); max-width:440px; margin:0 auto 16px;">
-          verified engineering jobs matching your exact location, role, and salary preferences.
+          verified engineering jobs matching your exact location, role, and compensation criteria.
         </p>
 
         <div class="celeb-summary-pills" id="celeb-pills-list">
-          <!-- Summary pills injected via JS -->
+          <!-- Summary pills -->
         </div>
 
         <div style="font-size:12.5px; color:var(--text-subtle); margin-bottom:28px;">
@@ -487,6 +495,8 @@
   <!-- ═══════ DATA & WIZARD LOGIC ═══════ -->
   <script>
     let currentStep = 1;
+    let currentRegion = 'all';
+
     const userPrefs = {
       timeline: 'ASAP',
       locations: ['Bengaluru', 'Hyderabad', 'Remote in India', 'Global Remote'],
@@ -496,58 +506,91 @@
       minSalary: '₹8 LPA'
     };
 
+    const regionalCities = {
+      top: ["Bengaluru", "Hyderabad", "Pune", "Delhi NCR", "Mumbai", "Chennai", "Gurgaon (Gurugram)", "Noida", "Remote in India"],
+      remote: ["India (Anywhere)", "Remote in India", "Global Remote", "Hybrid"],
+      south: ["Bengaluru", "Hyderabad", "Chennai", "Kochi (Cochin)", "Visakhapatnam", "Vijayawada", "Coimbatore", "Mysuru (Mysore)", "Mangalore", "Tirupati", "Guntur", "Madurai", "Thiruvananthapuram", "Kozhikode (Calicut)", "Warangal", "Nellore"],
+      north: ["Delhi NCR", "Gurgaon (Gurugram)", "Noida", "Greater Noida", "Chandigarh", "Mohali", "Jaipur", "Lucknow", "Kanpur", "Dehradun", "Faridabad", "Ghaziabad", "Agra", "Varanasi", "Ludhiana", "Amritsar"]
+    };
+
     const allIndianCities = [
-      // Quick Macro Options
       "India (Anywhere)", "Remote in India", "Global Remote", "Hybrid",
-      
-      // Tier 1 & Major Tech Hubs
       "Bengaluru", "Hyderabad", "Pune", "Delhi NCR", "Mumbai", "Chennai", "Gurgaon (Gurugram)", "Noida", "Kolkata", "Ahmedabad",
-      
-      // Andhra Pradesh & Telangana
       "Visakhapatnam", "Vijayawada", "Guntur", "Tirupati", "Nellore", "Kakinada", "Rajahmundry", "Kurnool", "Kadapa", "Anantapur", "Warangal", "Nizamabad", "Karimnagar", "Khammam",
-      
-      // Karnataka & Kerala & Tamil Nadu
       "Mysuru (Mysore)", "Mangalore", "Hubli-Dharwad", "Belagavi", "Kochi (Cochin)", "Thiruvananthapuram", "Kozhikode (Calicut)", "Thrissur", "Kollam", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tirunelveli", "Vellore", "Erode",
-      
-      // Maharashtra & Gujarat & Goa
       "Navi Mumbai", "Thane", "Nagpur", "Nashik", "Aurangabad", "Solapur", "Kolhapur", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Gandhinagar", "Goa (Panaji / Margao)",
-      
-      // Delhi NCR & Uttar Pradesh & Uttarakhand
       "Faridabad", "Ghaziabad", "Greater Noida", "Lucknow", "Kanpur", "Agra", "Varanasi", "Prayagraj (Allahabad)", "Meerut", "Bareilly", "Aligarh", "Moradabad", "Gorakhpur", "Noida Extension", "Dehradun", "Haridwar", "Roorkee",
-      
-      // Punjab & Haryana & Rajasthan & Himachal / J&K
       "Chandigarh", "Mohali", "Panchkula", "Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Jaipur", "Jodhpur", "Kota", "Udaipur", "Bikaner", "Ajmer", "Shimla", "Dharamshala", "Jammu", "Srinagar",
-      
-      // Madhya Pradesh & Chhattisgarh & Bihar & Jharkhand
       "Indore", "Bhopal", "Gwalior", "Jabalpur", "Ujjain", "Raipur", "Bilaspur", "Bhilai", "Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Ranchi", "Jamshedpur", "Dhanbad", "Bokaro",
-      
-      // West Bengal & Odisha & North East
       "Howrah", "Siliguri", "Durgapur", "Asansol", "Bhubaneswar", "Cuttack", "Rourkela", "Guwahati", "Shillong", "Agartala", "Imphal", "Aizawl", "Dimapur"
     ];
+
+    const allRoles = [
+      "Software Engineering", "Full Stack Developer", "Backend Developer",
+      "Frontend Developer", "AI & Machine Learning", "Data Science",
+      "DevOps & Cloud Engineer", "Product Management", "Mobile (iOS/Android)",
+      "UI/UX Design", "QA / Automation Engineer", "Cyber Security",
+      "Business & Strategy", "Growth & Marketing", "Fintech & Banking", "Consulting"
+    ];
+
+    const salaryINR = ["Any Compensation", "₹6 LPA+", "₹10 LPA+", "₹15 LPA+", "₹25 LPA+", "₹40 LPA+"];
+    const salaryUSD = ["Any Compensation", "$60k+", "$80k+", "$100k+", "$140k+", "$200k+"];
+
+    function goToStep(step) {
+      document.querySelectorAll('.step-card').forEach(card => card.style.display = 'none');
+      const nextCard = document.getElementById(`step-${step}`);
+      if (nextCard) nextCard.style.display = 'block';
+      
+      currentStep = step;
+      document.getElementById('step-indicator-text').textContent = `Step ${step} of 7`;
+      document.getElementById('progress-fill').style.width = `${(step / 7) * 100}%`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Step 1: Timeline
+    function selectTimeline(el, val) {
+      document.querySelectorAll('#timeline-options .option-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      userPrefs.timeline = val;
+    }
+
+    // Step 2: Locations
+    function filterByRegion(region) {
+      currentRegion = region;
+      document.querySelectorAll('.loc-tab-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`tab-${region}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      renderCities(document.getElementById('city-search').value);
+    }
 
     function renderCities(filter = '') {
       const container = document.getElementById('city-chips-container');
       const query = filter.trim().toLowerCase();
-      const filtered = allIndianCities.filter(c => c.toLowerCase().includes(query));
       
+      let baseList = allIndianCities;
+      if (currentRegion !== 'all' && regionalCities[currentRegion]) {
+        baseList = regionalCities[currentRegion];
+      }
+
+      const filtered = baseList.filter(c => c.toLowerCase().includes(query));
       let html = '';
       
-      // If user typed something not matching exactly, show "+ Add Custom" chip first
+      // Custom Add Chip if typing a unique city
       if (query && !allIndianCities.some(c => c.toLowerCase() === query)) {
         const customTitle = filter.trim();
         const isCustomSel = userPrefs.locations.includes(customTitle);
-        html += `<div class="choice-chip selected" style="background:#059669; border-color:#059669;" onclick="toggleLocation('${customTitle}')">
-          + Add "${customTitle}" ✓
+        html += `<div class="choice-chip ${isCustomSel ? 'selected' : ''}" style="background:${isCustomSel ? '#059669' : '#ffffff'}; border-color:#059669;" onclick="toggleLocation('${customTitle}')">
+          + Add "${customTitle}" ${isCustomSel ? '✓' : ''}
         </div>`;
       }
       
       html += filtered.map(c => {
         const isSel = userPrefs.locations.includes(c);
-        return `<div class="choice-chip ${isSel ? 'selected' : ''}" onclick="toggleLocation('${c}')">${c}</div>`;
+        return `<div class="choice-chip ${isSel ? 'selected' : ''}" onclick="toggleLocation('${c}')">${c} ${isSel ? '✓' : ''}</div>`;
       }).join('');
       
       if (filtered.length === 0 && !query) {
-        html = '<div style="font-size:13px; color:var(--text-muted); padding:10px;">No locations found.</div>';
+        html = '<div style="font-size:13px; color:var(--text-muted); padding:10px;">No locations in this category.</div>';
       }
       
       container.innerHTML = html;
@@ -570,21 +613,17 @@
       renderCities(document.getElementById('city-search').value);
     }
 
-    // Resume Handler
+    // Step 3: Resume
     function handleResumeUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
       const badge = document.getElementById('resume-upload-badge');
       badge.style.display = 'block';
-      badge.textContent = `✓ ${file.name} uploaded & parsed locally!`;
+      badge.textContent = `✓ ${file.name} uploaded & parsed!`;
       localStorage.setItem('getarole_resume_uploaded', 'true');
     }
 
-    function skipResumeUpload() {
-      goToStep(4);
-    }
-
-    // Experience selector
+    // Step 4: Experience
     function toggleExp(el, val) {
       const idx = userPrefs.experience.indexOf(val);
       if (idx > -1) {
@@ -602,13 +641,13 @@
       }
     }
 
-    // Roles selector
+    // Step 5: Roles
     function renderRoles(filter = '') {
       const container = document.getElementById('role-chips-container');
       const filtered = allRoles.filter(r => r.toLowerCase().includes(filter.toLowerCase()));
       container.innerHTML = filtered.map(r => {
         const isSel = userPrefs.role === r;
-        return `<div class="choice-chip ${isSel ? 'selected' : ''}" onclick="selectRole('${r}')">${r}</div>`;
+        return `<div class="choice-chip ${isSel ? 'selected' : ''}" onclick="selectRole('${r}')">${r} ${isSel ? '✓' : ''}</div>`;
       }).join('');
     }
 
@@ -621,7 +660,7 @@
       renderRoles(document.getElementById('role-search').value);
     }
 
-    // Salary selector
+    // Step 6: Salary
     function setCurrency(curr) {
       userPrefs.currency = curr;
       document.querySelectorAll('.salary-tab').forEach((t, i) => {
@@ -647,11 +686,10 @@
       userPrefs.minSalary = sal;
     }
 
-    // Finish and summary
+    // Step 7: Finish
     function finishAndCelebrate() {
       localStorage.setItem('getarole_prefs', JSON.stringify(userPrefs));
       
-      // Update celebration screen
       document.getElementById('celeb-pills-list').innerHTML = `
         <span class="celeb-pill">📍 ${userPrefs.locations.slice(0, 2).join(', ')}${userPrefs.locations.length > 2 ? ' +' + (userPrefs.locations.length - 2) : ''}</span>
         <span class="celeb-pill">💻 ${userPrefs.role}</span>
@@ -662,10 +700,15 @@
     }
 
     function launchDashboard() {
-      window.location.href = '/dashboard/';
+      const user = localStorage.getItem('getarole_user');
+      if (!user) {
+        window.location.href = '/?auth=1';
+      } else {
+        window.location.href = '/dashboard/';
+      }
     }
 
-    // Initial boot
+    // Boot
     (function init() {
       renderCities();
       renderRoles();
