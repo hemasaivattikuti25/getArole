@@ -722,6 +722,9 @@
 
     let currentTab = 0;
 
+    // profileData is a live alias to state.profile so all functions (incl. handleResumeUpload) can access it
+    const profileData = state.profile;
+
     
 
     // ─── Auth Guard ──────────────────────────────────────────
@@ -814,21 +817,7 @@
       } catch(e) { return local; }
     }
 
-        async function extractTextFromPDFClient(file) {
-      if (typeof pdfjsLib === 'undefined') return '';
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      let fullText = '';
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        fullText += textContent.items.map(item => item.str).join(' ') + '\n';
-      }
-      return fullText.trim();
-    }
-
-        async function extractTextFromPDFClient(file) {
+    async function extractTextFromPDFClient(file) {
       if (typeof pdfjsLib === 'undefined') return '';
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
       const arrayBuffer = await file.arrayBuffer();
@@ -1007,7 +996,7 @@
       
       const savedResume = JSON.parse(localStorage.getItem('getarole_uploaded_resume') || localStorage.getItem('getarole_resume_v2') || 'null');
       const resumeName = savedResume ? (savedResume.filename || (savedResume.header && savedResume.header.name ? `${savedResume.header.name}_Resume.pdf` : 'Candidate_Resume.pdf')) : null;
-      const skillCount = (profileData.skills || []).length;
+      const skillCount = (profileData.skills || state.prefs.skills_inc || []).length;
 
       const resumeHTML = savedResume ? `
         <div class="summary-card" style="border-color: var(--primary-border); background: linear-gradient(145deg, #ffffff, #f8fafc);">
@@ -1023,7 +1012,7 @@
               <button class="btn-refresh" onclick="openResumePreviewModal()" style="padding:6px 14px; font-size:12.5px; background:var(--primary-light); color:var(--primary); border:1px solid var(--primary-border);">
                 👁️ Preview Resume
               </button>
-              <button class="btn-refresh" onclick="document.getElementById('hidden-resume-file').click()" style="padding:6px 14px; font-size:12.5px;">
+              <button class="btn-refresh" onclick="document.getElementById('file-resume').click()" style="padding:6px 14px; font-size:12.5px;">
                 🔄 Replace
               </button>
               <button class="edit-icon-btn" onclick="window.location.href='/resume-builder/'" title="Open ATS Resume Builder">✏️</button>
@@ -1034,9 +1023,9 @@
         <div class="summary-card">
           <div class="summary-card-header">
             <h3 class="summary-card-title">Resume</h3>
-            <button class="edit-icon-btn" onclick="document.getElementById('hidden-resume-file').click()">📤</button>
+            <button class="edit-icon-btn" onclick="document.getElementById('file-resume').click()">📤</button>
           </div>
-          <div style="border: 2px dashed var(--border); border-radius: var(--radius-lg); padding:32px; text-align:center; color:var(--text-muted); cursor:pointer;" onclick="document.getElementById('hidden-resume-file').click()">
+          <div style="border: 2px dashed var(--border); border-radius: var(--radius-lg); padding:32px; text-align:center; color:var(--text-muted); cursor:pointer;" onclick="document.getElementById('file-resume').click()">
             <div style="font-size:40px; margin-bottom:12px;">📄</div>
             <div style="font-size:15px; font-weight:700; margin-bottom:8px; color:var(--text-main);">Upload your resume (PDF / DOCX)</div>
             <div style="font-size:13px; font-weight:600;">Click to upload and instantly auto-fill your Profile, Skills, and ATS Matches</div>

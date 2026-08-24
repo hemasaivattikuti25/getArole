@@ -722,6 +722,9 @@
 
     let currentTab = 0;
 
+    // profileData is a live alias to state.profile so handleResumeUpload can access it
+    const profileData = state.profile;
+
     
 
     // ─── Auth Guard ──────────────────────────────────────────
