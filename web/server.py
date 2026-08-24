@@ -418,8 +418,6 @@ async def get_candidate_by_id(cand_id: str):
 @app.get("/resume-builder/", response_class=HTMLResponse)
 async def serve_resume_builder():
     rb_file = os.path.join(STATIC_DIR, "resume-builder.html")
-    if not os.path.exists(rb_file):
-        rb_file = os.path.join(STATIC_DIR, "resume-builder", "index.html")
     if os.path.exists(rb_file):
         with open(rb_file, "r", encoding="utf-8") as f:
             return f.read()
@@ -429,8 +427,6 @@ async def serve_resume_builder():
 @app.get("/cover-letter-builder/", response_class=HTMLResponse)
 async def serve_cover_letter_builder():
     cl_file = os.path.join(STATIC_DIR, "cover-letter-builder.html")
-    if not os.path.exists(cl_file):
-        cl_file = os.path.join(STATIC_DIR, "cover-letter-builder", "index.html")
     if os.path.exists(cl_file):
         with open(cl_file, "r", encoding="utf-8") as f:
             return f.read()
@@ -857,18 +853,18 @@ async def serve_onboarding():
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def serve_dashboard():
-    index_file = os.path.join(STATIC_DIR, "index.html")
-    if os.path.exists(index_file):
-        with open(index_file, "r", encoding="utf-8") as f:
+    dash_file = os.path.join(STATIC_DIR, "dashboard.html")
+    if os.path.exists(dash_file):
+        with open(dash_file, "r", encoding="utf-8") as f:
             return f.read()
     return "<h1>getArole Dashboard</h1>"
 
 @app.get("/profile", response_class=HTMLResponse)
 @app.get("/profile/", response_class=HTMLResponse)
 async def serve_profile():
-    profile_file = os.path.join(STATIC_DIR, "profile", "index.html")
-    if os.path.exists(profile_file):
-        with open(profile_file, "r", encoding="utf-8") as f:
+    prof_file = os.path.join(STATIC_DIR, "profile.html")
+    if os.path.exists(prof_file):
+        with open(prof_file, "r", encoding="utf-8") as f:
             return f.read()
     return "<h1>getArole Profile</h1>"
 
@@ -931,7 +927,7 @@ async def save_user_resume_endpoint(request: Request, resume_data: Dict[str, Any
 @app.get("/preferences", response_class=HTMLResponse)
 @app.get("/preferences/", response_class=HTMLResponse)
 async def serve_preferences():
-    pref_file = os.path.join(STATIC_DIR, "preferences", "index.html")
+    pref_file = os.path.join(STATIC_DIR, "preferences.html")
     if os.path.exists(pref_file):
         with open(pref_file, "r", encoding="utf-8") as f:
             return f.read()
