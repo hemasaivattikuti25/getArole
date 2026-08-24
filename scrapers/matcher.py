@@ -101,14 +101,16 @@ class ResumeMatcher:
             fit_pct = round(max(0.0, min(100.0, ((sim - 0.3) / 0.6) * 100)), 1)
             
             # Extract matching & missing keywords
-            job_words = set(job.title.lower().split() + job.description.lower().split())
+            import re
+            job_words = set(re.findall(r"\b[a-zA-Z0-9_\-\.]+\b", f"{job.title} {job.description}".lower()))
+            resume_words = set(re.findall(r"\b[a-zA-Z0-9_\-\.]+\b", lower_resume))
             tech_keywords = [
                 "python", "fastapi", "django", "react", "next.js", "sql", "postgresql",
-                "mongodb", "docker", "aws", "qdrant", "rag", "onnx", "linux", "git", "jwt"
+                "mongodb", "docker", "aws", "qdrant", "rag", "onnx", "linux", "git", "jwt", "kubernetes"
             ]
             
-            matched = [k for k in tech_keywords if k in job_words and k in lower_resume]
-            missing = [k for k in tech_keywords if k in job_words and k not in lower_resume]
+            matched = [k for k in tech_keywords if k in job_words and k in resume_words]
+            missing = [k for k in tech_keywords if k in job_words and k not in resume_words]
             
             job.fit_score = fit_pct
             job.matched_skills = matched
