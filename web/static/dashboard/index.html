@@ -1242,7 +1242,37 @@
           </div>
         </div>
 
-        <!-- Metadata Grid -->
+                ${localStorage.getItem('getarole_resume_v2') ? `
+        <!-- AI Match Ring Card -->
+        <div class="ai-match-card">
+          <div class="match-ring-wrap">
+            <div class="circle-progress-container">
+              <svg>
+                <circle class="circle-bg" cx="34" cy="34" r="30"></circle>
+                <circle class="circle-fill" cx="34" cy="34" r="30" style="stroke-dasharray:188; stroke-dashoffset:${strokeOffset}"></circle>
+              </svg>
+              <div class="circle-text">${matchScore}%</div>
+            </div>
+            <div>
+              <div class="match-summary-title">ATS Original Score</div>
+              <div class="match-summary-sub">
+                Based on your uploaded ATS resume.
+                <a href="/resume-builder">Improve Resume →</a>
+              </div>
+            </div>
+          </div>
+          <button class="btn-ai-tailor" onclick="openTailorWithJob('${job.id}')">
+            <span></span> 70B ATS Tailor
+          </button>
+        </div>
+        ` : `
+        <div class="ai-match-card" style="align-items:center; justify-content:space-between;">
+            <div style="font-size:14px; color:var(--text-main); font-weight:600;">Upload your resume to see ATS score.</div>
+            <a href="/resume-builder" class="btn-ai-tailor" style="text-decoration:none;">Build ATS Resume</a>
+        </div>
+        `}
+
+<!-- Metadata Grid -->
         <div class="meta-grid">
           <div class="meta-item">
             <div class="meta-label">Compensation</div>
@@ -1287,7 +1317,7 @@
                 <div class="company-logo">${compInitial}</div>
                 <div class="company-name">${j.company}</div>
               </div>
-              <span class="tag-chip match-score-chip">🎯 ${Math.round(j.fit_score)}% Fit</span>
+              ${localStorage.getItem('getarole_resume_v2') ? `<span class="tag-chip match-score-chip">🎯 ${Math.round(j.fit_score)}% Fit</span>` : ''}
             </div>
             <div class="card-title">${j.title}</div>
             <div class="card-tags">
@@ -1336,7 +1366,7 @@
         <div style="background:white; border:1.5px solid var(--border); border-radius:14px; padding:18px; cursor:pointer;" onclick="showTab('jobs'); selectJob('${j.id}')">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <span style="font-size:11px; font-weight:800; color:var(--primary); text-transform:uppercase;">${j.company}</span>
-            <span class="tag-chip match-score-chip">🎯 ${Math.round(j.fit_score)}% Fit</span>
+            ${localStorage.getItem('getarole_resume_v2') ? `<span class="tag-chip match-score-chip">🎯 ${Math.round(j.fit_score)}% Fit</span>` : ''}
           </div>
           <div style="font-size:15px; font-weight:800; color:var(--text-main); margin-bottom:6px;">${j.title}</div>
           <div style="font-size:12.5px; color:var(--text-muted); display:flex; gap:8px;">
