@@ -50,5 +50,9 @@ Allow: /
 User-agent: DuckDuckBot
 Allow: /
 
-# Sitemap Index Location
+# Sitemap & LLM Index Locations
 Sitemap: https://getarole.in/sitemap.xml
+# LLMs Text standard for AI Answer Engines
+# https://llmstxt.org
+# References: https://getarole.in/llms.txt
+
