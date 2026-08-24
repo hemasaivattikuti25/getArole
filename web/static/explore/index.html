@@ -852,7 +852,15 @@
           if (parsedProf.skills && parsedProf.skills.length > 0) {
             existing.skills = Array.from(new Set([...(existing.skills || []), ...parsedProf.skills]));
           }
-          if (parsedProf.name && parsedProf.name !== 'Candidate' && !existing.name) existing.name = parsedProf.name;
+          if (parsedProf.first_name) existing.first = parsedProf.first_name;
+          if (parsedProf.last_name) existing.last = parsedProf.last_name;
+          if (parsedProf.name && parsedProf.name !== 'Candidate') existing.name = parsedProf.name;
+          if (parsedProf.headline) existing.headline = parsedProf.headline;
+          if (parsedProf.experience) existing.experience = parsedProf.experience;
+          if (parsedProf.education) existing.education = parsedProf.education;
+          if (parsedProf.projects) existing.projects = parsedProf.projects;
+          if (parsedProf.links) existing.links = parsedProf.links;
+
           localStorage.setItem('getarole_profile', JSON.stringify(existing));
           localStorage.setItem('getarole_uploaded_resume', JSON.stringify({ filename: file.name, uploadedAt: new Date().toLocaleDateString(), raw_text: data.resume_text || '', skills: parsedProf.skills || [] }));
           if (data.resume_data) localStorage.setItem('getarole_resume_v2', JSON.stringify(data.resume_data));

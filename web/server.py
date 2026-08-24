@@ -847,86 +847,139 @@ async def parse_and_match_resume(file: UploadFile = File(...)):
         if not summary and len(lines) > 2:
             summary = " ".join(lines[1:4])
 
-        # 5. Attempt LLM Enhancement if available
+        # 5. Attempt LLM Enhancement if available with full resume context (up to 8000 chars)
+        llm_parsed = {}
         try:
             llm = get_llm_service()
-            prompt = f"""You are an expert HR Parser. Extract structured candidate profile from this resume:
-Resume Text (First 1500 chars):
-{text[:1500]}
+            prompt = f"""You are a principal HR Resume Parser. Extract structured candidate profile from this resume:
 
-Return valid JSON:
+Resume Text:
+{text[:8000]}
+
+Return valid JSON with exact structure:
 {{
-  "name": "Candidate Full Name",
-  "headline": "Target Title e.g. Full Stack Engineer",
+  "first_name": "First Name",
+  "last_name": "Last Name",
+  "name": "Full Name",
+  "headline": "Target Title e.g. Senior Software Engineer",
   "email": "email@example.com",
   "phone": "+1234567890",
   "location": "City, Country",
   "summary": "2-3 sentence executive summary",
-  "skills": ["Python", "React", "AWS", ...],
+  "linkedin_url": "https://linkedin.com/in/username",
+  "github_url": "https://github.com/username",
+  "portfolio_url": "https://portfolio.dev",
+  "other_url": "",
+  "skills": ["Python", "React", "AWS", "FastAPI"],
   "experience": [
-    {{"company": "Company Name", "title": "Role Title", "dates": "2023 - Present", "bullets": ["Built X...", "Optimized Y..."]}}
+    {{
+      "company": "Company Name",
+      "title": "Role Title",
+      "dates": "Jan 2024 - Present",
+      "bullets": ["Built high-throughput API...", "Reduced latency by 40%..."]
+    }}
   ],
   "education": [
-    {{"school": "University Name", "degree": "B.Tech Computer Science", "year": "2025"}}
+    {{
+      "school": "University Name",
+      "degree": "B.Tech Computer Science",
+      "year": "2025"
+    }}
+  ],
+  "projects": [
+    {{
+      "name": "Project Name",
+      "description": "Full stack real-time application using FastAPI and React.",
+      "link": "https://github.com/user/project"
+    }}
   ]
 }}"""
-            resp = await llm.a_call_chat([{"role": "user", "content": prompt}], max_tokens=600)
+            resp = await llm.a_call_chat([{"role": "user", "content": prompt}], max_tokens=1800)
             start_idx = resp.find("{")
             end_idx = resp.rfind("}") + 1
             if start_idx != -1 and end_idx > start_idx:
                 llm_parsed = json.loads(resp[start_idx:end_idx])
-                if llm_parsed.get("name") and llm_parsed["name"] != "Candidate Full Name":
-                    candidate_name = llm_parsed["name"]
-                if llm_parsed.get("headline"):
-                    headline = llm_parsed["headline"]
-                if llm_parsed.get("summary"):
-                    summary = llm_parsed["summary"]
-                if llm_parsed.get("skills"):
-                    extracted_skills = sorted(list(set(extracted_skills + [s.lower() for s in llm_parsed["skills"] if isinstance(s, str)])))
         except Exception as llm_err:
             print(f"[ResumeParser LLM Notice] {llm_err}")
 
-        # 6. Extract experience and education from LLM or regex fallback
-        experience_list = []
-        education_list = []
-        projects_list = []
+        # Extract names
+        first_name = llm_parsed.get("first_name", "")
+        last_name = llm_parsed.get("last_name", "")
+        if llm_parsed.get("name") and llm_parsed["name"] != "Candidate Full Name":
+            candidate_name = llm_parsed["name"]
+        
+        if not first_name or not last_name:
+            name_parts = candidate_name.split()
+            if len(name_parts) >= 2:
+                first_name = first_name or name_parts[0]
+                last_name = last_name or " ".join(name_parts[1:])
+            elif len(name_parts) == 1:
+                first_name = first_name or name_parts[0]
+                last_name = last_name or ""
 
-        # Check if LLM parsed these
-        try:
-            if 'llm_parsed' in dir() or 'llm_parsed' in locals():
-                if llm_parsed.get("experience"):
-                    experience_list = llm_parsed["experience"]
-                if llm_parsed.get("education"):
-                    education_list = llm_parsed["education"]
-                if llm_parsed.get("projects"):
-                    projects_list = llm_parsed["projects"]
-        except Exception:
-            pass
+        if llm_parsed.get("headline"): headline = llm_parsed["headline"]
+        if llm_parsed.get("summary"): summary = llm_parsed["summary"]
+        if llm_parsed.get("email"): email = llm_parsed["email"]
+        if llm_parsed.get("phone"): phone = llm_parsed["phone"]
+        if llm_parsed.get("skills"):
+            extracted_skills = sorted(list(set(extracted_skills + [s for s in llm_parsed["skills"] if isinstance(s, str)])))
 
-        # Regex fallback for experience if LLM didn't return any
+        # 6. Structured arrays: experience, education, projects, links
+        experience_list = llm_parsed.get("experience") or []
+        education_list = llm_parsed.get("education") or []
+        projects_list = llm_parsed.get("projects") or []
+
+        # Robust URL Extractor for Links (LinkedIn, GitHub, Portfolio)
+        links = {
+            "linkedin": llm_parsed.get("linkedin_url", ""),
+            "github": llm_parsed.get("github_url", ""),
+            "portfolio": llm_parsed.get("portfolio_url", ""),
+            "other": llm_parsed.get("other_url", "")
+        }
+
+        # Fallback URL regex if LLM missed them
+        import re as re2
+        raw_urls = re2.findall(r'(?:https?://)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+(?:/[^\s,)]*)?)', text)
+        for url_str in raw_urls:
+            full_url = url_str if url_str.startswith("http") else f"https://{url_str}"
+            lower_u = url_str.lower()
+            if "linkedin.com" in lower_u and not links["linkedin"]:
+                links["linkedin"] = full_url
+            elif "github.com" in lower_u and not links["github"]:
+                links["github"] = full_url
+            elif not links["portfolio"] and not any(ignore in lower_u for ignore in ["google.com", "schema.org", "w3.org", "fonts.googleapis"]):
+                if any(ext in lower_u for ext in [".dev", ".io", ".me", "portfolio", "vercel.app", "github.io"]):
+                    links["portfolio"] = full_url
+
+        # Fallback Section Parser if experience or education or projects are missing
         if not experience_list:
-            import re as re2
-            exp_pattern = re2.compile(
-                r'(?:^|\n)\s*([A-Z][A-Za-z\s&.,]+(?:Inc|LLC|Ltd|Corp|Technologies|Solutions|Software|Labs|Company|Systems|Group|Services)?)\s*[\|·\-–—]\s*(.+?)[\|·\-–—\n]\s*(\w+\s+\d{4}\s*(?:[-–—]\s*(?:\w+\s+\d{4}|Present|Current))?)',
-                re2.MULTILINE
-            )
-            for m in exp_pattern.finditer(text[:3000]):
+            # Parse sections by headers
+            exp_header_pattern = re2.compile(r'(?:EXPERIENCE|WORK HISTORY|EMPLOYMENT|WORK EXPERIENCE)', re2.IGNORECASE)
+            lines_text = text.splitlines()
+            exp_start = -1
+            for idx, line in enumerate(lines_text):
+                if exp_header_pattern.search(line):
+                    exp_start = idx
+                    break
+            
+            if exp_start != -1:
+                chunk = "\n".join(lines_text[exp_start+1:exp_start+35])
+                bullets = [l.strip().lstrip("•-–*").strip() for l in chunk.splitlines() if len(l.strip()) > 15 and l.strip()[0] in "•-–*"]
                 experience_list.append({
-                    "company": m.group(1).strip(),
-                    "title": m.group(2).strip(),
-                    "dates": m.group(3).strip(),
-                    "bullets": []
+                    "company": lines_text[exp_start+1].strip() if exp_start+1 < len(lines_text) else "Company",
+                    "title": headline,
+                    "dates": "Recent",
+                    "bullets": bullets[:4]
                 })
 
-        # Regex fallback for education
         if not education_list:
-            edu_keywords = ["university", "institute", "college", "school", "iit", "nit", "bits", "vit", "manipal", "amity"]
+            edu_keywords = ["university", "institute", "college", "school", "b.tech", "b.e", "b.s", "m.tech", "master", "bachelor"]
             for i, line in enumerate(lines):
                 if any(k in line.lower() for k in edu_keywords):
-                    degree = lines[i+1] if i+1 < len(lines) else ""
+                    degree = lines[i+1] if i+1 < len(lines) else "Degree"
                     year = ""
                     for near_line in lines[max(0,i-1):min(len(lines),i+3)]:
-                        yr_match = re.search(r'(\d{4})', near_line)
+                        yr_match = re2.search(r'(\d{4})', near_line)
                         if yr_match:
                             year = yr_match.group(1)
                             break
@@ -938,30 +991,16 @@ Return valid JSON:
                     if len(education_list) >= 3:
                         break
 
-        # Extract LinkedIn/GitHub/Portfolio URLs
-        url_pattern = re.compile(r'(https?://[^\s,)]+)')
-        found_urls = url_pattern.findall(text[:2000])
-        links = {
-            "linkedin": "",
-            "github": "",
-            "portfolio": "",
-            "other": ""
-        }
-        for u in found_urls:
-            ul = u.lower()
-            if "linkedin.com" in ul:
-                links["linkedin"] = u
-            elif "github.com" in ul:
-                links["github"] = u
-            elif links["portfolio"] == "":
-                links["portfolio"] = u
-
         candidate_profile = {
+            "first_name": first_name,
+            "last_name": last_name,
+            "first": first_name,
+            "last": last_name,
             "name": candidate_name,
             "email": email,
             "phone": phone,
             "headline": headline,
-            "location": "India",
+            "location": llm_parsed.get("location", "India"),
             "skills": extracted_skills,
             "summary": summary,
             "experience": experience_list,
@@ -973,9 +1012,11 @@ Return valid JSON:
         resume_data = {
             "header": {
                 "name": candidate_name,
+                "first_name": first_name,
+                "last_name": last_name,
                 "email": email,
                 "phone": phone,
-                "location": "India",
+                "location": llm_parsed.get("location", "India"),
                 "title": headline
             },
             "summary": { "text": summary },

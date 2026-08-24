@@ -919,29 +919,31 @@
           }));
         }
 
-        // Apply to candidate profileData
-        if (parsedProf.skills && parsedProf.skills.length > 0) {
-          profileData.skills = Array.from(new Set([...(profileData.skills || []), ...parsedProf.skills]));
-        }
-        if (parsedProf.name && parsedProf.name !== 'Candidate' && !profileData.name) {
-          profileData.name = parsedProf.name;
-        }
-        if (parsedProf.email && !profileData.email) profileData.email = parsedProf.email;
-        if (parsedProf.phone && !profileData.phone) profileData.phone = parsedProf.phone;
-        if (parsedProf.summary && !profileData.summary) profileData.summary = parsedProf.summary;
-        if (parsedProf.headline) profileData.headline = parsedProf.headline;
-        if (parsedProf.location) profileData.loc = parsedProf.location;
-        // Save experience, education, projects, links
-        if (parsedProf.experience && parsedProf.experience.length > 0) profileData.experience = parsedProf.experience;
-        if (parsedProf.education && parsedProf.education.length > 0) profileData.education = parsedProf.education;
-        if (parsedProf.projects && parsedProf.projects.length > 0) profileData.projects = parsedProf.projects;
-        if (parsedProf.links) profileData.links = parsedProf.links;
-        // Split name into first/last for profile card
-        if (parsedProf.name && parsedProf.name !== 'Candidate') {
+        // Apply parsed fields to candidate profileData & state.profile
+        if (parsedProf.first_name) state.profile.first = parsedProf.first_name;
+        if (parsedProf.last_name) state.profile.last = parsedProf.last_name;
+        if (!state.profile.first && parsedProf.name && parsedProf.name !== 'Candidate') {
           const parts = parsedProf.name.split(' ');
-          if (!profileData.first) profileData.first = parts[0] || '';
-          if (!profileData.last) profileData.last = parts.slice(1).join(' ') || '';
+          state.profile.first = parts[0] || '';
+          state.profile.last = parts.slice(1).join(' ') || '';
         }
+        if (parsedProf.name && parsedProf.name !== 'Candidate') state.profile.name = parsedProf.name;
+        else if (state.profile.first || state.profile.last) state.profile.name = `${state.profile.first} ${state.profile.last}`.trim();
+
+        if (parsedProf.skills && parsedProf.skills.length > 0) {
+          state.profile.skills = Array.from(new Set([...(state.profile.skills || []), ...parsedProf.skills]));
+        }
+        if (parsedProf.email && !state.profile.email) state.profile.email = parsedProf.email;
+        if (parsedProf.phone && !state.profile.phone) state.profile.phone = parsedProf.phone;
+        if (parsedProf.summary && !state.profile.summary) state.profile.summary = parsedProf.summary;
+        if (parsedProf.headline) state.profile.headline = parsedProf.headline;
+        if (parsedProf.location) state.profile.loc = parsedProf.location;
+
+        // Save experience, education, projects, links
+        if (parsedProf.experience && parsedProf.experience.length > 0) state.profile.experience = parsedProf.experience;
+        if (parsedProf.education && parsedProf.education.length > 0) state.profile.education = parsedProf.education;
+        if (parsedProf.projects && parsedProf.projects.length > 0) state.profile.projects = parsedProf.projects;
+        if (parsedProf.links) state.profile.links = parsedProf.links;
 
         localStorage.setItem('getarole_profile', JSON.stringify(profileData));
         localStorage.setItem('getarole_uploaded_resume', JSON.stringify({
