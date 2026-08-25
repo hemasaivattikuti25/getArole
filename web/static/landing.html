@@ -140,10 +140,14 @@
       background: var(--bg);
       color: var(--text-main);
       line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       position: relative;
     }
+    main { flex: 1 0 auto; }
     ::selection { background: #e0e7ff; color: #3730a3; }
 
     h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; letter-spacing: -0.025em; }

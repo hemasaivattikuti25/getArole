@@ -56,10 +56,11 @@
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--background);
       color: var(--text-main);
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
+      overflow-y: auto;
       -webkit-font-smoothing: antialiased;
     }
     h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
@@ -204,14 +205,24 @@
     .btn-clear-filters:hover { color: #0369a1; }
 
     /* ════════════════════ MAIN LAYOUT & SPLIT PANE ════════════════════ */
-    main { flex: 1; max-width: 1500px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; min-height: 0; }
-    .page-view { display: none; flex: 1; flex-direction: column; min-height: 0; }
+    main { flex: 1 0 auto; max-width: 1500px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; }
+    .page-view { display: none; flex: 1 0 auto; flex-direction: column; }
     .page-view.active { display: flex; }
 
     .jobs-split-container {
       display: grid; grid-template-columns: 460px 1fr;
-      flex: 1; min-height: 0;
+      min-height: calc(100vh - 120px);
+      height: calc(100vh - 120px);
+      flex: 0 0 calc(100vh - 120px);
       background: var(--background, #f8fafc);
+    }
+    @media (max-width: 900px) {
+      .jobs-split-container {
+        height: auto;
+        min-height: auto;
+        flex: 1 0 auto;
+        grid-template-columns: 1fr;
+      }
     }
 
     .jobs-feed-col {

@@ -43,10 +43,11 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
       color: var(--tx);
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -214,9 +215,19 @@
 
     /* ════════ THREE COLUMN LAYOUT ════════ */
     .ly {
+      min-height: calc(100vh - 56px);
+      height: calc(100vh - 56px);
+      flex: 0 0 calc(100vh - 56px);
       display: flex;
-      flex: 1;
       overflow: hidden;
+    }
+    @media (max-width: 992px) {
+      .ly {
+        height: auto;
+        min-height: auto;
+        flex: 1 0 auto;
+        flex-direction: column;
+      }
     }
 
     /* 1. SECTIONS SIDEBAR */
