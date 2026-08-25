@@ -916,15 +916,28 @@
         workplaceType: (prefsData.locations || []).includes('Remote') ? 'Remote' : 'Hybrid',
         companySizes: prefsData.compsize || prefsData.companySizes || [],
         industries: prefsData.industries_inc || prefsData.industries || [],
-        employmentTypes: prefsData.roletype || prefsData.employmentTypes || []
+        employmentTypes: prefsData.roletype || prefsData.employmentTypes || [],
+        // Preserve original keys so state.prefs can restore chip selections on reload
+        values: prefsData.values || [],
+        roles: prefsData.roles || [],
+        roletype: prefsData.roletype || [],
+        rolelevel: prefsData.rolelevel || [],
+        compsize: prefsData.compsize || [],
+        industries_inc: prefsData.industries_inc || [],
+        skills_inc: prefsData.skills_inc || [],
+        status: prefsData.status || '',
+        salary_curr: prefsData.salary_curr || 'INR',
+        salary_amt: prefsData.salary_amt || ''
       };
+      // Save the full merged object to localStorage (preserves chip selection state on reload)
       localStorage.setItem('getarole_prefs', JSON.stringify(dashPrefs));
       const uid = getFirebaseUID();
       try {
+        // Send the same dashPrefs to the API so localStorage and Supabase stay in sync
         await fetch('/api/user/preferences', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-          body: JSON.stringify(prefsData)
+          body: JSON.stringify(dashPrefs)
         });
       } catch(e) { console.warn('[Prefs] Save warning', e); }
     }
@@ -1149,7 +1162,7 @@
     function saveGenericModal() {
       if(currentGenericForm === 'personal') {
         ['first','last','pref','suffix','email','dob','phone','loc','add1','add2','add3','zip'].forEach(k => {
-          if(document.getElementById('pi-'+k)) state.profile[k] = document.getElementById('pi-'+k).value || '-';
+          if(document.getElementById('pi-'+k)) state.profile[k] = (document.getElementById('pi-'+k).value || '').trim();
         });
         state.profile.name = `${state.profile.first} ${state.profile.last}`.trim();
         apiSaveProfile(state.profile);
@@ -1302,7 +1315,7 @@
               <h3 class="summary-card-title">Personal Info</h3>
               <div style="display:flex;gap:8px;">
                 <button class="btn-save-continue" style="padding:8px 16px; font-size:13px;" onclick="savePersonalInline()">💾 Save</button>
-                <button class="btn-close-txt" style="padding:8px 16px; font-size:13px;" onclick="editingPersonal=false; renderStaticCards();">Cancel</button>
+                <button class="btn-close-txt" style="padding:8px 16px; font-size:13px;" onclick="isEditingPersonal=false; renderStaticCards();">Cancel</button>
               </div>
             </div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px;">

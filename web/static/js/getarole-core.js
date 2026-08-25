@@ -80,7 +80,9 @@ async function apiLoadProfile() {
     });
     if (response.ok) {
       const result = await response.json();
-      return result.profile || null;
+      // Backend returns a flat profile dict (not wrapped in {profile: ...})
+      // Guard: if accidentally wrapped, unwrap; otherwise return as-is
+      return result.profile || (Object.keys(result).length > 0 ? result : null);
     }
   } catch (err) {
     console.warn('[apiLoadProfile] Fetch error:', err);
@@ -120,7 +122,8 @@ async function apiLoadPreferences() {
     });
     if (response.ok) {
       const result = await response.json();
-      return result.preferences || null;
+      // Backend returns a flat preferences dict (not wrapped in {preferences: ...})
+      return result.preferences || (Object.keys(result).length > 0 ? result : null);
     }
   } catch (err) {
     console.warn('[apiLoadPreferences] Fetch error:', err);

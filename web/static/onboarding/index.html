@@ -612,7 +612,7 @@
     </div>
 
     <!-- Step 9: Resume -->
-    <div class="wizard-step" id="step-8" style="text-align:center;">
+    <div class="wizard-step" id="step-9" style="text-align:center;">
       <div class="step-header">
         <h2>Final Step: Your Resume</h2>
         <p>Upload your ATS resume to instantly match with jobs.</p>
@@ -798,8 +798,11 @@
     document.querySelectorAll('.loc-chip').forEach(el => el.onclick = () => {
       el.classList.toggle('selected');
       const val = el.innerText;
-      if (el.classList.contains('selected')) prefs.locations.push(val);
-      else prefs.locations = prefs.locations.filter(x => x !== val);
+      if (el.classList.contains('selected')) {
+        if (!prefs.locations.includes(val)) prefs.locations.push(val);
+      } else {
+        prefs.locations = prefs.locations.filter(x => x !== val);
+      }
     });
 
     document.querySelectorAll('.emp-chip').forEach(el => el.onclick = () => {
@@ -934,7 +937,7 @@
     }
 
     async function finishOnboarding() {
-      const finishBtn = document.querySelector('#step-8 .btn-next') || document.querySelector('#btn-next');
+      const finishBtn = document.querySelector('#step-9 .btn-next') || document.querySelector('#btn-next');
       if (finishBtn) {
         finishBtn.disabled = true;
         finishBtn.textContent = 'Saving Preferences...';
@@ -963,11 +966,11 @@
       localStorage.setItem('getarole_profile', JSON.stringify(dashboardProfile));
       localStorage.setItem('getarole_onboarding_completed', 'true');
 
-      let uid = localStorage.getItem('firebase_uid') || localStorage.getItem('getarole_user_id');
-      if (!uid) {
-        uid = 'usr_' + Math.random().toString(36).substring(2, 11);
-        localStorage.setItem('getarole_user_id', uid);
-      }
+      // Use shared UID resolver that checks sessionStorage, localStorage, and getarole_user JSON
+      const uid = (typeof getFirebaseUID === 'function') ? getFirebaseUID() :
+        (sessionStorage.getItem('firebase_uid') || localStorage.getItem('firebase_uid') ||
+         (() => { try { const u=JSON.parse(localStorage.getItem('getarole_user')||'{}'); return u.uid||null; } catch(e){return null;} })() ||
+         (() => { let id=localStorage.getItem('getarole_user_id'); if(!id){id='usr_'+Math.random().toString(36).substring(2,11); localStorage.setItem('getarole_user_id',id);} return id; })());
 
       // Save to Supabase Cloud asynchronously
       try {
