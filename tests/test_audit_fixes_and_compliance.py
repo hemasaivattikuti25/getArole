@@ -224,6 +224,7 @@ def test_resume_upload_10mb_payload_size_ceiling():
     assert "exceeds maximum allowable limit of 10MB" in res.text
 
 # ── 11. Asyncio Threadpool Offloading Verification ───────────────────────────
+@pytest.mark.asyncio
 async def test_resume_parser_async_thread_offload():
     """Validates that ResumeParserService uses worker threads without event-loop blocking."""
     from services.resume_parser_service import get_resume_parser_service

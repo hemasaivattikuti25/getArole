@@ -827,8 +827,11 @@ async def serve_landing():
 
 @app.get("/candidate", response_class=HTMLResponse)
 async def serve_candidate():
-    with open(os.path.join(STATIC_DIR, "candidate.html"), "r", encoding="utf-8") as f:
-        return f.read()
+    cand_file = os.path.join(STATIC_DIR, "candidate", "index.html")
+    if os.path.exists(cand_file):
+        with open(cand_file, "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h1>Candidate Not Found</h1>"
 
 @app.get("/onboarding", response_class=HTMLResponse)
 async def serve_onboarding():

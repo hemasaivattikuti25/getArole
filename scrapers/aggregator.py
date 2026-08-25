@@ -2,6 +2,7 @@ import asyncio
 import json
 from typing import List, Optional
 from .models import JobListing
+from .base import BaseScraper
 from .greenhouse import scrape_all_greenhouse_jobs
 from .lever import scrape_all_lever_jobs
 from .ashby import scrape_all_ashby_jobs

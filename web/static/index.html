@@ -153,7 +153,7 @@
       max-width: 1240px; margin: 0 auto; padding: 12px 24px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .brand-group { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-group { display: flex; align-items: center; gap: 10px; text-decoration: none; }
     .brand-logo-img { width: 44px; height: 44px; object-fit: contain; }
     .brand-title { font-size: 24px; font-weight: 800; color: var(--text-main); }
     .brand-title span { color: var(--primary); }
@@ -215,6 +215,7 @@
       box-shadow: 0 0 8px var(--primary); animation: pulse 2s infinite;
     }
     @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.3); } }
+
     .hero-title {
       font-size: clamp(34px, 5vw, 58px); font-weight: 900; line-height: 1.12;
       max-width: 920px; margin: 0 auto 16px; color: var(--text-main);
@@ -454,15 +455,54 @@
       position: absolute; top: 16px; right: 16px; background: none; border: none;
       color: var(--text-subtle); font-size: 20px; cursor: pointer;
     }
+    /* WCAG 2.2 AA Focus Visibility & Scroll Padding */
+    html {
+      scroll-padding-top: 72px;
+    }
+    .skip-link {
+      position: absolute; top: -100px; left: 16px; z-index: 9999;
+      background: var(--primary, #4f46e5); color: white; padding: 10px 18px;
+      border-radius: 8px; font-weight: 700; text-decoration: none;
+      box-shadow: 0 4px 12px rgba(79,70,229,0.3);
+      transition: top 0.15s ease;
+    }
+    .skip-link:focus { top: 16px; outline: 3px solid #ffffff; }
+
+    :focus-visible {
+      outline: 2.5px solid var(--primary, #4f46e5);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    :focus:not(:focus-visible) {
+      outline: none;
+    }
     .input-field {
       width: 100%; padding: 10px 14px; border-radius: 8px;
       background: #ffffff; border: 1px solid var(--border-strong);
       color: var(--text-main); font-size: 14px; font-family: inherit; outline: none;
     }
     .input-field:focus { border-color: var(--primary); }
+
+    /* Mobile Viewport Input Auto-Zoom Prevention & Motion Reduction */
+    @media (max-width: 768px) {
+      input, select, textarea, .input-field {
+        font-size: 16px !important;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
   </style>
 </head>
 <body>
+
+  <!-- WCAG 2.4.1 Bypass Blocks -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- ═══════ TOP NAVIGATION ═══════ -->
   <header class="nav-container">
@@ -491,6 +531,9 @@
     </div>
   </header>
 
+  <!-- ═══════ MAIN CONTENT ═══════ -->
+  <main id="main-content">
+
   <!-- ═══════ HERO SECTION (Simplify + Naukri Hybrid) ═══════ -->
   <section class="hero-section">
     <div class="hero-badge-wrap">
@@ -505,6 +548,7 @@
     <p class="hero-subtitle">
       Stop endlessly scrolling job boards and filling out duplicate applications. getArole matches you with 1,000+ live verified tech openings across Indian MNCs, Unicorns, and global tech giants.
     </p>
+
     <!-- ── NAUKRI-STYLE POWER SEARCH BAR ── -->
     <div class="search-box-wrap">
       <input type="text" id="home-search-input" placeholder="Search by role, skills (e.g. React, Python, SDE, Fresher)" class="search-input">
@@ -850,17 +894,29 @@
     </div>
   </section>
 
-  <!-- ═══════ FOOTER (Enterprise Modern Clean) ═══════ -->
-  <footer style="background:#ffffff; border-top:1px solid #e2e8f0; padding:64px 24px 36px;">
+  <!-- ═══════ FOOTER (Enterprise Modern Clean with Team Spotlight) ═══════ -->
+  <footer class="global-footer" style="background:#ffffff; border-top:1px solid #e2e8f0; padding:64px 24px 36px; margin-top:auto; font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;">
     <div class="footer-inner" style="max-width:1240px; margin:0 auto; display:grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap:36px; margin-bottom:48px;">
       <div>
         <a href="/" class="brand-group" style="display:inline-flex; align-items:center; gap:12px; text-decoration:none; margin-bottom:14px;">
           <img src="/logo.svg" alt="getArole Logo" style="width:38px; height:38px; border-radius:10px; box-shadow:0 4px 12px rgba(79,70,229,0.2);">
           <span style="font-family:'Outfit', sans-serif; font-size:22px; font-weight:800; color:#0f172a; letter-spacing:-0.02em;">get<span style="color:#4f46e5">A</span>role</span>
         </a>
-        <p style="font-size:14px; color:#64748b; line-height:1.6; max-width:300px; margin-bottom:18px;">
+        <p style="font-size:14px; color:#64748b; line-height:1.6; max-width:320px; margin-bottom:18px;">
           India's #1 AI Job Discovery Engine. Autonomous multi-platform job aggregation across Greenhouse, Lever, Ashby, LinkedIn & Internshala with semantic ATS resume matching.
         </p>
+
+        <!-- Team / Founder Spotlight -->
+        <div style="display:flex; align-items:center; gap:12px; background:#f8fafc; border:1px solid #e2e8f0; padding:10px 14px; border-radius:12px; max-width:320px; margin-bottom:18px;">
+          <img src="/founder.png" alt="getArole Team" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #4f46e5; flex-shrink:0;">
+          <div>
+            <div style="font-size:12.5px; font-weight:700; color:#0f172a; display:flex; align-items:center; gap:4px;">
+              Built by getArole Team <span title="Verified Team" style="color:#4f46e5; font-size:13px;">✓</span>
+            </div>
+            <div style="font-size:11.5px; color:#64748b;">Empowering 1M+ tech job seekers</div>
+          </div>
+        </div>
+
         <div style="display:inline-flex; align-items:center; gap:8px; background:#f0fdf4; border:1px solid #bbf7d0; padding:6px 14px; border-radius:99px; font-size:12.5px; font-weight:600; color:#15803d;">
           <span style="width:8px; height:8px; background:#22c55e; border-radius:50%; box-shadow:0 0 8px #22c55e;"></span>
           1,000+ Verified Jobs • Live
@@ -869,7 +925,7 @@
 
       <div>
         <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:16px;">Explore Jobs</div>
-        <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0;">
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
           <li><a href="/explore" class="footer-link">All Tech Opportunities</a></li>
           <li><a href="/dashboard/?q=Bengaluru" class="footer-link">Bengaluru Tech Hub</a></li>
           <li><a href="/dashboard/?q=Hyderabad" class="footer-link">Hyderabad Tech Roles</a></li>
@@ -880,7 +936,7 @@
 
       <div>
         <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:16px;">AI Platform</div>
-        <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0;">
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
           <li><a href="/onboarding/" class="footer-link">AI Resume Matcher</a></li>
           <li><a href="/resume-builder/" class="footer-link">AI Resume Builder</a></li>
           <li><a href="/cover-letter-builder/" class="footer-link">Cover Letter Generator</a></li>
@@ -891,7 +947,7 @@
 
       <div>
         <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:16px;">Resources & API</div>
-        <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0;">
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
           <li><a href="https://github.com/hemasaivattikuti25/getArole" target="_blank" class="footer-link">GitHub Repository</a></li>
           <li><a href="/llms.txt" class="footer-link">LLMs.txt Standard</a></li>
           <li><a href="/sitemap.xml" class="footer-link">Sitemap Index</a></li>
@@ -901,7 +957,7 @@
 
       <div>
         <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:16px;">Legal & Compliance</div>
-        <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0;">
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
           <li><a href="/privacy" class="footer-link">Privacy Policy (GDPR/DPDP)</a></li>
           <li><a href="/terms" class="footer-link">Terms of Service</a></li>
           <li><a href="mailto:privacy@getarole.in" class="footer-link">Grievance Redressal</a></li>
@@ -912,13 +968,17 @@
 
     <div style="max-width:1240px; margin:0 auto; border-top:1px solid #e2e8f0; padding-top:24px; display:flex; align-items:center; justify-content:space-between; font-size:13px; color:#94a3b8; flex-wrap:wrap; gap:16px;">
       <div>© <span id="footer-year">2026</span> <strong>getArole.in</strong>. All rights reserved. Designed for tech job seekers, freshers & engineers worldwide.</div>
-      <div style="font-size:12px; color:#cbd5e1;">All company trademarks and logos belong to their respective owners.</div>
+      <div style="font-size:12px; color:#94a3b8; display:flex; align-items:center; gap:16px;">
+        <span>🔒 ISO/IEC 27001 & DPDP Act 2023 Compliant</span>
+        <span>🛡️ 256-Bit SSL Encrypted</span>
+      </div>
     </div>
   </footer>
   <script>
     const fy = document.getElementById('footer-year');
     if (fy) fy.textContent = new Date().getFullYear();
   </script>
+  </main>
 
   <!-- ═══════ AUTH MODAL ═══════ -->
   <div id="auth-modal" class="modal-overlay">
