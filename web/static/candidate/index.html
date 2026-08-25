@@ -134,9 +134,20 @@
   </footer>
 
   <script>
+    function esc(s) {
+      if (!s) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
     async function loadCandidate() {
       const urlParams = new URLSearchParams(window.location.search);
       const candId = urlParams.get('id');
+      const key = urlParams.get('key') || '';
       const container = document.getElementById('profile-container');
       
       if (!candId) {
@@ -145,27 +156,37 @@
       }
       
       try {
-        const res = await fetch(`/api/candidate/${candId}`);
+        const headers = {};
+        const rawUser = localStorage.getItem('getarole_user');
+        let uid = sessionStorage.getItem('firebase_uid') || localStorage.getItem('firebase_uid');
+        if (!uid && rawUser) {
+          try { uid = JSON.parse(rawUser).uid; } catch(e) {}
+        }
+        if (uid) headers['X-Firebase-UID'] = uid;
+        if (key) headers['X-Admin-Key'] = key;
+
+        const apiUrl = `/api/candidate/${encodeURIComponent(candId)}` + (key ? `?key=${encodeURIComponent(key)}` : '');
+        const res = await fetch(apiUrl, { headers });
         if (!res.ok) throw new Error('Candidate not found');
         const data = await res.json();
-        const cand = data.candidate;
+        const cand = data.candidate || {};
         
         let skillsHtml = '<p style="color:var(--text-muted);font-size:14px;">No specific skills extracted.</p>';
-        if (cand.skills && cand.skills.length > 0) {
-            skillsHtml = '<div class="skills-grid">' + cand.skills.map(s => `<span class="skill-chip">${s}</span>`).join('') + '</div>';
+        if (cand.skills && Array.isArray(cand.skills) && cand.skills.length > 0) {
+            skillsHtml = '<div class="skills-grid">' + cand.skills.map(s => `<span class="skill-chip">${esc(s)}</span>`).join('') + '</div>';
         }
         
         container.innerHTML = `
           <div class="header">
-            <h1>${cand.name || 'Anonymous Candidate'}</h1>
-            <p>${cand.email ? 'Contact: ' + cand.email : 'Contact hidden for privacy'}</p>
+            <h1>${esc(cand.name || 'Anonymous Candidate')}</h1>
+            <p>${cand.email ? 'Contact: ' + esc(cand.email) : 'Contact hidden for privacy'}</p>
           </div>
           <div class="content">
             <div class="section-title">Verified Skills</div>
             ${skillsHtml}
             
             <div class="section-title">Resume Summary</div>
-            <div class="resume-box">${cand.raw_resume_text || 'No resume text provided.'}</div>
+            <div class="resume-box">${esc(cand.raw_resume_text || 'No resume text provided.')}</div>
           </div>
         `;
       } catch(e) {

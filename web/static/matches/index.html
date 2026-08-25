@@ -861,12 +861,29 @@
           ]);
           
           if (profRes.ok) {
-            const data = await profRes.json();
-            if (Object.keys(data).length > 0) localStorage.setItem('getarole_profile', JSON.stringify(data));
+            const cloudProf = await profRes.json();
+            if (Object.keys(cloudProf).length > 0) {
+              const localProf = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+              const merged = { ...cloudProf, ...localProf };
+              ['name','first','last','email','phone','headline','loc','summary'].forEach(k => {
+                if (cloudProf[k] && !localProf[k]) merged[k] = cloudProf[k];
+              });
+              ['experience','education','projects','skills'].forEach(k => {
+                const cloudArr = cloudProf[k]; const localArr = localProf[k];
+                merged[k] = (Array.isArray(localArr) && localArr.length > 0) ? localArr
+                          : (Array.isArray(cloudArr) && cloudArr.length > 0) ? cloudArr : (merged[k] || []);
+              });
+              if (!merged.links && cloudProf.links) merged.links = cloudProf.links;
+              localStorage.setItem('getarole_profile', JSON.stringify(merged));
+            }
           }
           if (prefRes.ok) {
-            const data = await prefRes.json();
-            if (Object.keys(data).length > 0) localStorage.setItem('getarole_prefs', JSON.stringify(data));
+            const cloudPrefs = await prefRes.json();
+            if (Object.keys(cloudPrefs).length > 0) {
+              const localPrefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
+              const mergedPrefs = { ...cloudPrefs, ...localPrefs };
+              localStorage.setItem('getarole_prefs', JSON.stringify(mergedPrefs));
+            }
           }
           if (resRes.ok) {
             const data = await resRes.json();
@@ -1099,7 +1116,7 @@
       
       const profile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
       if (name) profile.name = name;
-      if (targetTitle) profile.title = targetTitle;
+      if (targetTitle) profile.headline = targetTitle;
       profile.preferences = { ...modalPrefs };
       localStorage.setItem('getarole_profile', JSON.stringify(profile));
 

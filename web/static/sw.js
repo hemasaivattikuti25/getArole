@@ -42,7 +42,13 @@ self.addEventListener('activate', (event) => {
         })
       );
     }).then(() => self.clients.claim())
-  );
+// Listen for messages from frontend clients (e.g. logout)
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.action === 'CLEAR_USER_CACHE') {
+    caches.delete(API_CACHE).then(() => {
+      console.log('[SW] User API cache successfully purged.');
+    });
+  }
 });
 
 // Fetch: Route-aware caching strategy
@@ -50,10 +56,13 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-GET requests
+  // Skip non-GET requests and user-authenticated / dynamic endpoints
   if (request.method !== 'GET') return;
+  if (url.pathname.startsWith('/api/user') || url.pathname.startsWith('/api/ai') || url.pathname.startsWith('/api/candidate')) {
+    return; // Pass through directly to network
+  }
 
-  // 1. API Route: Stale-While-Revalidate for Job Listings
+  // 1. API Route: Stale-While-Revalidate for Job Listings (Public search)
   if (url.pathname.startsWith('/api/jobs')) {
     event.respondWith(
       caches.open(API_CACHE).then(async (cache) => {

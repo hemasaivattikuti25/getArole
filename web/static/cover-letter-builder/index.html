@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Overleaf LaTeX Cover Letter Builder — getArole</title>
+  <script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();</script>
   <meta name="description"
     content="Build, tailor, and export high-impact, professional Overleaf LaTeX cover letters with personalized AI generation on getArole.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1242,20 +1243,37 @@ Sincerely,
         } catch (e) { }
       }
 
-      // Also pull user profile from getarole_resume_data or backend
-      const resumeSaved = localStorage.getItem('getarole_resume_data');
+      // Pull user profile and resume data from localStorage
+      const resumeSaved = localStorage.getItem('getarole_resume_v2') || localStorage.getItem('getarole_uploaded_resume') || localStorage.getItem('getarole_resume_data');
       if (resumeSaved) {
         try {
           const rData = JSON.parse(resumeSaved);
-          candidateProfile = rData;
-          if (rData.header) {
-            if (!CL.sender.name) CL.sender.name = rData.header.name || '';
-            if (!CL.sender.email) CL.sender.email = rData.header.email || '';
-            if (!CL.sender.phone) CL.sender.phone = rData.header.phone || '';
-            if (!CL.sender.linkedin) CL.sender.linkedin = rData.header.linkedin || '';
-            if (!CL.sender.github) CL.sender.github = rData.header.github || '';
-            if (!CL.sender.portfolio) CL.sender.portfolio = rData.header.portfolio || '';
+          candidateProfile = { ...candidateProfile, ...rData };
+          const h = rData.header || rData;
+          if (h) {
+            if (!CL.sender.name) CL.sender.name = h.name || '';
+            if (!CL.sender.email) CL.sender.email = h.email || '';
+            if (!CL.sender.phone) CL.sender.phone = h.phone || '';
+            if (!CL.sender.linkedin) CL.sender.linkedin = (h.links && h.links.linkedin) || h.linkedin || '';
+            if (!CL.sender.github) CL.sender.github = (h.links && h.links.github) || h.github || '';
+            if (!CL.sender.portfolio) CL.sender.portfolio = (h.links && h.links.portfolio) || h.portfolio || '';
           }
+        } catch (e) { }
+      }
+
+      const profSaved = localStorage.getItem('getarole_profile');
+      if (profSaved) {
+        try {
+          const p = JSON.parse(profSaved);
+          if (!candidateProfile.summary && p.summary) candidateProfile.summary = p.summary;
+          if (!candidateProfile.experience && p.experience) candidateProfile.experience = p.experience;
+          if (!candidateProfile.skills && p.skills) candidateProfile.skills = p.skills;
+          if (!CL.sender.name && p.name) CL.sender.name = p.name;
+          if (!CL.sender.email && p.email) CL.sender.email = p.email;
+          if (!CL.sender.phone && p.phone) CL.sender.phone = p.phone;
+          if (!CL.sender.linkedin && p.links && p.links.linkedin) CL.sender.linkedin = p.links.linkedin;
+          if (!CL.sender.github && p.links && p.links.github) CL.sender.github = p.links.github;
+          if (!CL.sender.portfolio && p.links && p.links.portfolio) CL.sender.portfolio = p.links.portfolio;
         } catch (e) { }
       }
 

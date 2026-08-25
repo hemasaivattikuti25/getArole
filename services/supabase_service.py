@@ -360,25 +360,77 @@ class SupabaseService:
     async def save_user_resume(self, firebase_uid: str, resume_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """Save a user's uploaded and parsed resume into user_resumes table."""
         client = await self._get_client()
-        if not client:
+        if not client or not firebase_uid or firebase_uid == "guest_user":
             return None
         try:
-            record = {"firebase_uid": firebase_uid, **resume_data}
-            res = await client.table("user_resumes").insert(record).execute()
-            return res.data[0] if res.data else record
+            header = resume_data.get("header") if isinstance(resume_data.get("header"), dict) else {}
+            name = resume_data.get("name") or header.get("name") or ""
+            email = resume_data.get("email") or header.get("email") or ""
+            phone = resume_data.get("phone") or header.get("phone") or ""
+            headline = resume_data.get("headline") or header.get("headline") or header.get("title") or ""
+            summary = resume_data.get("summary") or header.get("summary") or ""
+            skills = resume_data.get("skills") if isinstance(resume_data.get("skills"), list) else []
+            experience = resume_data.get("experience") or resume_data.get("work_experience") or []
+            education = resume_data.get("education") or []
+            projects = resume_data.get("projects") or []
+            links = resume_data.get("links") or {
+                "linkedin": header.get("linkedin", ""),
+                "github": header.get("github", ""),
+                "portfolio": header.get("portfolio", "")
+            }
+            raw_text = resume_data.get("raw_text") or resume_data.get("raw_resume_text") or ""
+            filename = resume_data.get("filename") or ""
+
+            record = {
+                "firebase_uid": firebase_uid,
+                "name": name,
+                "email": email,
+                "phone": phone,
+                "headline": headline,
+                "summary": summary,
+                "skills": [s if isinstance(s, str) else str(s) for s in skills],
+                "experience": experience,
+                "education": education,
+                "projects": projects,
+                "links": links,
+                "raw_text": raw_text,
+                "filename": filename
+            }
+            clean_record = {k: v for k, v in record.items() if v is not None}
+            res = await client.table("user_resumes").insert(clean_record).execute()
+            return res.data[0] if res.data else clean_record
         except Exception as e:
-            print(f"[Supabase] save_user_resume error: {e}")
-            return None
+            try:
+                minimal_record = {
+                    "firebase_uid": firebase_uid,
+                    "raw_text": (resume_data.get("raw_text") or resume_data.get("raw_resume_text") or "")[:5000]
+                }
+                res = await client.table("user_resumes").insert(minimal_record).execute()
+                return res.data[0] if res.data else minimal_record
+            except Exception as e2:
+                print(f"[Supabase] save_user_resume error: {e} | fallback: {e2}")
+                return None
 
     async def load_user_resume(self, firebase_uid: str) -> Optional[Dict[str, Any]]:
         """Fetch a user's active resume from user_resumes table using explicit column projection."""
         client = await self._get_client()
-        if not client:
+        if not client or not firebase_uid or firebase_uid == "guest_user":
             return None
         try:
-            cols = "firebase_uid, name, email, phone, headline, skills, summary, experience, education, projects, links, raw_text, sha256, uploaded_at"
-            res = await client.table("user_resumes").select(cols).eq("firebase_uid", firebase_uid).order("uploaded_at", desc=True).limit(1).execute()
-            return res.data[0] if res.data else None
+            res = await client.table("user_resumes").select("*").eq("firebase_uid", firebase_uid).order("uploaded_at", desc=True).limit(1).execute()
+            data = res.data[0] if res.data else None
+            if data:
+                if not data.get("header"):
+                    data["header"] = {
+                        "name": data.get("name") or "",
+                        "email": data.get("email") or "",
+                        "phone": data.get("phone") or "",
+                        "headline": data.get("headline") or "",
+                        "linkedin": (data.get("links") or {}).get("linkedin", "") if isinstance(data.get("links"), dict) else "",
+                        "github": (data.get("links") or {}).get("github", "") if isinstance(data.get("links"), dict) else "",
+                        "portfolio": (data.get("links") or {}).get("portfolio", "") if isinstance(data.get("links"), dict) else ""
+                    }
+            return data
         except Exception as e:
             print(f"[Supabase] load_user_resume error: {e}")
             return None

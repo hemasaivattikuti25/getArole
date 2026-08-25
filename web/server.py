@@ -364,14 +364,20 @@ async def get_all_candidates(
 async def get_candidate_by_id(
     cand_id: str,
     request: Request,
-    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
+    key: Optional[str] = Query(None)
 ) -> Dict[str, Any]:
     """
     Returns a single candidate by UUID.
-    Protected endpoint: Requires valid X-Admin-Key header.
+    Protected endpoint: Requires valid X-Admin-Key header, key query param, or authenticated user session.
     """
     expected_key = os.getenv("SCRAPER_ADMIN_KEY") or os.getenv("ADMIN_API_KEY", "")
-    if not expected_key or x_admin_key != expected_key:
+    provided_key = x_admin_key or key
+    uid = extract_authenticated_uid(request)
+
+    is_authorized = (expected_key and provided_key == expected_key) or (uid and uid != "guest_user")
+
+    if expected_key and not is_authorized:
         logging.getLogger("sre.security").warning(
             "unauthorized_candidate_detail_access_attempt",
             extra={"client_ip": request.client.host if request.client else "unknown", "cand_id": cand_id}

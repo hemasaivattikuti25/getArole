@@ -88,6 +88,9 @@ export async function logoutUser() {
     localStorage.removeItem("getarole_user");
     localStorage.removeItem("firebase_uid");
     sessionStorage.removeItem("firebase_uid");
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({ action: 'CLEAR_USER_CACHE' });
+    }
     return { success: true };
   } catch (error) {
     console.error("[Auth] Sign-Out Error:", error);
