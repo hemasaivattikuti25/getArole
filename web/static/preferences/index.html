@@ -238,19 +238,21 @@
     
     .form-input {
       width: 100%; padding: 14px 16px; border-radius: 12px; border: 1.5px solid var(--border);
-      font-size: 15px; font-family: inherit; outline: none; transition: border-color 0.15s; margin-bottom: 16px;
+      font-size: 15px; font-family: inherit; outline: none; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); margin-bottom: 16px;
     }
-    .form-input:focus { border-color: var(--primary); }
+    .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3.5px rgba(79, 70, 229, 0.12); }
 
     /* Modal Footer */
     .modal-footer {
       padding: 20px 60px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;
       background: #ffffff;
     }
-    .btn-close-txt { background: #ffffff; border: 1px solid var(--border); padding: 12px 24px; border-radius: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; font-size: 14.5px;}
+    .btn-close-txt { background: #ffffff; border: 1px solid var(--border); padding: 12px 24px; border-radius: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; font-size: 14.5px; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
     .btn-close-txt:hover { background: var(--bg-subtle); color: var(--text-main); }
-    .btn-save-continue { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 800; font-size: 14.5px; cursor: pointer; box-shadow: 0 4px 12px rgba(5,150,105,0.25); transition: all 0.2s; }
-    .btn-save-continue:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    .btn-close-txt:active { transform: scale(0.97); }
+    .btn-save-continue { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 800; font-size: 14.5px; cursor: pointer; box-shadow: 0 4px 12px rgba(79,70,229,0.25); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+    .btn-save-continue:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 6px 16px rgba(79,70,229,0.35); }
+    .btn-save-continue:active { transform: scale(0.97); }
 
     
     .form-label { display: block; font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }

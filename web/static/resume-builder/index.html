@@ -205,12 +205,16 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: all .15s;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .bto:hover {
       border-color: var(--prb);
       color: var(--pr);
+      transform: translateY(-1px);
+    }
+    .bto:active {
+      transform: scale(0.97);
     }
 
     .btp {
@@ -225,12 +229,17 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      box-shadow: 0 2px 8px rgba(5, 150, 105, .25);
-      transition: all .15s;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, .25);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .btp:hover {
       background: var(--prh);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(79, 70, 229, .35);
+    }
+    .btp:active {
+      transform: scale(0.97);
     }
 
     /* ═══════ THREE-COLUMN LAYOUT ═══════ */
@@ -281,12 +290,13 @@
       font-weight: 600;
       color: var(--txm);
       cursor: pointer;
-      transition: all .15s;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .si:hover {
       background: var(--bg);
       color: var(--tx);
+      transform: translateX(2px);
     }
 
     .si.active {
@@ -404,12 +414,13 @@
       font-size: 13.5px;
       font-family: inherit;
       outline: none;
-      transition: border-color .15s;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .fi:focus,
     .ft:focus {
       border-color: var(--pr);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
     }
 
     .ft {
@@ -772,7 +783,8 @@
       width: 794px;
       min-height: 1123px;
       background: #fff;
-      box-shadow: 0 6px 30px rgba(0, 0, 0, .4);
+      box-shadow: 0 12px 40px -10px rgba(0, 0, 0, .45), 0 0 0 1px rgba(255, 255, 255, .08);
+      border-radius: 2px;
       transform-origin: top center;
       flex-shrink: 0;
     }

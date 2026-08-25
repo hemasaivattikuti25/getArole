@@ -225,12 +225,17 @@
     .job-card {
       background: var(--surface); border: 1.5px solid var(--border);
       border-radius: 12px; padding: 16px; cursor: pointer;
-      position: relative; transition: all 0.15s ease;
+      position: relative; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .job-card:hover { border-color: var(--primary-border); background: #fafbfc; }
+    .job-card:hover {
+      border-color: var(--primary-border);
+      background: #fafbfc;
+      transform: translateY(-1.5px);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    }
     .job-card.selected {
       border-color: var(--primary); background: var(--primary-light);
-      box-shadow: 0 2px 8px rgba(5,150,105,0.08);
+      box-shadow: 0 4px 16px rgba(79,70,229,0.1);
     }
 
     .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
@@ -244,7 +249,7 @@
     .company-name { font-size: 13px; font-weight: 700; color: var(--text-muted); }
     .card-bookmark-btn {
       background: none; border: none; cursor: pointer; color: var(--text-subtle);
-      font-size: 16px; padding: 2px;
+      font-size: 16px; padding: 2px; transition: color 0.15s;
     }
     .card-bookmark-btn.saved { color: var(--primary); }
 
@@ -254,6 +259,7 @@
     .tag-chip {
       font-size: 11.5px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
       background: var(--background); border: 1px solid var(--border); color: var(--text-muted);
+      transition: all 0.15s;
     }
     .tag-chip.batch { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; font-weight: 700; }
     .tag-chip.remote { background: var(--primary-light); border-color: var(--primary-border); color: var(--primary); font-weight: 700; }
@@ -274,6 +280,7 @@
     .detail-tab {
       font-size: 14px; font-weight: 700; color: var(--text-muted); cursor: pointer;
       padding-bottom: 6px; position: relative; text-decoration: none;
+      transition: color 0.15s;
     }
     .detail-tab.active { color: var(--primary); }
     .detail-tab.active::after {
@@ -283,19 +290,24 @@
     .detail-action-buttons { display: flex; align-items: center; gap: 10px; }
     .btn-applied-toggle {
       font-size: 13px; font-weight: 600; color: var(--text-muted); background: none; border: none; cursor: pointer;
+      transition: color 0.15s;
     }
     .btn-applied-toggle:hover { color: var(--primary); }
     .btn-save-job {
       padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border);
       background: white; font-size: 13px; font-weight: 700; color: var(--text-main); cursor: pointer;
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: center; gap: 6px; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
+    .btn-save-job:hover { border-color: var(--primary-border); transform: translateY(-1px); }
+    .btn-save-job:active { transform: scale(0.97); }
     .btn-apply-primary {
       padding: 8px 20px; border-radius: 8px; border: none;
       background: var(--primary); font-size: 13.5px; font-weight: 800; color: white; cursor: pointer;
       display: flex; align-items: center; gap: 6px; text-decoration: none; box-shadow: 0 2px 8px rgba(79,70,229,0.25);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .btn-apply-primary:hover { background: var(--primary-hover); }
+    .btn-apply-primary:hover { background: var(--primary-hover); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(79,70,229,0.35); }
+    .btn-apply-primary:active { transform: scale(0.97); }
     
     .btn-referral {
       padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border);

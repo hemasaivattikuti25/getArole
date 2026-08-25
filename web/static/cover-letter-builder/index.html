@@ -258,12 +258,13 @@
       font-weight: 600;
       color: var(--txm);
       cursor: pointer;
-      transition: all .12s;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .si:hover {
       background: var(--bg);
       color: var(--tx);
+      transform: translateX(2px);
     }
 
     .si.active {
@@ -351,7 +352,7 @@
       font-family: inherit;
       color: var(--tx);
       background: var(--sf);
-      transition: border-color .15s;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .fi:focus,
@@ -359,7 +360,7 @@
     .fi-sel:focus {
       outline: none;
       border-color: var(--pr);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      box-shadow: 0 0 0 3.5px rgba(79, 70, 229, 0.12);
     }
 
     .ft {

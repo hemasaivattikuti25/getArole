@@ -170,37 +170,40 @@
       width: 100%; padding: 9px 16px 9px 40px; border-radius: 99px;
       border: 1.5px solid var(--border, #e2e8f0); background: var(--background, #f8fafc);
       font-size: 13.5px; font-weight: 600; color: var(--text-main, #0f172a); outline: none;
-      transition: all 0.15s;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .search-input:focus { border-color: var(--primary, #4f46e5); background: #ffffff; box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+    .search-input:focus { border-color: var(--primary, #4f46e5); background: #ffffff; box-shadow: 0 0 0 3.5px rgba(79,70,229,0.12); }
 
     .filter-dropdown {
       padding: 7px 14px; border-radius: 99px; font-size: 12.5px; font-weight: 600;
       border: 1.5px solid var(--border, #e2e8f0); background: var(--surface, #ffffff);
       color: var(--text-muted, #475569); cursor: pointer; outline: none;
-      transition: all 0.15s; appearance: auto;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); appearance: auto;
     }
     .filter-dropdown:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
-    .filter-dropdown:focus { border-color: var(--primary, #4f46e5); background: var(--primary-light, #e0e7ff); }
+    .filter-dropdown:focus { border-color: var(--primary, #4f46e5); background: var(--primary-light, #e0e7ff); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
 
     .btn-filter-pill {
       padding: 7px 14px; border-radius: 99px; font-size: 12px; font-weight: 700;
       border: 1.5px solid var(--border, #e2e8f0); background: var(--surface, #ffffff);
-      color: var(--text-muted, #475569); cursor: pointer; transition: all 0.15s;
+      color: var(--text-muted, #475569); cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .btn-filter-pill:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
+    .btn-filter-pill:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); transform: translateY(-1px); }
     .btn-filter-pill.active { background: var(--primary-light, #e0e7ff); border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
+    .btn-filter-pill:active { transform: scale(0.97); }
 
     .btn-filter-action {
       padding: 8px 16px; border-radius: 99px; font-size: 12.5px; font-weight: 700;
-      border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s; white-space: nowrap;
+      border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); white-space: nowrap;
     }
+    .btn-filter-action:active { transform: scale(0.97); }
     .btn-save-search {
       background: #eff6ff; color: #1d4ed8; border: 1.5px solid #bfdbfe;
     }
-    .btn-save-search:hover { background: #dbeafe; }
+    .btn-save-search:hover { background: #dbeafe; transform: translateY(-1px); }
     .btn-clear-filters {
       background: transparent; color: #0284c7; text-decoration: underline; border: none; font-size: 12.5px; font-weight: 600; cursor: pointer; white-space: nowrap;
+      transition: color 0.15s;
     }
     .btn-clear-filters:hover { color: #0369a1; }
 
@@ -240,12 +243,17 @@
     .job-card {
       background: var(--surface, #ffffff); border: 1.5px solid var(--border, #e2e8f0);
       border-radius: 12px; padding: 16px; cursor: pointer;
-      position: relative; transition: all 0.15s ease;
+      position: relative; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .job-card:hover { border-color: var(--primary-border, #c7d2fe); background: #fafbfc; }
+    .job-card:hover {
+      border-color: var(--primary-border, #c7d2fe);
+      background: #fafbfc;
+      transform: translateY(-1.5px);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    }
     .job-card.selected {
       border-color: var(--primary, #4f46e5); background: var(--primary-light, #eef2ff);
-      box-shadow: 0 4px 14px rgba(79,70,229,0.08);
+      box-shadow: 0 4px 16px rgba(79,70,229,0.1);
     }
 
     .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
@@ -264,6 +272,7 @@
     .tag-chip {
       font-size: 11.5px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
       background: var(--background, #f8fafc); border: 1px solid var(--border, #e2e8f0); color: var(--text-muted, #64748b);
+      transition: all 0.15s;
     }
     .tag-chip.batch { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; font-weight: 700; }
     .tag-chip.remote { background: var(--primary-light, #eef2ff); border-color: var(--primary-border, #c7d2fe); color: var(--primary, #4f46e5); font-weight: 700; }
@@ -282,6 +291,7 @@
     .detail-tab {
       font-size: 14px; font-weight: 700; color: var(--text-muted, #64748b); cursor: pointer;
       padding-bottom: 6px; position: relative; text-decoration: none;
+      transition: color 0.15s;
     }
     .detail-tab.active { color: var(--primary, #4f46e5); }
     .detail-tab.active::after {
@@ -290,19 +300,24 @@
     .detail-action-buttons { display: flex; align-items: center; gap: 10px; }
     .btn-applied-toggle {
       font-size: 13px; font-weight: 600; color: var(--text-muted, #64748b); background: none; border: none; cursor: pointer;
+      transition: color 0.15s;
     }
     .btn-applied-toggle:hover { color: var(--primary, #4f46e5); }
     .btn-save-job {
       padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border, #e2e8f0);
       background: white; font-size: 13px; font-weight: 700; color: var(--text-main, #0f172a); cursor: pointer;
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: center; gap: 6px; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
+    .btn-save-job:hover { border-color: var(--primary-border, #c7d2fe); transform: translateY(-1px); }
+    .btn-save-job:active { transform: scale(0.97); }
     .btn-apply-primary {
       padding: 8px 20px; border-radius: 8px; border: none;
       background: var(--primary, #4f46e5); font-size: 13.5px; font-weight: 800; color: white; cursor: pointer;
       display: flex; align-items: center; gap: 6px; text-decoration: none; box-shadow: 0 2px 8px rgba(79,70,229,0.25);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .btn-apply-primary:hover { background: var(--primary-hover, #4338ca); }
+    .btn-apply-primary:hover { background: var(--primary-hover, #4338ca); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(79,70,229,0.35); }
+    .btn-apply-primary:active { transform: scale(0.97); }
 
     .btn-referral {
       padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--border, #e2e8f0);
