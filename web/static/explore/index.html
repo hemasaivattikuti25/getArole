@@ -575,9 +575,18 @@
         <div class="jobs-feed-col">
           <div class="feed-header">
             <span>Showing <strong id="jobs-count-text">0</strong> Opportunities</span>
-            <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:12px; font-weight:700; color:var(--text-muted)">
-              <input type="checkbox" id="sort-recent" onchange="filterJobs()" checked style="accent-color:var(--primary)"> Most recent
-            </label>
+            <div class="sort-select-wrapper" style="display:flex; align-items:center; gap:6px; background:#f8fafc; border:1px solid var(--border); padding:4px 10px; border-radius:8px; box-shadow:0 1px 2px rgba(0,0,0,0.03);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary); flex-shrink:0;">
+                <path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/>
+              </svg>
+              <select id="sort-by-select" onchange="filterJobs()" style="background:transparent; border:none; outline:none; font-size:12px; font-weight:700; color:var(--text-main); cursor:pointer;">
+                <option value="fit_desc" selected>🎯 Highest Fit Score</option>
+                <option value="recent">⚡ Most Recent First</option>
+                <option value="fit_asc">📉 Lowest Fit Score</option>
+                <option value="title">🔤 Job Title (A-Z)</option>
+                <option value="company">🏢 Company (A-Z)</option>
+              </select>
+            </div>
           </div>
           <div class="feed-list" id="job-feed-list"></div>
         </div>
@@ -1275,10 +1284,7 @@
           .sort((a, b) => b.fit_score - a.fit_score)
           .slice(0, 60);
 
-        renderFeed();
-        if (filteredJobs.length > 0) {
-          selectJob(filteredJobs[0].id);
-        }
+        filterJobs();
       } catch (e) {
         console.error('Job load error:', e);
         if (feed) {
@@ -1474,6 +1480,22 @@
 
         return true;
       });
+
+      // 7. Apply Sorting (Fit Score, Recent, Title, Company)
+      const sortSelect = document.getElementById('sort-by-select');
+      const sortBy = sortSelect ? sortSelect.value : 'fit_desc';
+
+      if (sortBy === 'fit_desc') {
+        filteredJobs.sort((a, b) => (b.fit_score || 0) - (a.fit_score || 0));
+      } else if (sortBy === 'fit_asc') {
+        filteredJobs.sort((a, b) => (a.fit_score || 0) - (b.fit_score || 0));
+      } else if (sortBy === 'recent') {
+        filteredJobs.sort((a, b) => new Date(b.created_at || b.posted_at || 0) - new Date(a.created_at || a.posted_at || 0));
+      } else if (sortBy === 'title') {
+        filteredJobs.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+      } else if (sortBy === 'company') {
+        filteredJobs.sort((a, b) => (a.company || '').localeCompare(b.company || ''));
+      }
 
       renderFeed();
       
