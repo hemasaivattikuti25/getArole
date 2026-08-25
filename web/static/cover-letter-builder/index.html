@@ -772,7 +772,7 @@
         <!-- 2. RECIPIENT & TARGET -->
         <div class="pn" id="panel-recipient">
           <div class="fr2">
-            <div class="fg"><label>Target Company</label><input class="fi" id="fcl-comp" placeholder="e.g. Stripe / Microsoft / Acme Corp" oninput="udCL('company',this.value)"></div>
+            <div class="fg"><label>Target Company</label><input class="fi" id="fcl-comp" placeholder="e.g. Razorpay / Microsoft / Swiggy" oninput="udCL('company',this.value)"></div>
             <div class="fg"><label>Target Role Title</label><input class="fi" id="fcl-role" placeholder="e.g. Senior Software Engineer" oninput="udCL('role',this.value)"></div>
           </div>
           <div class="fr2">
@@ -1277,6 +1277,13 @@ Sincerely,
         } catch (e) { }
       }
 
+      // Read URL query params for 1-click tailoring
+      const urlParams = new URLSearchParams(window.location.search);
+      const qComp = urlParams.get('company');
+      const qRole = urlParams.get('role');
+      if (qComp) CL.company = qComp;
+      if (qRole) CL.role = qRole;
+
       // Populate input elements
       document.getElementById('ffn').value = CL.sender.name || '';
       document.getElementById('fph').value = CL.sender.phone || '';
@@ -1292,7 +1299,7 @@ Sincerely,
       if (CL.date_month) document.getElementById('fcl-date-month').value = CL.date_month;
       if (CL.date_year) document.getElementById('fcl-date-year').value = CL.date_year;
 
-      if (!CL.body) {
+      if (!CL.body || qComp || qRole) {
         applyCoverLetterPreset('professional');
       } else {
         document.getElementById('fcl-text').value = CL.body;
@@ -1302,6 +1309,9 @@ Sincerely,
 
 
     function exportPDF() {
+      if (CL.body && /\[(Target Role|Target Company|Your Name|Hiring Manager)\]/i.test(CL.body)) {
+        toast('⚠️ Tip: Update bracketed placeholders before sending.');
+      }
       window.print();
     }
 

@@ -310,8 +310,19 @@ function initConnectionMonitor() {
   if (!navigator.onLine) updateStatus();
 }
 
+function initFooterYear() {
+  const curYear = String(new Date().getFullYear());
+  document.querySelectorAll('.global-footer-year').forEach(el => {
+    el.textContent = curYear;
+  });
+}
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initConnectionMonitor);
+  document.addEventListener('DOMContentLoaded', () => {
+    initConnectionMonitor();
+    initFooterYear();
+  });
 } else {
   initConnectionMonitor();
+  initFooterYear();
 }

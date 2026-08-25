@@ -699,7 +699,7 @@
     <div style="max-width:1240px; margin:0 auto; border-top:1px solid #e2e8f0; padding-top:14px; display:flex; align-items:center; justify-content:space-between; font-size:11.5px; color:#94a3b8; flex-wrap:wrap; gap:12px;">
       <div>© <span class="global-footer-year">2026</span> <strong>getArole.in</strong>. All rights reserved.</div>
       <div style="font-size:11px; color:#94a3b8; display:flex; align-items:center; gap:12px;">
-        <span>🔒 ISO/IEC 27001 &amp; DPDP Compliant</span>
+        <span>🔒 🔒 DPDP Act 2023 &amp; GDPR Compliant</span>
         <span>🛡️ 256-Bit SSL</span>
       </div>
     </div>
@@ -744,7 +744,7 @@
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
             <div>
               <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Full Name</label>
-              <input type="text" id="pref-fullname" placeholder="e.g. Alex Johnson" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-size:13.5px; outline:none;">
+              <input type="text" id="pref-fullname" placeholder="e.g. Arjun Mehta" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-size:13.5px; outline:none;">
             </div>
             <div>
               <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Target Title</label>
@@ -778,7 +778,7 @@
             <span style="font-size:12px; font-weight:700; color:var(--primary);" id="modal-loc-count">4 Selected</span>
           </div>
           <div style="position:relative; margin-bottom:8px;">
-            <input type="text" id="modal-city-search" placeholder="Search 120+ Indian cities..." oninput="renderModalCities()" style="width:100%; padding:8px 12px 8px 32px; border-radius:8px; border:1px solid var(--border); font-size:13px; outline:none;">
+            <input type="text" id="modal-city-search" placeholder="Search Indian tech hubs and cities (e.g. Bengaluru, Hyderabad, Remote)..." oninput="renderModalCities()" style="width:100%; padding:8px 12px 8px 32px; border-radius:8px; border:1px solid var(--border); font-size:13px; outline:none;">
             <span style="position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:13px; color:var(--text-subtle);">🔍</span>
           </div>
           <div class="chips-grid" id="modal-cities-chips" style="max-height:160px; overflow-y:auto; padding:6px; background:var(--bg-subtle); border:1px solid var(--border); border-radius:10px; display:flex; flex-wrap:wrap; gap:6px;">
@@ -1498,7 +1498,7 @@
             <button class="btn-ai-tailor" onclick="openTailorWithJob('${job.id}')">
               <span></span> Improve
             </button>
-            <button class="btn-ai-tailor" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="window.location.href='/cover-letter-builder'">
+            <button class="btn-ai-tailor" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="window.location.href='/cover-letter-builder?company=' + encodeURIComponent('${job.company || ''}') + '&role=' + encodeURIComponent('${job.title || ''}')">
               ✉️ Cover Letter
             </button>
           </div>
@@ -1514,7 +1514,7 @@
         <div class="meta-grid">
           <div class="meta-item">
             <div class="meta-label">Compensation</div>
-            <div class="meta-val" style="color:var(--primary)">${job.stipend_or_salary || '₹25,000 - ₹50,000 / mo'}</div>
+            <div class="meta-val" style="color:var(--primary)">${job.stipend_or_salary || 'Competitive / Not Disclosed'}</div>
           </div>
           <div class="meta-item">
             <div class="meta-label">Employment Type</div>

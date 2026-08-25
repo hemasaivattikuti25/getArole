@@ -445,10 +445,14 @@ async def enhance_bullet(req: BulletEnhanceRequest, request: Request):
             s = random.choice(strong_starts) + " " + s[len(w):].lstrip()
             break
     
-    extra_metric = f" ({custom_inst})" if custom_inst else ", driving a 30%+ performance gain."
-    star_fallback = s.rstrip(".") + (extra_metric if not any(c.isdigit() for c in s) else ".")
-    tech_fallback = f"Architected high-reliability solution for {bullet.lower().rstrip('.')}, ensuring fault tolerance and sub-100ms response times."
-    concise_fallback = f"Delivered {bullet.lower().rstrip('.')} adhering to modern production standards."
+    action_bullet = s.rstrip(".")
+    if not any(action_bullet.lower().startswith(v.lower()) for v in strong_starts):
+        action_bullet = f"Delivered {action_bullet[0].lower() + action_bullet[1:] if len(action_bullet) > 1 else action_bullet}"
+    
+    user_addition = f" — focusing on {custom_inst}" if custom_inst else ""
+    star_fallback = f"{action_bullet}{user_addition}, improving delivery efficiency and operational reliability."
+    tech_fallback = f"Engineered robust solution for {bullet.lower().rstrip('.')}, ensuring high reliability and maintainable architecture."
+    concise_fallback = f"{action_bullet} adhering to modern production standards."
 
     try:
         llm = get_llm_service()
