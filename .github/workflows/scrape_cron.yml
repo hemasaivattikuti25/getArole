@@ -12,6 +12,7 @@ permissions:
 jobs:
   scrape-and-sync:
     runs-on: ubuntu-latest
+    continue-on-error: false
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -24,15 +25,17 @@ jobs:
 
       - name: Install Dependencies & Run Security Audit
         run: |
+          cd cron_scraper
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pip-audit
           pip-audit -r requirements.txt || echo "Audit advisory logged"
 
-      - name: Run 30-Minute Scraper & Supabase Sync
+      - name: Run Scraper & Supabase Sync
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
         run: |
-          python run_cron.py
+          cd cron_scraper
+          python main.py
