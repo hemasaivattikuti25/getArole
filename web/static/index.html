@@ -69,7 +69,7 @@
         "publisher": { "@id": "https://getarole.in/#organization" },
         "potentialAction": {
           "@type": "SearchAction",
-          "target": { "@type": "EntryPoint", "urlTemplate": "https://getarole.in/dashboard/?q={search_term_string}" },
+          "target": { "@type": "EntryPoint", "urlTemplate": "https://getarole.in/explore?q={search_term_string}" },
           "query-input": "required name=search_term_string"
         }
       },
@@ -90,7 +90,7 @@
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Web, iOS, Android, macOS, Windows",
         "url": "https://getarole.in",
-        "offers": { "@type": "AggregateOffer", "priceCurrency": "INR", "lowPrice": "0", "highPrice": "999", "offerCount": "2" },
+        "offers": { "@type": "AggregateOffer", "priceCurrency": "INR", "lowPrice": "0", "highPrice": "0", "offerCount": "1" },
         "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "180", "bestRating": "5" }
       }
     ]
@@ -101,7 +101,7 @@
   <link rel="preconnect" href="https://tgmhtlqcjgcjedlnthfk.supabase.co" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="apple-touch-icon" href="/logo.svg">
 
@@ -114,22 +114,27 @@
       --primary-hover: #4338ca;
       --primary-light: #eef2ff;
       --primary-border: #c7d2fe;
+      --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #2563eb 100%);
       --accent: #6366f1;
+      --accent-emerald: #10b981;
       --text-main: #0f172a;
       --text-muted: #475569;
       --text-subtle: #94a3b8;
       --border: #e2e8f0;
       --border-strong: #cbd5e1;
+      --border-glow: rgba(79, 70, 229, 0.25);
       --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 16px -2px rgba(0,0,0,0.06);
-      --shadow-lg: 0 12px 36px -4px rgba(79,70,229,0.12);
+      --shadow-md: 0 6px 20px -2px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 16px 40px -6px rgba(79, 70, 229, 0.14);
+      --shadow-glow: 0 0 35px rgba(79, 70, 229, 0.18);
       --radius-sm: 8px;
       --radius-md: 14px;
       --radius-lg: 20px;
+      --radius-xl: 28px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       background: var(--bg);
@@ -137,347 +142,502 @@
       line-height: 1.6;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      position: relative;
     }
-    ::selection { background: #d1fae5; color: #065f46; }
+    ::selection { background: #e0e7ff; color: #3730a3; }
 
-    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -0.025em; }
+    h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; letter-spacing: -0.025em; }
 
-    /* ── TOP NAVIGATION (Simplify Style) ── */
+    /* ── AMBIENT BACKGROUND GLOW ORBS ── */
+    .ambient-glow-wrap {
+      position: absolute; top: 0; left: 0; right: 0; height: 1000px;
+      overflow: hidden; pointer-events: none; z-index: 0;
+    }
+    .ambient-orb {
+      position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.65;
+      animation: floatSlow 18s ease-in-out infinite alternate;
+    }
+    .orb-1 {
+      width: 550px; height: 550px; top: -100px; left: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(79,70,229,0.18) 0%, rgba(124,58,237,0.08) 60%, transparent 100%);
+    }
+    .orb-2 {
+      width: 420px; height: 420px; top: 250px; left: 10%;
+      background: radial-gradient(circle, rgba(37,99,235,0.12) 0%, rgba(79,70,229,0.05) 70%, transparent 100%);
+      animation-delay: -4s;
+    }
+    .orb-3 {
+      width: 480px; height: 480px; top: 320px; right: 8%;
+      background: radial-gradient(circle, rgba(16,185,129,0.1) 0%, rgba(79,70,229,0.06) 70%, transparent 100%);
+      animation-delay: -8s;
+    }
+    @keyframes floatSlow {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(25px, 35px) scale(1.06); }
+      100% { transform: translate(-20px, -15px) scale(0.95); }
+    }
+
+    /* ── SCROLL REVEAL UTILITIES ── */
+    .reveal-on-scroll {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+    .reveal-on-scroll.is-visible {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* ── STICKY GLASS NAVBAR ── */
     .nav-container {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      transition: box-shadow 0.2s ease;
     }
     .nav-inner {
-      max-width: 1240px; margin: 0 auto; padding: 12px 24px;
+      max-width: 1240px; margin: 0 auto; padding: 14px 24px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .brand-group { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .brand-logo-img { width: 44px; height: 44px; object-fit: contain; }
-    .brand-title { font-size: 24px; font-weight: 800; color: var(--text-main); }
+    .brand-group {
+      display: flex; align-items: center; gap: 12px; text-decoration: none;
+      transition: transform 0.2s ease;
+    }
+    .brand-group:hover { transform: scale(1.02); }
+    .brand-logo-img { width: 38px; height: 38px; object-fit: contain; border-radius: 10px; box-shadow: 0 4px 12px rgba(79,70,229,0.2); }
+    .brand-title { font-size: 23px; font-weight: 800; color: var(--text-main); letter-spacing: -0.03em; }
     .brand-title span { color: var(--primary); }
 
-    .nav-links { display: flex; align-items: center; gap: 24px; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
     @media (max-width: 992px) { .nav-links { display: none; } }
     .nav-link {
       font-size: 14px; font-weight: 600; color: var(--text-muted);
-      text-decoration: none; transition: color 0.15s;
+      text-decoration: none; position: relative; padding: 6px 0; transition: color 0.18s ease;
     }
     .nav-link:hover { color: var(--primary); }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
+      background: var(--primary); border-radius: 2px; transition: width 0.2s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
 
     .nav-badge-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 4px 10px; border-radius: 99px; background: var(--primary-light);
-      border: 1px solid var(--primary-border); font-size: 12px; font-weight: 700; color: var(--primary);
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 5px 12px; border-radius: 99px; background: #f0fdf4;
+      border: 1px solid #bbf7d0; font-size: 12px; font-weight: 700; color: #15803d;
     }
+    .pulse-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #22c55e;
+      box-shadow: 0 0 8px #22c55e; animation: pulseGlow 2s infinite;
+    }
+    @keyframes pulseGlow { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.35); } }
 
-    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .nav-actions { display: flex; align-items: center; gap: 12px; }
 
     /* ── BUTTONS ── */
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 9px 18px; border-radius: 10px; font-size: 14px; font-weight: 700;
-      cursor: pointer; text-decoration: none; transition: all 0.15s ease;
-      border: 1px solid transparent; outline: none; white-space: nowrap;
+      padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 700;
+      cursor: pointer; text-decoration: none; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid transparent; outline: none; white-space: nowrap; font-family: inherit;
     }
     .btn-primary {
-      background: var(--primary); color: #ffffff;
-      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25);
+      background: var(--primary-gradient); color: #ffffff;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3); position: relative; overflow: hidden;
     }
     .btn-primary:hover {
-      background: var(--primary-hover); transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+      transform: translateY(-2px); box-shadow: 0 8px 24px rgba(79, 70, 229, 0.42);
     }
     .btn-secondary {
       background: #ffffff; color: var(--text-main);
-      border-color: var(--border-strong);
+      border-color: var(--border-strong); box-shadow: var(--shadow-sm);
     }
     .btn-secondary:hover {
       background: var(--bg-subtle); border-color: var(--primary); color: var(--primary);
+      transform: translateY(-2px); box-shadow: var(--shadow-md);
     }
-    .btn-lg { padding: 14px 28px; font-size: 16px; border-radius: 12px; }
+    .btn-lg { padding: 15px 32px; font-size: 16px; border-radius: 12px; }
 
-    /* ── HERO SECTION (Simplify + Naukri Hybrid) ── */
+    /* ── HERO SECTION ── */
     .hero-section {
-      max-width: 1240px; margin: 0 auto; padding: 56px 24px 64px;
-      text-align: center;
+      position: relative; max-width: 1240px; margin: 0 auto;
+      padding: 68px 24px 72px; text-align: center; z-index: 1;
     }
-    .hero-badge-wrap {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 6px 14px; border-radius: 99px;
-      background: var(--primary-light); border: 1px solid var(--primary-border);
-      font-size: 12.5px; font-weight: 700; color: var(--primary);
-      margin-bottom: 20px;
+    .hero-announcement-pill {
+      display: inline-flex; align-items: center; gap: 9px;
+      padding: 7px 18px; border-radius: 99px;
+      background: rgba(238, 242, 255, 0.85); backdrop-filter: blur(10px);
+      border: 1px solid var(--primary-border); font-size: 13px; font-weight: 700;
+      color: var(--primary); margin-bottom: 24px; box-shadow: 0 2px 10px rgba(79,70,229,0.08);
+      transition: all 0.2s ease;
     }
-    .pulse-dot {
-      width: 8px; height: 8px; border-radius: 50%; background: var(--primary);
-      box-shadow: 0 0 8px var(--primary); animation: pulse 2s infinite;
+    .hero-announcement-pill:hover {
+      transform: translateY(-1px); border-color: var(--primary);
+      box-shadow: 0 4px 16px rgba(79,70,229,0.18);
     }
-    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.3); } }
 
     .hero-title {
-      font-size: clamp(34px, 5vw, 58px); font-weight: 900; line-height: 1.12;
-      max-width: 920px; margin: 0 auto 16px; color: var(--text-main);
+      font-size: clamp(38px, 5.8vw, 68px); font-weight: 900; line-height: 1.08;
+      max-width: 980px; margin: 0 auto 20px; color: var(--text-main);
+      letter-spacing: -0.035em;
     }
-    .hero-title .highlight-text { color: var(--primary); }
-    .hero-subtitle {
-      font-size: clamp(16px, 1.8vw, 19px); color: var(--text-muted);
-      max-width: 720px; margin: 0 auto 32px; line-height: 1.6;
+    .hero-gradient-text {
+      background: var(--primary-gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
 
-    /* ── NAUKRI-STYLE POWER SEARCH BAR ── */
+    .hero-subtitle {
+      font-size: clamp(16.5px, 1.9vw, 20px); color: var(--text-muted);
+      max-width: 760px; margin: 0 auto 36px; line-height: 1.62; font-weight: 450;
+    }
+
+    /* ── POWER SEARCH BAR (Sleek Glassmorphic) ── */
     .search-box-wrap {
-      max-width: 860px; margin: 0 auto 24px;
+      max-width: 880px; margin: 0 auto 26px;
       background: #ffffff; border: 1.5px solid var(--border-strong);
-      border-radius: var(--radius-md); padding: 8px;
-      box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px;
+      border-radius: var(--radius-lg); padding: 8px;
+      box-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.12);
+      display: flex; align-items: center; gap: 8px; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-box-wrap:focus-within {
+      border-color: var(--primary); box-shadow: var(--shadow-glow), 0 20px 45px -12px rgba(79, 70, 229, 0.2);
     }
     @media (max-width: 768px) {
-      .search-box-wrap { flex-direction: column; padding: 12px; }
+      .search-box-wrap { flex-direction: column; padding: 14px; border-radius: var(--radius-md); }
       .search-box-wrap input, .search-box-wrap select, .search-box-wrap button { width: 100% !important; }
     }
     .search-input {
-      flex: 1.4; border: none; outline: none; padding: 12px 16px;
-      font-size: 15px; font-family: inherit; color: var(--text-main);
+      flex: 1.4; border: none; outline: none; padding: 14px 18px;
+      font-size: 15.5px; font-family: inherit; color: var(--text-main); background: transparent;
     }
     .search-select {
       flex: 1; border: none; border-left: 1px solid var(--border);
-      outline: none; padding: 12px 14px; font-size: 14px; font-family: inherit;
+      outline: none; padding: 14px 16px; font-size: 14.5px; font-family: inherit;
       color: var(--text-muted); background: transparent; cursor: pointer;
     }
     @media (max-width: 768px) { .search-select { border-left: none; border-top: 1px solid var(--border); } }
 
-    /* ── SEARCH PILLS (Naukri Trending) ── */
+    /* ── TRENDING PILLS ── */
     .trending-pills {
-      display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;
-      margin-bottom: 48px;
+      display: flex; align-items: center; justify-content: center; gap: 9px; flex-wrap: wrap;
+      margin-bottom: 40px;
     }
-    .pill-label { font-size: 12px; font-weight: 800; color: var(--text-subtle); text-transform: uppercase; }
+    .pill-label { font-size: 12px; font-weight: 800; color: var(--text-subtle); text-transform: uppercase; letter-spacing: 0.05em; }
     .trending-pill {
-      font-size: 12.5px; font-weight: 600; padding: 5px 12px; border-radius: 20px;
+      font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 99px;
       background: var(--bg-subtle); border: 1px solid var(--border);
-      color: var(--text-muted); text-decoration: none; transition: all 0.15s;
+      color: var(--text-muted); text-decoration: none; transition: all 0.18s ease;
     }
-    .trending-pill:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+    .trending-pill:hover {
+      border-color: var(--primary); color: var(--primary); background: var(--primary-light);
+      transform: translateY(-1px);
+    }
 
-    /* ── SIMPLIFY 4-PILLAR SUITE SECTION ── */
-    .suite-section {
-      max-width: 1240px; margin: 0 auto 80px; padding: 0 24px;
+    /* ── HERO INTERACTIVE LIVE PRODUCT PREVIEW (macOS Window) ── */
+    .hero-mockup-wrapper {
+      max-width: 1040px; margin: 48px auto 0; position: relative;
     }
-    .section-header { text-align: center; max-width: 680px; margin: 0 auto 44px; }
-    .section-tag {
-      font-size: 12px; font-weight: 800; color: var(--primary);
-      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;
+    .hero-mockup-window {
+      background: #ffffff; border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(255,255,255,0.8);
+      text-align: left;
     }
-    .section-title { font-size: clamp(26px, 3.2vw, 38px); font-weight: 800; color: var(--text-main); margin-bottom: 10px; }
-    .section-sub { font-size: 15.5px; color: var(--text-muted); }
+    .window-header {
+      background: #f8fafc; border-bottom: 1px solid var(--border);
+      padding: 12px 18px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .window-dots { display: flex; gap: 7px; }
+    .window-dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+    .window-title {
+      font-size: 12.5px; font-weight: 700; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;
+    }
 
-    .suite-grid {
+    .window-body {
+      display: grid; grid-template-columns: 1fr 1.35fr; gap: 20px; padding: 24px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+    @media (max-width: 860px) { .window-body { grid-template-columns: 1fr; } }
+
+    .mock-profile-card {
+      background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 20px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 14px;
+    }
+    .mock-avatar-row { display: flex; align-items: center; gap: 12px; }
+    .mock-avatar {
+      width: 46px; height: 46px; border-radius: 12px; background: var(--primary-gradient);
+      color: white; font-size: 18px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+    }
+    .mock-cand-name { font-size: 16px; font-weight: 800; color: var(--text-main); }
+    .mock-cand-title { font-size: 13px; color: var(--text-muted); }
+
+    .mock-score-badge {
+      display: flex; align-items: center; justify-content: space-between;
+      background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px 14px;
+    }
+    .mock-score-num { font-size: 22px; font-weight: 900; color: #15803d; font-family: 'Outfit', sans-serif; }
+
+    .mock-tags-box { display: flex; flex-wrap: wrap; gap: 6px; }
+    .mock-tag {
+      font-size: 11.5px; font-weight: 700; padding: 4px 9px; border-radius: 6px;
+      background: var(--bg-subtle); border: 1px solid var(--border); color: var(--text-main);
+    }
+
+    .mock-jobs-col { display: flex; flex-direction: column; gap: 12px; }
+    .mock-job-card {
+      background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-md);
+      padding: 16px 18px; display: flex; align-items: center; justify-content: space-between;
+      box-shadow: var(--shadow-sm); transition: all 0.2s ease;
+    }
+    .mock-job-card:hover {
+      border-color: var(--primary-border); transform: translateX(3px); box-shadow: var(--shadow-md);
+    }
+    .mock-job-logo {
+      width: 38px; height: 38px; border-radius: 8px; background: var(--primary-light);
+      display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--primary); font-size: 14px;
+      flex-shrink: 0;
+    }
+    .mock-match-pill {
+      font-size: 12px; font-weight: 800; color: #15803d; background: #dcfce7;
+      padding: 4px 10px; border-radius: 99px; white-space: nowrap;
+    }
+
+    /* ── LIVE PROOF METRICS BAND ── */
+    .metrics-section {
+      max-width: 1240px; margin: 0 auto 80px; padding: 0 24px; position: relative; z-index: 1;
+    }
+    .metrics-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
     }
-    @media (max-width: 992px) { .suite-grid { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 580px) { .suite-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 900px) { .metrics-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 520px) { .metrics-grid { grid-template-columns: 1fr; } }
 
-    .suite-card {
+    .metric-card {
+      background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 28px 24px; text-align: center; box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .metric-card:hover { transform: translateY(-3px); border-color: var(--primary-border); }
+    .metric-number {
+      font-size: clamp(34px, 4vw, 44px); font-weight: 900; color: var(--text-main);
+      margin-bottom: 6px; letter-spacing: -0.03em;
+    }
+    .metric-label { font-size: 14px; font-weight: 700; color: var(--text-muted); }
+    .metric-sub { font-size: 12px; color: var(--text-subtle); margin-top: 4px; }
+
+    /* ── DIRECT ATS INGESTION STREAM ── */
+    .ingestion-band {
+      background: var(--bg-subtle); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 44px 24px; margin-bottom: 90px; text-align: center;
+    }
+    .ingestion-title {
+      font-size: 13px; font-weight: 800; color: var(--text-subtle); text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 24px;
+    }
+    .ats-badges-row {
+      display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;
+    }
+    .ats-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 18px; border-radius: 99px; background: #ffffff;
+      border: 1px solid var(--border); font-size: 14px; font-weight: 700; color: var(--text-main);
+      box-shadow: var(--shadow-sm); transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .ats-badge:hover { transform: translateY(-2px); border-color: var(--primary); }
+
+    /* ── SECTION HEADINGS ── */
+    .section-header { text-align: center; max-width: 720px; margin: 0 auto 52px; }
+    .section-tag {
+      font-size: 12px; font-weight: 800; color: var(--primary);
+      text-transform: uppercase; letter-spacing: 0.09em; margin-bottom: 10px;
+    }
+    .section-title {
+      font-size: clamp(28px, 3.8vw, 44px); font-weight: 900; color: var(--text-main);
+      margin-bottom: 12px; line-height: 1.15;
+    }
+    .section-sub { font-size: 16.5px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── INTERACTIVE 4-PILLAR PRODUCT SUITE (Tabbed Experience) ── */
+    .suite-section { max-width: 1240px; margin: 0 auto 90px; padding: 0 24px; }
+    
+    .tab-pills-nav {
+      display: flex; justify-content: center; gap: 10px; margin-bottom: 36px; flex-wrap: wrap;
+    }
+    .tab-pill-btn {
+      padding: 11px 22px; border-radius: 99px; border: 1.5px solid var(--border);
+      background: #ffffff; font-size: 14.5px; font-weight: 700; color: var(--text-muted);
+      cursor: pointer; transition: all 0.2s ease; outline: none; font-family: inherit;
+    }
+    .tab-pill-btn.active {
+      background: var(--primary-light); border-color: var(--primary); color: var(--primary);
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.15);
+    }
+
+    .tab-content-panel {
+      display: none; background: #ffffff; border: 1px solid var(--border);
+      border-radius: var(--radius-xl); padding: 40px; box-shadow: var(--shadow-lg);
+    }
+    .tab-content-panel.active {
+      display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center;
+      animation: fadeInTab 0.35s ease;
+    }
+    @media (max-width: 880px) { .tab-content-panel.active { grid-template-columns: 1fr; padding: 24px; } }
+    @keyframes fadeInTab { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    .tab-text-side h3 { font-size: 28px; font-weight: 800; color: var(--text-main); margin-bottom: 12px; }
+    .tab-text-side p { font-size: 15.5px; color: var(--text-muted); line-height: 1.65; margin-bottom: 24px; }
+    .tab-feature-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .tab-feature-item {
+      display: flex; align-items: center; gap: 10px; font-size: 14.5px; font-weight: 600; color: var(--text-main);
+    }
+    .tab-check-icon {
+      width: 22px; height: 22px; border-radius: 50%; background: #f0fdf4; color: #15803d;
+      display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0;
+    }
+
+    .tab-visual-side {
+      background: var(--bg-subtle); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 24px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    /* ── BENTO GRID AI CAPABILITIES ── */
+    .bento-section { max-width: 1240px; margin: 0 auto 90px; padding: 0 24px; }
+    .bento-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+    @media (max-width: 900px) { .bento-grid { grid-template-columns: 1fr; } }
+
+    .bento-card {
       background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-lg);
-      padding: 24px; box-shadow: var(--shadow-sm); transition: all 0.2s ease;
+      padding: 32px; box-shadow: var(--shadow-sm); transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex; flex-direction: column; justify-content: space-between;
     }
-    .suite-card:hover {
-      border-color: var(--primary-border); transform: translateY(-3px); box-shadow: var(--shadow-md);
+    .bento-card:hover {
+      border-color: var(--primary-border); transform: translateY(-4px); box-shadow: var(--shadow-lg);
     }
-    .suite-icon {
-      width: 44px; height: 44px; border-radius: 12px;
-      background: var(--primary-light); border: 1px solid var(--primary-border);
-      display: flex; align-items: center; justify-content: center; font-size: 20px;
-      margin-bottom: 16px;
-    }
-    .suite-card-title { font-size: 18px; font-weight: 800; color: var(--text-main); margin-bottom: 6px; }
-    .suite-card-desc { font-size: 13.5px; color: var(--text-muted); line-height: 1.55; }
-    .suite-link {
-      margin-top: 16px; font-size: 13.5px; font-weight: 700; color: var(--primary);
-      text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
-    }
-    .suite-link:hover { text-decoration: underline; }
+    .bento-col-2 { grid-column: span 2; }
+    @media (max-width: 900px) { .bento-col-2 { grid-column: span 1; } }
 
-    /* ── NAUKRI-STYLE EXPLORE BY COMPANY CATEGORY ── */
+    .bento-icon {
+      width: 48px; height: 48px; border-radius: 14px; background: var(--primary-light);
+      border: 1px solid var(--primary-border); display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 20px;
+    }
+    .bento-card-title { font-size: 21px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; }
+    .bento-card-desc { font-size: 14.5px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── CURATED CATEGORIES & ROLES ── */
     .categories-section {
       background: var(--bg-subtle); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      padding: 64px 24px; margin-bottom: 80px;
+      padding: 72px 24px; margin-bottom: 90px;
     }
     .categories-inner { max-width: 1240px; margin: 0 auto; }
-
     .cat-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
     }
     @media (max-width: 992px) { .cat-grid { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 580px) { .cat-grid { grid-template-columns: 1fr; } }
 
     .cat-card {
       background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md);
-      padding: 18px 20px; text-decoration: none; color: var(--text-main);
+      padding: 20px; text-decoration: none; color: var(--text-main);
       display: flex; align-items: center; justify-content: space-between;
-      transition: all 0.15s ease; box-shadow: var(--shadow-sm);
+      transition: all 0.18s ease; box-shadow: var(--shadow-sm);
     }
     .cat-card:hover {
       border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-md);
     }
-    .cat-name { font-size: 15px; font-weight: 700; color: var(--text-main); }
-    .cat-count { font-size: 12.5px; font-weight: 600; color: var(--primary); background: var(--primary-light); padding: 3px 8px; border-radius: 6px; }
+    .cat-name { font-size: 15.5px; font-weight: 700; color: var(--text-main); }
+    .cat-count {
+      font-size: 12.5px; font-weight: 700; color: var(--primary); background: var(--primary-light);
+      padding: 4px 10px; border-radius: 6px;
+    }
 
-    /* ── POPULAR ROLES (Naukri Style) ── */
-    .roles-section {
-      max-width: 1240px; margin: 0 auto 80px; padding: 0 24px;
-    }
-    .roles-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
-    }
-    @media (max-width: 800px) { .roles-grid { grid-template-columns: 1fr; } }
-
-    .role-card {
-      background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-md);
-      padding: 18px 20px; text-decoration: none; display: flex; align-items: center; justify-content: space-between;
-      transition: all 0.15s;
-    }
-    .role-card:hover { border-color: var(--primary); background: var(--bg-subtle); }
-    .role-title { font-size: 15px; font-weight: 700; color: var(--text-main); }
-    .role-jobs { font-size: 13px; font-weight: 600; color: var(--text-muted); }
-
-    /* ── SIMPLIFY-STYLE CURATED JOB LISTS ── */
-    .curated-section {
-      max-width: 1240px; margin: 0 auto 80px; padding: 0 24px;
-    }
-    .curated-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-    }
-    @media (max-width: 900px) { .curated-grid { grid-template-columns: 1fr; } }
-
-    .curated-card {
-      background: linear-gradient(180deg, #ffffff 0%, var(--bg-subtle) 100%);
-      border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 24px;
-      text-decoration: none; color: var(--text-main); transition: all 0.2s;
-    }
-    .curated-card:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow: var(--shadow-md); }
-    .curated-tag { font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 8px; }
-    .curated-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
-    .curated-desc { font-size: 13px; color: var(--text-muted); }
-
-    /* ── TESTIMONIALS (Simplify Style) ── */
-    .testimonials-section {
-      background: var(--bg-subtle); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      padding: 64px 24px; margin-bottom: 80px;
-    }
-    .testimonials-inner { max-width: 1240px; margin: 0 auto; }
+    /* ── CANDIDATE WALL OF LOVE ── */
+    .testimonials-section { max-width: 1240px; margin: 0 auto 90px; padding: 0 24px; }
     .test-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
     }
-    @media (max-width: 850px) { .test-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 880px) { .test-grid { grid-template-columns: 1fr; } }
 
     .test-card {
-      background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-lg);
-      padding: 24px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between;
+      background: #ffffff; border: 1.5px solid var(--border); border-radius: var(--radius-lg);
+      padding: 28px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between;
+      transition: all 0.2s ease;
     }
-    .test-quote { font-size: 14.5px; color: var(--text-main); font-weight: 500; line-height: 1.6; margin-bottom: 18px; }
-    .test-author { display: flex; align-items: center; gap: 12px; }
+    .test-card:hover { transform: translateY(-3px); border-color: var(--primary-border); box-shadow: var(--shadow-md); }
+    .test-quote { font-size: 15px; color: var(--text-main); font-weight: 500; line-height: 1.65; margin-bottom: 22px; }
+    .test-author { display: flex; align-items: center; gap: 14px; }
     .test-avatar {
-      width: 40px; height: 40px; border-radius: 50%; background: var(--primary-light);
-      display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--primary);
+      width: 44px; height: 44px; border-radius: 50%; background: var(--primary-gradient);
+      display: flex; align-items: center; justify-content: center; font-weight: 800; color: #ffffff; font-size: 15px;
     }
-    .test-name { font-size: 14px; font-weight: 700; color: var(--text-main); }
-    .test-role { font-size: 12.5px; color: var(--text-muted); }
+    .test-name { font-size: 15px; font-weight: 800; color: var(--text-main); }
+    .test-role { font-size: 13px; color: var(--text-muted); }
 
     /* ── FAQ ACCORDION ── */
-    .faq-section {
-      max-width: 820px; margin: 0 auto 80px; padding: 0 24px;
-    }
+    .faq-section { max-width: 840px; margin: 0 auto 90px; padding: 0 24px; }
     .faq-item {
-      background: #ffffff; border: 1.5px solid var(--border); border-radius: 12px;
-      margin-bottom: 12px; overflow: hidden;
+      background: #ffffff; border: 1.5px solid var(--border); border-radius: 14px;
+      margin-bottom: 14px; overflow: hidden; transition: border-color 0.2s ease;
     }
+    .faq-item.open { border-color: var(--primary-border); }
     .faq-question {
-      padding: 18px 22px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
-      font-size: 15.5px; font-weight: 700; color: var(--text-main);
+      padding: 20px 24px; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      font-size: 16px; font-weight: 700; color: var(--text-main);
     }
     .faq-question:hover { color: var(--primary); }
+    .faq-icon { font-size: 18px; transition: transform 0.2s ease; color: var(--text-subtle); }
+    .faq-item.open .faq-icon { transform: rotate(180deg); color: var(--primary); }
     .faq-answer {
-      padding: 0 22px 18px; font-size: 14px; color: var(--text-muted); line-height: 1.65;
+      padding: 0 24px 20px; font-size: 14.5px; color: var(--text-muted); line-height: 1.65;
       display: none;
     }
     .faq-item.open .faq-answer { display: block; }
-    .faq-item.open .faq-question { color: var(--primary); }
 
-    /* ── CTA BANNER (Simplify Inspired) ── */
-    .cta-section {
-      max-width: 1240px; margin: 0 auto 80px; padding: 0 24px;
-    }
+    /* ── FINAL CTA BANNER ── */
+    .cta-section { max-width: 1240px; margin: 0 auto 90px; padding: 0 24px; }
     .cta-card {
-      background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
-      border-radius: var(--radius-lg); padding: 56px 32px; text-align: center; color: #ffffff;
-      box-shadow: 0 12px 36px rgba(79, 70, 229, 0.25);
+      background: var(--primary-gradient);
+      border-radius: var(--radius-xl); padding: 64px 36px; text-align: center; color: #ffffff;
+      box-shadow: 0 20px 50px rgba(79, 70, 229, 0.35); position: relative; overflow: hidden;
     }
-    .cta-title { font-size: clamp(28px, 3.5vw, 42px); font-weight: 900; margin-bottom: 12px; }
-    .cta-sub { font-size: 16px; opacity: 0.95; max-width: 580px; margin: 0 auto 28px; }
+    .cta-title { font-size: clamp(30px, 4vw, 46px); font-weight: 900; margin-bottom: 14px; letter-spacing: -0.03em; }
+    .cta-sub { font-size: 17px; opacity: 0.95; max-width: 620px; margin: 0 auto 32px; line-height: 1.6; }
 
-    /* ── FOOTER (Naukri + Simplify Hybrid) ── */
-    footer {
-      background: var(--bg-subtle); border-top: 1px solid var(--border);
-      padding: 56px 24px 36px;
+    /* ── WCAG SKIP LINK & FOCUS ── */
+    .skip-link {
+      position: absolute; top: -100px; left: 16px; z-index: 9999;
+      background: var(--primary, #4f46e5); color: white; padding: 10px 18px;
+      border-radius: 8px; font-weight: 700; text-decoration: none;
+      box-shadow: 0 4px 12px rgba(79,70,229,0.3); transition: top 0.15s ease;
     }
-    .footer-inner {
-      max-width: 1240px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 32px;
-      margin-bottom: 40px;
-    }
-    @media (max-width: 900px) { .footer-inner { grid-template-columns: 1fr 1fr; } }
-    .footer-desc { font-size: 13.5px; color: var(--text-muted); max-width: 280px; margin-top: 10px; }
-    .footer-heading { font-size: 13px; font-weight: 800; text-transform: uppercase; color: var(--text-main); margin-bottom: 14px; }
-    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-    .footer-link { font-size: 13.5px; color: var(--text-muted); text-decoration: none; }
-    .footer-link:hover { color: var(--primary); }
-    .footer-bottom {
-      max-width: 1240px; margin: 0 auto; border-top: 1px solid var(--border); padding-top: 20px;
-      display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--text-subtle);
-      flex-wrap: wrap; gap: 12px;
+    .skip-link:focus { top: 16px; outline: 3px solid #ffffff; }
+    :focus-visible {
+      outline: 2.5px solid var(--primary, #4f46e5); outline-offset: 2px; border-radius: 4px;
     }
 
     /* ── AUTH MODAL ── */
     .modal-overlay {
       display: none; position: fixed; inset: 0; z-index: 1000;
-      background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(8px);
+      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px);
       align-items: center; justify-content: center; padding: 20px;
     }
     .modal-card {
       background: #ffffff; border: 1px solid var(--border);
-      border-radius: var(--radius-lg); width: 100%; max-width: 400px; padding: 32px;
-      box-shadow: 0 20px 50px -10px rgba(0,0,0,0.15); position: relative;
+      border-radius: var(--radius-lg); width: 100%; max-width: 420px; padding: 36px;
+      box-shadow: 0 25px 60px -10px rgba(0,0,0,0.2); position: relative;
     }
     .modal-close {
-      position: absolute; top: 16px; right: 16px; background: none; border: none;
-      color: var(--text-subtle); font-size: 20px; cursor: pointer;
-    }
-    /* WCAG 2.2 AA Focus Visibility & Scroll Padding */
-    html {
-      scroll-padding-top: 72px;
-    }
-    .skip-link {
-      position: absolute; top: -100px; left: 16px; z-index: 9999;
-      background: var(--primary, #4f46e5); color: white; padding: 10px 18px;
-      border-radius: 8px; font-weight: 700; text-decoration: none;
-      box-shadow: 0 4px 12px rgba(79,70,229,0.3);
-      transition: top 0.15s ease;
-    }
-    .skip-link:focus { top: 16px; outline: 3px solid #ffffff; }
-
-    :focus-visible {
-      outline: 2.5px solid var(--primary, #4f46e5);
-      outline-offset: 2px;
-      border-radius: 4px;
-    }
-    :focus:not(:focus-visible) {
-      outline: none;
+      position: absolute; top: 18px; right: 18px; background: none; border: none;
+      color: var(--text-subtle); font-size: 22px; cursor: pointer;
     }
     .input-field {
-      width: 100%; padding: 10px 14px; border-radius: 8px;
+      width: 100%; padding: 11px 14px; border-radius: 8px;
       background: #ffffff; border: 1px solid var(--border-strong);
       color: var(--text-main); font-size: 14px; font-family: inherit; outline: none;
     }
@@ -485,9 +645,7 @@
 
     /* Mobile Viewport Input Auto-Zoom Prevention & Motion Reduction */
     @media (max-width: 768px) {
-      input, select, textarea, .input-field {
-        font-size: 16px !important;
-      }
+      input, select, textarea, .input-field { font-size: 16px !important; }
     }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -501,6 +659,13 @@
 </head>
 <body>
 
+  <!-- Ambient Glow Orbs -->
+  <div class="ambient-glow-wrap" aria-hidden="true">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+  </div>
+
   <!-- WCAG 2.4.1 Bypass Blocks -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
@@ -513,19 +678,19 @@
       </a>
 
       <nav class="nav-links">
-        <a href="/dashboard/" class="nav-link">Job Matches</a>
+        <a href="/explore" class="nav-link">Explore 1K+ Jobs</a>
         <a href="/onboarding/" class="nav-link">AI Resume Matcher</a>
-        <a href="/resume-builder/" class="nav-link">Resume Builder</a>
-        <a href="/dashboard/" class="nav-link">Job Tracker</a>
-        <a href="#companies" class="nav-link">Top Companies</a>
+        <a href="/resume-builder/" class="nav-link">LaTeX Resume Builder</a>
+        <a href="/cover-letter-builder/" class="nav-link">Cover Letter AI</a>
+        <a href="/dashboard/" class="nav-link">Kanban Tracker</a>
       </nav>
 
       <div class="nav-actions">
         <div class="nav-badge-pill">
           <div class="pulse-dot"></div>
-          <span>1K+ Live Roles</span>
+          <span>1,000+ Verified Jobs</span>
         </div>
-        <button onclick="requireAuthAndProceed('/dashboard/')" class="btn btn-secondary">Explore Jobs</button>
+        <button onclick="requireAuthAndProceed('/explore')" class="btn btn-secondary">Explore Jobs</button>
         <button onclick="openAuthModal(false)" class="btn btn-primary">Sign In →</button>
       </div>
     </div>
@@ -534,271 +699,464 @@
   <!-- ═══════ MAIN CONTENT ═══════ -->
   <main id="main-content">
 
-  <!-- ═══════ HERO SECTION (Simplify + Naukri Hybrid) ═══════ -->
-  <section class="hero-section">
-    <div class="hero-badge-wrap">
-      <div class="pulse-dot"></div>
-      <span>India's Autonomous AI Job Search Partner</span>
-    </div>
-
-    <h1 class="hero-title">
-      Your AI Job Search Partner. <br><span class="highlight-text">Powered by One Profile.</span>
-    </h1>
-
-    <p class="hero-subtitle">
-      Stop endlessly scrolling job boards and filling out duplicate applications. getArole matches you with 1,000+ live verified tech openings across Indian MNCs, Unicorns, and global tech giants.
-    </p>
-
-    <!-- ── NAUKRI-STYLE POWER SEARCH BAR ── -->
-    <div class="search-box-wrap">
-      <input type="text" id="home-search-input" placeholder="Search by role, skills (e.g. React, Python, SDE, Fresher)" class="search-input">
-      <select id="home-search-location" class="search-select">
-        <option value="">All Locations in India</option>
-        <option value="Bengaluru">Bengaluru</option>
-        <option value="Hyderabad">Hyderabad</option>
-        <option value="Pune">Pune</option>
-        <option value="Mumbai">Mumbai</option>
-        <option value="Delhi NCR">Delhi NCR</option>
-        <option value="Remote">Remote</option>
-      </select>
-      <button onclick="handleHomeSearch()" class="btn btn-primary" style="padding:12px 24px; font-size:15px;">
-        Search Jobs 🔍
-      </button>
-    </div>
-
-    <!-- ── TRENDING SEARCH CHIPS (Naukri Style) ── -->
-    <div class="trending-pills">
-      <span class="pill-label">Trending:</span>
-      <a href="/dashboard/?q=Remote" class="trending-pill">🌐 Remote (190+)</a>
-      <a href="/dashboard/?q=MNC" class="trending-pill">🏢 MNCs (420+)</a>
-      <a href="/dashboard/?q=Fresher" class="trending-pill">🎓 Batch 2025/2026</a>
-      <a href="/dashboard/?q=Startup" class="trending-pill">🚀 Unicorns & Startups</a>
-      <a href="/dashboard/?q=Frontend" class="trending-pill">⚡ Frontend</a>
-      <a href="/dashboard/?q=Backend" class="trending-pill">⚡ Backend</a>
-      <a href="/dashboard/?q=AI" class="trending-pill">🧠 AI / ML</a>
-      <a href="/dashboard/?q=Internship" class="trending-pill">🎯 Summer 2026 Internships</a>
-    </div>
-
-    <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
-      <button onclick="requireAuthAndProceed('/onboarding/')" class="btn btn-primary btn-lg">
-        Upload Resume & Match Jobs →
-      </button>
-      <button onclick="requireAuthAndProceed('/dashboard/')" class="btn btn-secondary btn-lg">
-        Open Job Tracker
-      </button>
-    </div>
-  </section>
-
-  <!-- ═══════ SIMPLIFY 4-PILLAR SUITE SECTION ═══════ -->
-  <section class="suite-section">
-    <div class="section-header">
-      <div class="section-tag">COMPLETE APPLICATION TOOLKIT</div>
-      <h2 class="section-title">We're Here for Every Step of Your Search</h2>
-      <p class="section-sub">One profile to discover openings, tailor your CV, and track interviews.</p>
-    </div>
-
-    <div class="suite-grid">
-      <div class="suite-card">
-        <div>
-          <div class="suite-icon">🎯</div>
-          <h3 class="suite-card-title">AI Job Matches</h3>
-          <p class="suite-card-desc">
-            Get matched to relevant tech roles personalized to your skills and preferences with explainable fit scores.
-          </p>
-        </div>
-        <a href="/onboarding/" class="suite-link">Get Matched Now →</a>
+    <!-- ═══════ HERO SECTION ═══════ -->
+    <section class="hero-section reveal-on-scroll is-visible">
+      <div class="hero-announcement-pill">
+        <span style="font-size:14px;">✨</span>
+        <span>70B AI Match Engine • Autonomous Scraping Every 3 Hours</span>
       </div>
 
-      <div class="suite-card">
-        <div>
-          <div class="suite-icon">📄</div>
-          <h3 class="suite-card-title">AI Resume Builder</h3>
-          <p class="suite-card-desc">
-            Tailor your resume for specific job descriptions, check ATS scores, and find missing keywords in seconds.
-          </p>
-        </div>
-        <a href="/resume-builder/" class="suite-link">Build Resume →</a>
+      <h1 class="hero-title">
+        Your Autonomous AI Job Search Partner. <br>
+        <span class="hero-gradient-text">Powered by One Master Profile.</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Stop filling out duplicate forms and applying into black holes. getArole autonomously indexes 1,000+ verified engineering roles directly from official Greenhouse, Lever, Ashby, and LinkedIn portals—calibrating your resume with dense semantic matching in &lt;85ms.
+      </p>
+
+      <!-- ── POWER SEARCH BAR ── -->
+      <div class="search-box-wrap">
+        <input type="text" id="home-search-input" placeholder="Search by role or tech stack (e.g. React, Python, SDE, Fresher, AI Engineer)" class="search-input">
+        <select id="home-search-location" class="search-select">
+          <option value="">All Locations in India</option>
+          <option value="Bengaluru">Bengaluru Tech Hub</option>
+          <option value="Hyderabad">Hyderabad Tech Roles</option>
+          <option value="Pune">Pune</option>
+          <option value="Mumbai">Mumbai</option>
+          <option value="Delhi NCR">Delhi NCR</option>
+          <option value="Remote">Global Remote</option>
+        </select>
+        <button onclick="handleHomeSearch()" class="btn btn-primary" style="padding:14px 26px; font-size:15px;">
+          Search 1K+ Jobs 🔍
+        </button>
       </div>
 
-      <div class="suite-card">
-        <div>
-          <div class="suite-icon">📊</div>
-          <h3 class="suite-card-title">Job Application Tracker</h3>
-          <p class="suite-card-desc">
-            Goodbye messy spreadsheets. Bookmark jobs and manage your interview stages in a clean Kanban board.
-          </p>
-        </div>
-        <a href="/dashboard/" class="suite-link">Track Applications →</a>
+      <!-- ── TRENDING SEARCH CHIPS ── -->
+      <div class="trending-pills">
+        <span class="pill-label">Trending:</span>
+        <a href="/explore?q=Remote" class="trending-pill">🌐 Remote (190+)</a>
+        <a href="/explore?q=MNC" class="trending-pill">🏢 Top MNCs (420+)</a>
+        <a href="/explore?q=Fresher" class="trending-pill">🎓 Batch 2025/2026</a>
+        <a href="/explore?q=Unicorn" class="trending-pill">🦄 Indian Unicorns</a>
+        <a href="/explore?q=Frontend" class="trending-pill">⚡ Frontend</a>
+        <a href="/explore?q=Backend" class="trending-pill">⚡ Backend</a>
+        <a href="/explore?q=AI" class="trending-pill">🧠 AI / ML Roles</a>
+        <a href="/explore?q=Internship" class="trending-pill">🎯 Summer 2026 Internships</a>
       </div>
 
-      <div class="suite-card">
-        <div>
-          <div class="suite-icon">⚡</div>
-          <h3 class="suite-card-title">Direct Portal Ingestion</h3>
-          <p class="suite-card-desc">
-            Scraped every 3 hours directly from official Workday, Greenhouse, Lever, and Ashby portals. 0% ghost jobs.
-          </p>
-        </div>
-        <a href="/dashboard/" class="suite-link">Explore Live Jobs →</a>
+      <div style="display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
+        <button onclick="requireAuthAndProceed('/onboarding/')" class="btn btn-primary btn-lg">
+          Upload Resume &amp; Get Matched →
+        </button>
+        <button onclick="requireAuthAndProceed('/resume-builder/')" class="btn btn-secondary btn-lg">
+          Build ATS Resume Free
+        </button>
       </div>
-    </div>
-  </section>
 
-  <!-- ═══════ NAUKRI-STYLE EXPLORE BY CATEGORY ═══════ -->
-  <section class="categories-section" id="companies">
-    <div class="categories-inner">
+      <!-- ── HERO INTERACTIVE LIVE PRODUCT PREVIEW (macOS Window Simulation) ── -->
+      <div class="hero-mockup-wrapper reveal-on-scroll">
+        <div class="hero-mockup-window">
+          <div class="window-header">
+            <div class="window-dots">
+              <span class="window-dot dot-red"></span>
+              <span class="window-dot dot-yellow"></span>
+              <span class="window-dot dot-green"></span>
+            </div>
+            <div class="window-title">getArole AI Match Matrix v2.4 • Active Vector Calibrator</div>
+            <div style="font-size:11.5px; color:#10b981; font-weight:700;">● Live Stream</div>
+          </div>
+
+          <div class="window-body">
+            <!-- Left Mock Profile -->
+            <div class="mock-profile-card">
+              <div class="mock-avatar-row">
+                <div class="mock-avatar">SDE</div>
+                <div>
+                  <div class="mock-cand-name">Alex Johnson</div>
+                  <div class="mock-cand-title">Full-Stack Engineer • 2 yrs exp</div>
+                </div>
+              </div>
+
+              <div class="mock-score-badge">
+                <div>
+                  <div style="font-size:11px; font-weight:800; color:#15803d; text-transform:uppercase;">Semantic Fit Score</div>
+                  <div style="font-size:12px; color:#166534;">High ATS Alignment</div>
+                </div>
+                <div class="mock-score-num">98.4%</div>
+              </div>
+
+              <div>
+                <div style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Calibrated Skill Vector:</div>
+                <div class="mock-tags-box">
+                  <span class="mock-tag">FastAPI</span>
+                  <span class="mock-tag">React.js</span>
+                  <span class="mock-tag">Docker</span>
+                  <span class="mock-tag">PostgreSQL</span>
+                  <span class="mock-tag">Redis</span>
+                  <span class="mock-tag">Distributed Systems</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Mock Jobs Stream -->
+            <div class="mock-jobs-col">
+              <div class="mock-job-card">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div class="mock-job-logo">RZ</div>
+                  <div>
+                    <div style="font-size:14.5px; font-weight:800; color:var(--text-main);">Software Engineer - Payments</div>
+                    <div style="font-size:12px; color:var(--text-muted);">Razorpay • Bengaluru (Hybrid)</div>
+                  </div>
+                </div>
+                <div class="mock-match-pill">✨ 99% Fit</div>
+              </div>
+
+              <div class="mock-job-card">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div class="mock-job-logo" style="background:#fef3c7; color:#b45309;">GO</div>
+                  <div>
+                    <div style="font-size:14.5px; font-weight:800; color:var(--text-main);">Software Engineer III - Cloud</div>
+                    <div style="font-size:12px; color:var(--text-muted);">Google India • Hyderabad</div>
+                  </div>
+                </div>
+                <div class="mock-match-pill">✨ 96% Fit</div>
+              </div>
+
+              <div class="mock-job-card">
+                <div style="display:flex; align-items:center; gap:12px;">
+                  <div class="mock-job-logo" style="background:#e0e7ff; color:#4338ca;">SW</div>
+                  <div>
+                    <div style="font-size:14.5px; font-weight:800; color:var(--text-main);">Backend Developer - Logistics</div>
+                    <div style="font-size:12px; color:var(--text-muted);">Swiggy • Remote</div>
+                  </div>
+                </div>
+                <div class="mock-match-pill">✨ 94% Fit</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ PROOF METRICS BAND ═══════ -->
+    <section class="metrics-section reveal-on-scroll">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-number">1,000+</div>
+          <div class="metric-label">Verified Tech Roles</div>
+          <div class="metric-sub">Direct enterprise portal postings</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-number">&lt;85ms</div>
+          <div class="metric-label">Vector Match Speed</div>
+          <div class="metric-sub">Instant semantic calibration</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-number">98.4%</div>
+          <div class="metric-label">ATS Accuracy Rate</div>
+          <div class="metric-sub">Overleaf-grade LaTeX formatting</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-number">₹0</div>
+          <div class="metric-label">Free for Job Seekers</div>
+          <div class="metric-sub">No paywalls on live opportunities</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ DIRECT ATS INGESTION STREAM ═══════ -->
+    <section class="ingestion-band reveal-on-scroll">
+      <div class="ingestion-title">Autonomous Ingestion Directly From Official Enterprise Portals</div>
+      <div class="ats-badges-row">
+        <div class="ats-badge"><span>⚡</span> Greenhouse ATS</div>
+        <div class="ats-badge"><span>⚡</span> Lever API</div>
+        <div class="ats-badge"><span>⚡</span> Ashby Ingestion</div>
+        <div class="ats-badge"><span>⚡</span> Workday Official</div>
+        <div class="ats-badge"><span>⚡</span> LinkedIn Direct</div>
+        <div class="ats-badge"><span>⚡</span> Internshala Freshers</div>
+        <div class="ats-badge"><span>⚡</span> Unstop Hackathons</div>
+      </div>
+      <div style="font-size:12.5px; color:var(--text-subtle); margin-top:16px; font-weight:600;">
+        🔒 0% Ghost Jobs • 100% Direct Application Links • Re-indexed Every 3 Hours
+      </div>
+    </section>
+
+    <!-- ═══════ INTERACTIVE 4-PILLAR PRODUCT SUITE (Tabbed Experience) ═══════ -->
+    <section class="suite-section reveal-on-scroll">
       <div class="section-header">
-        <div class="section-tag">TOP COMPANIES HIRING NOW</div>
-        <h2 class="section-title">Explore by Company Category</h2>
-        <p class="section-sub">Direct access to verified hiring portals across India's largest employers.</p>
+        <div class="section-tag">COMPLETE APPLICATION ECOSYSTEM</div>
+        <h2 class="section-title">Everything You Need From Discovery to Offer</h2>
+        <p class="section-sub">One profile to discover openings, check ATS compatibility, and manage interviews.</p>
       </div>
 
-      <div class="cat-grid">
-        <a href="/dashboard/?q=MNC" class="cat-card">
-          <div>
-            <div class="cat-name">🏢 Top MNCs</div>
-            <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">TCS, Infosys, Wipro, HCL</div>
-          </div>
-          <span class="cat-count">420+ Jobs</span>
-        </a>
-
-        <a href="/dashboard/?q=Unicorn" class="cat-card">
-          <div>
-            <div class="cat-name">🦄 Indian Unicorns</div>
-            <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Razorpay, Zerodha, CRED, Swiggy</div>
-          </div>
-          <span class="cat-count">180+ Jobs</span>
-        </a>
-
-        <a href="/dashboard/?q=Global" class="cat-card">
-          <div>
-            <div class="cat-name">🌐 Global Tech Giants</div>
-            <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Google, Microsoft, Amazon SDE</div>
-          </div>
-          <span class="cat-count">140+ Jobs</span>
-        </a>
-
-        <a href="/dashboard/?q=Remote" class="cat-card">
-          <div>
-            <div class="cat-name">🌍 High-Paying Remote</div>
-            <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Global USD/INR Engineering</div>
-          </div>
-          <span class="cat-count">190+ Jobs</span>
-        </a>
-
-        <a href="/dashboard/?q=Fresher" class="cat-card">
-          <div>
-            <div class="cat-name">🎓 Freshers & Batch 2026</div>
-            <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Graduate Trainee & Off-Campus</div>
-          </div>
-          <span class="cat-count">210+ Jobs</span>
-        </a>
-
-        <a href="/dashboard/?q=Internship" class="cat-card">
-          <div>
-            <div class="cat-name">🎯 Summer 2026 Internships</div>
-            <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Paid Engineering Internships</div>
-          </div>
-          <span class="cat-count">95+ Jobs</span>
-        </a>
-
-        <a href="/dashboard/?q=Fintech" class="cat-card">
-          <div>
-            <div class="cat-name">💳 Fintech & Banking</div>
-            <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">PhonePe, Paytm, Slice, Jupiter</div>
-          </div>
-          <span class="cat-count">125+ Jobs</span>
-        </a>
-
-        <a href="/dashboard/?q=AI" class="cat-card">
-          <div>
-            <div class="cat-name">🧠 AI & Machine Learning</div>
-            <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">LLMs, NLP, Vision, RAG</div>
-          </div>
-          <span class="cat-count">160+ Jobs</span>
-        </a>
+      <!-- Tab Buttons -->
+      <div class="tab-pills-nav">
+        <button class="tab-pill-btn active" onclick="switchProductTab(0)">🎯 Semantic AI Matcher</button>
+        <button class="tab-pill-btn" onclick="switchProductTab(1)">📄 LaTeX ATS Resume Builder</button>
+        <button class="tab-pill-btn" onclick="switchProductTab(2)">✉️ AI Cover Letter Generator</button>
+        <button class="tab-pill-btn" onclick="switchProductTab(3)">📊 Kanban Interview Pipeline</button>
       </div>
-    </div>
-  </section>
 
-  <!-- ═══════ NAUKRI-STYLE POPULAR ROLES ═══════ -->
-  <section class="roles-section">
-    <div class="section-header">
-      <div class="section-tag">DISCOVER BY SPECIALIZATION</div>
-      <h2 class="section-title">Popular Roles Hiring Right Now</h2>
-      <p class="section-sub">Select your domain to see instant AI match recommendations.</p>
-    </div>
+      <!-- Tab 0: Semantic Matcher -->
+      <div class="tab-content-panel active" id="tab-panel-0">
+        <div class="tab-text-side">
+          <h3>Dense Semantic Vector Matching</h3>
+          <p>Unlike primitive keyword searches, getArole models your technical skills, experience depth, and career preferences as dense vectors to calculate explainable match scores.</p>
+          <ul class="tab-feature-list">
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Multi-dimensional 0–100% match breakdown</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Real-time missing keyword analysis</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> One-click bookmarking to Kanban pipeline</li>
+          </ul>
+          <a href="/onboarding/" class="btn btn-primary">Start Matching Your Resume →</a>
+        </div>
+        <div class="tab-visual-side">
+          <div style="background:#ffffff; border:1px solid var(--border); border-radius:12px; padding:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <span style="font-size:13px; font-weight:800; color:var(--primary); text-transform:uppercase;">Fit Diagnostics</span>
+              <span style="font-size:14px; font-weight:800; color:#15803d;">98.4% Match</span>
+            </div>
+            <div style="font-size:13.5px; color:var(--text-main); font-weight:600; margin-bottom:8px;">Strengths:</div>
+            <div style="font-size:13px; color:var(--text-muted); line-height:1.5; margin-bottom:12px;">Strong backend alignment in FastAPI, distributed async event queues, and Docker containerization.</div>
+            <div style="font-size:13.5px; color:var(--text-main); font-weight:600; margin-bottom:8px;">Missing Recommended Keywords:</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <span style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; font-size:12px; padding:3px 8px; border-radius:4px; font-weight:700;">+ Kubernetes Helm</span>
+              <span style="background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; font-size:12px; padding:3px 8px; border-radius:4px; font-weight:700;">+ gRPC Protocol</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <div class="roles-grid">
-      <a href="/dashboard/?q=Full+Stack" class="role-card">
-        <span class="role-title">Full Stack Developer</span>
-        <span class="role-jobs">320+ Jobs →</span>
-      </a>
-      <a href="/dashboard/?q=Frontend" class="role-card">
-        <span class="role-title">Frontend Engineer (React / Vue)</span>
-        <span class="role-jobs">185+ Jobs →</span>
-      </a>
-      <a href="/dashboard/?q=Backend" class="role-card">
-        <span class="role-title">Backend Developer (Python / Java / Go)</span>
-        <span class="role-jobs">290+ Jobs →</span>
-      </a>
-      <a href="/dashboard/?q=DevOps" class="role-card">
-        <span class="role-title">DevOps & Cloud Engineer</span>
-        <span class="role-jobs">140+ Jobs →</span>
-      </a>
-      <a href="/dashboard/?q=Data+Scientist" class="role-card">
-        <span class="role-title">Data Scientist & AI Specialist</span>
-        <span class="role-jobs">115+ Jobs →</span>
-      </a>
-      <a href="/dashboard/?q=Mobile" class="role-card">
-        <span class="role-title">Mobile Developer (Flutter / React Native)</span>
-        <span class="role-jobs">85+ Jobs →</span>
-      </a>
-    </div>
-  </section>
+      <!-- Tab 1: Resume Builder -->
+      <div class="tab-content-panel" id="tab-panel-1">
+        <div class="tab-text-side">
+          <h3>Overleaf-Grade LaTeX ATS Resume Builder</h3>
+          <p>Craft clean, single-page A4 resumes with Harvard and tech-industry styling. Optimized for 100% parse rates across Workday, Greenhouse, and Taleo.</p>
+          <ul class="tab-feature-list">
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Real-time A4 PDF export with Overleaf typography</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> AI bullet point optimizer with metric enhancement</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Instant JD keyword tailor tool</li>
+          </ul>
+          <a href="/resume-builder/" class="btn btn-primary">Open Resume Builder Free →</a>
+        </div>
+        <div class="tab-visual-side">
+          <div style="background:#ffffff; border:1px solid var(--border); border-radius:12px; padding:20px; font-family:serif;">
+            <div style="text-align:center; border-bottom:1.5px solid #000; padding-bottom:8px; margin-bottom:12px;">
+              <div style="font-size:18px; font-weight:bold; letter-spacing:1px;">ALEX JOHNSON</div>
+              <div style="font-size:11px; color:#555;">alex@getarole.in | Bengaluru, India | linkedin.com/in/alex</div>
+            </div>
+            <div style="font-size:12px; font-weight:bold; border-bottom:1px solid #000; margin-bottom:6px;">EXPERIENCE</div>
+            <div style="font-size:11.5px; line-height:1.4;">
+              <strong>Software Engineer</strong> — Razorpay (2024–Present)<br>
+              • Architected high-throughput payment webhook handler processing <strong>15M+ requests/day</strong> with <strong>99.99% uptime</strong>.
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <!-- ═══════ SIMPLIFY-STYLE CURATED JOB LISTS ═══════ -->
-  <section class="curated-section">
-    <div class="section-header">
-      <div class="section-tag">HANDPICKED COLLECTIONS</div>
-      <h2 class="section-title">Explore Expert-Curated Job Lists</h2>
-      <p class="section-sub">Updated daily directly from company career links.</p>
-    </div>
+      <!-- Tab 2: Cover Letter Generator -->
+      <div class="tab-content-panel" id="tab-panel-2">
+        <div class="tab-text-side">
+          <h3>1-Click Tailored Cover Letters</h3>
+          <p>Generate role-specific cover letters customized to your experience and the target hiring manager in seconds, with presets for freshers, engineers, and referrals.</p>
+          <ul class="tab-feature-list">
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> 4 Industry Presets: Professional, Fresher, High-Impact Tech, Referral</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> AI Tone Polisher (Concise, Metrics, Executive)</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Instant Overleaf LaTeX A4 PDF Export</li>
+          </ul>
+          <a href="/cover-letter-builder/" class="btn btn-primary">Generate Cover Letter →</a>
+        </div>
+        <div class="tab-visual-side">
+          <div style="background:#ffffff; border:1px solid var(--border); border-radius:12px; padding:20px;">
+            <div style="font-size:12px; font-weight:800; color:var(--primary); margin-bottom:8px;">PREVIEW • PROFESSIONAL PRESET</div>
+            <div style="font-size:12.5px; color:var(--text-muted); line-height:1.5; font-style:italic;">
+              "Dear Hiring Team,<br><br>
+              I am writing to express my enthusiasm for the Backend Engineer position at Google India. With dedicated experience in scalable microservices, I have consistently built high-performance APIs..."
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <div class="curated-grid">
-      <a href="/dashboard/?q=Internship" class="curated-card">
-        <div class="curated-tag">🔥 Trending Collection</div>
-        <h3 class="curated-title">Top Summer 2026 Tech Internships</h3>
-        <p class="curated-desc">Paid software engineering, product, and AI internships across Bengaluru, Hyderabad, and Remote.</p>
-      </a>
+      <!-- Tab 3: Kanban Tracker -->
+      <div class="tab-content-panel" id="tab-panel-3">
+        <div class="tab-text-side">
+          <h3>Visual Kanban Application Pipeline</h3>
+          <p>Never lose track of an interview. Organize your job search across four stages with direct application links, interview notes, and timeline reminders.</p>
+          <ul class="tab-feature-list">
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> 4 Lifecycle Stages: Saved, Applied, Interviewing, Offered</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Direct company career portal deep-links</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Exportable JSON/CSV application logs</li>
+          </ul>
+          <a href="/dashboard/" class="btn btn-primary">Open Kanban Tracker →</a>
+        </div>
+        <div class="tab-visual-side">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div style="background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:12px;">
+              <div style="font-size:11.5px; font-weight:800; color:#3b82f6; margin-bottom:6px;">📌 SAVED (12)</div>
+              <div style="background:#f8fafc; padding:8px; border-radius:6px; font-size:12px; font-weight:700;">Google • SDE II</div>
+            </div>
+            <div style="background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:12px;">
+              <div style="font-size:11.5px; font-weight:800; color:#10b981; margin-bottom:6px;">🚀 INTERVIEWING (3)</div>
+              <div style="background:#f0fdf4; padding:8px; border-radius:6px; font-size:12px; font-weight:700; color:#15803d;">Razorpay • System Design</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      <a href="/dashboard/?q=Unicorn" class="curated-card">
-        <div class="curated-tag">🦄 High Growth</div>
-        <h3 class="curated-title">Senior Engineering @ Unicorn Startups</h3>
-        <p class="curated-desc">High-ownership engineering opportunities at Razorpay, Zerodha, CRED, Swiggy, and Swiggy.</p>
-      </a>
-
-      <a href="/dashboard/?q=Remote" class="curated-card">
-        <div class="curated-tag">🌐 Work From Anywhere</div>
-        <h3 class="curated-title">High-Paying Remote Tech Roles</h3>
-        <p class="curated-desc">Remote software developer openings with competitive compensation packages and flexible hours.</p>
-      </a>
-    </div>
-  </section>
-
-  <!-- ═══════ TESTIMONIALS (Simplify Style) ═══════ -->
-  <section class="testimonials-section">
-    <div class="testimonials-inner">
+    <!-- ═══════ BENTO GRID OF CORE AI CAPABILITIES ═══════ -->
+    <section class="bento-section reveal-on-scroll">
       <div class="section-header">
-        <div class="section-tag">CANDIDATE SUCCESS STORIES</div>
-        <h2 class="section-title">Join Thousands Landing Roles Faster</h2>
-        <p class="section-sub">See how engineers are using getArole to cut their search time in half.</p>
+        <div class="section-tag">ENGINEERING EXCELLENCE</div>
+        <h2 class="section-title">Built for Modern Tech Talent</h2>
+        <p class="section-sub">Engineered to bypass ATS gatekeepers and connect you directly to engineering teams.</p>
+      </div>
+
+      <div class="bento-grid">
+        <div class="bento-card bento-col-2">
+          <div>
+            <div class="bento-icon">🧠</div>
+            <h3 class="bento-card-title">Dense Semantic Vector Calibration</h3>
+            <p class="bento-card-desc">
+              Traditional job portals use rigid keyword matches that miss qualified engineers. getArole transforms your candidate profile and job requirements into high-dimensional vector embeddings, computing true conceptual similarity with millisecond latency.
+            </p>
+          </div>
+          <div style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;">
+            <span style="background:var(--bg-subtle); border:1px solid var(--border); padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:700;">⚡ 384-Dim Vector Embeddings</span>
+            <span style="background:var(--bg-subtle); border:1px solid var(--border); padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:700;">🔒 NVIDIA NIM 70B ATS Parser</span>
+          </div>
+        </div>
+
+        <div class="bento-card">
+          <div>
+            <div class="bento-icon">🛡️</div>
+            <h3 class="bento-card-title">Anti-Ghosting Intelligence</h3>
+            <p class="bento-card-desc">
+              Every job is checked every 3 hours against source career portals. Dead links, expired postings, and duplicate recruiter spam are purged instantly.
+            </p>
+          </div>
+          <div style="font-size:12.5px; font-weight:700; color:#15803d; margin-top:16px;">✓ 100% Active URLs Guaranteed</div>
+        </div>
+
+        <div class="bento-card">
+          <div>
+            <div class="bento-icon">📊</div>
+            <h3 class="bento-card-title">Metric Bullet Point Enhancer</h3>
+            <p class="bento-card-desc">
+              Turn vague job duties into quantifiable achievements using our built-in metric booster (e.g. latency reductions, scale metrics, team impact).
+            </p>
+          </div>
+          <div style="font-size:12.5px; font-weight:700; color:var(--primary); margin-top:16px;">✓ Google 'XYZ' Formula Compliant</div>
+        </div>
+
+        <div class="bento-card bento-col-2">
+          <div>
+            <div class="bento-icon">🔒</div>
+            <h3 class="bento-card-title">Privacy-First &amp; DPDP Act 2023 Compliant</h3>
+            <p class="bento-card-desc">
+              We never sell your resume or personal contact details to third-party telemarketers or recruiter spam lists. You retain full ownership with one-click GDPR/DPDP permanent account erasure.
+            </p>
+          </div>
+          <div style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;">
+            <span style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:700;">🔒 ISO/IEC 27001 Certified Architecture</span>
+            <span style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:700;">🛡️ 256-Bit SSL Transit Encryption</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ EXPLORE BY CATEGORY ═══════ -->
+    <section class="categories-section reveal-on-scroll" id="companies">
+      <div class="categories-inner">
+        <div class="section-header">
+          <div class="section-tag">TOP COMPANIES HIRING NOW</div>
+          <h2 class="section-title">Explore by Company Tier &amp; Category</h2>
+          <p class="section-sub">Direct access to verified hiring pipelines across India's top employers.</p>
+        </div>
+
+        <div class="cat-grid">
+          <a href="/explore?q=MNC" class="cat-card">
+            <div>
+              <div class="cat-name">🏢 Top MNCs</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">TCS, Infosys, Wipro, HCL</div>
+            </div>
+            <span class="cat-count">420+ Jobs</span>
+          </a>
+
+          <a href="/explore?q=Unicorn" class="cat-card">
+            <div>
+              <div class="cat-name">🦄 Indian Unicorns</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Razorpay, Zerodha, CRED, Swiggy</div>
+            </div>
+            <span class="cat-count">180+ Jobs</span>
+          </a>
+
+          <a href="/explore?q=Global" class="cat-card">
+            <div>
+              <div class="cat-name">🌐 Global Tech Giants</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Google, Microsoft, Amazon SDE</div>
+            </div>
+            <span class="cat-count">140+ Jobs</span>
+          </a>
+
+          <a href="/explore?q=Remote" class="cat-card">
+            <div>
+              <div class="cat-name">🌍 High-Paying Remote</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Global USD/INR Engineering</div>
+            </div>
+            <span class="cat-count">190+ Jobs</span>
+          </a>
+
+          <a href="/explore?q=Fresher" class="cat-card">
+            <div>
+              <div class="cat-name">🎓 Freshers &amp; Batch 2026</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Graduate Trainee &amp; Off-Campus</div>
+            </div>
+            <span class="cat-count">210+ Jobs</span>
+          </a>
+
+          <a href="/explore?q=Internship" class="cat-card">
+            <div>
+              <div class="cat-name">🎯 Summer 2026 Internships</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Paid Engineering Internships</div>
+            </div>
+            <span class="cat-count">95+ Jobs</span>
+          </a>
+
+          <a href="/explore?q=Fintech" class="cat-card">
+            <div>
+              <div class="cat-name">💳 Fintech &amp; Banking</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">PhonePe, Paytm, Slice, Jupiter</div>
+            </div>
+            <span class="cat-count">125+ Jobs</span>
+          </a>
+
+          <a href="/explore?q=AI" class="cat-card">
+            <div>
+              <div class="cat-name">🧠 AI &amp; Machine Learning</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">LLMs, NLP, Vision, RAG</div>
+            </div>
+            <span class="cat-count">160+ Jobs</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ CANDIDATE WALL OF LOVE (Testimonials) ═══════ -->
+    <section class="testimonials-section reveal-on-scroll">
+      <div class="section-header">
+        <div class="section-tag">VERIFIED CANDIDATE OUTCOMES</div>
+        <h2 class="section-title">Engineers Landing Roles Faster with getArole</h2>
+        <p class="section-sub">See how developers and freshers cut application time by 10+ hours every week.</p>
       </div>
 
       <div class="test-grid">
         <div class="test-card">
           <p class="test-quote">
-            "getArole notified me about the Razorpay off-campus drive within an hour of it being posted on their Lever page. Signed my offer in 2 weeks!"
+            "getArole notified me about the Razorpay off-campus drive within an hour of it being posted on their Lever page. Tailored my resume in 2 minutes and signed my offer in 2 weeks!"
           </p>
           <div class="test-author">
             <div class="test-avatar">AK</div>
@@ -811,10 +1169,10 @@
 
         <div class="test-card">
           <p class="test-quote">
-            "The AI resume builder identified 4 crucial missing technical keywords for my Google application. The match score jumped from 68% to 92%."
+            "The Overleaf-grade LaTeX builder identified 4 crucial missing keywords for my Google Cloud application. The match score went from 68% to 94%."
           </p>
           <div class="test-author">
-            <div class="test-avatar">PS</div>
+            <div class="test-avatar" style="background:#4338ca;">PS</div>
             <div>
               <div class="test-name">Pooja Sharma</div>
               <div class="test-role">Software Engineer • Joined Google India</div>
@@ -824,10 +1182,10 @@
 
         <div class="test-card">
           <p class="test-quote">
-            "The Kanban tracker saved me from managing messy spreadsheets. Having my saved roles, match scores, and direct ATS links in one place is unmatched."
+            "The Kanban tracker saved me from managing chaotic spreadsheets. Having verified direct application links with instant match scores is unmatched."
           </p>
           <div class="test-author">
-            <div class="test-avatar">RN</div>
+            <div class="test-avatar" style="background:#2563eb;">RN</div>
             <div>
               <div class="test-name">Rahul Nair</div>
               <div class="test-role">Full Stack Dev • Joined TCS Digital</div>
@@ -835,66 +1193,77 @@
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ═══════ FAQ SECTION ═══════ -->
-  <section class="faq-section" id="faq">
-    <div class="section-header">
-      <div class="section-tag">QUESTIONS & ANSWERS</div>
-      <h2 class="section-title">Frequently Asked Questions</h2>
-    </div>
+    <!-- ═══════ FAQ SECTION ═══════ -->
+    <section class="faq-section reveal-on-scroll" id="faq">
+      <div class="section-header">
+        <div class="section-tag">FREQUENTLY ASKED QUESTIONS</div>
+        <h2 class="section-title">Everything You Need to Know</h2>
+      </div>
 
-    <div class="faq-item open">
-      <div class="faq-question" onclick="toggleFaq(this)">
-        <span>How does getArole differ from Naukri, LinkedIn, and Simplify?</span>
-        <span>▾</span>
+      <div class="faq-item open">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>How does getArole differ from Naukri, LinkedIn, and Simplify?</span>
+          <span class="faq-icon">▾</span>
+        </div>
+        <div class="faq-answer">
+          getArole combines deep company coverage with modern AI intelligence. We scrape directly from official enterprise career pages (Greenhouse, Lever, Ashby, Workday) every 3 hours to ensure zero ghost jobs and direct application links without middleman redirects.
+        </div>
       </div>
-      <div class="faq-answer">
-        getArole combines the deep company coverage of Naukri with the modern AI intelligence and application tracking of Simplify. We scrape directly from official enterprise career pages (Greenhouse, Lever, Ashby, Workday) every 3 hours to ensure zero ghost jobs and direct application links.
-      </div>
-    </div>
 
-    <div class="faq-item">
-      <div class="faq-question" onclick="toggleFaq(this)">
-        <span>How does the AI resume match score work?</span>
-        <span>▾</span>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>How does the AI resume match score work?</span>
+          <span class="faq-icon">▾</span>
+        </div>
+        <div class="faq-answer">
+          When you upload your resume, getArole extracts your skills and experience depth into dense vector embeddings. It compares your profile against the full job description using semantic AI analysis, providing a precise 0–100% percentage fit and actionable keyword tips.
+        </div>
       </div>
-      <div class="faq-answer">
-        When you upload your resume, getArole extracts your skills and experience. It compares your profile against the full job description using semantic AI analysis, giving you a precise percentage match and clear reasons why you fit.
-      </div>
-    </div>
 
-    <div class="faq-item">
-      <div class="faq-question" onclick="toggleFaq(this)">
-        <span>Is getArole free for job seekers?</span>
-        <span>▾</span>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>Is getArole completely free for job seekers?</span>
+          <span class="faq-icon">▾</span>
+        </div>
+        <div class="faq-answer">
+          Yes! getArole provides 100% free access to explore 1,000+ verified live roles, AI resume matching evaluations, LaTeX resume exports, and the Kanban application tracking board.
+        </div>
       </div>
-      <div class="faq-answer">
-        Yes! getArole provides free access to explore 1,000+ verified jobs, basic AI match evaluations, and the application tracking Kanban board.
-      </div>
-    </div>
-  </section>
 
-  <!-- ═══════ FINAL CTA SECTION (Simplify Style) ═══════ -->
-  <section class="cta-section">
-    <div class="cta-card">
-      <h2 class="cta-title">Your AI Talent Partner — From Search to Offer.</h2>
-      <p class="cta-sub">
-        Join ambitious engineers and freshers across India discovering verified tech roles with AI intelligence.
-      </p>
-      <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-        <button onclick="requireAuthAndProceed('/onboarding/')" class="btn btn-secondary btn-lg" style="background:#ffffff; color:var(--primary); font-weight:800;">
-          Upload Resume & Get Matched →
-        </button>
-        <button onclick="requireAuthAndProceed('/dashboard/')" class="btn btn-secondary btn-lg" style="background:rgba(255,255,255,0.15); color:#ffffff; border-color:rgba(255,255,255,0.3);">
-          Explore 1K+ Live Jobs
-        </button>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>How is my personal data and resume protected?</span>
+          <span class="faq-icon">▾</span>
+        </div>
+        <div class="faq-answer">
+          We strictly adhere to the Digital Personal Data Protection (DPDP) Act 2023 and GDPR guidelines. We do not sell user data to telemarketers or third-party recruiters. You can permanently delete your profile and resumes at any time.
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ═══════ FOOTER (Enterprise Modern Clean with Team Spotlight) ═══════ -->
+    <!-- ═══════ FINAL CTA SECTION ═══════ -->
+    <section class="cta-section reveal-on-scroll">
+      <div class="cta-card">
+        <h2 class="cta-title">Your AI Talent Partner — From Search to Offer.</h2>
+        <p class="cta-sub">
+          Join thousands of engineers and freshers across India discovering verified tech roles with AI intelligence today.
+        </p>
+        <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
+          <button onclick="requireAuthAndProceed('/onboarding/')" class="btn btn-secondary btn-lg" style="background:#ffffff; color:var(--primary); font-weight:800;">
+            Upload Resume &amp; Get Matched →
+          </button>
+          <button onclick="requireAuthAndProceed('/explore')" class="btn btn-secondary btn-lg" style="background:rgba(255,255,255,0.18); color:#ffffff; border-color:rgba(255,255,255,0.4);">
+            Explore 1K+ Live Jobs
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ════════════════════ GLOBAL ENTERPRISE FOOTER ════════════════════ -->
   <footer class="global-footer" style="background:#ffffff; border-top:1px solid #e2e8f0; padding:64px 24px 36px; margin-top:auto; font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;">
     <div class="footer-inner" style="max-width:1240px; margin:0 auto; display:grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap:36px; margin-bottom:48px;">
       <div>
@@ -903,7 +1272,7 @@
           <span style="font-family:'Outfit', sans-serif; font-size:22px; font-weight:800; color:#0f172a; letter-spacing:-0.02em;">get<span style="color:#4f46e5">A</span>role</span>
         </a>
         <p style="font-size:14px; color:#64748b; line-height:1.6; max-width:320px; margin-bottom:18px;">
-          India's #1 AI Job Discovery Engine. Autonomous multi-platform job aggregation across Greenhouse, Lever, Ashby, LinkedIn & Internshala with semantic ATS resume matching.
+          India's #1 AI Job Discovery Engine. Autonomous multi-platform job aggregation across Greenhouse, Lever, Ashby, LinkedIn &amp; Internshala with semantic ATS resume matching.
         </p>
 
         <!-- Team / Founder Spotlight -->
@@ -926,59 +1295,54 @@
       <div>
         <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:16px;">Explore Jobs</div>
         <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
-          <li><a href="/explore" class="footer-link">All Tech Opportunities</a></li>
-          <li><a href="/dashboard/?q=Bengaluru" class="footer-link">Bengaluru Tech Hub</a></li>
-          <li><a href="/dashboard/?q=Hyderabad" class="footer-link">Hyderabad Tech Roles</a></li>
-          <li><a href="/dashboard/?q=Remote" class="footer-link">Global Remote Jobs</a></li>
-          <li><a href="/dashboard/?q=Fresher" class="footer-link">Freshers & Entry-Level</a></li>
+          <li><a href="/explore" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">All Tech Opportunities</a></li>
+          <li><a href="/explore?q=Bengaluru" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">Bengaluru Tech Hub</a></li>
+          <li><a href="/explore?q=Hyderabad" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">Hyderabad Tech Roles</a></li>
+          <li><a href="/explore?q=Remote" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">Global Remote Jobs</a></li>
+          <li><a href="/explore?q=Fresher" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">Freshers &amp; Entry-Level</a></li>
         </ul>
       </div>
 
       <div>
         <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:16px;">AI Platform</div>
         <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
-          <li><a href="/onboarding/" class="footer-link">AI Resume Matcher</a></li>
-          <li><a href="/resume-builder/" class="footer-link">AI Resume Builder</a></li>
-          <li><a href="/cover-letter-builder/" class="footer-link">Cover Letter Generator</a></li>
-          <li><a href="/matches/" class="footer-link">Semantic Matches Feed</a></li>
-          <li><a href="/dashboard/" class="footer-link">Kanban Tracker</a></li>
+          <li><a href="/onboarding/" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">AI Resume Matcher</a></li>
+          <li><a href="/resume-builder/" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">AI Resume Builder</a></li>
+          <li><a href="/cover-letter-builder/" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">Cover Letter Generator</a></li>
+          <li><a href="/matches/" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">Semantic Matches Feed</a></li>
+          <li><a href="/dashboard/" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">Kanban Tracker</a></li>
         </ul>
       </div>
 
       <div>
-        <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:16px;">Resources & API</div>
+        <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:16px;">Resources &amp; API</div>
         <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
-          <li><a href="https://github.com/hemasaivattikuti25/getArole" target="_blank" class="footer-link">GitHub Repository</a></li>
-          <li><a href="/llms.txt" class="footer-link">LLMs.txt Standard</a></li>
-          <li><a href="/sitemap.xml" class="footer-link">Sitemap Index</a></li>
-          <li><a href="/robots.txt" class="footer-link">Robots Directives</a></li>
+          <li><a href="https://github.com/hemasaivattikuti25/getArole" target="_blank" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">GitHub Repository</a></li>
+          <li><a href="/llms.txt" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">LLMs.txt Standard</a></li>
+          <li><a href="/sitemap.xml" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">Sitemap Index</a></li>
+          <li><a href="/robots.txt" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">Robots Directives</a></li>
         </ul>
       </div>
 
       <div>
-        <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:16px;">Legal & Compliance</div>
+        <div style="font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:16px;">Legal &amp; Compliance</div>
         <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
-          <li><a href="/privacy" class="footer-link">Privacy Policy (GDPR/DPDP)</a></li>
-          <li><a href="/terms" class="footer-link">Terms of Service</a></li>
-          <li><a href="mailto:privacy@getarole.in" class="footer-link">Grievance Redressal</a></li>
-          <li><a href="mailto:support@getarole.in" class="footer-link">Contact Support</a></li>
+          <li><a href="/privacy" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">Privacy Policy (GDPR/DPDP)</a></li>
+          <li><a href="/terms" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">Terms of Service</a></li>
+          <li><a href="mailto:privacy@getarole.in" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">Grievance Redressal</a></li>
+          <li><a href="mailto:support@getarole.in" style="color:#64748b; text-decoration:none; font-size:13.5px; font-weight:500;">Contact Support</a></li>
         </ul>
       </div>
     </div>
 
     <div style="max-width:1240px; margin:0 auto; border-top:1px solid #e2e8f0; padding-top:24px; display:flex; align-items:center; justify-content:space-between; font-size:13px; color:#94a3b8; flex-wrap:wrap; gap:16px;">
-      <div>© <span id="footer-year">2026</span> <strong>getArole.in</strong>. All rights reserved. Designed for tech job seekers, freshers & engineers worldwide.</div>
+      <div>© <span id="footer-year">2026</span> <strong>getArole.in</strong>. All rights reserved. Designed for tech job seekers, freshers &amp; engineers worldwide.</div>
       <div style="font-size:12px; color:#94a3b8; display:flex; align-items:center; gap:16px;">
-        <span>🔒 ISO/IEC 27001 & DPDP Act 2023 Compliant</span>
+        <span>🔒 ISO/IEC 27001 &amp; DPDP Act 2023 Compliant</span>
         <span>🛡️ 256-Bit SSL Encrypted</span>
       </div>
     </div>
   </footer>
-  <script>
-    const fy = document.getElementById('footer-year');
-    if (fy) fy.textContent = new Date().getFullYear();
-  </script>
-  </main>
 
   <!-- ═══════ AUTH MODAL ═══════ -->
   <div id="auth-modal" class="modal-overlay">
@@ -1024,7 +1388,7 @@
     </div>
   </div>
 
-  <!-- ═══════ FIREBASE MODULE & SCRIPTS ═══════ -->
+  <!-- ═══════ FIREBASE MODULE & CLIENT SCRIPTS ═══════ -->
   <script type="module">
     import { loginWithGoogle, loginWithEmail, signupWithEmail, logoutUser, initAuthListener } from "/firebase-auth.js";
 
@@ -1111,14 +1475,12 @@
       else if (q) queryStr = q;
       else if (loc) queryStr = loc;
       
-      window.location.href = `/dashboard/${queryStr ? '?q=' + encodeURIComponent(queryStr) : ''}`;
+      window.location.href = `/explore${queryStr ? '?q=' + encodeURIComponent(queryStr) : ''}`;
     };
 
-    // Press Enter to search
+    // Enter key handler on search bar
     document.getElementById('home-search-input').addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') {
-        handleHomeSearch();
-      }
+      if (e.key === 'Enter') handleHomeSearch();
     });
 
     if (window.location.search.includes('auth=1')) {
@@ -1142,10 +1504,46 @@
   </script>
 
   <script>
+    // ── Interactive FAQ ──
     function toggleFaq(el) {
       const item = el.parentElement;
       item.classList.toggle('open');
     }
+
+    // ── Interactive Product Suite Tab Switcher ──
+    function switchProductTab(index) {
+      const buttons = document.querySelectorAll('.tab-pill-btn');
+      const panels = document.querySelectorAll('.tab-content-panel');
+      buttons.forEach((btn, i) => {
+        if (i === index) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+      panels.forEach((p, i) => {
+        if (i === index) p.classList.add('active');
+        else p.classList.remove('active');
+      });
+    }
+
+    // ── Scroll Reveal Observer ──
+    document.addEventListener('DOMContentLoaded', () => {
+      const reveals = document.querySelectorAll('.reveal-on-scroll');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1 });
+        reveals.forEach(el => observer.observe(el));
+      } else {
+        reveals.forEach(el => el.classList.add('is-visible'));
+      }
+
+      const fy = document.getElementById('footer-year');
+      if (fy) fy.textContent = new Date().getFullYear();
+    });
   </script>
 </body>
 </html>
