@@ -1831,28 +1831,28 @@
       const profileRaw = localStorage.getItem('getarole_profile');
       const resumeSaved = localStorage.getItem('getarole_resume_v2');
 
+      // Always try to hydrate from profile (name, email, phone, links)
+      if (profileRaw) {
+        try {
+          const prof = JSON.parse(profileRaw);
+          if (prof.name && !R.header.name) R.header.name = prof.name;
+          if (prof.phone && !R.header.phone) R.header.phone = prof.phone;
+          if (prof.email && !R.header.email) R.header.email = prof.email;
+          if (prof.links?.linkedin && !R.header.linkedin) R.header.linkedin = prof.links.linkedin;
+          if (prof.links?.github && !R.header.github) R.header.github = prof.links.github;
+          if (prof.links?.portfolio && !R.header.portfolio) R.header.portfolio = prof.links.portfolio;
+          if (prof.skills && prof.skills.length > 0 && (!Array.isArray(R.skills) || R.skills.length === 0)) {
+            R.skills = [{ label: 'Technical Skills', items: prof.skills.join(', ') }];
+          }
+        } catch (e) { }
+      }
+
+      // Overlay with richer resume data if available
       if (resumeSaved) {
         try {
           const savedObj = JSON.parse(resumeSaved);
           if (savedObj.header && savedObj.header.name) {
             R = { ...R, ...savedObj };
-          }
-        } catch (e) { }
-      } else if (profileRaw) {
-        try {
-          const prof = JSON.parse(profileRaw);
-          if (prof.name) R.header.name = prof.name;
-          if (prof.phone) R.header.phone = prof.phone;
-          if (prof.email) R.header.email = prof.email;
-          if (prof.links?.linkedin) R.header.linkedin = prof.links.linkedin;
-          if (prof.links?.github) R.header.github = prof.links.github;
-          if (prof.links?.portfolio) R.header.portfolio = prof.links.portfolio;
-          if (prof.skills && prof.skills.length > 0) {
-            if (!Array.isArray(R.skills) || R.skills.length === 0) {
-              R.skills = [{ label: 'Technical Skills', items: prof.skills.join(', ') }];
-            } else {
-              R.skills[0].items = prof.skills.join(', ');
-            }
           }
         } catch (e) { }
       }
@@ -1881,8 +1881,9 @@
           });
           if (res.ok) {
             const data = await res.json();
-            if (data && data.resume && data.resume.header) {
-              R = { ...R, ...data.resume };
+            // API returns a flat resume dict (not wrapped in {resume: {...}})
+            if (data && data.header && data.header.name) {
+              R = { ...R, ...data };
               if (R.skills && !Array.isArray(R.skills)) {
                 const old = R.skills;
                 R.skills = [

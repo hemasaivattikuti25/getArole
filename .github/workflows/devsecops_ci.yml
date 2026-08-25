@@ -146,16 +146,23 @@ jobs:
             -e SUPABASE_URL="${{ secrets.SUPABASE_URL }}" \
             -e SUPABASE_KEY="${{ secrets.SUPABASE_KEY }}" \
             getarole-api:smoke
-          # Wait up to 30s for FastAPI to be ready
+          # Wait up to 60s for FastAPI to be ready (fastembed model download on cold start)
           echo "Waiting for app startup..."
-          for i in $(seq 1 6); do
+          APP_READY=false
+          for i in $(seq 1 12); do
             sleep 5
-            if curl -sf http://localhost:8000/healthz > /dev/null 2>&1; then
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 3 http://localhost:8000/healthz 2>/dev/null || echo "000")
+            if [ "$STATUS" = "200" ]; then
               echo "✅ App is ready after $((i*5))s"
+              APP_READY=true
               break
             fi
-            echo "  ...still waiting ($((i*5))s)"
+            echo "  ...still waiting ($((i*5))s) [status=$STATUS]"
           done
+          if [ "$APP_READY" = "false" ]; then
+            echo "⚠️ App did not start within 60s — checking container logs:"
+            docker logs getarole-smoke-test 2>&1 | tail -30 || true
+          fi
 
       - name: Verify Live Healthz Liveness Probe
         run: |
