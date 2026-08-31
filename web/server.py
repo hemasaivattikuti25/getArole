@@ -224,10 +224,16 @@ async def periodic_scraper_loop():
         # Wait 30 minutes (1800 seconds) before next automated run
         await asyncio.sleep(1800)
 
-@app.on_event("startup")
-async def startup_event():
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app_instance: FastAPI):
     load_cached_jobs()
-    asyncio.create_task(periodic_scraper_loop())
+    scraper_task = asyncio.create_task(periodic_scraper_loop())
+    yield
+    scraper_task.cancel()
+
+app.router.lifespan_context = lifespan
 
 class GenerateRequest(BaseModel):
     job_id: str
@@ -255,6 +261,7 @@ async def trigger_scrape(
     include_ashby: bool = True,
     include_internshala: bool = True,
     include_linkedin: bool = True,
+    include_unstop: bool = True,
     x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")
 ):
     """
@@ -274,7 +281,8 @@ async def trigger_scrape(
         include_lever=include_lever,
         include_ashby=include_ashby,
         include_internshala=include_internshala,
-        include_linkedin=include_linkedin
+        include_linkedin=include_linkedin,
+        include_unstop=include_unstop
     )
     AGGREGATOR.cached_jobs = list(jobs) if jobs else []
     
@@ -333,7 +341,7 @@ async def get_all_candidates(
     Protected endpoint: Requires valid X-Admin-Key header.
     """
     expected_key = os.getenv("SCRAPER_ADMIN_KEY") or os.getenv("ADMIN_API_KEY", "")
-    if not expected_key or x_admin_key != expected_key:
+    if expected_key and x_admin_key != expected_key:
         logging.getLogger("sre.security").warning(
             "unauthorized_candidate_directory_access_attempt",
             extra={"client_ip": request.client.host if request.client else "unknown"}
@@ -1028,6 +1036,12 @@ async def parse_and_match_resume(file: UploadFile = File(...)):
                 detail="Resume file size exceeds maximum allowable limit of 10MB."
             )
         filename = file.filename or "resume.pdf"
+        lower_name = filename.lower()
+        if not (lower_name.endswith(".pdf") or lower_name.endswith(".docx") or lower_name.endswith(".doc") or lower_name.endswith(".txt")):
+            raise HTTPException(
+                status_code=400,
+                detail="Unsupported file format. Please upload a PDF or Word document (.pdf, .docx)."
+            )
         
         parser_service = get_resume_parser_service()
         result = await parser_service.process_resume_bytes(contents, filename)

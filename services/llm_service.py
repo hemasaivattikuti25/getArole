@@ -22,7 +22,13 @@ class NvidiaLLMService:
         self.model = model or os.getenv("NVIDIA_MODEL", "meta/llama-3.1-70b-instruct")
         self.base_url = (base_url or os.getenv("NVIDIA_BASE_URL", "https://integrate.api.nvidia.com/v1")).rstrip("/")
 
-    async def a_call_chat(self, messages: List[Dict[str, str]], temperature: float = 0.2, max_tokens: int = 800) -> str:
+    async def a_call_chat(
+        self,
+        messages: List[Dict[str, str]],
+        temperature: float = 0.2,
+        max_tokens: int = 800,
+        timeout_secs: Optional[float] = None
+    ) -> str:
         # Check circuit state
         if llm_breaker.is_open:
             LLM_FALLBACK_TOTAL.labels(reason="circuit_open").inc()
@@ -38,7 +44,8 @@ class NvidiaLLMService:
             "temperature": temperature,
             "max_tokens": max_tokens
         }
-        timeout_cfg = httpx.Timeout(connect=2.5, read=4.0, write=2.0, pool=2.0)
+        read_timeout = timeout_secs if timeout_secs is not None else 6.0
+        timeout_cfg = httpx.Timeout(connect=3.0, read=read_timeout, write=3.0, pool=3.0)
         try:
             async with httpx.AsyncClient(timeout=timeout_cfg) as client:
                 resp = await client.post(f"{self.base_url}/chat/completions", headers=headers, json=payload)
@@ -245,10 +252,26 @@ Tone: Professional, confident, specific, no generic buzzwords."""
 
     def evaluate_candidate_match(self, *args, **kwargs):
         import asyncio
+        import concurrent.futures
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+        if loop and loop.is_running():
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                return pool.submit(lambda: asyncio.run(self.a_evaluate_candidate_match(*args, **kwargs))).result()
         return asyncio.run(self.a_evaluate_candidate_match(*args, **kwargs))
 
     def generate_tailored_application(self, *args, **kwargs):
         import asyncio
+        import concurrent.futures
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+        if loop and loop.is_running():
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                return pool.submit(lambda: asyncio.run(self.a_generate_tailored_application(*args, **kwargs))).result()
         return asyncio.run(self.a_generate_tailored_application(*args, **kwargs))
 
 # Singleton

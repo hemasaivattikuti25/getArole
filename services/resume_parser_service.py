@@ -1,31 +1,64 @@
 import asyncio
-import re
+import io
 import json
+import re
+import zipfile
+import xml.etree.ElementTree as ET
 import fitz  # PyMuPDF
 from typing import Dict, Any, List, Tuple
+from services.llm_service import NvidiaLLMService
 
 class ResumeParserService:
     """
     Dedicated domain service for parsing PDF/Word resumes (Single Responsibility Principle).
-    Handles binary PDF text extraction, hyperlink annotation parsing, structured LLM extraction,
+    Handles binary PDF/DOCX text extraction, hyperlink annotation parsing, structured LLM extraction,
     and universal fallback section classification.
     """
+
+    def parse_docx_bytes(self, docx_bytes: bytes) -> str:
+        """Extracts plain text from standard OpenXML .docx binaries without external dependencies."""
+        try:
+            with zipfile.ZipFile(io.BytesIO(docx_bytes)) as zf:
+                if "word/document.xml" in zf.namelist():
+                    xml_content = zf.read("word/document.xml")
+                    tree = ET.fromstring(xml_content)
+                    texts = [elem.text for elem in tree.iter() if elem.text and elem.tag.endswith('}t')]
+                    return "\n".join(texts).strip()
+        except Exception as e:
+            print(f"[ResumeParserService DOCX Extraction Notice] {e}")
+        return ""
 
     def parse_pdf_bytes(self, pdf_bytes: bytes) -> Tuple[str, List[str]]:
         """Extracts plain text and link annotation URIs from raw PDF bytes safely using context manager."""
         pages_text = []
         pdf_links = []
-        with fitz.open(stream=pdf_bytes, filetype="pdf") as doc:
-            for p in doc:
-                pages_text.append(p.get_text())
-                for l in p.get_links():
-                    if l.get("uri"):
-                        pdf_links.append(l.get("uri"))
+        try:
+            with fitz.open(stream=pdf_bytes, filetype="pdf") as doc:
+                for p in doc:
+                    pages_text.append(p.get_text())
+                    for l in p.get_links():
+                        if l.get("uri"):
+                            pdf_links.append(l.get("uri"))
+        except Exception as e:
+            print(f"[ResumeParserService PDF Parse Notice] {e}")
+            # Fallback to DOCX parser if user provided a docx renamed as .pdf
+            docx_text = self.parse_docx_bytes(pdf_bytes)
+            if docx_text:
+                return docx_text, []
         
         text = "\n".join(pages_text).strip()
         if pdf_links:
             text += "\n\n=== EXTRACTED PDF ANNOTATION LINKS ===\n" + "\n".join(set(pdf_links))
         return text, pdf_links
+
+    def parse_document_bytes(self, file_bytes: bytes, filename: str) -> Tuple[str, List[str]]:
+        """Extracts text based on document file type."""
+        lower_name = (filename or "").lower()
+        if lower_name.endswith(".docx") or lower_name.endswith(".doc"):
+            docx_text = self.parse_docx_bytes(file_bytes)
+            if docx_text:
+                return docx_text, []
+        return self.parse_pdf_bytes(file_bytes)
 
     def _is_safe_url(self, url: str) -> bool:
         """Validates that a URL uses safe HTTP/HTTPS schemes and is not an internal or SSRF target."""
@@ -203,14 +236,14 @@ class ResumeParserService:
         return fb_exp, fb_edu, fb_proj
 
     async def _call_llm_parser(self, text: str) -> Dict[str, Any]:
-        """Helper to invoke LLM parser safely."""
+        """Helper to invoke LLM parser safely with dedicated 30s timeout and payload extraction."""
         try:
             from services.llm_service import get_llm_service
             llm = get_llm_service()
-            prompt = f"""You are a principal HR Resume Parser. Extract structured candidate profile from this resume:
+            prompt = f"""You are an elite technical resume parser. Extract structured candidate profile from this resume:
 
 Resume Text:
-{text[:8000]}
+{text[:6000]}
 
 Return valid JSON with exact structure:
 {{
@@ -250,35 +283,47 @@ Return valid JSON with exact structure:
     }}
   ]
 }}"""
-            resp = await llm.a_call_chat([{"role": "user", "content": prompt}], max_tokens=1800)
-            start_idx = resp.find("{")
-            end_idx = resp.rfind("}") + 1
-            if start_idx != -1 and end_idx > start_idx:
-                return json.loads(resp[start_idx:end_idx])
+            resp = await llm.a_call_chat([{"role": "user", "content": prompt}], max_tokens=900, timeout_secs=30.0)
+            parsed = NvidiaLLMService.extract_json_payload(resp)
+            if isinstance(parsed, dict):
+                return parsed
         except Exception as e:
             print(f"[ResumeParserService LLM Notice] {e}")
         return {}
 
-    async def process_resume_bytes(self, pdf_bytes: bytes, filename: str) -> Dict[str, Any]:
-        """Main orchestrator for resume parsing (<50 lines)."""
-        text, pdf_links = await asyncio.to_thread(self.parse_pdf_bytes, pdf_bytes)
+    async def process_resume_bytes(self, file_bytes: bytes, filename: str) -> Dict[str, Any]:
+        """Main orchestrator for resume parsing supporting PDF and DOCX."""
+        text, pdf_links = await asyncio.to_thread(self.parse_document_bytes, file_bytes, filename)
 
         common_tech = [
             "python", "java", "c++", "c#", "c", "rust", "golang", "go", "typescript", "javascript",
-            "react", "next.js", "vue", "angular", "node.js", "express", "fastapi", "django", "spring boot",
-            "aws", "gcp", "azure", "docker", "kubernetes", "sql", "postgresql", "mysql", "mongodb",
-            "redis", "pytorch", "tensorflow", "scikit-learn", "git", "linux", "html5", "css3", "tailwind"
+            "swift", "kotlin", "ruby", "rails", "php", "scala", "dart", "flutter",
+            "react", "next.js", "vue", "angular", "node.js", "express", "fastapi", "django", "flask",
+            "spring boot", "spring", "aws", "gcp", "azure", "docker", "kubernetes", "k8s", "terraform",
+            "ansible", "ci/cd", "github actions", "sql", "postgresql", "mysql", "mongodb", "redis",
+            "elasticsearch", "kafka", "spark", "hadoop", "graphql", "grpc", "rest api", "pytorch",
+            "tensorflow", "scikit-learn", "git", "linux", "html5", "css3", "tailwind", "figma",
+            "jira", "agile", "scrum"
         ]
         lower = text.lower()
         extracted_skills = [s for s in common_tech if s in lower]
 
         email_match = re.search(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', text)
-        phone_match = re.search(r'(?:(?:\+|0{0,2})\d{1,3}[\s-]*)?(?:\(?\d{2,5}\)?[\s-]*)?\d{3,4}[\s-]*\d{4}', text)
+        phone_match = re.search(r'(?:(?:\+|00)\d{1,3}[-\s.]*)?(?:\(?\d{2,5}\)?[-\s.]*)?\d{3,5}[-\s.]*\d{4,5}', text)
         lines = [line.strip() for line in text.splitlines() if line.strip()]
-        candidate_name = lines[0] if lines and len(lines[0].split()) <= 4 else "Candidate"
+        
+        # Heuristic candidate name ignoring common headers/watermarks
+        ignore_names = {"resume", "curriculum vitae", "cv", "confidential", "profile", "page 1", "contact", "summary", "experience", "education"}
+        candidate_name = "Candidate"
+        for l in lines[:5]:
+            l_clean = l.strip()
+            if l_clean.lower() not in ignore_names and len(l_clean.split()) <= 4 and re.match(r'^[A-Za-z\s.\'-]+$', l_clean) and len(l_clean) >= 3:
+                candidate_name = l_clean
+                break
         
         email = email_match.group(0) if email_match else ""
-        phone = phone_match.group(0) if phone_match else ""
+        raw_phone = phone_match.group(0).strip() if phone_match else ""
+        phone = raw_phone if sum(c.isdigit() for c in raw_phone) >= 10 else ""
         headline = "Software Engineer"
         summary = " ".join(lines[1:4]) if len(lines) > 1 else ""
 

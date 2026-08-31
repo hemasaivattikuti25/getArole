@@ -160,7 +160,7 @@
       max-width: 1500px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
     }
     .search-input-wrap {
-      flex: 1; min-width: 280px; position: relative; display: flex; align-items: center;
+      flex: 1; min-width: 0; position: relative; display: flex; align-items: center;
     }
     .search-icon {
       position: absolute; left: 12px; width: 16px; height: 16px; color: var(--text-subtle); pointer-events: none;
@@ -204,10 +204,16 @@
     @media (max-width: 900px) {
       .jobs-split-container {
         height: auto;
-        min-height: auto;
+        min-height: calc(100dvh - 120px);
         flex: 1 0 auto;
         grid-template-columns: 1fr;
       }
+      .jobs-feed-col {
+        min-height: calc(100dvh - 120px);
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .feed-list { overflow-y: visible; }
     }
 
     .jobs-feed-col {
@@ -443,15 +449,36 @@
     @media (max-width: 900px) {
       .jobs-split-container { grid-template-columns: 1fr; }
       .job-detail-col { display: none; }
-      .home-hero-card { flex-direction: column; align-items: flex-start; }
+      .home-hero-card { flex-direction: column; align-items: flex-start; padding: 20px 18px; }
+      .home-hero-title { font-size: 20px; }
+      .home-hero-sub { font-size: 13px; }
+    }
+    @media (max-width: 768px) {
+      .header-inner { padding: 0 12px; }
+      .brand-group { gap: 8px; }
+      .user-name-text { display: none; }
+      .btn-refresh .btn-refresh-text { display: none; }
+      .btn-refresh { padding: 7px 10px; }
+      .filter-bar { padding: 10px 12px; }
+      .filter-inner { gap: 8px; }
+      .search-input-wrap { min-width: 0; }
+      .filter-pills-row { flex-wrap: wrap; gap: 6px; }
     }
     @media (max-width: 480px) {
-      .header-inner { padding: 0 12px; }
-      .brand-group { gap: 12px; }
-      .nav-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; max-width: calc(100vw - 120px); }
+      .header-inner { padding: 0 10px; }
+      .brand-group { gap: 6px; }
+      .brand-title { font-size: 16px; }
+      .nav-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; max-width: calc(100vw - 130px); }
       .nav-tabs::-webkit-scrollbar { display: none; }
-      .nav-tab { padding: 6px 10px; font-size: 12px; flex-shrink: 0; }
+      .nav-tab { padding: 5px 8px; font-size: 11.5px; flex-shrink: 0; }
+      .nav-badge { font-size: 10px; padding: 1px 5px; }
+      .header-actions { gap: 6px; }
       input, select, textarea, .filter-dropdown, .search-input { font-size: 16px !important; }
+      .home-hero-card { padding: 16px; }
+      .stats-cards-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .stat-metric-card { padding: 14px; gap: 10px; }
+      .stat-metric-icon { width: 36px; height: 36px; font-size: 16px; }
+      .stat-metric-num { font-size: 20px; }
     }
     @supports (padding-bottom: env(safe-area-inset-bottom)) {
       body { padding-bottom: env(safe-area-inset-bottom, 0px); }
@@ -593,17 +620,18 @@
       body, html { overflow-x: hidden !important; }
       
       /* Typography Clamps Override for extremely small screens */
-      h1, .hero-title { font-size: clamp(32px, 8vw, 50px) !important; line-height: 1.1 !important; word-wrap: break-word !important; }
-      h2 { font-size: clamp(24px, 6vw, 36px) !important; line-height: 1.2 !important; }
+      h1, .hero-title { font-size: clamp(22px, 6vw, 50px) !important; line-height: 1.1 !important; word-wrap: break-word !important; }
+      h2 { font-size: clamp(18px, 5vw, 36px) !important; line-height: 1.2 !important; }
       
       /* Glass panel padding reduction */
       .glass-panel-light { padding: 16px !important; border-radius: 16px !important; }
       
       /* Grids -> Single Column */
-      .form-grid, .grid, .metrics-grid, .bento-grid, .cat-grid, .jobs-split-container { 
+      .form-grid, .grid, .metrics-grid, .bento-grid, .cat-grid { 
         grid-template-columns: 1fr !important; 
         height: auto !important; 
       }
+      .jobs-split-container { grid-template-columns: 1fr !important; height: auto !important; min-height: calc(100dvh - 120px) !important; }
       .bento-col-2 { grid-column: span 1 !important; }
       
       /* Horizontal Scroll Setup for Kanban/Boards */
@@ -627,8 +655,9 @@
       .nav-links, .nav-actions { display: none !important; }
       .nav-inner { padding: 12px 16px !important; }
       
-      /* Footer */
-      .footer-grid, .footer-inner { grid-template-columns: 1fr !important; gap: 24px !important; }
+      /* Footer - force single column even with inline styles */
+      .footer-grid, .footer-inner, footer > div:first-child { grid-template-columns: 1fr !important; gap: 20px !important; }
+      footer .footer-inner { grid-template-columns: 1fr !important; }
       
       /* Modals */
       .modal-content, #preferences-modal > div {
@@ -674,7 +703,7 @@
 
       <div class="header-actions">
         <button class="btn-refresh" id="btn-refresh-scrape" onclick="typeof triggerScrape === 'function' ? triggerScrape() : window.location.reload()">
-          Sync
+          <span class="btn-refresh-text">Sync</span>
         </button>
 
         <div class="user-profile-btn" onclick="document.getElementById('user-dropdown') && document.getElementById('user-dropdown').classList.toggle('show')">
@@ -712,11 +741,12 @@
           </div>
         </div>
       </div>
+    </div>
   </main>
 
     <!-- ════════════════════ GLOBAL ENTERPRISE FOOTER (COMPACT) ════════════════════ -->
   <footer class="global-footer" style="background:#ffffff; border-top:1px solid #e2e8f0; padding:28px 24px 20px; margin-top:auto; font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;">
-    <div class="footer-inner" style="max-width:1240px; margin:0 auto; display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:24px; margin-bottom:20px;">
+    <div class="footer-inner" style="max-width:1240px; margin:0 auto; display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:24px; margin-bottom:20px; min-width:0;">
       <div>
         <a href="/" class="brand-group" style="display:inline-flex; align-items:center; gap:8px; text-decoration:none; margin-bottom:8px;">
           <img src="/logo.svg" alt="getArole Logo" style="width:28px; height:28px; border-radius:7px; box-shadow:0 2px 8px rgba(79,70,229,0.2);">

@@ -80,8 +80,11 @@ class ResumeMatcher:
         if not jobs:
             return []
         
-        # Generate resume embedding
-        resume_emb = list(self.embed_model.embed([resume_text]))[0]
+        # Generate resume embedding with clamped length
+        safe_resume_text = (resume_text or "").strip()[:4000]
+        if not safe_resume_text:
+            safe_resume_text = "Software Engineer"
+        resume_emb = list(self.embed_model.embed([safe_resume_text]))[0]
         
         # Prepare job texts
         job_texts = []

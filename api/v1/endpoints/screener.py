@@ -1,5 +1,8 @@
 import os
 import shutil
+import tempfile
+import uuid
+import asyncio
 from typing import List
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from domain.models import ApiResponse, CandidateScreeningReport
@@ -18,14 +21,17 @@ async def screen_resumes(
     temp_files = []
     try:
         pdf_tuples = []
+        temp_dir = tempfile.gettempdir()
         for file in files:
-            temp_path = f"/tmp/enterprise_screen_{file.filename}"
+            safe_filename = os.path.basename(file.filename or f"resume_{uuid.uuid4().hex[:8]}.pdf")
+            temp_path = os.path.join(temp_dir, f"enterprise_screen_{uuid.uuid4().hex[:8]}_{safe_filename}")
             with open(temp_path, "wb") as buffer:
                 shutil.copyfileobj(file.file, buffer)
             temp_files.append(temp_path)
-            pdf_tuples.append((temp_path, file.filename))
+            pdf_tuples.append((temp_path, safe_filename))
             
-        reports: List[CandidateScreeningReport] = ScreeningService.screen_bulk_resumes(
+        reports: List[CandidateScreeningReport] = await asyncio.to_thread(
+            ScreeningService.screen_bulk_resumes,
             pdf_tuples=pdf_tuples,
             job_description=job_description
         )
@@ -44,4 +50,7 @@ async def screen_resumes(
     finally:
         for p in temp_files:
             if os.path.exists(p):
-                os.remove(p)
+                try:
+                    os.remove(p)
+                except Exception:
+                    pass

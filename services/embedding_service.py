@@ -33,7 +33,15 @@ class EmbeddingService:
 
     def embed_texts(self, texts: List[str]) -> List[np.ndarray]:
         # FastEmbed returns an iterator over numpy vectors
-        return list(self.model.embed(texts))
+        if not texts:
+            return []
+        if self.model is None:
+            return [np.zeros(384, dtype=np.float32) for _ in texts]
+        try:
+            return list(self.model.embed(texts))
+        except Exception as e:
+            print(f"[EmbeddingService Error] embed_texts failure: {e}")
+            return [np.zeros(384, dtype=np.float32) for _ in texts]
 
     def compute_cosine_similarity(self, vec1: np.ndarray, vec2: np.ndarray) -> float:
         dot = np.dot(vec1, vec2)

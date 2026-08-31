@@ -249,6 +249,40 @@
     }
     .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3.5px rgba(79, 70, 229, 0.12); }
 
+    .form-grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 640px) {
+      .form-grid-2col {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+    }
+
+    /* Shimmer Skeleton Loaders */
+    .skeleton-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .skeleton-line {
+      height: 14px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 200% 100%;
+      animation: shimmerAnim 1.6s infinite ease-in-out;
+    }
+    .skeleton-title { height: 20px; width: 40%; margin-bottom: 16px; }
+    @keyframes shimmerAnim {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
     /* Modal Footer */
     .modal-footer {
       padding: 20px 60px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;
@@ -262,9 +296,10 @@
     
     .form-label { display: block; font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
     .kv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;}
+    @media (max-width: 640px) { .kv-grid { grid-template-columns: 1fr !important; gap: 10px !important; } }
     .kv-item { font-size: 14px;}
     .kv-label { color: var(--text-muted); font-weight: 600; margin-bottom: 2px; font-size: 12.5px; }
-    .kv-value { color: var(--text-main); font-weight: 700; }
+    .kv-value { color: var(--text-main); font-weight: 700; word-break: break-word; }
 
     .salary-slider {
       -webkit-appearance: none; width: 100%; height: 6px; background: var(--border-strong);
@@ -412,8 +447,8 @@
       body, html { overflow-x: hidden !important; }
       
       /* Typography Clamps Override for extremely small screens */
-      h1, .hero-title { font-size: clamp(32px, 8vw, 50px) !important; line-height: 1.1 !important; word-wrap: break-word !important; }
-      h2 { font-size: clamp(24px, 6vw, 36px) !important; line-height: 1.2 !important; }
+      h1, .hero-title { font-size: clamp(22px, 6vw, 44px) !important; line-height: 1.15 !important; word-wrap: break-word !important; }
+      h2 { font-size: clamp(18px, 5vw, 32px) !important; line-height: 1.2 !important; }
       
       /* Glass panel padding reduction */
       .glass-panel-light { padding: 16px !important; border-radius: 16px !important; }
@@ -424,6 +459,67 @@
         height: auto !important; 
       }
       .bento-col-2 { grid-column: span 1 !important; }
+
+      /* Modals & Dialogs on Mobile */
+      .modal-overlay { padding: 8px !important; }
+      .modal-window {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 94dvh !important;
+        max-height: 94dvh !important;
+        border-radius: 16px !important;
+      }
+      .modal-body {
+        flex-direction: column !important;
+      }
+      .modal-sidebar {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 52px !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        border-right: none !important;
+        border-bottom: 1px solid var(--border) !important;
+        padding: 6px 8px !important;
+        gap: 6px;
+        white-space: nowrap !important;
+        -webkit-overflow-scrolling: touch;
+      }
+      .modal-sidebar::-webkit-scrollbar { display: none; }
+      .tab-link {
+        padding: 6px 12px !important;
+        font-size: 12.5px !important;
+        border-left: none !important;
+        border-bottom: 2.5px solid transparent !important;
+        border-radius: 6px !important;
+        flex-shrink: 0 !important;
+      }
+      .tab-link.active {
+        border-left: none !important;
+        border-bottom-color: var(--primary) !important;
+        background: var(--primary-light) !important;
+      }
+      .modal-scroll-area {
+        padding: 16px 14px !important;
+      }
+      .modal-footer {
+        padding: 12px 14px !important;
+      }
+      .step-title {
+        font-size: 20px !important;
+        margin-bottom: 6px !important;
+      }
+      .step-subtitle {
+        font-size: 13px !important;
+        margin-bottom: 20px !important;
+      }
+      .options-grid {
+        grid-template-columns: 1fr !important;
+      }
+      .options-grid.cols-3 {
+        grid-template-columns: 1fr 1fr !important;
+      }
       
       /* Horizontal Scroll Setup for Kanban/Boards */
       .kanban-board, .board, #kanban-board, .pipeline-board, .board-container { 
@@ -447,15 +543,8 @@
       .nav-inner { padding: 12px 16px !important; }
       
       /* Footer */
-      .footer-grid, .footer-inner { grid-template-columns: 1fr !important; gap: 24px !important; }
-      
-      /* Modals */
-      .modal-content, #preferences-modal > div {
-        width: 95vw !important;
-        max-height: 95vh !important;
-        padding: 16px !important;
-        margin: 0 !important;
-      }
+      .footer-grid, .footer-inner { grid-template-columns: 1fr !important; gap: 20px !important; }
+      footer .footer-inner { grid-template-columns: 1fr !important; }
       
       /* Profile / Resume Editor specific */
       .split-layout, .editor-layout { flex-direction: column !important; }
@@ -517,7 +606,7 @@
     <!-- Left Column -->
     <aside class="left-col">
       <div class="profile-card">
-        <button class="edit-prof-btn" onclick="scrollToSection('section-personal')">✏️</button>
+        <button class="edit-prof-btn" onclick="scrollToSection('section-personal')" aria-label="Edit personal details">✏️</button>
         <div class="avatar-lg" id="prof-avatar">?</div>
         <h1 class="prof-name" id="disp-name">Your Name</h1>
         <p class="prof-headline" id="disp-headline">Add your headline</p>
@@ -806,21 +895,21 @@
         
         <!-- Personal Info Form -->
         <div id="form-personal" style="display: none;">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-            <div><label class="form-label">First Name *</label><input type="text" id="pi-first" class="form-input"></div>
-            <div><label class="form-label">Last Name *</label><input type="text" id="pi-last" class="form-input"></div>
-            <div><label class="form-label">Preferred Name (Optional)</label><input type="text" id="pi-pref" class="form-input"></div>
-            <div><label class="form-label">Suffix Name (Optional)</label><input type="text" id="pi-suffix" class="form-input"></div>
-            <div><label class="form-label">Email Address</label><input type="email" id="pi-email" class="form-input"></div>
-            <div><label class="form-label">Date of Birth</label><input type="date" id="pi-dob" class="form-input"></div>
-            <div><label class="form-label">Phone</label><input type="tel" id="pi-phone" class="form-input" placeholder="+91 98765 43210"></div>
-            <div><label class="form-label">Location</label><input type="text" id="pi-loc" class="form-input" placeholder="Bengaluru, Karnataka, India"></div>
+          <div class="form-grid-2col" style="margin-bottom:16px;">
+            <div><label class="form-label" for="pi-first">First Name *</label><input type="text" id="pi-first" class="form-input"></div>
+            <div><label class="form-label" for="pi-last">Last Name *</label><input type="text" id="pi-last" class="form-input"></div>
+            <div><label class="form-label" for="pi-pref">Preferred Name (Optional)</label><input type="text" id="pi-pref" class="form-input"></div>
+            <div><label class="form-label" for="pi-suffix">Suffix Name (Optional)</label><input type="text" id="pi-suffix" class="form-input"></div>
+            <div><label class="form-label" for="pi-email">Email Address</label><input type="email" id="pi-email" class="form-input"></div>
+            <div><label class="form-label" for="pi-dob">Date of Birth</label><input type="date" id="pi-dob" class="form-input"></div>
+            <div><label class="form-label" for="pi-phone">Phone</label><input type="tel" id="pi-phone" class="form-input" placeholder="+91 98765 43210"></div>
+            <div><label class="form-label" for="pi-loc">Location</label><input type="text" id="pi-loc" class="form-input" placeholder="Bengaluru, Karnataka, India"></div>
           </div>
-          <label class="form-label">Address</label><input type="text" id="pi-add1" class="form-input" style="margin-bottom:16px;">
-          <label class="form-label">Address Line 2</label><input type="text" id="pi-add2" class="form-input" style="margin-bottom:16px;">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-            <div><label class="form-label">Address Line 3</label><input type="text" id="pi-add3" class="form-input"></div>
-            <div><label class="form-label">Postal Code</label><input type="text" id="pi-zip" class="form-input"></div>
+          <label class="form-label" for="pi-add1">Address</label><input type="text" id="pi-add1" class="form-input" style="margin-bottom:16px;">
+          <label class="form-label" for="pi-add2">Address Line 2</label><input type="text" id="pi-add2" class="form-input" style="margin-bottom:16px;">
+          <div class="form-grid-2col">
+            <div><label class="form-label" for="pi-add3">Address Line 3</label><input type="text" id="pi-add3" class="form-input"></div>
+            <div><label class="form-label" for="pi-zip">Postal Code</label><input type="text" id="pi-zip" class="form-input"></div>
           </div>
         </div>
 
@@ -1617,9 +1706,37 @@
       renderStaticCards();
     }
 
+    function renderSkeletons() {
+      const staticContainer = document.getElementById('static-cards-container');
+      const summaryContainer = document.getElementById('summary-cards-container');
+      if (staticContainer && (!staticContainer.innerHTML || staticContainer.innerHTML.trim() === '')) {
+        staticContainer.innerHTML = `
+          <div class="skeleton-card">
+            <div class="skeleton-line skeleton-title"></div>
+            <div class="skeleton-line" style="width:85%"></div>
+            <div class="skeleton-line" style="width:65%"></div>
+          </div>
+          <div class="skeleton-card">
+            <div class="skeleton-line skeleton-title"></div>
+            <div class="skeleton-line" style="width:90%"></div>
+            <div class="skeleton-line" style="width:75%"></div>
+          </div>
+        `;
+      }
+      if (summaryContainer && (!summaryContainer.innerHTML || summaryContainer.innerHTML.trim() === '')) {
+        summaryContainer.innerHTML = `
+          <div class="skeleton-card">
+            <div class="skeleton-line skeleton-title"></div>
+            <div class="skeleton-line" style="width:60%"></div>
+          </div>
+        `;
+      }
+    }
+
     // ── SUMMARY VIEW (DASHBOARD) ──
     function renderSummaryCards() {
       const container = document.getElementById('summary-cards-container');
+      if (!container) return;
       let html = '';
       
       const keys = [
@@ -1642,7 +1759,7 @@
           <div class="summary-card">
             <div class="summary-card-header">
               <h3 class="summary-card-title">${k.title}</h3>
-              <button class="edit-icon-btn" onclick="openModal(${k.id})">✏️</button>
+              <button class="edit-icon-btn" onclick="openModal(${k.id})" aria-label="Edit ${k.title}">✏️</button>
             </div>
             ${chipHtml}
           </div>
@@ -1869,6 +1986,7 @@
       document.getElementById('salary-display-currency').textContent = curr;
     }
 
+    renderSkeletons();
     initData();
   </script>
 
