@@ -2216,10 +2216,21 @@
       }).join('');
     }
 
+        // Close mobile JD overlay and go back to feed
+        window.closeMobileJD = function() {
+          document.body.classList.remove('mobile-jd-open');
+        };
+
         function selectJob(id, targetPaneId = 'job-detail-pane') {
       selectedJobId = id;
       const job = allJobs.find(j => j.id === id);
       if (!job) return;
+      
+      // ── MOBILE: open the JD overlay panel ──
+      if (window.innerWidth <= 768) {
+        document.body.classList.add('mobile-jd-open');
+        window.scrollTo(0, 0);
+      }
       
       const detailCol = document.getElementById(targetPaneId);
       if (detailCol) detailCol.scrollTop = 0;
@@ -2239,6 +2250,9 @@
       const compInitial = job.company ? job.company[0].toUpperCase() : 'G';
 
       pane.innerHTML = `
+        <button class="mobile-jd-back-btn" onclick="closeMobileJD()" type="button">
+          ← Back to Jobs
+        </button>
         <div class="detail-actions-bar">
           <div class="detail-tabs">
             <span class="detail-tab active">Overview</span>

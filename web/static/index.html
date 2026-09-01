@@ -1025,9 +1025,9 @@
     }
 
   </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="/static/js/mobile-nav.js?v=3"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+    <script src="/static/js/mobile-nav.js?v=3" defer></script>
 </head>
 <body>
 
@@ -1062,9 +1062,10 @@
           <div class="pulse-dot"></div>
           <span>1,000+ Verified Jobs</span>
         </div>
-        <button onclick="requireAuthAndProceed('/explore')" class="btn btn-secondary">Explore Jobs</button>
-        <button onclick="openAuthModal(false)" class="btn btn-primary">Sign In →</button>
+        <button onclick="requireAuthAndProceed('/explore/')" class="btn btn-secondary">Explore Jobs</button>
       </div>
+      <!-- Sign In always visible on mobile -->
+      <button onclick="openAuthModal(false)" class="btn btn-primary" style="white-space:nowrap;">Sign In →</button>
     </div>
   </header>
 
@@ -1813,31 +1814,43 @@
     }
 
     window.handleGoogleSignIn = async function() {
+      const btn = document.getElementById('btn-google-login');
+      if (btn) { btn.disabled = true; btn.textContent = 'Signing in...'; }
       const res = await loginWithGoogle();
       if (res.success) {
         await hydrateAndRedirect(res.user, false);
       } else {
         showError(res.error);
+        if (btn) { btn.disabled = false; btn.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18" alt="Google"> Continue with Google'; }
       }
     };
 
     window.handleEmailAuth = async function(e) {
       e.preventDefault();
+      const btn = document.getElementById('btn-submit-auth');
+      const origText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'Loading...';
+      
       const email = document.getElementById('auth-email').value;
       const pass = document.getElementById('auth-password').value;
       const name = document.getElementById('auth-name').value;
 
       let res;
-      if (isSignUp) {
-        res = await signupWithEmail(email, pass, name);
-      } else {
-        res = await loginWithEmail(email, pass);
-      }
-
-      if (res.success) {
-        await hydrateAndRedirect(res.user, isSignUp);
-      } else {
-        showError(res.error);
+      try {
+        if (isSignUp) {
+          res = await signupWithEmail(email, pass, name);
+        } else {
+          res = await loginWithEmail(email, pass);
+        }
+        if (res.success) {
+          await hydrateAndRedirect(res.user, isSignUp);
+        } else {
+          showError(res.error);
+        }
+      } finally {
+        btn.disabled = false;
+        btn.textContent = origText;
       }
     };
 
@@ -1864,7 +1877,7 @@
       else if (q) queryStr = q;
       else if (loc) queryStr = loc;
       
-      window.location.href = `/explore${queryStr ? '?q=' + encodeURIComponent(queryStr) : ''}`;
+      window.location.href = `/explore/${queryStr ? '?q=' + encodeURIComponent(queryStr) : ''}`;
     };
 
     // Enter key handler on search bar
