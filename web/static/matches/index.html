@@ -1337,6 +1337,24 @@
     <!-- ════════════════════ MAIN CONTENT ════════════════════ -->
   <main id="main-content">
     <div id="view-matches" class="page-view active">
+      <!-- ════════════════════ SEARCH & FILTER BAR (SIMPLIFY STYLE) ════════════════════ -->
+      <div class="filter-bar" id="filter-bar" style="display:block;">
+        <div class="filter-inner">
+          <div class="search-input-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="main-search-input" class="search-input" placeholder="Search matches by role, company, or skill..." oninput="filterJobs()">
+          </div>
+          <div class="filter-pills-row">
+            <button class="filter-pill" id="pill-remote" onclick="togglePillFilter('remote')">📍 Remote</button>
+            <button class="filter-pill" id="pill-bengaluru" onclick="togglePillFilter('bengaluru')">🏙️ Bengaluru</button>
+            <button class="filter-pill" id="pill-hyderabad" onclick="togglePillFilter('hyderabad')">🏙️ Hyderabad</button>
+            <button class="filter-pill" id="pill-intern" onclick="togglePillFilter('internship')">⚡ Internship</button>
+            <button class="filter-pill" id="pill-fulltime" onclick="togglePillFilter('fulltime')">💼 Full-time</button>
+            <button class="btn-clear-filters" onclick="clearAllFilters()">Clear</button>
+          </div>
+        </div>
+      </div>
+
       <div class="jobs-split-container">
         <!-- Left Column: Top Matched Jobs List -->
         <div class="jobs-feed-col">
@@ -2048,10 +2066,10 @@
       const btn = document.getElementById(pillMap[filterKey]);
       if (activePills.has(filterKey)) {
         activePills.delete(filterKey);
-        btn.classList.remove('active');
+        if (btn) btn.classList.remove('active');
       } else {
         activePills.add(filterKey);
-        btn.classList.add('active');
+        if (btn) btn.classList.add('active');
       }
       filterJobs();
     }

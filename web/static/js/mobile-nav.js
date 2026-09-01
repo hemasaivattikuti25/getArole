@@ -333,31 +333,6 @@
         font-weight: 700 !important;
       }
 
-      /* Floating/Sticky Back to Jobs button */
-      .mobile-jd-back-btn {
-        display: none;
-      }
-
-      body.mobile-jd-open .mobile-jd-back-btn {
-        display: flex !important;
-        align-items: center !important;
-        gap: 8px !important;
-        width: calc(100% - 32px) !important;
-        margin: 12px 16px !important;
-        padding: 10px 16px !important;
-        background: #f8fafc !important;
-        border: 1.5px solid #cbd5e1 !important;
-        border-radius: 12px !important;
-        font-size: 14px !important;
-        font-weight: 700 !important;
-        color: #0f172a !important;
-        cursor: pointer !important;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.04) !important;
-      }
-
-      body.mobile-jd-open .mobile-jd-back-btn:active {
-        background: #e2e8f0 !important;
-      }
     }
 
     @media (min-width: 769px) {
@@ -469,27 +444,11 @@
       drawer.querySelector('.mobile-nav-close-btn').addEventListener('click', toggleDrawer);
     }
 
-    // D. Setup Mobile Back Button for JD Pane
-    let backBtn = document.querySelector('.mobile-jd-back-btn');
-    if (!backBtn) {
-      backBtn = document.createElement('button');
-      backBtn.className = 'mobile-jd-back-btn';
-      backBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg> ← Back to Job List';
-      
-      const detailPane = document.getElementById('job-detail-pane') || document.getElementById('matches-detail-pane') || document.querySelector('.job-detail-col');
-      if (detailPane && detailPane.parentNode) {
-        detailPane.parentNode.insertBefore(backBtn, detailPane);
-      } else {
-        document.body.appendChild(backBtn);
-      }
-
-      backBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        document.body.classList.remove('mobile-jd-open');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    }
+    // D. Global mobile JD close helper
+    window.closeMobileJD = function () {
+      document.body.classList.remove('mobile-jd-open');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
   }
 
   function toggleDrawer() {
