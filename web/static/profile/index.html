@@ -1179,10 +1179,23 @@
         const formData = new FormData();
         formData.append('file', file);
 
+        let serverErrorMsg = null;
         const res = await fetch('/api/match-resume', {
           method: 'POST',
           body: formData
-        }).catch(() => null);
+        }).catch(err => {
+          serverErrorMsg = err.message;
+          return null;
+        });
+
+        if (res && !res.ok) {
+           try {
+               const errData = await res.json();
+               serverErrorMsg = errData.detail || errData.error || `HTTP ${res.status}`;
+           } catch(e) {
+               serverErrorMsg = `HTTP ${res.status}`;
+           }
+        }
 
         if (res && res.ok) {
           const data = await res.json();
@@ -1197,7 +1210,7 @@
           resumeText = await extractTextFromPDFClient(file);
           
           if (!resumeText) {
-            throw new Error('Could not extract text from this document.');
+            throw new Error(serverErrorMsg ? `Server error: ${serverErrorMsg}. Client fallback also failed.` : 'Could not extract text from this document.');
           }
 
           // Client taxonomy skill extractor
@@ -1316,7 +1329,7 @@
         alert(`✅ Resume analyzed!\n${(parsedProf.skills || []).length} skills, ${expCount} work experiences, ${eduCount} education entries, ${projCount} projects, ${linksCount} portfolio links extracted.`);
       } catch (err) {
         console.error('Resume upload error:', err);
-        alert('Could not parse resume file. Please ensure it is a valid text PDF or Word document.');
+        alert(err.message.includes('Server error') ? err.message : 'Could not parse resume file. Please ensure it is a valid text PDF or Word document.');
       } finally {
         promoBtns.forEach(b => b.textContent = 'Upload Resume');
         e.target.value = '';
@@ -2120,6 +2133,8 @@
       }
     });
   </script>
+  <!-- Load PDF.js for client-side resume parsing fallback -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </body>
 
 </html>
