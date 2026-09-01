@@ -253,16 +253,41 @@
         display: none !important;
       }
 
-      /* When body has .mobile-jd-open, hide the feed and show the JD */
+      /* When body has .mobile-jd-open, lock scroll and show fixed JD sheet with sticky top buttons */
+      body.mobile-jd-open {
+        overflow: hidden !important;
+      }
       body.mobile-jd-open .jobs-feed-col {
         display: none !important;
       }
-
       body.mobile-jd-open .job-detail-col {
-        display: block !important;
-        width: 100% !important;
-        min-height: calc(100vh - 120px) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        z-index: 9999 !important;
         background: #ffffff !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 0 16px 80px !important;
+      }
+      body.mobile-jd-open .jd-sticky-header {
+        position: sticky !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 10000 !important;
+        background: #ffffff !important;
+        margin: 0 -16px 16px -16px !important;
+        padding: 12px 16px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
       }
 
       /* Sleek Filter Bar on Mobile */
