@@ -280,7 +280,7 @@
     /* ══════════════ SIMPLIFY-INSPIRED PREMIUM DETAIL & BUTTON SYSTEM ══════════════ */
     .jd-top-bar {
       display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--border, #e2e8f0); padding-bottom: 16px; margin-bottom: 20px;
+      border-bottom: 1px solid var(--border, #e2e8f0); padding-bottom: 14px; margin-bottom: 16px;
     }
     .mobile-jd-back-btn {
       display: none; align-items: center; gap: 6px;
@@ -298,8 +298,15 @@
     }
     .detail-tab.active { color: var(--primary); }
     .detail-tab.active::after {
-      content:''; position: absolute; bottom: -17px; left: 0; right: 0; height: 2.5px; background: var(--primary);
+      content:''; position: absolute; bottom: -15px; left: 0; right: 0; height: 2.5px; background: var(--primary);
     }
+
+    /* ── TOP ACTION BAR (DIRECTLY DOWN TO OVERVIEW) ── */
+    .top-action-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 4px 0 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border, #e2e8f0);
+    }
+    .top-action-group { display: flex; align-items: center; gap: 8px; }
 
     .detail-sticky-bar {
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
@@ -352,6 +359,15 @@
     }
     .btn-apply-primary:active { transform: scale(0.97); }
 
+    .btn-apply-linkedin {
+      background: linear-gradient(135deg, #0a66c2 0%, #004182 100%) !important;
+      box-shadow: 0 4px 14px rgba(10, 102, 194, 0.35) !important;
+    }
+    .btn-apply-linkedin:hover {
+      background: linear-gradient(135deg, #004182 0%, #00274f 100%) !important;
+      box-shadow: 0 6px 18px rgba(10, 102, 194, 0.45) !important;
+    }
+
     .referral-dropdown {
       position: absolute; top: calc(100% + 8px); right: 0; width: 220px;
       background: var(--surface); border: 1px solid var(--border);
@@ -374,6 +390,15 @@
       background: var(--primary-light); border: 1px solid var(--primary-border);
       padding: 4px 10px; border-radius: 6px; margin-bottom: 12px;
     }
+
+    .linkedin-badge {
+      display: inline-flex !important; align-items: center !important; gap: 8px !important;
+      background: #f0f7ff !important; border: 1.5px solid #0a66c2 !important; color: #0a66c2 !important;
+      padding: 6px 14px !important; border-radius: 99px !important; font-size: 13px !important;
+      font-weight: 800 !important; box-shadow: 0 2px 10px rgba(10, 102, 194, 0.15) !important;
+      margin-bottom: 14px !important; letter-spacing: -0.01em !important;
+    }
+    .linkedin-badge svg { flex-shrink: 0; }
     .detail-job-title { font-size: 26px; font-weight: 800; color: var(--text-main); margin-bottom: 6px; }
     .detail-company-line { font-size: 15px; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
 
@@ -2084,25 +2109,78 @@
       if (filteredJobs.length > 0) selectJob(filteredJobs[0].id);
     }
 
+    const SYNONYM_MAP = {
+      'sde': ['sde', 'software development engineer', 'software engineer', 'software dev'],
+      'swe': ['swe', 'software engineer', 'software development engineer'],
+      'ml': ['ml', 'machine learning'],
+      'ai': ['ai', 'artificial intelligence', 'genai', 'llm'],
+      'qa': ['qa', 'quality assurance', 'sdet', 'test engineer', 'testing'],
+      'sdet': ['sdet', 'software development engineer in test', 'qa automation'],
+      'devops': ['devops', 'site reliability', 'sre', 'cloud infrastructure'],
+      'sre': ['sre', 'site reliability engineer', 'devops'],
+      'wfh': ['wfh', 'work from home', 'remote'],
+      'intern': ['intern', 'internship', 'trainee', 'co-op', 'apprentice'],
+      'fresher': ['fresher', 'entry level', 'graduate', 'batch 2024', 'batch 2025', 'batch 2026', '0-1']
+    };
+
     function filterJobs() {
       const sInput = document.getElementById('main-search-input');
       const q = sInput ? sInput.value.toLowerCase().trim() : '';
       
       filteredJobs = allJobs.filter(j => {
-        const textMatch = !q || `${j.title} ${j.company} ${j.location} ${j.description}`.toLowerCase().includes(q);
+        const title = (j.title || '').toLowerCase();
+        const company = (j.company || '').toLowerCase();
+        const location = (j.location || '').toLowerCase();
+        const city = (j.city || '').toLowerCase();
+        const desc = (j.description || '').toLowerCase();
+        const empType = (j.employment_type || '').toLowerCase();
+        const workType = (j.workplace_type || '').toLowerCase();
+        const platform = (j.platform || '').toLowerCase();
+        const allText = `${title} ${company} ${location} ${city} ${empType} ${workType} ${platform} ${desc}`;
+
+        // 1. Search Query Input (Smart synonym & token matching)
+        if (q) {
+          const qWords = q.split(/\s+/).filter(Boolean);
+          const matchesQ = qWords.every(token => {
+            const expansions = SYNONYM_MAP[token] || [token];
+            return expansions.some(exp => allText.includes(exp));
+          });
+          if (!matchesQ) return false;
+        }
         
-        let pillMatch = true;
-        if (activePills.has('remote') && !(j.workplace_type || '').toLowerCase().includes('remote')) pillMatch = false;
-        if (activePills.has('bengaluru') && !(j.location || '').toLowerCase().includes('bengaluru') && !(j.city || '').toLowerCase().includes('bengaluru')) pillMatch = false;
-        if (activePills.has('hyderabad') && !(j.location || '').toLowerCase().includes('hyderabad') && !(j.city || '').toLowerCase().includes('hyderabad')) pillMatch = false;
-        if (activePills.has('internship') && !(j.employment_type || '').toLowerCase().includes('intern')) pillMatch = false;
-        if (activePills.has('fulltime') && !(j.employment_type || '').toLowerCase().includes('full')) pillMatch = false;
-        if (activePills.has('parttime')) {
-          const pt = `${j.employment_type || ''} ${j.title || ''} ${j.description || ''}`.toLowerCase();
-          if (!pt.includes('part') && !pt.includes('contract') && !pt.includes('freelance') && !pt.includes('fractional')) pillMatch = false;
+        // 2. Pill Filters with Regex Word-Boundaries
+        if (activePills.has('remote')) {
+          const isRemote = /\b(remote|wfh|work\s*from\s*home|anywhere)\b/i.test(`${location} ${workType} ${desc}`);
+          if (!isRemote) return false;
         }
 
-        return textMatch && pillMatch;
+        if (activePills.has('bengaluru')) {
+          const isBlr = /\b(bengaluru|bangalore|blr|karnataka)\b/i.test(`${location} ${city} ${desc}`);
+          if (!isBlr) return false;
+        }
+
+        if (activePills.has('hyderabad')) {
+          const isHyd = /\b(hyderabad|hyd|telangana|cyberabad)\b/i.test(`${location} ${city} ${desc}`);
+          if (!isHyd) return false;
+        }
+
+        if (activePills.has('internship')) {
+          const isIntern = /\b(intern|internship|trainee|apprentice|co-op|summer\s*analyst|stipend)\b/i.test(`${title} ${empType} ${desc}`);
+          if (!isIntern) return false;
+        }
+
+        if (activePills.has('fulltime')) {
+          const isInternOrContract = /\b(intern|internship|trainee|apprentice|co-op|contract|contractor|part-time|freelance)\b/i.test(title) ||
+                                     /\b(internship|contract|part-time)\b/i.test(empType);
+          if (isInternOrContract) return false;
+        }
+
+        if (activePills.has('parttime')) {
+          const isContract = /\b(contract|contractor|freelance|part-time|temporary|consultant)\b/i.test(`${title} ${empType} ${desc}`);
+          if (!isContract) return false;
+        }
+
+        return true;
       });
 
       renderFeed();
@@ -2185,6 +2263,8 @@
       const isSaved = tracker.saved.includes(job.id);
       const isApplied = tracker.applied.includes(job.id);
       const compInitial = job.company ? job.company[0].toUpperCase() : 'G';
+      const isLinkedIn = (job.platform || '').toLowerCase().includes('linkedin') || (job.url || '').toLowerCase().includes('linkedin');
+      const platformName = isLinkedIn ? 'LinkedIn' : (job.platform || 'Direct ATS');
       
       const matchScore = Math.min(98, Math.max(74, 86 + (job.title.length % 12)));
       const strokeOffset = 188 - (188 * matchScore / 100);
@@ -2193,16 +2273,46 @@
         <div class="jd-top-bar">
           <button class="mobile-jd-back-btn" onclick="closeMobileJD()" type="button">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
-            <span>Back to Matches</span>
+            <span>Back</span>
           </button>
           <div class="detail-tabs">
             <span class="detail-tab active">Overview</span>
           </div>
         </div>
 
+        <!-- ── TOP ACTION BUTTONS (DOWN TO OVERVIEW) ── -->
+        <div class="top-action-bar">
+          <button class="btn-applied-toggle ${isApplied ? 'applied' : ''}" onclick="toggleApplied('${job.id}')" type="button">
+            ${isApplied ? '✓ Applied' : 'Already Applied?'}
+          </button>
+          <div class="top-action-group">
+            <div style="position:relative;">
+              <button class="btn-referral" onclick="toggleReferralDropdown('${job.id}')" type="button">
+                <span>👥</span> <span class="btn-ref-text">Referrals</span>
+              </button>
+              <div class="referral-dropdown" id="ref-dropdown-${job.id}">
+                <a onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'hr')">🎯 Find HR / Recruiters</a>
+                <a onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'eng')">👥 Find Engineering Peers</a>
+              </div>
+            </div>
+            <button class="btn-save-job ${isSaved ? 'saved' : ''}" onclick="toggleSave('${job.id}')" type="button">
+              ${isSaved ? '★ Saved' : '☆ Save'}
+            </button>
+            <a href="${job.url}" target="_blank" class="btn-apply-primary ${isLinkedIn ? 'btn-apply-linkedin' : ''}">
+              ${isLinkedIn ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24z"/></svg>' : '<span>⚡</span>'}
+              <span>Apply</span><span class="apply-suffix"> on ${platformName} →</span>
+            </a>
+          </div>
+        </div>
+
         <div class="detail-header">
-          <div class="confirmed-badge">
-            <span>●</span> Confirmed live in the last 24 hours · ${job.platform || 'Direct ATS'}
+          <div class="confirmed-badge ${isLinkedIn ? 'linkedin-badge' : ''}">
+            ${isLinkedIn ? `
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#0A66C2"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24z"/></svg>
+              <span><strong>Verified LinkedIn Job</strong> · Live in last 24h</span>
+            ` : `
+              <span>●</span> Confirmed live in the last 24 hours · ${job.platform || 'Direct ATS'}
+            `}
           </div>
           <h1 class="detail-job-title">${job.title}</h1>
           <div class="detail-company-line">

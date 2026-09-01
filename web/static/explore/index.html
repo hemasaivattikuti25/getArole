@@ -292,7 +292,7 @@
     /* ══════════════ SIMPLIFY-INSPIRED PREMIUM DETAIL & BUTTON SYSTEM ══════════════ */
     .jd-top-bar {
       display: flex; align-items: center; justify-content: space-between;
-      border-bottom: 1px solid var(--border, #e2e8f0); padding-bottom: 16px; margin-bottom: 20px;
+      border-bottom: 1px solid var(--border, #e2e8f0); padding-bottom: 14px; margin-bottom: 16px;
     }
     .mobile-jd-back-btn {
       display: none; align-items: center; gap: 6px;
@@ -310,8 +310,15 @@
     }
     .detail-tab.active { color: var(--primary, #4f46e5); }
     .detail-tab.active::after {
-      content:''; position: absolute; bottom: -17px; left: 0; right: 0; height: 2.5px; background: var(--primary, #4f46e5);
+      content:''; position: absolute; bottom: -15px; left: 0; right: 0; height: 2.5px; background: var(--primary, #4f46e5);
     }
+
+    /* ── TOP ACTION BAR (DIRECTLY DOWN TO OVERVIEW) ── */
+    .top-action-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 4px 0 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border, #e2e8f0);
+    }
+    .top-action-group { display: flex; align-items: center; gap: 8px; }
 
     .detail-sticky-bar {
       display: flex; align-items: center; justify-content: space-between; gap: 12px;
@@ -364,6 +371,15 @@
     }
     .btn-apply-primary:active { transform: scale(0.97); }
 
+    .btn-apply-linkedin {
+      background: linear-gradient(135deg, #0a66c2 0%, #004182 100%) !important;
+      box-shadow: 0 4px 14px rgba(10, 102, 194, 0.35) !important;
+    }
+    .btn-apply-linkedin:hover {
+      background: linear-gradient(135deg, #004182 0%, #00274f 100%) !important;
+      box-shadow: 0 6px 18px rgba(10, 102, 194, 0.45) !important;
+    }
+
     .referral-dropdown {
       position: absolute; top: calc(100% + 8px); right: 0; width: 220px;
       background: var(--surface, #ffffff); border: 1px solid var(--border, #e2e8f0);
@@ -378,13 +394,24 @@
     }
     .referral-dropdown a:hover { background: var(--background, #f8fafc); color: var(--primary, #4f46e5); }
 
+    /* Job Header */
     .detail-header { margin-bottom: 24px; }
     .confirmed-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 700; color: var(--primary, #4f46e5);
-      background: var(--primary-light, #eef2ff); border: 1px solid var(--primary-border, #c7d2fe);
+      font-size: 12px; font-weight: 700; color: var(--primary);
+      background: var(--primary-light); border: 1px solid var(--primary-border);
       padding: 4px 10px; border-radius: 6px; margin-bottom: 12px;
     }
+
+    .linkedin-badge {
+      display: inline-flex !important; align-items: center !important; gap: 8px !important;
+      background: #f0f7ff !important; border: 1.5px solid #0a66c2 !important; color: #0a66c2 !important;
+      padding: 6px 14px !important; border-radius: 99px !important; font-size: 13px !important;
+      font-weight: 800 !important; box-shadow: 0 2px 10px rgba(10, 102, 194, 0.15) !important;
+      margin-bottom: 14px !important; letter-spacing: -0.01em !important;
+    }
+    .linkedin-badge svg { flex-shrink: 0; }
+
     .detail-job-title { font-size: 26px; font-weight: 800; color: var(--text-main, #0f172a); margin-bottom: 6px; }
     .detail-company-line { font-size: 15px; font-weight: 600; color: var(--text-muted, #64748b); display: flex; align-items: center; gap: 8px; }
 
@@ -2068,69 +2095,85 @@
       filterJobs();
     }
 
-    const LOCATION_KEYWORDS = {
-      'remote_in': ['remote'],
-      'global_remote': ['remote', 'global'],
-      'bengaluru': ['bengaluru', 'bangalore', 'blr', 'karnataka'],
-      'hyderabad': ['hyderabad', 'hyd', 'telangana'],
-      'pune': ['pune', 'maharashtra'],
-      'delhi': ['delhi', 'gurgaon', 'gurugram', 'noida', 'ncr', 'haryana'],
-      'mumbai': ['mumbai', 'navi mumbai', 'thane', 'bombay'],
-      'chennai': ['chennai', 'madras', 'tamil nadu'],
-      'kolkata': ['kolkata', 'calcutta', 'bengal'],
-      'ahmedabad': ['ahmedabad', 'gujarat'],
-      'kochi': ['kochi', 'cochin', 'trivandrum', 'thiruvananthapuram', 'kerala'],
-      'chandigarh': ['chandigarh', 'mohali', 'punjab'],
-      'jaipur': ['jaipur', 'rajasthan'],
-      'indore': ['indore', 'madhya pradesh'],
-      'coimbatore': ['coimbatore'],
-      'surat': ['surat'],
-      'lucknow': ['lucknow', 'up', 'uttar pradesh'],
-      'nagpur': ['nagpur'],
-      'visakhapatnam': ['visakhapatnam', 'vizag', 'andhra'],
-      'patna': ['patna', 'bihar'],
-      'vadodara': ['vadodara', 'baroda'],
-      'bhopal': ['bhopal'],
-      'ludhiana': ['ludhiana'],
-      'nashik': ['nashik'],
-      'rajkot': ['rajkot'],
-      'varanasi': ['varanasi'],
-      'amritsar': ['amritsar'],
-      'ranchi': ['ranchi', 'jharkhand'],
-      'jabalpur': ['jabalpur'],
-      'gwalior': ['gwalior'],
-      'vijayawada': ['vijayawada'],
-      'jodhpur': ['jodhpur'],
-      'madurai': ['madurai'],
-      'raipur': ['raipur'],
-      'kota': ['kota'],
-      'guwahati': ['guwahati', 'assam'],
-      'dehradun': ['dehradun', 'uttarakhand'],
-      'goa': ['goa']
+    // ══════════════ SMART FILTER PATTERNS (REGEX WORD-BOUNDARY BASED) ══════════════
+    const LOCATION_PATTERNS = {
+      'remote_in': [/\b(remote|wfh|work\s*from\s*home|anywhere\s*in\s*india)\b/i],
+      'global_remote': [/\b(global\s*remote|worldwide|anywhere|us\s*remote|emea|apac|100%\s*remote)\b/i],
+      'bengaluru': [/\b(bengaluru|bangalore|blr|karnataka)\b/i],
+      'hyderabad': [/\b(hyderabad|hyd|telangana|cyberabad|gachibowli|hitec\s*city)\b/i],
+      'pune': [/\b(pune|maharashtra|hinjewadi|magarpatta)\b/i],
+      'delhi': [/\b(delhi|gurgaon|gurugram|noida|ncr|haryana|faridabad|ghaziabad)\b/i],
+      'mumbai': [/\b(mumbai|navi\s*mumbai|thane|bombay|powai|bandra)\b/i],
+      'chennai': [/\b(chennai|madras|tamil\s*nadu|omr)\b/i],
+      'kolkata': [/\b(kolkata|calcutta|west\s*bengal|salt\s*lake|new\s*town)\b/i],
+      'ahmedabad': [/\b(ahmedabad|gujarat|gandhinagar|gift\s*city)\b/i],
+      'kochi': [/\b(kochi|cochin|trivandrum|thiruvananthapuram|kerala)\b/i],
+      'chandigarh': [/\b(chandigarh|mohali|punjab)\b/i],
+      'jaipur': [/\b(jaipur|rajasthan)\b/i],
+      'indore': [/\b(indore|madhya\s*pradesh)\b/i],
+      'coimbatore': [/\b(coimbatore)\b/i],
+      'surat': [/\b(surat)\b/i],
+      'lucknow': [/\b(lucknow|uttar\s*pradesh|\bup\b)\b/i],
+      'nagpur': [/\b(nagpur)\b/i],
+      'visakhapatnam': [/\b(visakhapatnam|vizag|andhra)\b/i],
+      'patna': [/\b(patna|bihar)\b/i],
+      'vadodara': [/\b(vadodara|baroda)\b/i],
+      'bhopal': [/\b(bhopal)\b/i],
+      'ludhiana': [/\b(ludhiana)\b/i],
+      'nashik': [/\b(nashik)\b/i],
+      'rajkot': [/\b(rajkot)\b/i],
+      'varanasi': [/\b(varanasi)\b/i],
+      'amritsar': [/\b(amritsar)\b/i],
+      'ranchi': [/\b(ranchi|jharkhand)\b/i],
+      'jabalpur': [/\b(jabalpur)\b/i],
+      'gwalior': [/\b(gwalior)\b/i],
+      'vijayawada': [/\b(vijayawada)\b/i],
+      'jodhpur': [/\b(jodhpur)\b/i],
+      'madurai': [/\b(madurai)\b/i],
+      'raipur': [/\b(raipur)\b/i],
+      'kota': [/\b(kota)\b/i],
+      'guwahati': [/\b(guwahati|assam)\b/i],
+      'dehradun': [/\b(dehradun|uttarakhand)\b/i],
+      'goa': [/\b(goa)\b/i]
     };
 
-    const CATEGORY_KEYWORDS = {
-      'technical_eng': ['technical', 'system', 'project engineer', 'engineer', 'tech'],
-      'aerospace': ['aerospace', 'avionics', 'propulsion', 'flight', 'spacecraft', 'aircraft'],
-      'ai_ml': ['ai', 'ml', 'genai', 'machine learning', 'computer vision', 'nlp', 'deep learning', 'llm', 'data scientist', 'intelligence', 'artificial'],
-      'architecture_civil': ['civil', 'structural', 'geotechnical', 'urban', 'bim', 'construction', 'architecture'],
-      'data_analytics': ['data', 'analytics', 'analyst', 'bi', 'business intelligence', 'database', 'sql', 'etl'],
-      'devrel': ['developer advocate', 'devrel', 'community', 'technical writer', 'developer relations', 'evangelist'],
-      'devops_infra': ['devops', 'cloud', 'sre', 'site reliability', 'infrastructure', 'platform', 'kubernetes', 'aws', 'docker', 'azure', 'gcp', 'sysadmin'],
-      'electrical': ['electrical', 'circuit', 'power', 'fpga', 'embedded', 'control systems', 'semiconductor'],
-      'eng_mgmt': ['engineering manager', 'director', 'vp', 'tech lead', 'scrum', 'lead', 'head', 'manager', 'tpm'],
-      'hardware': ['hardware', 'asic', 'soc', 'pcb', 'semiconductor', 'validation', 'chip'],
-      'it_security': ['security', 'cybersecurity', 'it support', 'network', 'penetration', 'infosec', 'cyber'],
-      'mechanical': ['mechanical', 'thermal', 'robotics', 'mechatronics', 'design engineer', 'cad', 'solidworks'],
-      'process_eng': ['process', 'chemical', 'quality engineer', 'manufacturing'],
-      'qa_testing': ['qa', 'testing', 'sdet', 'test', 'automation', 'quality assurance', 'tester'],
-      'quant_finance': ['quant', 'quantitative', 'algorithmic', 'trading', 'finance', 'fintech'],
-      'quantum': ['quantum', 'qiskit', 'cirq'],
-      'software': ['software', 'developer', 'frontend', 'backend', 'fullstack', 'full-stack', 'web', 'mobile', 'android', 'ios', 'engineer', 'sde', 'coder', 'programmer']
+    const CATEGORY_PATTERNS = {
+      'technical_eng': [/\b(technical|systems?|project\s*engineer|engineer|tech\s*lead)\b/i],
+      'aerospace': [/\b(aerospace|avionics|propulsion|flight|spacecraft|aircraft|aeronautic)\b/i],
+      'ai_ml': [/\b(ai|ml|genai|machine\s*learning|deep\s*learning|llm|data\s*scientist|artificial\s*intelligence|nlp|computer\s*vision|pytorch|tensorflow|transformers?|langchain|ollama|rag)\b/i],
+      'architecture_civil': [/\b(civil|structural|geotechnical|urban|bim|construction|architecture)\b/i],
+      'data_analytics': [/\b(data\s*engineer|data\s*analyst|analytics|bi\b|business\s*intelligence|database|sql|etl|snowflake|databricks|tableau|power\s*bi)\b/i],
+      'devrel': [/\b(developer\s*advocate|devrel|community|technical\s*writer|developer\s*relations|evangelist)\b/i],
+      'devops_infra': [/\b(devops|cloud|sre|site\s*reliability|infrastructure|platform\s*engineer|kubernetes|k8s|aws|docker|azure|gcp|terraform|ansible|ci\/cd)\b/i],
+      'electrical': [/\b(electrical|circuits?|power\s*systems?|fpga|embedded|control\s*systems?|semiconductor|vlsi)\b/i],
+      'eng_mgmt': [/\b(engineering\s*manager|director|vp\b|tech\s*lead|scrum\s*master|lead\s*engineer|head\s*of|manager|tpm|program\s*manager)\b/i],
+      'hardware': [/\b(hardware|asic|soc|pcb|semiconductor|validation|chip\s*design|fpga)\b/i],
+      'it_security': [/\b(security|cybersecurity|it\s*support|network\s*engineer|penetration|infosec|cyber|soc\s*analyst|appsec)\b/i],
+      'mechanical': [/\b(mechanical|thermal|robotics|mechatronics|design\s*engineer|cad|solidworks|ansys|catia)\b/i],
+      'process_eng': [/\b(process\s*engineer|chemical|quality\s*engineer|manufacturing|operations\s*engineer)\b/i],
+      'qa_testing': [/\b(qa\b|testing|sdet|test\s*engineer|automation\s*test|quality\s*assurance|tester|selenium|cypress|playwright)\b/i],
+      'quant_finance': [/\b(quant\b|quantitative|algorithmic|trading|hft|fintech|financial\s*engineering)\b/i],
+      'quantum': [/\b(quantum|qiskit|cirq|quantum\s*computing)\b/i],
+      'software': [/\b(software|developer|frontend|backend|fullstack|full-stack|web\s*developer|mobile|android|ios|react|node|python|java|golang|c\+\+|engineer|sde|coder|programmer)\b/i]
+    };
+
+    const SYNONYM_MAP = {
+      'sde': ['sde', 'software development engineer', 'software engineer', 'software dev'],
+      'swe': ['swe', 'software engineer', 'software development engineer'],
+      'ml': ['ml', 'machine learning'],
+      'ai': ['ai', 'artificial intelligence', 'genai', 'llm'],
+      'qa': ['qa', 'quality assurance', 'sdet', 'test engineer', 'testing'],
+      'sdet': ['sdet', 'software development engineer in test', 'qa automation'],
+      'devops': ['devops', 'site reliability', 'sre', 'cloud infrastructure'],
+      'sre': ['sre', 'site reliability engineer', 'devops'],
+      'wfh': ['wfh', 'work from home', 'remote'],
+      'intern': ['intern', 'internship', 'trainee', 'co-op', 'apprentice'],
+      'fresher': ['fresher', 'entry level', 'graduate', 'batch 2024', 'batch 2025', 'batch 2026', '0-1']
     };
 
     function filterJobs() {
-      const q = document.getElementById('main-search-input').value.toLowerCase().trim();
+      const sInput = document.getElementById('main-search-input');
+      const q = sInput ? sInput.value.toLowerCase().trim() : '';
       const locVal = document.getElementById('filter-location') ? document.getElementById('filter-location').value : '';
       const catVal = document.getElementById('filter-category') ? document.getElementById('filter-category').value : '';
       const typeVal = document.getElementById('filter-jobtype') ? document.getElementById('filter-jobtype').value : '';
@@ -2144,55 +2187,73 @@
         const desc = (j.description || '').toLowerCase();
         const empType = (j.employment_type || '').toLowerCase();
         const workType = (j.workplace_type || '').toLowerCase();
-        const allText = `${title} ${company} ${location} ${city} ${desc} ${empType} ${workType}`;
+        const platform = (j.platform || '').toLowerCase();
+        const allText = `${title} ${company} ${location} ${city} ${empType} ${workType} ${platform} ${desc}`;
 
-        // 1. Search Query Input
+        // 1. Search Query Input (Smart synonym & token matching)
         if (q) {
           const qWords = q.split(/\s+/).filter(Boolean);
-          const matchesQ = qWords.every(w => allText.includes(w));
+          const matchesQ = qWords.every(token => {
+            const expansions = SYNONYM_MAP[token] || [token];
+            return expansions.some(exp => allText.includes(exp));
+          });
           if (!matchesQ) return false;
         }
 
-        // 2. Universal Multi-Location Filter
+        // 2. Smart Location Filter
         if (locVal) {
-          const keywords = LOCATION_KEYWORDS[locVal] || [locVal];
-          const matchesLoc = keywords.some(kw => location.includes(kw) || city.includes(kw) || workType.includes(kw) || desc.includes(kw));
-          if (!matchesLoc) return false;
+          const patterns = LOCATION_PATTERNS[locVal];
+          if (patterns && patterns.length > 0) {
+            const locText = `${location} ${city} ${workType} ${desc}`;
+            const matchesLoc = patterns.some(p => p.test(locText));
+            if (!matchesLoc) return false;
+          } else {
+            if (!allText.includes(locVal)) return false;
+          }
         }
 
-        // 3. Universal Multi-Category Filter
+        // 3. Smart Category Filter
         if (catVal) {
-          const keywords = CATEGORY_KEYWORDS[catVal] || [catVal];
-          const matchesCat = keywords.some(kw => title.includes(kw) || desc.includes(kw));
-          if (!matchesCat) return false;
+          const patterns = CATEGORY_PATTERNS[catVal];
+          if (patterns && patterns.length > 0) {
+            const catText = `${title} ${desc}`;
+            const matchesCat = patterns.some(p => p.test(catText));
+            if (!matchesCat) return false;
+          } else {
+            if (!allText.includes(catVal)) return false;
+          }
         }
 
-        // 4. Job Type Filter
+        // 4. Smart Job Type Filter
         if (typeVal === 'fulltime') {
-          if (empType.includes('intern') || empType.includes('contract') || empType.includes('part')) return false;
+          const isInternOrContract = /\b(intern|internship|trainee|apprentice|co-op|contract|contractor|part-time|freelance)\b/i.test(title) ||
+                                     /\b(internship|contract|part-time)\b/i.test(empType);
+          if (isInternOrContract) return false;
         } else if (typeVal === 'internship') {
-          if (!empType.includes('intern') && !title.includes('intern') && !desc.includes('stipend')) return false;
+          const isIntern = /\b(intern|internship|trainee|apprentice|co-op|summer\s*analyst|stipend)\b/i.test(`${title} ${empType} ${desc}`);
+          if (!isIntern) return false;
         } else if (typeVal === 'contract') {
-          if (!empType.includes('contract') && !empType.includes('part') && !title.includes('contract') && !desc.includes('freelance')) return false;
+          const isContract = /\b(contract|contractor|freelance|part-time|temporary|consultant)\b/i.test(`${title} ${empType} ${desc}`);
+          if (!isContract) return false;
         }
 
-        // 5. Experience Level Filter
+        // 5. Smart Experience Level Filter
         if (expVal === 'entry') {
-          // Strictly exclude any Senior, Lead, Staff, Principal, Director, Head, or Manager titles
-          const isSeniorWord = title.includes('senior') || title.includes('sr.') || title.includes('sr ') || title.includes('lead') || title.includes('staff') || title.includes('principal') || title.includes('director') || title.includes('head') || title.includes('manager') || title.includes('architect') || title.includes('iii') || title.includes('iv') || title.includes('ii');
-          if (isSeniorWord) return false;
+          const isSenior = /\b(senior|sr\.?|lead|staff|principal|director|head\s*of|engineering\s*manager|manager|architect|sde\s*3|sde\s*iii|sde\s*4|sde\s*iv|vp\b)\b/i.test(title);
+          if (isSenior) return false;
 
-          const isBatchMatch = /\b(?:batch\s*20\d\d|20\d\d\s*batch|class\s*of\s*20\d\d)\b/i.test(desc) || /\b(?:0-1|0-2|0-3)\s*(?:years?|yrs?|yr)\b/i.test(desc);
-          const isEntry = title.includes('intern') || title.includes('junior') || title.includes('fresher') || title.includes('graduate') || title.includes('trainee') || title.includes('associate') || title.includes('entry') || title.includes('sde 1') || title.includes('sde-1') || title.includes('sde i') || title.includes('engineer 1') || title.includes('engineer i') || desc.includes('fresher') || desc.includes('entry level') || isBatchMatch || desc.includes('0-1') || desc.includes('0-2');
-          if (!isEntry) return false;
+          const isEntry = /\b(intern|internship|trainee|fresher|graduate|associate|junior|jr\.?|entry|sde\s*1|sde-1|sde\s*i\b|engineer\s*1|engineer\s*i\b|0-1\s*yr|0-2\s*yr|batch\s*20\d\d|class\s*of\s*20\d\d)\b/i.test(`${title} ${desc}`);
+          const isGeneralSE = /\b(software\s*engineer|developer|sde)\b/i.test(title) && !/\b([3-9]|\d{2})\+?\s*(?:years?|yrs?)\b/i.test(desc);
+          if (!isEntry && !isGeneralSE) return false;
         } else if (expVal === 'mid') {
-          const isMid = !title.includes('intern') && !title.includes('director') && !title.includes('vp') && !title.includes('head') && !title.includes('chief');
-          if (!isMid) return false;
+          const isSenior = /\b(staff|principal|director|head|vp|architect)\b/i.test(title);
+          const isIntern = /\b(intern|internship|trainee|co-op)\b/i.test(title);
+          if (isSenior || isIntern) return false;
         } else if (expVal === 'senior') {
-          const isSenior = title.includes('senior') || title.includes('sr.') || title.includes('sr ') || title.includes('lead') || title.includes('principal') || title.includes('staff') || desc.includes('5+ years') || desc.includes('5-8 years');
+          const isSenior = /\b(senior|sr\.?|staff|principal|architect|5\+?\s*years?|6\+?\s*years?|7\+?\s*years?|8\+?\s*years?)\b/i.test(`${title} ${desc}`);
           if (!isSenior) return false;
         } else if (expVal === 'lead') {
-          const isLead = title.includes('lead') || title.includes('director') || title.includes('vp') || title.includes('head') || title.includes('chief') || title.includes('manager') || title.includes('principal');
+          const isLead = /\b(lead|team\s*lead|tech\s*lead|engineering\s*manager|director|vp\b|head\s*of|principal)\b/i.test(title);
           if (!isLead) return false;
         }
 
@@ -2202,7 +2263,7 @@
         return true;
       });
 
-      // 7. Apply Sorting (Fit Score, Recent, Title, Company)
+      // 7. Apply Sorting
       const sortSelect = document.getElementById('sort-by-select');
       const sortBy = sortSelect ? sortSelect.value : 'fit_desc';
 
@@ -2226,10 +2287,13 @@
           selectJob(filteredJobs[0].id);
         }
       } else {
-        document.getElementById('job-detail-pane').innerHTML = `
-          <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-subtle);font-size:14px;font-weight:600">
-            No opportunities match the selected criteria. Try clearing filters.
-          </div>`;
+        const detailPane = document.getElementById('job-detail-pane');
+        if (detailPane) {
+          detailPane.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-subtle);font-size:14px;font-weight:600">
+              No opportunities match the selected criteria. Try clearing filters.
+            </div>`;
+        }
       }
     }
 
@@ -2305,21 +2369,53 @@
       const isSaved = tracker.saved.includes(job.id);
       const isApplied = tracker.applied.includes(job.id);
       const compInitial = job.company ? job.company[0].toUpperCase() : 'G';
+      const isLinkedIn = (job.platform || '').toLowerCase().includes('linkedin') || (job.url || '').toLowerCase().includes('linkedin');
+      const platformName = isLinkedIn ? 'LinkedIn' : (job.platform || 'Direct ATS');
 
       pane.innerHTML = `
         <div class="jd-top-bar">
           <button class="mobile-jd-back-btn" onclick="closeMobileJD()" type="button">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
-            <span>Back to Opportunities</span>
+            <span>Back</span>
           </button>
           <div class="detail-tabs">
             <span class="detail-tab active">Overview</span>
           </div>
         </div>
 
+        <!-- ── TOP ACTION BUTTONS (DOWN TO OVERVIEW) ── -->
+        <div class="top-action-bar">
+          <button class="btn-applied-toggle ${isApplied ? 'applied' : ''}" onclick="toggleApplied('${job.id}')" type="button">
+            ${isApplied ? '✓ Applied' : 'Already Applied?'}
+          </button>
+          <div class="top-action-group">
+            <div style="position:relative;">
+              <button class="btn-referral" onclick="toggleReferralDropdown('${job.id}')" type="button">
+                <span>👥</span> <span class="btn-ref-text">Referrals</span>
+              </button>
+              <div class="referral-dropdown" id="ref-dropdown-${job.id}">
+                <a onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'hr')">🎯 Find HR / Recruiters</a>
+                <a onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'eng')">👥 Find Engineering Peers</a>
+              </div>
+            </div>
+            <button class="btn-save-job ${isSaved ? 'saved' : ''}" onclick="toggleSave('${job.id}')" type="button">
+              ${isSaved ? '★ Saved' : '☆ Save'}
+            </button>
+            <a href="${job.url}" target="_blank" class="btn-apply-primary ${isLinkedIn ? 'btn-apply-linkedin' : ''}">
+              ${isLinkedIn ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24z"/></svg>' : '<span>⚡</span>'}
+              <span>Apply</span><span class="apply-suffix"> on ${platformName} →</span>
+            </a>
+          </div>
+        </div>
+
         <div class="detail-header">
-          <div class="confirmed-badge">
-            <span>●</span> Confirmed live in the last 24 hours · ${job.platform || 'Direct ATS'}
+          <div class="confirmed-badge ${isLinkedIn ? 'linkedin-badge' : ''}">
+            ${isLinkedIn ? `
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#0A66C2"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24z"/></svg>
+              <span><strong>Verified LinkedIn Job</strong> · Live in last 24h</span>
+            ` : `
+              <span>●</span> Confirmed live in the last 24 hours · ${job.platform || 'Direct ATS'}
+            `}
           </div>
           <h1 class="detail-job-title">${job.title}</h1>
           <div class="detail-company-line">
