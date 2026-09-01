@@ -694,6 +694,60 @@ Return JSON:
     }
 
 
+class DeepEvaluateRequest(BaseModel):
+    resume_text: str
+    job_title: str = "Software Engineer"
+    company: str = "Target Company"
+    job_description: str = ""
+    workplace_preference: Optional[str] = None
+    location_preference: Optional[str] = None
+
+@app.post("/api/ai/deep-evaluate")
+async def deep_evaluate_candidate_api(req: DeepEvaluateRequest, request: Request) -> Dict[str, Any]:
+    """
+    Performs 5-Dimensional AI Candidate Evaluation against a target Job Description.
+    Calculates per-dimension scores (Skills, Experience, Culture, Location, Growth)
+    and delivers an actionable improvement roadmap. Rate-limited.
+    """
+    enforce_ai_rate_limit(request, max_requests=25, window_seconds=60.0)
+    llm = get_llm_service()
+    result = await llm.a_evaluate_candidate_match(
+        resume_text=req.resume_text,
+        job_title=req.job_title,
+        company=req.company,
+        job_description=req.job_description,
+        workplace_preference=req.workplace_preference,
+        location_preference=req.location_preference
+    )
+    return result
+
+
+class DrafterReviewerTailorRequest(BaseModel):
+    resume_text: str
+    job_title: str
+    company: str
+    job_description: str
+    custom_instruction: str = ""
+
+@app.post("/api/ai/tailor-application-drafter-reviewer")
+async def tailor_application_drafter_reviewer_api(req: DrafterReviewerTailorRequest, request: Request) -> Dict[str, Any]:
+    """
+    Two-Pass Drafter-Reviewer Application Generation Engine:
+    - Pass 1 (Drafter): Generates tailored ATS highlights and cover letter.
+    - Pass 2 (Reviewer): Critiques and tightens the draft for vague claims and ATS keywords.
+    """
+    enforce_ai_rate_limit(request, max_requests=25, window_seconds=60.0)
+    llm = get_llm_service()
+    result = await llm.a_generate_tailored_application_dual_pass(
+        resume_text=req.resume_text,
+        job_title=req.job_title,
+        company=req.company,
+        job_description=req.job_description,
+        custom_instruction=req.custom_instruction
+    )
+    return result
+
+
 class PolishCoverLetterRequest(BaseModel):
     action: str = "concise" # concise | technical | executive | fix_grammar | custom
     current_text: str

@@ -21,6 +21,8 @@ class JobListing(BaseModel):
     fit_score: Optional[float] = Field(None, description="Calculated 0-100 fit score")
     matched_skills: List[str] = Field(default_factory=list, description="Skills matched with user resume")
     missing_skills: List[str] = Field(default_factory=list, description="Skills missing from user resume")
+    match_5d: Optional[dict] = Field(None, description="5-Dimensional match scoring breakdown")
+    improvement_tips: List[str] = Field(default_factory=list, description="Actionable improvement suggestions")
 
 class CandidateProfile(BaseModel):
     name: str

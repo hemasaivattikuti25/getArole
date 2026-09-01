@@ -44,20 +44,44 @@ class ScreeningService:
             verdict = "Review / Follow-up ⚠️"
             
         rubric_raw = llm_eval.get("rubric_breakdown", {})
+        skills_m = float(rubric_raw.get("skills_match", rubric_raw.get("technical_skills", final_score)))
+        exp_m = float(rubric_raw.get("experience_alignment", rubric_raw.get("experience_relevance", final_score)))
+        cult_m = float(rubric_raw.get("culture_workplace_fit", rubric_raw.get("domain_knowledge", final_score)))
+        loc_m = float(rubric_raw.get("location_synergy", rubric_raw.get("prerequisites_met", final_score)))
+        growth_m = float(rubric_raw.get("career_growth", final_score))
+
         rubric = RubricScore(
-            technical_skills=float(rubric_raw.get("technical_skills", final_score)),
-            experience_depth=float(rubric_raw.get("experience_relevance", final_score)),
-            prerequisite_coverage=float(rubric_raw.get("prerequisites_met", final_score))
+            technical_skills=skills_m,
+            experience_depth=exp_m,
+            prerequisite_coverage=loc_m,
+            skills_match=skills_m,
+            experience_alignment=exp_m,
+            culture_workplace_fit=cult_m,
+            location_synergy=loc_m,
+            career_growth=growth_m
         )
         
+        match_5d_dict = {
+            "skills_match": skills_m,
+            "experience_alignment": exp_m,
+            "culture_workplace_fit": cult_m,
+            "location_synergy": loc_m,
+            "career_growth": growth_m
+        }
+
         return CandidateScreeningReport(
             candidate_name=candidate.name if candidate.name != "Candidate" else file_name.replace(".pdf", ""),
             file_name=file_name,
             score_10=final_score,
             verdict=verdict,
             rubric_breakdown=rubric,
+            match_5d=match_5d_dict,
             strengths=llm_eval.get("strengths", candidate.skills[:4]),
             missing_skills=llm_eval.get("missing_skills", []),
+            improvement_roadmap=llm_eval.get("improvement_roadmap", [
+                "Quantify technical deliverables in previous roles",
+                f"Highlight expertise in {', '.join(llm_eval.get('missing_skills', ['core tools'])[:2])}"
+            ]),
             justification=llm_eval.get("justification", f"Calibrated match score: {final_score}/10 based on candidate background and job requirements."),
             extracted_skills=candidate.skills,
             raw_summary=candidate.raw_text[:300] + "..."

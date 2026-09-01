@@ -36,6 +36,11 @@ class RubricScore(BaseModel):
     technical_skills: float = Field(..., ge=0, le=10)
     experience_depth: float = Field(..., ge=0, le=10)
     prerequisite_coverage: float = Field(..., ge=0, le=10)
+    skills_match: Optional[float] = Field(None, ge=0, le=10)
+    experience_alignment: Optional[float] = Field(None, ge=0, le=10)
+    culture_workplace_fit: Optional[float] = Field(None, ge=0, le=10)
+    location_synergy: Optional[float] = Field(None, ge=0, le=10)
+    career_growth: Optional[float] = Field(None, ge=0, le=10)
 
 class CandidateScreeningReport(BaseModel):
     candidate_name: str
@@ -43,8 +48,10 @@ class CandidateScreeningReport(BaseModel):
     score_10: float = Field(..., ge=0, le=10, description="Calibrated fit score on 1-10 scale")
     verdict: str = Field(..., description="Shortlisted, Review, or Reject")
     rubric_breakdown: RubricScore
+    match_5d: Optional[Dict[str, float]] = None
     strengths: List[str] = Field(default_factory=list)
     missing_skills: List[str] = Field(default_factory=list)
+    improvement_roadmap: List[str] = Field(default_factory=list)
     justification: str = Field(..., description="Clear hiring justification")
     extracted_skills: List[str] = Field(default_factory=list)
     raw_summary: str = ""
