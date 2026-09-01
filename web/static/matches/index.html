@@ -2014,18 +2014,21 @@
       if (filteredJobs.length > 0) {
         selectJob(filteredJobs[0].id);
       } else {
-        document.getElementById('job-detail-pane').innerHTML = `
-          <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-subtle);font-size:14px;font-weight:600">
-            No opportunities match the selected criteria. Try clearing filters.
-          </div>`;
+        const detailPane = document.getElementById('matches-detail-pane') || document.getElementById('job-detail-pane');
+        if (detailPane) {
+          detailPane.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text-subtle);font-size:14px;font-weight:600">
+              No opportunities match the selected criteria. Try clearing filters.
+            </div>`;
+        }
       }
     }
 
     function renderFeed() {
-      const feed = document.getElementById('job-feed-list');
-      const countText = document.getElementById('jobs-count-text');
-      if (!feed || !countText) return;
-      countText.textContent = filteredJobs.length.toLocaleString('en-IN');
+      const feed = document.getElementById('matches-feed-list') || document.getElementById('job-feed-list');
+      const countText = document.getElementById('matches-count-header') || document.getElementById('jobs-count-text');
+      if (!feed) return;
+      if (countText) countText.textContent = filteredJobs.length.toLocaleString('en-IN');
 
       feed.innerHTML = filteredJobs.map(j => {
         const isSelected = j.id === selectedJobId;
@@ -2061,9 +2064,10 @@
       document.body.classList.remove('mobile-jd-open');
     };
 
-    function selectJob(id, targetPaneId = 'job-detail-pane') {
+    function selectJob(id, targetPaneId = 'matches-detail-pane') {
       selectedJobId = id;
-      const job = allJobs.find(j => j.id === id);
+      selectedMatchJobId = id;
+      const job = allJobs.find(j => j.id === id) || matchedJobs.find(j => j.id === id);
       if (!job) return;
 
       // ── MOBILE: show JD overlay ──
@@ -2072,13 +2076,17 @@
         window.scrollTo(0, 0);
       }
 
-      const detailCol = document.getElementById(targetPaneId);
-      if (detailCol) detailCol.scrollTop = 0;
+      const pane = document.getElementById(targetPaneId) || document.getElementById('matches-detail-pane') || document.getElementById('job-detail-pane');
+      if (!pane) return;
+      pane.scrollTop = 0;
 
-      document.querySelectorAll('.job-card').forEach(c => c.classList.remove('selected'));
-      renderMatchesSplitView();
-
-      const pane = document.getElementById(targetPaneId);
+      document.querySelectorAll('.job-card').forEach(c => {
+        if (c.getAttribute('onclick') && c.getAttribute('onclick').includes(id)) {
+          c.classList.add('selected');
+        } else {
+          c.classList.remove('selected');
+        }
+      });
       const isSaved = tracker.saved.includes(job.id);
       const isApplied = tracker.applied.includes(job.id);
       const compInitial = job.company ? job.company[0].toUpperCase() : 'G';

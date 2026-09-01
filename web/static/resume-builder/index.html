@@ -14,15 +14,17 @@
     rel="stylesheet">
   <script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();
     function setResumeMobileTab(mode) {
+      const btnEdit = document.getElementById('btn-tab-edit');
+      const btnPrev = document.getElementById('btn-tab-preview');
       if (mode === 'preview') {
         document.body.classList.add('show-preview-mode');
-        document.getElementById('btn-tab-edit').classList.remove('active');
-        document.getElementById('btn-tab-preview').classList.add('active');
-        rp(); // re-render preview
+        if (btnEdit) btnEdit.classList.remove('active');
+        if (btnPrev) btnPrev.classList.add('active');
+        if (typeof rp === 'function') rp();
       } else {
         document.body.classList.remove('show-preview-mode');
-        document.getElementById('btn-tab-edit').classList.add('active');
-        document.getElementById('btn-tab-preview').classList.remove('active');
+        if (btnEdit) btnEdit.classList.add('active');
+        if (btnPrev) btnPrev.classList.remove('active');
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -1821,6 +1823,12 @@
       </div>
     </div>
   </header>
+
+  <!-- Mobile Edit Form / Live Preview Switcher -->
+  <div class="mobile-view-tabs">
+    <button id="btn-tab-edit" class="btn-view-tab active" type="button" onclick="setResumeMobileTab('edit')">✏️ Edit Form</button>
+    <button id="btn-tab-preview" class="btn-view-tab" type="button" onclick="setResumeMobileTab('preview')">👁️ Live Resume Preview</button>
+  </div>
 
   <!-- ════════ THREE COLUMN LAYOUT ════════ -->
   <main class="ly" id="main-content">

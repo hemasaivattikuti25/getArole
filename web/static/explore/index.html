@@ -2003,10 +2003,12 @@
     function toggleQuickFilter(type) {
       if (type === '24h') {
         quickFilters.last24h = !quickFilters.last24h;
-        document.getElementById('toggle-24h').classList.toggle('active', quickFilters.last24h);
+        const el24 = document.getElementById('toggle-24h');
+        if (el24) el24.classList.toggle('active', quickFilters.last24h);
       } else if (type === 'highfit') {
         quickFilters.highfit = !quickFilters.highfit;
-        document.getElementById('toggle-highfit').classList.toggle('active', quickFilters.highfit);
+        const elHf = document.getElementById('toggle-highfit');
+        if (elHf) elHf.classList.toggle('active', quickFilters.highfit);
       }
       filterJobs();
     }
