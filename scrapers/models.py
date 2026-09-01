@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
@@ -17,7 +17,7 @@ class JobListing(BaseModel):
     description: str = Field("", description="Full job description or summary")
     requirements: List[str] = Field(default_factory=list, description="Key skills/requirements extracted")
     date_posted: Optional[str] = Field(None, description="Date or relative time posted")
-    scraped_at: datetime = Field(default_factory=datetime.utcnow, description="Scrape timestamp")
+    scraped_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="Scrape timestamp")
     fit_score: Optional[float] = Field(None, description="Calculated 0-100 fit score")
     matched_skills: List[str] = Field(default_factory=list, description="Skills matched with user resume")
     missing_skills: List[str] = Field(default_factory=list, description="Skills missing from user resume")

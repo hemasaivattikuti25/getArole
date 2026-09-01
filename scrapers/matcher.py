@@ -1,4 +1,5 @@
 import os
+import re
 import pymupdf as fitz  # PyMuPDF
 import numpy as np
 from typing import List, Tuple, Dict, Any
@@ -104,7 +105,6 @@ class ResumeMatcher:
             fit_pct = round(max(0.0, min(100.0, ((sim - 0.3) / 0.6) * 100)), 1)
             
             # Extract matching & missing keywords
-            import re
             job_words = set(re.findall(r"\b[a-zA-Z0-9_\-\.]+\b", f"{job.title} {job.description}".lower()))
             resume_words = set(re.findall(r"\b[a-zA-Z0-9_\-\.]+\b", lower_resume))
             tech_keywords = [

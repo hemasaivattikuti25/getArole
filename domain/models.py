@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 
@@ -17,7 +17,7 @@ class Job(BaseModel):
     description: str = Field("", description="Job description text")
     requirements: List[str] = Field(default_factory=list, description="Extracted requirements")
     date_posted: Optional[str] = Field(None, description="Posting date")
-    scraped_at: datetime = Field(default_factory=datetime.utcnow)
+    scraped_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     fit_score: Optional[float] = Field(None, description="Cosine similarity fit percentage (0-100%)")
     matched_skills: List[str] = Field(default_factory=list)
     missing_skills: List[str] = Field(default_factory=list)
@@ -60,7 +60,7 @@ class ApiResponse(BaseModel):
     success: bool = True
     message: str = "Operation completed successfully"
     data: Any = None
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class UserProfileModel(BaseModel):
     name: Optional[str] = None
