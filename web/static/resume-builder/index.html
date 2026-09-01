@@ -2019,8 +2019,11 @@
                 if (prof.github_url && !R.header.github) R.header.github = prof.github_url;
                 if (prof.portfolio_url && !R.header.portfolio) R.header.portfolio = prof.portfolio_url;
                 if (prof.skills && (!R.skills || R.skills.length === 0 || !R.skills[0].items)) {
-                  R.skills = [{ label: 'Skills & Competencies', items: Array.isArray(prof.skills) ? prof.skills.join(', ') : prof.skills }];
+                  R.skills = Array.isArray(prof.skills) && prof.skills.length > 0 && typeof prof.skills[0] === 'object' ? prof.skills : [{ label: 'Skills & Competencies', items: Array.isArray(prof.skills) ? prof.skills.join(', ') : prof.skills }];
                 }
+                if (prof.experience && prof.experience.length > 0) R.experience = prof.experience;
+                if (prof.education && prof.education.length > 0) R.education = prof.education;
+                if (prof.projects && prof.projects.length > 0) R.projects = prof.projects;
                 localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
                 populateFormFields();
                 rp();

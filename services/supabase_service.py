@@ -1,6 +1,7 @@
 import os
 import time
 import asyncio
+import json
 import logging
 from collections import defaultdict
 from typing import List, Dict, Any, Optional
@@ -353,7 +354,16 @@ class SupabaseService:
                     if not data.get("headline") and resume.get("headline"):
                         data["headline"] = resume.get("headline")
                     
-                    data["skills"] = resume.get("skills") or []
+                    parsed_skills = []
+                    for s in (resume.get("skills") or []):
+                        if isinstance(s, str) and s.startswith("{"):
+                            try:
+                                parsed_skills.append(json.loads(s))
+                            except:
+                                parsed_skills.append(s)
+                        else:
+                            parsed_skills.append(s)
+                    data["skills"] = parsed_skills
                     data["experience"] = resume.get("experience") or []
                     data["education"] = resume.get("education") or []
                     data["projects"] = resume.get("projects") or []
@@ -470,7 +480,7 @@ class SupabaseService:
                 "phone": phone,
                 "headline": headline,
                 "summary": summary,
-                "skills": [s if isinstance(s, str) else str(s) for s in skills],
+                "skills": [s if isinstance(s, str) else json.dumps(s) for s in skills],
                 "experience": experience,
                 "education": education,
                 "projects": projects,
