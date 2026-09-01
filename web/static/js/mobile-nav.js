@@ -334,14 +334,30 @@
         document.body.classList.remove('mobile-jd-open');
       });
       
-      // Global listener for job card clicks
-      document.body.addEventListener('click', (e) => {
-        const card = e.target.closest('.job-card');
-        if (card && window.innerWidth <= 768) {
-          document.body.classList.add('mobile-jd-open');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Patch the selectJob functions directly since DOM rewriting breaks event bubbling
+      setTimeout(() => {
+        const _origSelectJob = window.selectJob;
+        if (typeof _origSelectJob === 'function') {
+          window.selectJob = function() {
+            _origSelectJob.apply(this, arguments);
+            if (window.innerWidth <= 768) {
+              document.body.classList.add('mobile-jd-open');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          };
         }
-      });
+        
+        const _origSelectMatchJob = window.selectMatchJob;
+        if (typeof _origSelectMatchJob === 'function') {
+          window.selectMatchJob = function() {
+            _origSelectMatchJob.apply(this, arguments);
+            if (window.innerWidth <= 768) {
+              document.body.classList.add('mobile-jd-open');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          };
+        }
+      }, 500); // Wait for inline scripts to define functions
     }
   }
 
