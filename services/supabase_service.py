@@ -256,27 +256,37 @@ class SupabaseService:
     async def save_user_profile(self, firebase_uid: str, profile: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """Upsert a user's profile into user_profiles table, keyed by firebase_uid."""
         client = await self._get_client()
-        if not client:
+        if not client or not firebase_uid or firebase_uid == "guest_user":
             return None
         try:
             valid_cols = {
                 "firebase_uid", "email", "first", "last", "pref_name", "suffix", "phone", "dob", "loc",
                 "add1", "add2", "add3", "zip", "headline", "linkedin_url", "github_url", "portfolio_url", "other_url"
             }
-            # Map common aliases if present
-            flat_profile = {**profile}
+            # Unwrap if wrapped in {"profile": {...}}
+            flat_profile = profile.get("profile") if isinstance(profile.get("profile"), dict) else {**profile}
+            
+            # Extract first/last name from full name if present
+            if "name" in flat_profile and ("first" not in flat_profile and "first_name" not in flat_profile):
+                parts = str(flat_profile["name"]).strip().split(" ", 1)
+                flat_profile["first"] = parts[0]
+                if len(parts) > 1:
+                    flat_profile["last"] = parts[1]
+
             if "first_name" in flat_profile and "first" not in flat_profile:
                 flat_profile["first"] = flat_profile.pop("first_name")
             if "last_name" in flat_profile and "last" not in flat_profile:
                 flat_profile["last"] = flat_profile.pop("last_name")
             if "pref" in flat_profile and "pref_name" not in flat_profile:
                 flat_profile["pref_name"] = flat_profile.pop("pref")
+            if "location" in flat_profile and "loc" not in flat_profile:
+                flat_profile["loc"] = flat_profile.pop("location")
             if "links" in flat_profile and isinstance(flat_profile["links"], dict):
-                links = flat_profile.pop("links")
-                if links.get("linkedin"): flat_profile["linkedin_url"] = links["linkedin"]
-                if links.get("github"): flat_profile["github_url"] = links["github"]
-                if links.get("portfolio"): flat_profile["portfolio_url"] = links["portfolio"]
-                if links.get("other"): flat_profile["other_url"] = links["other"]
+                links = flat_profile.get("links") or {}
+                if links.get("linkedin") and "linkedin_url" not in flat_profile: flat_profile["linkedin_url"] = links["linkedin"]
+                if links.get("github") and "github_url" not in flat_profile: flat_profile["github_url"] = links["github"]
+                if links.get("portfolio") and "portfolio_url" not in flat_profile: flat_profile["portfolio_url"] = links["portfolio"]
+                if links.get("other") and "other_url" not in flat_profile: flat_profile["other_url"] = links["other"]
 
             record = {"firebase_uid": firebase_uid}
             for k, v in flat_profile.items():
@@ -284,20 +294,29 @@ class SupabaseService:
                     record[k] = v
 
             res = await client.table("user_profiles").upsert(record, on_conflict="firebase_uid").execute()
+            
+            # If skills or experience or education passed in profile, also update/sync user_resumes
+            if flat_profile.get("skills") or flat_profile.get("experience") or flat_profile.get("education") or flat_profile.get("projects"):
+                try:
+                    await self.save_user_resume(firebase_uid, flat_profile)
+                except Exception as r_sync_err:
+                    print(f"[Supabase] Profile to resume sync notice: {r_sync_err}")
+
             return res.data[0] if res.data else record
         except Exception as e:
             print(f"[Supabase] save_user_profile error: {e}")
             return None
 
     async def load_user_profile(self, firebase_uid: str) -> Optional[Dict[str, Any]]:
-        """Fetch a user's profile from user_profiles table using explicit column projection."""
+        """Fetch a user's profile from user_profiles table with resume metadata augmentation."""
         client = await self._get_client()
-        if not client:
+        if not client or not firebase_uid or firebase_uid == "guest_user":
             return None
         try:
             cols = "firebase_uid, email, first, last, pref_name, suffix, phone, dob, loc, add1, add2, add3, zip, headline, linkedin_url, github_url, portfolio_url, other_url, updated_at"
             res = await client.table("user_profiles").select(cols).eq("firebase_uid", firebase_uid).limit(1).execute()
-            data = res.data[0] if res.data else None
+            data = res.data[0] if res.data else {}
+            
             if data:
                 if "first" in data and "first_name" not in data:
                     data["first_name"] = data["first"]
@@ -309,7 +328,42 @@ class SupabaseService:
                     full_name = f"{data.get('first') or ''} {data.get('last') or ''}".strip()
                     if full_name and "name" not in data:
                         data["name"] = full_name
-            return data
+                if "loc" in data and "location" not in data:
+                    data["location"] = data["loc"]
+                
+                data["links"] = {
+                    "linkedin": data.get("linkedin_url") or "",
+                    "github": data.get("github_url") or "",
+                    "portfolio": data.get("portfolio_url") or "",
+                    "other": data.get("other_url") or ""
+                }
+
+            # Augment profile with rich arrays (skills, experience, education, projects) from user_resumes
+            try:
+                resume = await self.load_user_resume(firebase_uid)
+                if resume:
+                    if not data:
+                        data = {"firebase_uid": firebase_uid}
+                    if not data.get("name") and resume.get("name"):
+                        data["name"] = resume.get("name")
+                    if not data.get("email") and resume.get("email"):
+                        data["email"] = resume.get("email")
+                    if not data.get("phone") and resume.get("phone"):
+                        data["phone"] = resume.get("phone")
+                    if not data.get("headline") and resume.get("headline"):
+                        data["headline"] = resume.get("headline")
+                    
+                    data["skills"] = resume.get("skills") or []
+                    data["experience"] = resume.get("experience") or []
+                    data["education"] = resume.get("education") or []
+                    data["projects"] = resume.get("projects") or []
+                    data["summary"] = resume.get("summary") or ""
+                    if resume.get("links") and isinstance(resume.get("links"), dict):
+                        data["links"] = {**(data.get("links") or {}), **resume.get("links")}
+            except Exception as res_err:
+                print(f"[Supabase] Profile augmentation note: {res_err}")
+
+            return data if data else None
         except Exception as e:
             print(f"[Supabase] load_user_profile error: {e}")
             return None
@@ -317,17 +371,31 @@ class SupabaseService:
     async def save_user_preferences(self, firebase_uid: str, prefs: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """Upsert a user's job preferences into user_preferences table, keyed by firebase_uid."""
         client = await self._get_client()
-        if not client:
+        if not client or not firebase_uid or firebase_uid == "guest_user":
             return None
         try:
             valid_cols = {
                 "firebase_uid", "values", "roles", "locations", "roletype", "rolelevel",
                 "compsize", "industries", "skills_inc", "salary_amt", "salary_curr", "status"
             }
-            flat_prefs = {**prefs}
-            # Map aliases
+            # Unwrap if wrapped in {"preferences": {...}}
+            flat_prefs = prefs.get("preferences") if isinstance(prefs.get("preferences"), dict) else {**prefs}
+            
+            # Map frontend aliases to canonical database columns
+            if "role" in flat_prefs and ("roles" not in flat_prefs or not flat_prefs["roles"]):
+                flat_prefs["roles"] = [flat_prefs["role"]] if isinstance(flat_prefs["role"], str) and flat_prefs["role"] else []
+            if "specializations" in flat_prefs and ("roles" not in flat_prefs or not flat_prefs["roles"]):
+                flat_prefs["roles"] = flat_prefs["specializations"] if isinstance(flat_prefs["specializations"], list) else [str(flat_prefs["specializations"])]
+            if "city" in flat_prefs and ("locations" not in flat_prefs or not flat_prefs["locations"]):
+                flat_prefs["locations"] = [flat_prefs["city"]] if isinstance(flat_prefs["city"], str) and flat_prefs["city"] else []
+            if "companySizes" in flat_prefs and "compsize" not in flat_prefs:
+                flat_prefs["compsize"] = flat_prefs["companySizes"]
+            if "employmentTypes" in flat_prefs and "roletype" not in flat_prefs:
+                flat_prefs["roletype"] = flat_prefs["employmentTypes"]
             if "industries_inc" in flat_prefs and "industries" not in flat_prefs:
-                flat_prefs["industries"] = flat_prefs.pop("industries_inc")
+                flat_prefs["industries"] = flat_prefs["industries_inc"]
+            if "skills" in flat_prefs and "skills_inc" not in flat_prefs:
+                flat_prefs["skills_inc"] = flat_prefs["skills"]
 
             record = {"firebase_uid": firebase_uid}
             for k, v in flat_prefs.items():
@@ -341,9 +409,9 @@ class SupabaseService:
             return None
 
     async def load_user_preferences(self, firebase_uid: str) -> Optional[Dict[str, Any]]:
-        """Fetch a user's job preferences from user_preferences table using explicit column projection."""
+        """Fetch a user's job preferences from user_preferences table with frontend aliases."""
         client = await self._get_client()
-        if not client:
+        if not client or not firebase_uid or firebase_uid == "guest_user":
             return None
         try:
             cols = "firebase_uid, values, roles, locations, roletype, rolelevel, compsize, industries, skills_inc, salary_amt, salary_curr, status, updated_at"
@@ -352,34 +420,48 @@ class SupabaseService:
             if data:
                 if "industries" in data and "industries_inc" not in data:
                     data["industries_inc"] = data["industries"]
+                if "roles" in data and data["roles"]:
+                    data["role"] = data["roles"][0] if isinstance(data["roles"], list) and len(data["roles"]) > 0 else str(data["roles"])
+                    data["specializations"] = data["roles"] if isinstance(data["roles"], list) else [data["roles"]]
+                if "locations" in data and data["locations"]:
+                    data["city"] = data["locations"][0] if isinstance(data["locations"], list) and len(data["locations"]) > 0 else str(data["locations"])
+                if "compsize" in data:
+                    data["companySizes"] = data["compsize"]
+                if "roletype" in data:
+                    data["employmentTypes"] = data["roletype"]
+                if "skills_inc" in data:
+                    data["skills"] = data["skills_inc"]
             return data
         except Exception as e:
             print(f"[Supabase] load_user_preferences error: {e}")
             return None
 
     async def save_user_resume(self, firebase_uid: str, resume_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """Save a user's uploaded and parsed resume into user_resumes table."""
+        """Save a user's uploaded and parsed resume into user_resumes table with upsert."""
         client = await self._get_client()
         if not client or not firebase_uid or firebase_uid == "guest_user":
             return None
         try:
-            header = resume_data.get("header") if isinstance(resume_data.get("header"), dict) else {}
-            name = resume_data.get("name") or header.get("name") or ""
-            email = resume_data.get("email") or header.get("email") or ""
-            phone = resume_data.get("phone") or header.get("phone") or ""
-            headline = resume_data.get("headline") or header.get("headline") or header.get("title") or ""
-            summary = resume_data.get("summary") or header.get("summary") or ""
-            skills = resume_data.get("skills") if isinstance(resume_data.get("skills"), list) else []
-            experience = resume_data.get("experience") or resume_data.get("work_experience") or []
-            education = resume_data.get("education") or []
-            projects = resume_data.get("projects") or []
-            links = resume_data.get("links") or {
+            # Unwrap if wrapped in {"resume": {...}}
+            actual_resume = resume_data.get("resume") if isinstance(resume_data.get("resume"), dict) else resume_data
+            
+            header = actual_resume.get("header") if isinstance(actual_resume.get("header"), dict) else {}
+            name = actual_resume.get("name") or header.get("name") or ""
+            email = actual_resume.get("email") or header.get("email") or ""
+            phone = actual_resume.get("phone") or header.get("phone") or ""
+            headline = actual_resume.get("headline") or header.get("headline") or header.get("title") or ""
+            summary = actual_resume.get("summary") or header.get("summary") or ""
+            skills = actual_resume.get("skills") if isinstance(actual_resume.get("skills"), list) else []
+            experience = actual_resume.get("experience") or actual_resume.get("work_experience") or []
+            education = actual_resume.get("education") or []
+            projects = actual_resume.get("projects") or []
+            links = actual_resume.get("links") or {
                 "linkedin": header.get("linkedin", ""),
                 "github": header.get("github", ""),
                 "portfolio": header.get("portfolio", "")
             }
-            raw_text = resume_data.get("raw_text") or resume_data.get("raw_resume_text") or ""
-            filename = resume_data.get("filename") or ""
+            raw_text = actual_resume.get("raw_text") or actual_resume.get("raw_resume_text") or ""
+            filename = actual_resume.get("filename") or ""
 
             record = {
                 "firebase_uid": firebase_uid,
@@ -426,10 +508,20 @@ class SupabaseService:
                         "email": data.get("email") or "",
                         "phone": data.get("phone") or "",
                         "headline": data.get("headline") or "",
+                        "title": data.get("headline") or "",
                         "linkedin": (data.get("links") or {}).get("linkedin", "") if isinstance(data.get("links"), dict) else "",
                         "github": (data.get("links") or {}).get("github", "") if isinstance(data.get("links"), dict) else "",
                         "portfolio": (data.get("links") or {}).get("portfolio", "") if isinstance(data.get("links"), dict) else ""
                     }
+                # Ensure resume structure has standard arrays
+                if "experience" not in data or not data["experience"]:
+                    data["experience"] = []
+                if "education" not in data or not data["education"]:
+                    data["education"] = []
+                if "projects" not in data or not data["projects"]:
+                    data["projects"] = []
+                if "skills" not in data or not data["skills"]:
+                    data["skills"] = []
             return data
         except Exception as e:
             print(f"[Supabase] load_user_resume error: {e}")

@@ -1501,12 +1501,51 @@
       document.getElementById('auth-toggle-link').textContent = isSignUp ? "Sign In" : "Sign Up";
     }
 
+    async function hydrateAndRedirect(user, isExplicitSignUp) {
+      window.closeAuthModal();
+      let hasCloudPrefs = false;
+      if (user && user.uid) {
+        try {
+          const [pRes, profRes, rRes] = await Promise.all([
+            fetch('/api/user/preferences', { headers: { 'X-Firebase-UID': user.uid } }),
+            fetch('/api/user/profile', { headers: { 'X-Firebase-UID': user.uid } }),
+            fetch('/api/user/resume', { headers: { 'X-Firebase-UID': user.uid } })
+          ]);
+          if (pRes.ok) {
+            const p = await pRes.json();
+            if (p && (p.role || p.roles || p.locations || p.values || p.status)) {
+              localStorage.setItem('getarole_prefs', JSON.stringify(p));
+              hasCloudPrefs = true;
+            }
+          }
+          if (profRes.ok) {
+            const prof = await profRes.json();
+            if (prof && (prof.name || prof.first || prof.skills || prof.headline)) {
+              localStorage.setItem('getarole_profile', JSON.stringify(prof));
+            }
+          }
+          if (rRes.ok) {
+            const r = await rRes.json();
+            if (r && (r.header || r.skills || r.experience)) {
+              localStorage.setItem('getarole_resume_v2', JSON.stringify(r));
+            }
+          }
+        } catch(e) {
+          console.warn('Cloud hydration notice:', e);
+        }
+      }
+      const localPrefs = localStorage.getItem('getarole_prefs');
+      if (!isExplicitSignUp && (hasCloudPrefs || localPrefs)) {
+        window.location.href = "/dashboard/";
+      } else {
+        window.location.href = (isExplicitSignUp || !hasCloudPrefs) ? "/onboarding/" : "/dashboard/";
+      }
+    }
+
     window.handleGoogleSignIn = async function() {
       const res = await loginWithGoogle();
       if (res.success) {
-        window.closeAuthModal();
-        const prefs = localStorage.getItem('getarole_prefs');
-        window.location.href = prefs ? "/dashboard/" : "/onboarding/";
+        await hydrateAndRedirect(res.user, false);
       } else {
         showError(res.error);
       }
@@ -1526,9 +1565,7 @@
       }
 
       if (res.success) {
-        window.closeAuthModal();
-        const prefs = localStorage.getItem('getarole_prefs');
-        window.location.href = (isSignUp || !prefs) ? "/onboarding/" : "/dashboard/";
+        await hydrateAndRedirect(res.user, isSignUp);
       } else {
         showError(res.error);
       }

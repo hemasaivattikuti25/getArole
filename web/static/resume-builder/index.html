@@ -1957,19 +1957,74 @@
           if (res.ok) {
             const data = await res.json();
             // API returns a flat resume dict (not wrapped in {resume: {...}})
-            if (data && data.header && data.header.name) {
-              R = { ...R, ...data };
-              if (R.skills && !Array.isArray(R.skills)) {
-                const old = R.skills;
-                R.skills = [
-                  old.languages && { label: 'Languages', items: old.languages },
-                  old.backend && { label: 'Backend & Frameworks', items: old.backend },
-                  old.databases && { label: 'Databases & Tools', items: old.databases }
-                ].filter(Boolean);
+            if (data && ((data.header && data.header.name) || data.name || (data.skills && data.skills.length > 0))) {
+              if (data.header) {
+                R.header = { ...R.header, ...data.header };
+              }
+              if (data.name && (!R.header.name || !R.header.first_name)) {
+                R.header.name = data.name;
+                const parts = data.name.split(' ');
+                R.header.first_name = parts[0];
+                if (parts.length > 1) R.header.last_name = parts.slice(1).join(' ');
+              }
+              if (data.email && !R.header.email) R.header.email = data.email;
+              if (data.phone && !R.header.phone) R.header.phone = data.phone;
+              if (data.headline && !R.header.title) R.header.title = data.headline;
+              
+              if (data.summary) {
+                R.summary = typeof data.summary === 'string' ? { text: data.summary } : { ...R.summary, ...data.summary };
+              }
+              if (Array.isArray(data.experience) && data.experience.length > 0) {
+                R.experience = data.experience;
+              }
+              if (Array.isArray(data.education) && data.education.length > 0) {
+                R.education = data.education;
+              }
+              if (Array.isArray(data.projects) && data.projects.length > 0) {
+                R.projects = data.projects;
+              }
+              if (data.skills) {
+                if (Array.isArray(data.skills) && data.skills.length > 0) {
+                  if (typeof data.skills[0] === 'object' && data.skills[0].label) {
+                    R.skills = data.skills;
+                  } else {
+                    R.skills = [{ label: 'Skills & Competencies', items: data.skills.join(', ') }];
+                  }
+                }
+              }
+              if (data.links && typeof data.links === 'object') {
+                if (data.links.linkedin && !R.header.linkedin) R.header.linkedin = data.links.linkedin;
+                if (data.links.github && !R.header.github) R.header.github = data.links.github;
+                if (data.links.portfolio && !R.header.portfolio) R.header.portfolio = data.links.portfolio;
               }
               localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
               populateFormFields();
               rp();
+            }
+          }
+
+          // Fallback to profile API if header is still missing name/email
+          if (!R.header.name || !R.header.email) {
+            const profRes = await fetch('/api/user/profile', { headers: { 'X-Firebase-UID': uid } });
+            if (profRes.ok) {
+              const prof = await profRes.json();
+              if (prof && Object.keys(prof).length > 0) {
+                if (prof.name && !R.header.name) R.header.name = prof.name;
+                if (prof.first && !R.header.first_name) R.header.first_name = prof.first;
+                if (prof.last && !R.header.last_name) R.header.last_name = prof.last;
+                if (prof.email && !R.header.email) R.header.email = prof.email;
+                if (prof.phone && !R.header.phone) R.header.phone = prof.phone;
+                if (prof.headline && !R.header.title) R.header.title = prof.headline;
+                if (prof.linkedin_url && !R.header.linkedin) R.header.linkedin = prof.linkedin_url;
+                if (prof.github_url && !R.header.github) R.header.github = prof.github_url;
+                if (prof.portfolio_url && !R.header.portfolio) R.header.portfolio = prof.portfolio_url;
+                if (prof.skills && (!R.skills || R.skills.length === 0 || !R.skills[0].items)) {
+                  R.skills = [{ label: 'Skills & Competencies', items: Array.isArray(prof.skills) ? prof.skills.join(', ') : prof.skills }];
+                }
+                localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
+                populateFormFields();
+                rp();
+              }
             }
           }
         } catch (err) {

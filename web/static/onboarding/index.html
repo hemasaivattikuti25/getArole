@@ -1021,14 +1021,19 @@
       // Map preferences to dashboard schema
       const dashboardPrefs = {
         role: prefs.specializations.length > 0 ? prefs.specializations[0] : (prefs.department || 'Software Engineering'),
+        roles: prefs.specializations.length > 0 ? prefs.specializations : [prefs.department || 'Software Engineering'],
+        specializations: prefs.specializations,
         target_role: prefs.specializations.join(', '),
         city: prefs.locations[0] || '',
         locations: prefs.locations,
         remoteOnly: prefs.locations.includes('Remote'),
         workplaceType: prefs.locations.includes('Remote') ? 'Remote' : 'Hybrid',
         companySizes: prefs.companySizes,
+        compsize: prefs.companySizes,
         industries: prefs.industries,
-        employmentTypes: prefs.employmentTypes
+        industries_inc: prefs.industries,
+        employmentTypes: prefs.employmentTypes,
+        roletype: prefs.employmentTypes
       };
 
       const dashboardProfile = {
@@ -1064,7 +1069,7 @@
       } catch (err) {
         console.warn('Supabase sync warning:', err);
       } finally {
-        window.location.href = '/dashboard';
+        window.location.href = '/dashboard/';
       }
     }
 
@@ -1096,6 +1101,13 @@
       const savedProfile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
 
       let uid = localStorage.getItem('firebase_uid') || localStorage.getItem('getarole_user_id');
+      if (!uid) {
+        try {
+          const u = JSON.parse(localStorage.getItem('getarole_user') || '{}');
+          if (u && u.uid) uid = u.uid;
+        } catch(e) {}
+      }
+
       if (uid) {
         try {
           const [resP, resProf] = await Promise.all([
@@ -1104,29 +1116,41 @@
           ]);
           if (resP.ok) {
             const dataP = await resP.json();
-            if (dataP && dataP.specializations) Object.assign(savedPrefs, dataP);
+            if (dataP && Object.keys(dataP).length > 0) {
+              Object.assign(savedPrefs, dataP);
+              localStorage.setItem('getarole_prefs', JSON.stringify(savedPrefs));
+            }
           }
           if (resProf.ok) {
             const dataProf = await resProf.json();
-            if (dataProf && dataProf.skills) Object.assign(savedProfile, dataProf);
+            if (dataProf && Object.keys(dataProf).length > 0) {
+              Object.assign(savedProfile, dataProf);
+              localStorage.setItem('getarole_profile', JSON.stringify(savedProfile));
+            }
           }
         } catch(e) {}
       }
 
-      if (savedPrefs.specializations) prefs.specializations = savedPrefs.specializations;
-      if (savedPrefs.locations) prefs.locations = savedPrefs.locations;
-      if (savedPrefs.employmentTypes) prefs.employmentTypes = savedPrefs.employmentTypes;
-      if (savedPrefs.companySizes) prefs.companySizes = savedPrefs.companySizes;
-      if (savedPrefs.industries) prefs.industries = savedPrefs.industries;
-      if (savedPrefs.role) {
+      const specs = savedPrefs.specializations || savedPrefs.roles;
+      if (specs && Array.isArray(specs)) prefs.specializations = specs;
+      if (savedPrefs.locations && Array.isArray(savedPrefs.locations)) prefs.locations = savedPrefs.locations;
+      const emps = savedPrefs.employmentTypes || savedPrefs.roletype;
+      if (emps && Array.isArray(emps)) prefs.employmentTypes = emps;
+      const sizes = savedPrefs.companySizes || savedPrefs.compsize;
+      if (sizes && Array.isArray(sizes)) prefs.companySizes = sizes;
+      const inds = savedPrefs.industries || savedPrefs.industries_inc;
+      if (inds && Array.isArray(inds)) prefs.industries = inds;
+      
+      const targetRole = savedPrefs.role || (specs && specs[0]);
+      if (targetRole) {
         departments.forEach(d => {
-          if (specializations[d] && specializations[d].includes(savedPrefs.role)) {
+          if (specializations[d] && specializations[d].includes(targetRole)) {
             if (!prefs.departments.includes(d)) prefs.departments.push(d);
           }
         });
       }
-      if (savedProfile.skills) prefs.skills = savedProfile.skills;
-      if (savedProfile.searchStatuses) prefs.searchStatuses = savedProfile.searchStatuses;
+      if (savedProfile.skills && Array.isArray(savedProfile.skills)) prefs.skills = savedProfile.skills;
+      if (savedProfile.searchStatuses && Array.isArray(savedProfile.searchStatuses)) prefs.searchStatuses = savedProfile.searchStatuses;
 
       syncUIToState();
     }

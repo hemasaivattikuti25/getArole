@@ -984,8 +984,24 @@
       const local = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
       try {
         const res = await fetch('/api/user/profile', { headers: { 'X-Firebase-UID': uid } });
-        const cloud = await res.json();
-        return { ...local, ...cloud };
+        if (res.ok) {
+          const cloud = await res.json();
+          if (cloud && Object.keys(cloud).length > 0) {
+            const merged = { ...cloud, ...local };
+            ['name','first','last','first_name','last_name','email','phone','headline','loc','location','summary'].forEach(k => {
+              if (cloud[k] && !local[k]) merged[k] = cloud[k];
+            });
+            ['experience','education','projects','skills'].forEach(k => {
+              const cloudArr = cloud[k]; const localArr = local[k];
+              merged[k] = (Array.isArray(localArr) && localArr.length > 0) ? localArr
+                        : (Array.isArray(cloudArr) && cloudArr.length > 0) ? cloudArr : (merged[k] || []);
+            });
+            if (!merged.links && cloud.links) merged.links = cloud.links;
+            localStorage.setItem('getarole_profile', JSON.stringify(merged));
+            return merged;
+          }
+        }
+        return local;
       } catch(e) { return local; }
     }
 
@@ -994,8 +1010,15 @@
       const local = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
       try {
         const res = await fetch('/api/user/preferences', { headers: { 'X-Firebase-UID': uid } });
-        const cloud = await res.json();
-        return { ...local, ...cloud };
+        if (res.ok) {
+          const cloud = await res.json();
+          if (cloud && Object.keys(cloud).length > 0) {
+            const merged = { ...cloud, ...local };
+            localStorage.setItem('getarole_prefs', JSON.stringify(merged));
+            return merged;
+          }
+        }
+        return local;
       } catch(e) { return local; }
     }
 

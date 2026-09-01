@@ -185,6 +185,15 @@ async function handleModalResumeUpload(event, onComplete) {
         resumeV2.projects = parsedProf.projects || resumeV2.projects || [];
         resumeV2.links = parsedProf.links || resumeV2.links || {};
         localStorage.setItem('getarole_resume_v2', JSON.stringify(resumeV2));
+        
+        const uid = getFirebaseUID();
+        if (uid && uid !== 'guest_user') {
+          fetch('/api/user/resume', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+            body: JSON.stringify({ resume: resumeV2 })
+          }).catch(rErr => console.warn('[Resume Cloud Sync]', rErr));
+        }
       }
 
       await apiSaveProfile(existing);
