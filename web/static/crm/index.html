@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>getArole CRM Sheet — Candidate & Resume Master Directory</title>
+  <meta name="description" content="Master CRM and Candidate Resume Sheet for getArole. Restricted Access.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-accent: #6366f1;
+      --primary-light: #eef2ff;
+      --primary-border: #c7d2fe;
+      --success: #10b981;
+      --success-light: #ecfdf5;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --surface: #ffffff;
+      --background: #f8fafc;
+      --sidebar-bg: #0f172a;
+      --border-subtle: #f1f5f9;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #94a3b8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--background);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── Top Navigation ─── */
+    .crm-navbar {
+      height: 64px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .crm-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.15rem;
+    }
+    .crm-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      display: inline-block;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    }
+    .crm-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn-crm {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-main);
+      text-decoration: none;
+    }
+    .btn-crm:hover {
+      background: var(--border-subtle);
+      border-color: var(--border-strong);
+    }
+    .btn-crm-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+    .btn-crm-primary:hover {
+      background: var(--primary-hover);
+    }
+    .btn-crm-success {
+      background: var(--success);
+      color: #ffffff;
+      border-color: var(--success);
+    }
+    .btn-crm-success:hover {
+      background: #059669;
+    }
+
+    /* ─── Metric Cards ─── */
+    .metrics-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      padding: 24px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .metric-card {
+      background: var(--background);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .metric-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+    .metric-val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+    .metric-sub {
+      font-size: 0.78rem;
+      color: var(--text-subtle);
+    }
+
+    /* ─── Toolbar / Filters ─── */
+    .crm-toolbar {
+      padding: 16px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .search-box {
+      flex: 1;
+      min-width: 260px;
+      max-width: 480px;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      padding: 9px 14px 9px 36px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+      transition: border 0.15s;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+    }
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-subtle);
+      font-size: 0.9rem;
+    }
+    .filters-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .select-filter {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      font-size: 0.85rem;
+      font-family: inherit;
+      color: var(--text-main);
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* ─── Spreadsheet Table Container ─── */
+    .sheet-wrapper {
+      flex: 1;
+      padding: 24px;
+      overflow-x: auto;
+    }
+    .sheet-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    .sheet-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+    .sheet-table th {
+      background: #f8fafc;
+      padding: 12px 16px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      user-select: none;
+    }
+    .sheet-table th.sortable {
+      cursor: pointer;
+    }
+    .sheet-table th.sortable:hover {
+      color: var(--primary);
+    }
+    .sheet-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: middle;
+    }
+    .sheet-table tr:hover td {
+      background-color: #faf5ff;
+    }
+    .sheet-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ─── Candidate Cells ─── */
+    .cand-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .cand-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .cand-name {
+      font-weight: 700;
+      color: var(--text-main);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .cand-contact {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cand-contact a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .cand-contact a:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    /* ─── Skill & Status Badges ─── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-resume-yes {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+    .badge-resume-no {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+    }
+    .badge-role {
+      background: #ede9fe;
+      color: #5b21b6;
+      border: 1px solid #ddd6fe;
+    }
+    .badge-skill {
+      background: #f0f9ff;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+      margin: 1px 2px;
+    }
+
+    /* ─── Action Buttons ─── */
+    .btn-action {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.1s;
+    }
+    .btn-action:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+    .btn-action-primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .btn-action-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    /* ─── Auth Guard Modal ─── */
+    .auth-guard-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .auth-guard-card {
+      background: var(--surface);
+      border-radius: 16px;
+      max-width: 460px;
+      width: 100%;
+      padding: 36px 32px;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);
+    }
+    .auth-lock-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+    .auth-guard-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .auth-guard-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .admin-email-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      background: #f1f5f9;
+      color: var(--primary);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    /* ─── Slide-over Drawer for Resume / Dossier ─── */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 500;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .drawer-overlay.open {
+      display: block;
+      opacity: 1;
+    }
+    .drawer-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 720px;
+      background: var(--surface);
+      box-shadow: -10px 0 25px rgba(0,0,0,0.15);
+      z-index: 501;
+      transform: translateX(100%);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .drawer-overlay.open .drawer-panel {
+      transform: translateX(0);
+    }
+    .drawer-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+    }
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+    .drawer-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+    }
+
+    /* ─── Drawer Tabs ─── */
+    .drawer-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+      gap: 4px;
+    }
+    .tab-btn {
+      padding: 8px 16px;
+      border: none;
+      background: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .tab-pane {
+      display: none;
+    }
+    .tab-pane.active {
+      display: block;
+    }
+
+    .raw-resume-box {
+      background: #0f172a;
+      color: #f8fafc;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      padding: 16px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+      z-index: 10000;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Top Navbar ─── -->
+  <header class="crm-navbar">
+    <a href="/dashboard/" class="crm-brand">
+      <span>🚀 getArole</span>
+      <span class="crm-badge">Master CRM Sheet</span>
+      <span class="live-dot" title="Live Supabase Sync"></span>
+    </a>
+
+    <div class="crm-nav-actions">
+      <button onclick="copyForGoogleSheets()" class="btn-crm" title="Copies full table formatted to paste directly into Google Sheets">
+        📋 Copy for Google Sheets
+      </button>
+      <button onclick="exportCSV()" class="btn-crm btn-crm-success" title="Download formatted CSV spreadsheet">
+        📥 Export CSV
+      </button>
+      <button onclick="loadCRMData()" class="btn-crm" title="Refresh live candidate dataset">
+        🔄 Refresh
+      </button>
+      <button onclick="handleSignOut()" class="btn-crm" style="color:#ef4444" title="Sign out of CRM">
+        Sign Out
+      </button>
+    </div>
+  </header>
+
+  <!-- ─── Metrics Header ─── -->
+  <section class="metrics-bar">
+    <div class="metric-card">
+      <span class="metric-title">Total Candidates</span>
+      <span class="metric-val" id="metric-total-candidates">0</span>
+      <span class="metric-sub">Registered across profiles & database</span>
+    </div>
+    <div class="metric-card">
+      <span class="metric-title">Resumes Uploaded</span>
+      <span class="metric-val" id="metric-resumes-count" style="color:var(--success)">0</span>
+      <span class="metric-sub">Complete parsed ATS candidate records</span>
+    </div>
+    <div class="metric-card">
+      <span class="metric-title">Contact Verified</span>
+      <span class="metric-val" id="metric-contacts-count" style="color:var(--primary)">0</span>
+      <span class="metric-sub">Candidates with Phone / Email</span>
+    </div>
+    <div class="metric-card">
+      <span class="metric-title">Authorized Admin</span>
+      <span class="metric-val" style="font-size:1.05rem;font-family:'JetBrains Mono',monospace;word-break:break-all;" id="admin-user-display">hemasaivattikuti2727@gmail.com</span>
+      <span class="metric-sub">👑 Exclusive Owner Access</span>
+    </div>
+  </section>
+
+  <!-- ─── Toolbar & Filters ─── -->
+  <div class="crm-toolbar">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="crm-search-input" class="search-input" placeholder="Search by name, email, phone, role, skill, location..." oninput="applyFilters()">
+    </div>
+
+    <div class="filters-group">
+      <select id="filter-resume" class="select-filter" onchange="applyFilters()">
+        <option value="all">📄 All Resumes</option>
+        <option value="yes">✓ Has Resume Attached</option>
+        <option value="no">✕ No Resume</option>
+      </select>
+
+      <select id="filter-sort" class="select-filter" onchange="applyFilters()">
+        <option value="newest">📅 Newest First</option>
+        <option value="name">🔤 Name (A-Z)</option>
+        <option value="skills">🛠️ Most Skills</option>
+        <option value="experience">💼 Most Experience</option>
+      </select>
+      
+      <span id="filtered-count-badge" style="font-size:0.82rem;font-weight:700;color:var(--text-muted);padding:4px 8px;background:var(--border-subtle);border-radius:6px;">
+        Showing 0 candidates
+      </span>
+    </div>
+  </div>
+
+  <!-- ─── Master Spreadsheet Table ─── -->
+  <main class="sheet-wrapper">
+    <div class="sheet-card">
+      <table class="sheet-table" id="crm-master-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th class="sortable" onclick="sortBy('name')">Candidate Profile ⬍</th>
+            <th>Target Role & City</th>
+            <th>Skills & Competencies</th>
+            <th>Resume</th>
+            <th>Social Links</th>
+            <th class="sortable" onclick="sortBy('updated_at')">Last Active ⬍</th>
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="crm-table-body">
+          <tr>
+            <td colspan="8" style="text-align:center;padding:48px 0;color:var(--text-subtle);">
+              Loading master CRM dataset from Supabase...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- ─── Dossier Slide-Over Drawer ─── -->
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer(event)">
+    <div class="drawer-panel" onclick="event.stopPropagation()">
+      <div class="drawer-header">
+        <div>
+          <h2 id="drawer-name" style="font-size:1.25rem;font-weight:800;">Candidate Details</h2>
+          <span id="drawer-headline" style="font-size:0.85rem;color:var(--text-muted);">Software Engineer</span>
+        </div>
+        <button onclick="closeDrawer()" class="btn-crm" style="padding:4px 10px;font-size:1.1rem;">✕</button>
+      </div>
+
+      <div class="drawer-body">
+        <div class="drawer-tabs">
+          <button class="tab-btn active" onclick="switchTab('profile')">Structured Profile</button>
+          <button class="tab-btn" onclick="switchTab('resume')">Raw Resume Text</button>
+          <button class="tab-btn" onclick="switchTab('json')">JSON Data</button>
+        </div>
+
+        <!-- Tab 1: Structured Profile -->
+        <div class="tab-pane active" id="tab-profile">
+          <div style="display:flex;flex-direction:column;gap:18px;">
+            <div style="background:#f8fafc;padding:14px;border-radius:8px;border:1px solid var(--border);">
+              <h4 style="font-size:0.82rem;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;">Contact & Demographic</h4>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.88rem;">
+                <div><strong>Email:</strong> <span id="dtl-email">-</span></div>
+                <div><strong>Phone:</strong> <span id="dtl-phone">-</span></div>
+                <div><strong>Location:</strong> <span id="dtl-location">-</span></div>
+                <div><strong>Target Role:</strong> <span id="dtl-role">-</span></div>
+              </div>
+            </div>
+
+            <div>
+              <h4 style="font-size:0.85rem;font-weight:700;margin-bottom:8px;">Skills</h4>
+              <div id="dtl-skills" style="display:flex;flex-wrap:wrap;gap:4px;">-</div>
+            </div>
+
+            <div>
+              <h4 style="font-size:0.85rem;font-weight:700;margin-bottom:8px;">Experience</h4>
+              <div id="dtl-experience" style="display:flex;flex-direction:column;gap:10px;">-</div>
+            </div>
+
+            <div>
+              <h4 style="font-size:0.85rem;font-weight:700;margin-bottom:8px;">Education</h4>
+              <div id="dtl-education" style="display:flex;flex-direction:column;gap:8px;">-</div>
+            </div>
+
+            <div>
+              <h4 style="font-size:0.85rem;font-weight:700;margin-bottom:8px;">Projects</h4>
+              <div id="dtl-projects" style="display:flex;flex-direction:column;gap:8px;">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Raw Resume Text -->
+        <div class="tab-pane" id="tab-resume">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:0.85rem;font-weight:700;">Extracted Resume Text:</span>
+            <button onclick="copyRawText()" class="btn-crm" style="padding:4px 8px;font-size:0.78rem;">📋 Copy Text</button>
+          </div>
+          <pre class="raw-resume-box" id="dtl-raw-text">No raw resume text available.</pre>
+        </div>
+
+        <!-- Tab 3: JSON Data -->
+        <div class="tab-pane" id="tab-json">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <span style="font-size:0.85rem;font-weight:700;">Raw JSON Payload:</span>
+            <button onclick="copyJSON()" class="btn-crm" style="padding:4px 8px;font-size:0.78rem;">📋 Copy JSON</button>
+          </div>
+          <pre class="raw-resume-box" id="dtl-json-text">{}</pre>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button onclick="printResumeModal()" class="btn-crm btn-crm-primary">🖨️ Print / Save Resume PDF</button>
+        <button onclick="closeDrawer()" class="btn-crm">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Strict Auth Guard Overlay ─── -->
+  <div class="auth-guard-overlay" id="auth-guard-modal" style="display:none;">
+    <div class="auth-guard-card">
+      <div class="auth-lock-icon">🔒</div>
+      <h2 class="auth-guard-title" id="auth-guard-title">Restricted Access</h2>
+      <p class="auth-guard-desc" id="auth-guard-desc">
+        This Master CRM Sheet is restricted strictly to the primary owner:<br>
+        <span class="admin-email-tag">hemasaivattikuti2727@gmail.com</span>
+      </p>
+      
+      <div id="auth-guard-buttons" style="display:flex;flex-direction:column;gap:10px;">
+        <button onclick="triggerAdminGoogleLogin()" class="btn-crm btn-crm-primary" style="justify-content:center;padding:12px 18px;font-size:0.95rem;">
+          Sign in with Google (Owner Account)
+        </button>
+        <a href="/dashboard/" class="btn-crm" style="justify-content:center;">
+          Return to Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-el" class="toast"></div>
+
+  <!-- ─── SCRIPT LOGIC ─── -->
+  <script type="module">
+    import { initAuthListener, loginWithGoogle, logoutUser } from "/firebase-auth.js";
+
+    const AUTHORIZED_OWNER_EMAIL = "hemasaivattikuti2727@gmail.com";
+    let currentUser = null;
+    let allUsers = [];
+    let filteredUsers = [];
+    let activeDossierUser = null;
+    let sortColumn = 'updated_at';
+    let sortAsc = false;
+
+    // Toast helper
+    function toast(msg) {
+      const t = document.getElementById('toast-el');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, 3000);
+    }
+    window.toast = toast;
+
+    // Initialize Auth Guard
+    initAuthListener((user) => {
+      currentUser = user;
+      if (!user) {
+        showAuthGuard("Sign In Required", "Please sign in with the authorized owner email to access the CRM Sheet.");
+      } else if (user.email.toLowerCase().trim() !== AUTHORIZED_OWNER_EMAIL) {
+        showAuthGuard("Access Denied", `You are signed in as <b>${escapeHTML(user.email)}</b>.<br>This CRM is strictly restricted to <span class="admin-email-tag">${AUTHORIZED_OWNER_EMAIL}</span>.`);
+      } else {
+        hideAuthGuard();
+        document.getElementById('admin-user-display').textContent = user.email;
+        loadCRMData();
+      }
+    });
+
+    function showAuthGuard(title, desc) {
+      document.getElementById('auth-guard-title').textContent = title;
+      document.getElementById('auth-guard-desc').innerHTML = desc;
+      document.getElementById('auth-guard-modal').style.display = 'flex';
+    }
+
+    function hideAuthGuard() {
+      document.getElementById('auth-guard-modal').style.display = 'none';
+    }
+
+    window.triggerAdminGoogleLogin = async function() {
+      const res = await loginWithGoogle();
+      if (res.success && res.user) {
+        if (res.user.email.toLowerCase().trim() === AUTHORIZED_OWNER_EMAIL) {
+          hideAuthGuard();
+          loadCRMData();
+        } else {
+          showAuthGuard("Unauthorized Account", `Signed in as <b>${escapeHTML(res.user.email)}</b>. Access Denied.<br>Please sign in with <span class="admin-email-tag">${AUTHORIZED_OWNER_EMAIL}</span>.`);
+        }
+      } else if (!res.success) {
+        toast(`⚠️ Login failed: ${res.error}`);
+      }
+    };
+
+    window.handleSignOut = async function() {
+      await logoutUser();
+      window.location.href = "/";
+    };
+
+    // Load Master CRM Data from backend API
+    async function loadCRMData() {
+      const email = currentUser ? currentUser.email : AUTHORIZED_OWNER_EMAIL;
+      const uid = currentUser ? currentUser.uid : '';
+      
+      try {
+        const res = await fetch(`/api/admin/crm/users?email=${encodeURIComponent(email)}`, {
+          headers: {
+            'X-User-Email': email,
+            'X-Firebase-UID': uid
+          }
+        });
+
+        if (res.status === 403) {
+          showAuthGuard("Access Denied", "Your email is not authorized to access this CRM Sheet.");
+          return;
+        }
+
+        const data = await res.json();
+        if (data && data.users) {
+          allUsers = data.users;
+          
+          // Populate KPI Metrics
+          document.getElementById('metric-total-candidates').textContent = data.metrics.total_candidates || allUsers.length;
+          document.getElementById('metric-resumes-count').textContent = data.metrics.resumes_count || 0;
+          document.getElementById('metric-contacts-count').textContent = data.metrics.contacts_count || 0;
+
+          applyFilters();
+          toast(`✅ Loaded ${allUsers.length} candidate records.`);
+        }
+      } catch (err) {
+        console.error("CRM Load Error:", err);
+        toast("❌ Failed to load CRM data from server.");
+      }
+    }
+    window.loadCRMData = loadCRMData;
+
+    // Filter, Search, and Sort Logic
+    function applyFilters() {
+      const query = (document.getElementById('crm-search-input').value || '').toLowerCase().trim();
+      const resumeFilter = document.getElementById('filter-resume').value;
+      const sortOpt = document.getElementById('filter-sort').value;
+
+      filteredUsers = allUsers.filter(u => {
+        // Resume Filter
+        if (resumeFilter === 'yes' && !u.has_resume) return false;
+        if (resumeFilter === 'no' && u.has_resume) return false;
+
+        // Search Query
+        if (!query) return true;
+        const nameMatch = (u.name || '').toLowerCase().includes(query);
+        const emailMatch = (u.email || '').toLowerCase().includes(query);
+        const phoneMatch = (u.phone || '').toLowerCase().includes(query);
+        const roleMatch = (u.target_role || '').toLowerCase().includes(query);
+        const locMatch = (u.location || '' || (u.preferred_locations || []).join(' ')).toLowerCase().includes(query);
+        const skillsMatch = (u.skills || []).some(s => String(s).toLowerCase().includes(query));
+        const rawMatch = (u.resume_raw_text || '').toLowerCase().includes(query);
+
+        return nameMatch || emailMatch || phoneMatch || roleMatch || locMatch || skillsMatch || rawMatch;
+      });
+
+      // Sorting
+      filteredUsers.sort((a, b) => {
+        if (sortOpt === 'name') {
+          return (a.name || '').localeCompare(b.name || '');
+        } else if (sortOpt === 'skills') {
+          return (b.skills || []).length - (a.skills || []).length;
+        } else if (sortOpt === 'experience') {
+          return (b.experience || []).length - (a.experience || []).length;
+        } else {
+          // Newest / Updated
+          const dateA = new Date(a.updated_at || a.created_at || 0).getTime();
+          const dateB = new Date(b.updated_at || b.created_at || 0).getTime();
+          return dateB - dateA;
+        }
+      });
+
+      document.getElementById('filtered-count-badge').textContent = `Showing ${filteredUsers.length} of ${allUsers.length} candidates`;
+      renderTable();
+    }
+    window.applyFilters = applyFilters;
+
+    function escapeHTML(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      }[tag] || tag));
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('crm-table-body');
+      if (filteredUsers.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align:center;padding:48px 0;color:var(--text-subtle);">
+              No candidates found matching your search / filter criteria.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filteredUsers.map((u, idx) => {
+        const initials = (u.name || 'C').substring(0, 2).toUpperCase();
+        const skillsSnippet = (u.skills || []).slice(0, 4).map(s => `<span class="badge badge-skill">${escapeHTML(s)}</span>`).join('');
+        const skillsMore = (u.skills || []).length > 4 ? `<span style="font-size:0.75rem;color:var(--text-subtle);">+${(u.skills || []).length - 4}</span>` : '';
+        const role = u.target_role || (u.roles && u.roles[0]) || u.headline || 'Candidate';
+        const loc = u.location || (u.preferred_locations && u.preferred_locations[0]) || 'India';
+        const dateStr = u.updated_at ? new Date(u.updated_at).toLocaleDateString() : '-';
+
+        return `
+          <tr>
+            <td style="color:var(--text-subtle);font-weight:600;">${idx + 1}</td>
+            <td>
+              <div class="cand-cell">
+                <div class="cand-avatar">${escapeHTML(initials)}</div>
+                <div>
+                  <span class="cand-name">${escapeHTML(u.name)}</span>
+                  <div class="cand-contact">
+                    ${u.email ? `<a href="mailto:${escapeHTML(u.email)}" title="Send Email">✉️ ${escapeHTML(u.email)}</a>` : '<span style="color:#cbd5e1">No email</span>'}
+                    ${u.phone ? `<span>📞 ${escapeHTML(u.phone)}</span>` : ''}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="badge badge-role">${escapeHTML(role)}</span>
+              <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;">📍 ${escapeHTML(loc)}</div>
+            </td>
+            <td>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;">
+                ${skillsSnippet || '<span style="color:#94a3b8;font-size:0.78rem;">No skills listed</span>'}
+                ${skillsMore}
+              </div>
+            </td>
+            <td>
+              ${u.has_resume 
+                ? `<span class="badge badge-resume-yes">✓ ${escapeHTML(u.resume_filename || 'Parsed')}</span>` 
+                : `<span class="badge badge-resume-no">No resume</span>`}
+            </td>
+            <td>
+              <div style="display:flex;gap:6px;">
+                ${u.linkedin ? `<a href="${escapeHTML(u.linkedin)}" target="_blank" class="btn-action" title="LinkedIn">🔗 In</a>` : ''}
+                ${u.github ? `<a href="${escapeHTML(u.github)}" target="_blank" class="btn-action" title="GitHub">🐙 Git</a>` : ''}
+                ${u.portfolio ? `<a href="${escapeHTML(u.portfolio)}" target="_blank" class="btn-action" title="Portfolio">🌐 Web</a>` : ''}
+                ${(!u.linkedin && !u.github && !u.portfolio) ? '<span style="color:#cbd5e1;font-size:0.78rem;">-</span>' : ''}
+              </div>
+            </td>
+            <td style="font-size:0.82rem;color:var(--text-muted);white-space:nowrap;">
+              ${dateStr}
+            </td>
+            <td style="text-align:right;">
+              <button onclick="openDossier(${idx})" class="btn-action btn-action-primary">
+                👁️ View Details
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Slide-over Drawer Dossier Logic
+    window.openDossier = function(idx) {
+      const u = filteredUsers[idx];
+      if (!u) return;
+      activeDossierUser = u;
+
+      document.getElementById('drawer-name').textContent = u.name || 'Candidate';
+      document.getElementById('drawer-headline').textContent = u.target_role || u.headline || 'Job Seeker';
+      document.getElementById('dtl-email').textContent = u.email || '-';
+      document.getElementById('dtl-phone').textContent = u.phone || '-';
+      document.getElementById('dtl-location').textContent = u.location || '-';
+      document.getElementById('dtl-role').textContent = u.target_role || '-';
+
+      // Skills
+      const skillsContainer = document.getElementById('dtl-skills');
+      if (u.skills && u.skills.length > 0) {
+        skillsContainer.innerHTML = u.skills.map(s => `<span class="badge badge-skill">${escapeHTML(s)}</span>`).join('');
+      } else {
+        skillsContainer.textContent = 'No skills recorded.';
+      }
+
+      // Experience
+      const expContainer = document.getElementById('dtl-experience');
+      if (u.experience && u.experience.length > 0) {
+        expContainer.innerHTML = u.experience.map(e => `
+          <div style="background:#fff;padding:10px;border-radius:6px;border:1px solid var(--border);">
+            <strong style="color:var(--primary);">${escapeHTML(e.role || e.title || 'Role')}</strong> at <em>${escapeHTML(e.company || 'Company')}</em>
+            <div style="font-size:0.78rem;color:var(--text-subtle);">${escapeHTML(e.duration || e.dates || '')}</div>
+            <div style="font-size:0.85rem;margin-top:4px;">${escapeHTML(e.description || '')}</div>
+          </div>
+        `).join('');
+      } else {
+        expContainer.textContent = 'No structured work history.';
+      }
+
+      // Education
+      const eduContainer = document.getElementById('dtl-education');
+      if (u.education && u.education.length > 0) {
+        eduContainer.innerHTML = u.education.map(ed => `
+          <div style="background:#fff;padding:8px 10px;border-radius:6px;border:1px solid var(--border);">
+            <strong>${escapeHTML(ed.degree || ed.course || 'Degree')}</strong> — ${escapeHTML(ed.institution || ed.school || '')}
+            <div style="font-size:0.78rem;color:var(--text-subtle);">${escapeHTML(ed.year || ed.duration || '')}</div>
+          </div>
+        `).join('');
+      } else {
+        eduContainer.textContent = 'No education recorded.';
+      }
+
+      // Projects
+      const projContainer = document.getElementById('dtl-projects');
+      if (u.projects && u.projects.length > 0) {
+        projContainer.innerHTML = u.projects.map(p => `
+          <div style="background:#fff;padding:8px 10px;border-radius:6px;border:1px solid var(--border);">
+            <strong>${escapeHTML(p.title || p.name || 'Project')}</strong>
+            <div style="font-size:0.85rem;margin-top:2px;">${escapeHTML(p.description || '')}</div>
+          </div>
+        `).join('');
+      } else {
+        projContainer.textContent = 'No projects listed.';
+      }
+
+      // Raw Resume & JSON
+      document.getElementById('dtl-raw-text').textContent = u.resume_raw_text || 'No raw resume text available for this user.';
+      document.getElementById('dtl-json-text').textContent = JSON.stringify(u, null, 2);
+
+      document.getElementById('drawer-overlay').classList.add('open');
+    };
+
+    window.closeDrawer = function(e) {
+      if (e && e.target !== document.getElementById('drawer-overlay') && e.target.tagName !== 'BUTTON') return;
+      document.getElementById('drawer-overlay').classList.remove('open');
+    };
+
+    window.switchTab = function(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+    };
+
+    window.copyRawText = function() {
+      const text = document.getElementById('dtl-raw-text').textContent;
+      navigator.clipboard.writeText(text).then(() => toast("📋 Raw resume text copied!"));
+    };
+
+    window.copyJSON = function() {
+      const json = document.getElementById('dtl-json-text').textContent;
+      navigator.clipboard.writeText(json).then(() => toast("📋 JSON payload copied!"));
+    };
+
+    window.printResumeModal = function() {
+      if (!activeDossierUser) return;
+      const u = activeDossierUser;
+      const printWindow = window.open('', '_blank', 'width=800,height=900');
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${escapeHTML(u.name)} — Resume Dossier</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 40px; color: #111; line-height: 1.5; }
+            h1 { margin-bottom: 4px; color: #1e1b4b; }
+            .contacts { font-size: 0.9rem; color: #475569; margin-bottom: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+            h2 { font-size: 1.1rem; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-top: 24px; color: #312e81; }
+            .badge { display: inline-block; background: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; margin: 2px; }
+            .section-item { margin-bottom: 12px; }
+          </style>
+        </head>
+        <body>
+          <h1>${escapeHTML(u.name)}</h1>
+          <div class="contacts">
+            ${u.target_role || u.headline || ''} | ${u.email || ''} | ${u.phone || ''} | ${u.location || ''}
+          </div>
+          <h2>Skills</h2>
+          <div>${(u.skills || []).map(s => `<span class="badge">${escapeHTML(s)}</span>`).join(' ')}</div>
+          ${u.resume_raw_text ? `<h2>Extracted Resume Text</h2><pre style="white-space:pre-wrap;font-size:0.85rem;background:#f8fafc;padding:15px;border-radius:6px;">${escapeHTML(u.resume_raw_text)}</pre>` : ''}
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+      setTimeout(() => {
+        printWindow.focus();
+        printWindow.print();
+      }, 400);
+    };
+
+    // ─── Export Features ───
+
+    // 1. Direct CSV Download
+    window.exportCSV = function() {
+      const email = currentUser ? currentUser.email : AUTHORIZED_OWNER_EMAIL;
+      window.location.href = `/api/admin/crm/export.csv?email=${encodeURIComponent(email)}`;
+      toast("📥 Generating master CSV spreadsheet download...");
+    };
+
+    // 2. Copy formatted TSV for Google Sheets pasting
+    window.copyForGoogleSheets = function() {
+      if (filteredUsers.length === 0) {
+        toast("⚠️ No data to copy.");
+        return;
+      }
+
+      const headers = [
+        "Candidate ID", "Name", "Email", "Phone", "Location",
+        "Headline", "Target Role", "Preferred Locations", "Skills",
+        "Experience Count", "Education Count", "Has Resume", "Resume Filename",
+        "LinkedIn", "GitHub", "Portfolio", "Last Active"
+      ];
+
+      const rows = filteredUsers.map(u => [
+        u.id || u.firebase_uid || "",
+        u.name || "",
+        u.email || "",
+        u.phone || "",
+        u.location || "",
+        u.headline || "",
+        u.target_role || (u.roles || []).join(", "),
+        (u.preferred_locations || []).join(", "),
+        (u.skills || []).join(", "),
+        (u.experience || []).length,
+        (u.education || []).length,
+        u.has_resume ? "Yes" : "No",
+        u.resume_filename || "",
+        u.linkedin || "",
+        u.github || "",
+        u.portfolio || "",
+        u.updated_at || u.created_at || ""
+      ]);
+
+      const tsvContent = [headers.join("\t"), ...rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join("\t"))].join("\n");
+
+      navigator.clipboard.writeText(tsvContent).then(() => {
+        toast("📋 Copied to clipboard! Ready to paste (Cmd+V) directly into Google Sheets.");
+      }).catch(err => {
+        toast("❌ Failed to copy to clipboard.");
+      });
+    };
+  </script>
+</body>
+</html>

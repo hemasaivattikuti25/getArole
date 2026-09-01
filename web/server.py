@@ -19,7 +19,7 @@ from services.llm_service import get_llm_service, NvidiaLLMService
 from services.supabase_service import get_supabase_service, get_user_lock
 from core.logging_config import configure_logging
 from core.observability_middleware import ObservabilityMiddleware
-from core.security import enforce_ai_rate_limit, extract_authenticated_uid
+from core.security import enforce_ai_rate_limit, extract_authenticated_uid, verify_crm_admin_access, is_crm_admin_authorized
 
 # Initialize Structured JSON logging
 configure_logging()
@@ -912,6 +912,148 @@ async def serve_terms():
         with open(terms_file, "r", encoding="utf-8") as f:
             return f.read()
     return "<h1>getArole Terms of Service</h1>"
+
+# ─── CRM Sheet & Admin Dashboard (Restricted to hemasaivattikuti2727@gmail.com) ───
+
+@app.get("/crm", response_class=HTMLResponse)
+@app.get("/crm/", response_class=HTMLResponse)
+@app.get("/admin/crm", response_class=HTMLResponse)
+@app.get("/admin/crm/", response_class=HTMLResponse)
+async def serve_crm_dashboard():
+    crm_file = os.path.join(STATIC_DIR, "crm", "index.html")
+    if os.path.exists(crm_file):
+        with open(crm_file, "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h1>getArole CRM Dashboard</h1>"
+
+@app.get("/api/admin/crm/users")
+async def get_crm_users_endpoint(
+    request: Request,
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
+    x_user_email: Optional[str] = Header(None, alias="X-User-Email")
+) -> Dict[str, Any]:
+    """
+    Returns unified candidate, user profile, preferences, and resume data for getArole CRM Sheet.
+    Access restricted strictly to hemasaivattikuti2727@gmail.com.
+    """
+    verify_crm_admin_access(request, x_admin_key=x_admin_key, x_user_email=x_user_email)
+    
+    supabase = get_supabase_service()
+    users = await supabase.fetch_crm_all_users(limit=1000)
+    
+    total_users = len(users)
+    users_with_resumes = sum(1 for u in users if u.get("has_resume"))
+    users_with_contact = sum(1 for u in users if u.get("phone") or u.get("email"))
+    
+    # Skill frequency analysis
+    skill_counts: Dict[str, int] = {}
+    for u in users:
+        for sk in (u.get("skills") or []):
+            sk_clean = str(sk).strip()
+            if sk_clean:
+                skill_counts[sk_clean] = skill_counts.get(sk_clean, 0) + 1
+    top_skills = sorted(skill_counts.items(), key=lambda x: x[1], reverse=True)[:10]
+
+    return {
+        "status": "ok",
+        "total_users": total_users,
+        "metrics": {
+            "total_candidates": total_users,
+            "resumes_count": users_with_resumes,
+            "contacts_count": users_with_contact,
+            "top_skills": [{"skill": s, "count": c} for s, c in top_skills]
+        },
+        "users": users
+    }
+
+@app.get("/api/admin/crm/export.csv")
+async def export_crm_csv_endpoint(
+    request: Request,
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
+    x_user_email: Optional[str] = Header(None, alias="X-User-Email"),
+    email: Optional[str] = Query(None)
+):
+    """
+    Generates a direct, downloadable CSV file for Excel / Google Sheets with complete user profiles and resumes.
+    Access restricted strictly to hemasaivattikuti2727@gmail.com.
+    """
+    verify_crm_admin_access(request, x_admin_key=x_admin_key, x_user_email=x_user_email)
+    
+    supabase = get_supabase_service()
+    users = await supabase.fetch_crm_all_users(limit=2000)
+    
+    import io
+    import csv
+    
+    output = io.StringIO()
+    writer = csv.writer(output, quoting=csv.QUOTE_MINIMAL)
+    
+    # Header Row
+    writer.writerow([
+        "Candidate ID",
+        "Name",
+        "Email",
+        "Phone",
+        "Location",
+        "Headline / Title",
+        "Target Role",
+        "Preferred Locations",
+        "Workplace Type",
+        "Company Sizes",
+        "Skills",
+        "Experience Count",
+        "Education Count",
+        "Projects Count",
+        "Has Resume",
+        "Resume Filename",
+        "LinkedIn URL",
+        "GitHub URL",
+        "Portfolio URL",
+        "Registered / Updated At",
+        "Raw Resume Text"
+    ])
+    
+    for u in users:
+        skills_str = ", ".join(u.get("skills") or [])
+        locs_str = ", ".join(u.get("preferred_locations") or [])
+        comps_str = ", ".join(u.get("company_sizes") or [])
+        roles_str = ", ".join(u.get("roles") or [])
+        raw_text_clean = " ".join((u.get("resume_raw_text") or "").split())[:3000]
+        
+        writer.writerow([
+            u.get("id") or u.get("firebase_uid") or "",
+            u.get("name") or "",
+            u.get("email") or "",
+            u.get("phone") or "",
+            u.get("location") or "",
+            u.get("headline") or "",
+            u.get("target_role") or roles_str or "",
+            locs_str or "",
+            u.get("workplace_type") or "",
+            comps_str or "",
+            skills_str or "",
+            len(u.get("experience") or []),
+            len(u.get("education") or []),
+            len(u.get("projects") or []),
+            "Yes" if u.get("has_resume") else "No",
+            u.get("resume_filename") or "",
+            u.get("linkedin") or "",
+            u.get("github") or "",
+            u.get("portfolio") or "",
+            u.get("updated_at") or u.get("created_at") or "",
+            raw_text_clean
+        ])
+    
+    output.seek(0)
+    csv_bytes = output.getvalue().encode("utf-8-sig")
+    
+    return Response(
+        content=csv_bytes,
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": "attachment; filename=getArole_CRM_Candidates_Export.csv"
+        }
+    )
 
 # ─── User Profile & Preferences API (Supabase-backed, Firebase UID keyed) ───
 

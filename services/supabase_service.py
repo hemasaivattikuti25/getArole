@@ -549,6 +549,250 @@ class SupabaseService:
             print(f"[Supabase] purge_user_account error: {e}")
             return False
 
+    async def fetch_crm_all_users(self, limit: int = 1000) -> List[Dict[str, Any]]:
+        """
+        Aggregates and joins all user profiles, preferences, uploaded resumes,
+        and legacy candidate records into a unified CRM sheet dataset.
+        """
+        crm_users: Dict[str, Dict[str, Any]] = {}
+        client = await self._get_client()
+
+        # 1. Fetch user_profiles
+        if client:
+            try:
+                p_res = await client.table("user_profiles").select("*").order("updated_at", desc=True).limit(limit).execute()
+                profiles = p_res.data or []
+                for p in profiles:
+                    uid = p.get("firebase_uid") or f"usr_{len(crm_users)+1}"
+                    first = p.get("first") or ""
+                    last = p.get("last") or ""
+                    name = p.get("name") or f"{first} {last}".strip() or (p.get("email") or "").split("@")[0] or "Candidate"
+                    crm_users[uid] = {
+                        "id": uid,
+                        "firebase_uid": uid,
+                        "name": name,
+                        "first_name": first,
+                        "last_name": last,
+                        "email": p.get("email") or "",
+                        "phone": p.get("phone") or "",
+                        "location": p.get("loc") or p.get("location") or "",
+                        "headline": p.get("headline") or "",
+                        "linkedin": p.get("linkedin_url") or "",
+                        "github": p.get("github_url") or "",
+                        "portfolio": p.get("portfolio_url") or "",
+                        "other_url": p.get("other_url") or "",
+                        "roles": [],
+                        "target_role": "",
+                        "preferred_locations": [],
+                        "workplace_type": "",
+                        "company_sizes": [],
+                        "industries": [],
+                        "skills": [],
+                        "experience": [],
+                        "education": [],
+                        "projects": [],
+                        "resume_raw_text": "",
+                        "resume_filename": "",
+                        "resume_data": None,
+                        "has_resume": False,
+                        "updated_at": p.get("updated_at") or "",
+                        "created_at": p.get("created_at") or p.get("updated_at") or ""
+                    }
+            except Exception as pe:
+                print(f"[Supabase CRM] fetch profiles error: {pe}")
+
+        # 2. Fetch user_preferences
+        if client:
+            try:
+                pref_res = await client.table("user_preferences").select("*").limit(limit).execute()
+                preferences = pref_res.data or []
+                for pref in preferences:
+                    uid = pref.get("firebase_uid")
+                    if not uid:
+                        continue
+                    if uid not in crm_users:
+                        crm_users[uid] = {
+                            "id": uid,
+                            "firebase_uid": uid,
+                            "name": (pref.get("email") or "").split("@")[0] or "Candidate",
+                            "first_name": "",
+                            "last_name": "",
+                            "email": pref.get("email") or "",
+                            "phone": "",
+                            "location": "",
+                            "headline": "",
+                            "linkedin": "",
+                            "github": "",
+                            "portfolio": "",
+                            "other_url": "",
+                            "roles": [],
+                            "target_role": "",
+                            "preferred_locations": [],
+                            "workplace_type": "",
+                            "company_sizes": [],
+                            "industries": [],
+                            "skills": [],
+                            "experience": [],
+                            "education": [],
+                            "projects": [],
+                            "resume_raw_text": "",
+                            "resume_filename": "",
+                            "resume_data": None,
+                            "has_resume": False,
+                            "updated_at": pref.get("updated_at") or "",
+                            "created_at": pref.get("created_at") or pref.get("updated_at") or ""
+                        }
+                    roles = pref.get("roles") or []
+                    crm_users[uid]["roles"] = roles
+                    crm_users[uid]["target_role"] = roles[0] if roles else ""
+                    crm_users[uid]["preferred_locations"] = pref.get("locations") or []
+                    crm_users[uid]["workplace_type"] = "Remote" if "Remote" in (pref.get("locations") or []) else "Hybrid"
+                    crm_users[uid]["company_sizes"] = pref.get("compsize") or []
+                    crm_users[uid]["industries"] = pref.get("industries") or []
+                    if pref.get("skills_inc") and not crm_users[uid]["skills"]:
+                        crm_users[uid]["skills"] = pref.get("skills_inc")
+            except Exception as prefe:
+                print(f"[Supabase CRM] fetch preferences error: {prefe}")
+
+        # 3. Fetch user_resumes
+        if client:
+            try:
+                res_res = await client.table("user_resumes").select("*").order("uploaded_at", desc=True).limit(limit).execute()
+                resumes = res_res.data or []
+                for r in resumes:
+                    uid = r.get("firebase_uid")
+                    if not uid:
+                        continue
+                    if uid not in crm_users:
+                        crm_users[uid] = {
+                            "id": uid,
+                            "firebase_uid": uid,
+                            "name": r.get("name") or "Candidate",
+                            "first_name": "",
+                            "last_name": "",
+                            "email": r.get("email") or "",
+                            "phone": r.get("phone") or "",
+                            "location": "",
+                            "headline": r.get("headline") or "",
+                            "linkedin": (r.get("links") or {}).get("linkedin", "") if isinstance(r.get("links"), dict) else "",
+                            "github": (r.get("links") or {}).get("github", "") if isinstance(r.get("links"), dict) else "",
+                            "portfolio": (r.get("links") or {}).get("portfolio", "") if isinstance(r.get("links"), dict) else "",
+                            "other_url": "",
+                            "roles": [],
+                            "target_role": r.get("headline") or "",
+                            "preferred_locations": [],
+                            "workplace_type": "",
+                            "company_sizes": [],
+                            "industries": [],
+                            "skills": [],
+                            "experience": [],
+                            "education": [],
+                            "projects": [],
+                            "resume_raw_text": "",
+                            "resume_filename": "",
+                            "resume_data": None,
+                            "has_resume": False,
+                            "updated_at": r.get("uploaded_at") or "",
+                            "created_at": r.get("uploaded_at") or ""
+                        }
+                    
+                    user = crm_users[uid]
+                    if not user["name"] or user["name"] == "Candidate":
+                        user["name"] = r.get("name") or user["name"]
+                    if not user["email"]:
+                        user["email"] = r.get("email") or ""
+                    if not user["phone"]:
+                        user["phone"] = r.get("phone") or ""
+                    if not user["headline"]:
+                        user["headline"] = r.get("headline") or ""
+                    if not user["target_role"] and r.get("headline"):
+                        user["target_role"] = r.get("headline")
+                    
+                    if r.get("skills"):
+                        existing_s = set(user["skills"])
+                        for sk in r["skills"]:
+                            if sk and isinstance(sk, str) and sk not in existing_s:
+                                user["skills"].append(sk)
+                                existing_s.add(sk)
+                                
+                    if r.get("experience"):
+                        user["experience"] = r["experience"]
+                    if r.get("education"):
+                        user["education"] = r["education"]
+                    if r.get("projects"):
+                        user["projects"] = r["projects"]
+                        
+                    user["resume_raw_text"] = r.get("raw_text") or ""
+                    user["resume_filename"] = r.get("filename") or "resume.pdf"
+                    user["resume_data"] = r
+                    user["has_resume"] = bool(r.get("raw_text") or r.get("experience") or r.get("skills") or r.get("filename"))
+                    if r.get("uploaded_at") and not user.get("updated_at"):
+                        user["updated_at"] = r["uploaded_at"]
+            except Exception as r_err:
+                print(f"[Supabase CRM] fetch resumes error: {r_err}")
+
+        # 4. Fetch legacy candidates table
+        try:
+            cand_list = await self.fetch_all_candidates(limit=limit)
+            for c in cand_list:
+                email = (c.get("email") or "").strip().lower()
+                c_id = str(c.get("id") or "")
+                
+                # Check if matched by email
+                matched_uid = None
+                if email:
+                    for uid, u in crm_users.items():
+                        if u.get("email", "").strip().lower() == email:
+                            matched_uid = uid
+                            break
+                
+                if matched_uid:
+                    u = crm_users[matched_uid]
+                    if not u["resume_raw_text"] and c.get("raw_resume_text"):
+                        u["resume_raw_text"] = c["raw_resume_text"]
+                        u["has_resume"] = True
+                    if not u["skills"] and c.get("skills"):
+                        u["skills"] = c["skills"]
+                    if not u["education"] and c.get("education"):
+                        u["education"] = c["education"]
+                else:
+                    cand_uid = c_id or f"cand_{len(crm_users)+1}"
+                    crm_users[cand_uid] = {
+                        "id": cand_uid,
+                        "firebase_uid": cand_uid,
+                        "name": c.get("name") or "Candidate",
+                        "first_name": "",
+                        "last_name": "",
+                        "email": c.get("email") or "",
+                        "phone": "",
+                        "location": "",
+                        "headline": "",
+                        "linkedin": "",
+                        "github": "",
+                        "portfolio": "",
+                        "other_url": "",
+                        "roles": [],
+                        "target_role": "",
+                        "preferred_locations": [],
+                        "workplace_type": "",
+                        "company_sizes": [],
+                        "industries": [],
+                        "skills": c.get("skills") or [],
+                        "experience": [],
+                        "education": c.get("education") or [],
+                        "projects": [],
+                        "resume_raw_text": c.get("raw_resume_text") or "",
+                        "resume_filename": "candidate_resume.pdf",
+                        "resume_data": c,
+                        "has_resume": bool(c.get("raw_resume_text")),
+                        "updated_at": c.get("created_at") or "",
+                        "created_at": c.get("created_at") or ""
+                    }
+        except Exception as ce:
+            print(f"[Supabase CRM] fetch candidates note: {ce}")
+
+        return list(crm_users.values())
+
 # Global User Mutex Registry with Bounded LRU Eviction (Max 5,000 active locks)
 # Prevents memory leak vectors during 24h continuous soak tests
 from collections import OrderedDict

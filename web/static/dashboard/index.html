@@ -698,6 +698,7 @@
 
           <div class="user-dropdown" id="user-dropdown">
             <a href="/profile" class="dropdown-item">⚙️ Profile & Preferences</a>
+            <a href="/crm/" id="nav-admin-crm-link" class="dropdown-item" style="display:none; color:#4f46e5; font-weight:700;">👑 Master CRM Sheet</a>
             <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
             <a href="#" onclick="typeof handleLogout === 'function' ? handleLogout() : (localStorage.clear(), window.location.href='/')" class="dropdown-item" style="color:#ef4444">Sign Out</a>
           </div>
@@ -1021,6 +1022,11 @@
           avatar.appendChild(img);
         } else {
           avatar.textContent = (user.displayName || user.email)[0].toUpperCase();
+        }
+
+        if (user.email && user.email.toLowerCase().trim() === 'hemasaivattikuti2727@gmail.com') {
+          const crmLink = document.getElementById('nav-admin-crm-link');
+          if (crmLink) crmLink.style.display = 'block';
         }
 
         // Hydrate data from backend
