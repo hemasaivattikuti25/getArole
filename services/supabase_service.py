@@ -489,6 +489,8 @@ class SupabaseService:
                 "filename": filename
             }
             clean_record = {k: v for k, v in record.items() if v is not None}
+            # Delete existing resume to act as an upsert and avoid unique constraint errors
+            await client.table("user_resumes").delete().eq("firebase_uid", firebase_uid).execute()
             res = await client.table("user_resumes").insert(clean_record).execute()
             return res.data[0] if res.data else clean_record
         except Exception as e:
@@ -497,6 +499,7 @@ class SupabaseService:
                     "firebase_uid": firebase_uid,
                     "raw_text": (resume_data.get("raw_text") or resume_data.get("raw_resume_text") or "")[:5000]
                 }
+                await client.table("user_resumes").delete().eq("firebase_uid", firebase_uid).execute()
                 res = await client.table("user_resumes").insert(minimal_record).execute()
                 return res.data[0] if res.data else minimal_record
             except Exception as e2:
