@@ -804,6 +804,85 @@
       }
     }
 
+  
+    /* ═══════ PREMIUM FILTER BAR ULTRA RESPONSIVENESS ═══════ */
+    @media (max-width: 768px) {
+      .filter-bar {
+        padding: 10px 12px !important;
+        background: #ffffff !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        position: sticky !important;
+        top: 56px !important;
+        z-index: 90 !important;
+      }
+
+      .filter-top-row {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        margin-bottom: 8px !important;
+      }
+
+      .search-input-wrap {
+        flex: 1 !important;
+        min-width: 0 !important;
+      }
+
+      .search-input {
+        height: 38px !important;
+        font-size: 14px !important;
+        padding-left: 36px !important;
+        border-radius: 10px !important;
+        border: 1.5px solid #cbd5e1 !important;
+      }
+
+      /* Single-row horizontal scrollable filter pills */
+      .filter-bottom-row {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        gap: 8px !important;
+        padding: 2px 0 6px !important;
+      }
+      .filter-bottom-row::-webkit-scrollbar { display: none !important; }
+
+      .filter-dropdown,
+      .btn-filter-pill {
+        flex-shrink: 0 !important;
+        width: auto !important;
+        min-width: max-content !important;
+        height: 34px !important;
+        padding: 4px 12px !important;
+        border-radius: 20px !important;
+        font-size: 12.5px !important;
+        font-weight: 600 !important;
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #334155 !important;
+        cursor: pointer !important;
+        white-space: nowrap !important;
+      }
+
+      .filter-dropdown:focus,
+      .btn-filter-pill.active {
+        background: #e0f7fa !important;
+        border-color: #00A9E0 !important;
+        color: #008DA5 !important;
+        font-weight: 700 !important;
+      }
+
+      .feed-header {
+        padding: 10px 14px !important;
+        font-size: 13px !important;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+      }
+    }
+
   </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>

@@ -12,7 +12,22 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
-  <script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();</script>
+  <script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();
+    function setResumeMobileTab(mode) {
+      if (mode === 'preview') {
+        document.body.classList.add('show-preview-mode');
+        document.getElementById('btn-tab-edit').classList.remove('active');
+        document.getElementById('btn-tab-preview').classList.add('active');
+        rp(); // re-render preview
+      } else {
+        document.body.classList.remove('show-preview-mode');
+        document.getElementById('btn-tab-edit').classList.add('active');
+        document.getElementById('btn-tab-preview').classList.remove('active');
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+  </script>
   <style>
     :root {
       --pr: #4f46e5;
@@ -1628,6 +1643,126 @@
       .mobile-nav-drawer,
       .mobile-nav-backdrop,
       .mobile-jd-back-btn {
+        display: none !important;
+      }
+    }
+
+  
+    /* ═══════ RESUME BUILDER ULTRA-PREMIUM MOBILE OVERRIDES ═══════ */
+    @media (max-width: 992px) {
+      .ly {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      /* Horizontal Scrollable Document Sections */
+      .sn {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        padding: 8px 12px !important;
+        gap: 6px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        border-right: none !important;
+        background: #ffffff !important;
+        position: sticky !important;
+        top: 56px !important;
+        z-index: 80 !important;
+        max-height: 52px !important;
+      }
+      .sn::-webkit-scrollbar { display: none !important; }
+      .snl { display: none !important; }
+      .si {
+        flex-shrink: 0 !important;
+        padding: 6px 12px !important;
+        border-radius: 20px !important;
+        font-size: 12px !important;
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #334155 !important;
+        white-space: nowrap !important;
+      }
+      .si.active {
+        background: #00A9E0 !important;
+        color: #ffffff !important;
+        border-color: #00A9E0 !important;
+        font-weight: 700 !important;
+      }
+      .si .dot { display: none !important; }
+      .si:hover { transform: none !important; }
+
+      /* Mobile Editor & Preview Switcher */
+      .mobile-view-tabs {
+        display: flex !important;
+        background: #e2e8f0 !important;
+        border-radius: 10px !important;
+        padding: 3px !important;
+        margin: 10px 16px 0 !important;
+        gap: 4px !important;
+      }
+      .btn-view-tab {
+        flex: 1 !important;
+        padding: 8px 12px !important;
+        border: none !important;
+        background: transparent !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        color: #64748b !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: all 0.2s !important;
+      }
+      .btn-view-tab.active {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
+      }
+
+      /* Editor Panel Mobile View */
+      .ep {
+        border-right: none !important;
+        width: 100% !important;
+      }
+
+      /* Preview Panel Mobile Scaling */
+      .pv {
+        width: 100% !important;
+        padding: 16px 8px !important;
+        overflow-x: hidden !important;
+      }
+      .a4w {
+        width: 100% !important;
+        overflow: hidden !important;
+        display: flex !important;
+        justify-content: center !important;
+      }
+      #rp {
+        transform: scale(0.48) !important;
+        transform-origin: top center !important;
+        margin-bottom: -550px !important;
+      }
+
+      /* Toggle between Editor and Preview */
+      body.show-preview-mode .ep {
+        display: none !important;
+      }
+      body.show-preview-mode .pv {
+        display: flex !important;
+      }
+      body:not(.show-preview-mode) .pv {
+        display: none !important;
+      }
+      body:not(.show-preview-mode) .ep {
+        display: flex !important;
+      }
+    }
+
+    @media (min-width: 993px) {
+      .mobile-view-tabs {
         display: none !important;
       }
     }
