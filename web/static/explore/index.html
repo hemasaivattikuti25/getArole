@@ -2326,7 +2326,7 @@
         const compInitial = j.company ? j.company[0].toUpperCase() : 'G';
 
         return `
-          <div class="job-card ${isSelected ? 'selected' : ''}" onclick="selectJob('${j.id}')">
+          <div class="job-card ${isSelected ? 'selected' : ''}" onclick="selectJob('${j.id}', 'job-detail-pane', true)">
             <div class="card-top">
               <div class="company-badge-wrap">
                 <div class="company-logo">${compInitial}</div>
@@ -2344,20 +2344,24 @@
       }).join('');
     }
 
-        // Close mobile JD overlay and go back to feed
-        window.closeMobileJD = function() {
-          document.body.classList.remove('mobile-jd-open');
-        };
+    // Close mobile JD overlay and go back to feed
+    window.closeMobileJD = function() {
+      document.body.classList.remove('mobile-jd-open');
+    };
 
-        function selectJob(id, targetPaneId = 'job-detail-pane') {
+    function selectJob(id, targetPaneId = 'job-detail-pane', isUserClick = false) {
       selectedJobId = id;
       const job = allJobs.find(j => j.id === id);
       if (!job) return;
       
-      // ── MOBILE: open the JD overlay panel ──
+      // ── MOBILE: open the JD overlay panel ONLY on explicit user click ──
       if (window.innerWidth <= 768) {
-        document.body.classList.add('mobile-jd-open');
-        window.scrollTo(0, 0);
+        if (isUserClick) {
+          document.body.classList.add('mobile-jd-open');
+          window.scrollTo(0, 0);
+        } else {
+          document.body.classList.remove('mobile-jd-open');
+        }
       }
       
       const detailCol = document.getElementById(targetPaneId);

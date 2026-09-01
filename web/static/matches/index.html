@@ -2233,7 +2233,7 @@
         const batchTag = j.title.toLowerCase().includes('intern') ? `Batch ${curYr}/${curYr + 1}` : 'Immediate';
 
         return `
-          <div class="job-card ${isSelected ? 'selected' : ''}" onclick="selectJob('${j.id}')">
+          <div class="job-card ${isSelected ? 'selected' : ''}" onclick="selectJob('${j.id}', 'matches-detail-pane', true)">
             <div class="card-top">
               <div class="company-badge-wrap">
                 <div class="company-logo">${compInitial}</div>
@@ -2259,16 +2259,20 @@
       document.body.classList.remove('mobile-jd-open');
     };
 
-    function selectJob(id, targetPaneId = 'matches-detail-pane') {
+    function selectJob(id, targetPaneId = 'matches-detail-pane', isUserClick = false) {
       selectedJobId = id;
       selectedMatchJobId = id;
       const job = allJobs.find(j => j.id === id) || matchedJobs.find(j => j.id === id);
       if (!job) return;
 
-      // ── MOBILE: show JD overlay ──
+      // ── MOBILE: show JD overlay ONLY on explicit user click ──
       if (window.innerWidth <= 768) {
-        document.body.classList.add('mobile-jd-open');
-        window.scrollTo(0, 0);
+        if (isUserClick) {
+          document.body.classList.add('mobile-jd-open');
+          window.scrollTo(0, 0);
+        } else {
+          document.body.classList.remove('mobile-jd-open');
+        }
       }
 
       const pane = document.getElementById(targetPaneId) || document.getElementById('matches-detail-pane') || document.getElementById('job-detail-pane');
