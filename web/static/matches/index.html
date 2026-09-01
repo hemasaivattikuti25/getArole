@@ -1219,18 +1219,18 @@
   <header>
     <div class="header-inner">
       <div class="brand-group">
-        <a href="/dashboard" class="brand-logo">
+        <a href="/dashboard/" class="brand-logo">
           <img src="/logo.svg" alt="getArole" style="width:34px;height:34px;object-fit:contain;">
           <span class="brand-title">get<span>A</span>role</span>
         </a>
 
         <nav class="nav-tabs">
-          <a class="nav-tab" href="/dashboard" id="tab-btn-home">Overview</a>
-          <a class="nav-tab active" href="/matches" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
-          <a class="nav-tab" href="/explore" id="tab-btn-jobs">Explore Jobs</a>
-          <a class="nav-tab" href="/resume-builder" id="tab-btn-resume">📄 ATS Resume</a>
-          <a class="nav-tab" href="/cover-letter-builder" id="tab-btn-cover-letter">✉️ Cover Letter</a>
-          <a class="nav-tab" href="/profile" id="tab-btn-profile">Profile</a>
+          <a class="nav-tab" href="/dashboard/" id="tab-btn-home">Overview</a>
+          <a class="nav-tab active" href="/matches/" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
+          <a class="nav-tab" href="/explore/" id="tab-btn-jobs">Explore Jobs</a>
+          <a class="nav-tab" href="/resume-builder/" id="tab-btn-resume">📄 ATS Resume</a>
+          <a class="nav-tab" href="/cover-letter-builder/" id="tab-btn-cover-letter">✉️ Cover Letter</a>
+          <a class="nav-tab" href="/profile/" id="tab-btn-profile">Profile</a>
         </nav>
       </div>
 
@@ -1245,7 +1245,7 @@
           <span style="font-size: 10px; color: var(--text-subtle, #94a3b8)">▼</span>
 
           <div class="user-dropdown" id="user-dropdown">
-            <a href="/profile" class="dropdown-item">⚙️ Profile & Preferences</a>
+            <a href="/profile/" class="dropdown-item">⚙️ Profile & Preferences</a>
             <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
             <a href="#" onclick="typeof handleLogout === 'function' ? handleLogout() : (localStorage.clear(), window.location.href='/')" class="dropdown-item" style="color:#ef4444">Sign Out</a>
           </div>
@@ -1304,7 +1304,7 @@
       <div>
         <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:10px;">Explore Jobs</div>
         <ul style="list-style:none; display:flex; flex-direction:column; gap:6px; padding:0; margin:0;">
-          <li><a href="/explore" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">All Opportunities</a></li>
+          <li><a href="/explore/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">All Opportunities</a></li>
           <li><a href="/explore?q=Bengaluru" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Bengaluru Hub</a></li>
           <li><a href="/explore?q=Hyderabad" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Hyderabad Roles</a></li>
           <li><a href="/explore?q=Remote" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Global Remote</a></li>
@@ -1349,9 +1349,6 @@
     <span id="home-total-jobs"></span>
     <span id="tracker-saved-count"></span>
     <span id="tracker-applied-count"></span>
-    <span id="matches-count-header"></span>
-    <span id="matches-feed-list"></span>
-    <span id="matches-detail-pane"></span>
     <span id="home-matches-preview-grid"></span>
   </div>
 
@@ -1823,7 +1820,7 @@
       if (tabBtn) tabBtn.classList.add('active');
       document.getElementById(`view-${tabName}`).classList.add('active');
 
-      document.getElementById('filter-bar').style.display = (tabName === 'jobs') ? 'block' : 'none';
+      const filterBar = document.getElementById('filter-bar'); if (filterBar) filterBar.style.display = (tabName === 'jobs') ? 'block' : 'none';
       if (tabName === 'home') renderHomeView();
       if (tabName === 'tracker') renderTracker();
       if (tabName === 'matches') renderMatchesSplitView();
@@ -2167,7 +2164,7 @@
         ` : `
         <div class="ai-match-card" style="align-items:center; justify-content:space-between;">
             <div style="font-size:14px; color:var(--text-main); font-weight:600;">Fill your profile to view ATS matches.</div>
-            <a href="/resume-builder" class="btn-ai-tailor" style="text-decoration:none; background: linear-gradient(135deg, #ef4444, #b91c1c);">Fill Profile</a>
+            <a href="/resume-builder/" class="btn-ai-tailor" style="text-decoration:none; background: linear-gradient(135deg, #ef4444, #b91c1c);">Fill Profile</a>
         </div>
         `}
 
@@ -2214,8 +2211,8 @@
             <div style="font-size:32px; margin-bottom:12px;">🔒</div>
             <h3 style="font-size:16px; font-weight:800; color:var(--text-main); margin-bottom:8px;">Complete your setup</h3>
             <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:24px; line-height:1.5;">You need to tell us your preferences to unlock personalized AI matches.</p>
-            <button onclick="window.location.href='/onboarding'" style="background:var(--primary); color:white; padding:10px 20px; border-radius:8px; border:none; font-weight:700; cursor:pointer; width:100%; margin-bottom:12px; font-size:14px;">Set Preferences</button>
-            <button onclick="window.location.href='/resume-builder'" style="background:var(--bg-subtle); color:var(--text-main); border:1.5px solid var(--border); padding:10px 20px; border-radius:8px; font-weight:700; cursor:pointer; width:100%; font-size:14px;">I don't have a resume</button>
+            <button onclick="window.location.href='/onboarding/'" style="background:var(--primary); color:white; padding:10px 20px; border-radius:8px; border:none; font-weight:700; cursor:pointer; width:100%; margin-bottom:12px; font-size:14px;">Set Preferences</button>
+            <button onclick="window.location.href='/resume-builder/'" style="background:var(--bg-subtle); color:var(--text-main); border:1.5px solid var(--border); padding:10px 20px; border-radius:8px; font-weight:700; cursor:pointer; width:100%; font-size:14px;">I don't have a resume</button>
           </div>
         `;
         document.getElementById('matches-detail-pane').innerHTML = '<div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--text-subtle); font-size:14px; font-weight:600">Preferences required.</div>';
@@ -2288,7 +2285,7 @@
 
       const grid = document.getElementById('home-matches-preview-grid');
       grid.innerHTML = matchedJobs.slice(0, 6).map(j => `
-        <div style="background:white; border:1.5px solid var(--border); border-radius:14px; padding:18px; cursor:pointer;" onclick="window.location.href='/explore'">
+        <div style="background:white; border:1.5px solid var(--border); border-radius:14px; padding:18px; cursor:pointer;" onclick="window.location.href='/explore/'">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <span style="font-size:11px; font-weight:800; color:var(--primary); text-transform:uppercase;">${j.company}</span>
             ${localStorage.getItem('getarole_resume_v2') ? `<span class="tag-chip match-score-chip">🎯 ${Math.round(j.fit_score)}% Fit</span>` : ''}
@@ -2358,7 +2355,7 @@
                 <div style="font-size:13px; font-weight:700; color:var(--text-main); margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${job.title}</div>
                 <div style="font-size:12px; color:var(--text-muted);">${job.company}</div>
               </div>
-              <button onclick="window.location.href='/explore'" style="background:var(--primary-light); color:var(--primary); border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11px; font-weight:700; margin-left:12px;">View</button>
+              <button onclick="window.location.href='/explore/'" style="background:var(--primary-light); color:var(--primary); border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11px; font-weight:700; margin-left:12px;">View</button>
             </div>
           `;
         }).join('');
@@ -2372,7 +2369,7 @@
     }
 
     function openTailorWithJob(jobId) {
-      window.location.href = '/resume-builder';
+      window.location.href='/resume-builder/';
     }
 
     /* ════════════════════ CANDIDATE DIRECTORY & RESUME VIEWER ════════════════════ */
@@ -2405,7 +2402,7 @@
     }
 
     function closeCandidateDatabaseModal() {
-      document.getElementById('candidate-modal').style.display = 'none';
+      const cm = document.getElementById('candidate-modal'); if (cm) cm.style.display = 'none';
     }
 
     function renderCandidateModalList() {
