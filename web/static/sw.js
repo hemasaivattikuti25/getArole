@@ -1,11 +1,9 @@
 /**
  * getArole Service Worker (Production PWA Caching Strategy)
- * - Static Assets (CSS, JS, Fonts, Images): Cache First
- * - Job Search REST API (/api/jobs): Stale-While-Revalidate (10-minute fresh window)
- * - Navigation / HTML Documents: Network First with Cache Fallback
+ * Version: 2.5.0 - Network First for HTML and Static Assets, Cache fallback for offline
  */
 
-const CACHE_VERSION = 'getarole-v1.2.0';
+const CACHE_VERSION = 'getarole-v2.5.0';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const API_CACHE = `${CACHE_VERSION}-api`;
 
@@ -18,61 +16,78 @@ const PRECACHE_ASSETS = [
   '/preferences',
   '/onboarding',
   '/logo.svg',
-  '/js/getarole-core.js'
+  '/js/getarole-core.js',
+  '/js/mobile-nav.js'
 ];
 
-// Install: Pre-cache shell assets
+// Install: Pre-cache shell assets & skip waiting
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(STATIC_CACHE).then((cache) => {
-      return cache.addAll(PRECACHE_ASSETS);
-    }).then(() => self.skipWaiting())
+      return cache.addAll(PRECACHE_ASSETS).catch((err) => {
+        console.warn('[SW] Pre-cache warning:', err);
+      });
+    })
   );
 });
 
-// Activate: Clean up outdated cache versions
+// Activate: Clean up outdated cache versions immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== STATIC_CACHE && key !== API_CACHE) {
+            console.log('[SW] Purging outdated cache:', key);
             return caches.delete(key);
           }
         })
       );
     }).then(() => self.clients.claim())
-// Listen for messages from frontend clients (e.g. logout)
+  );
+});
+
+// Listen for messages from frontend clients (e.g. logout or purge)
 self.addEventListener('message', (event) => {
   if (event.data && event.data.action === 'CLEAR_USER_CACHE') {
     caches.delete(API_CACHE).then(() => {
       console.log('[SW] User API cache successfully purged.');
     });
   }
+  if (event.data && event.data.action === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
-// Fetch: Route-aware caching strategy
+// Fetch: Network First for HTML and JS/CSS to guarantee fresh updates
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-GET requests and user-authenticated / dynamic endpoints
+  // Skip non-GET requests and dynamic user/auth endpoints
   if (request.method !== 'GET') return;
-  if (url.pathname.startsWith('/api/user') || url.pathname.startsWith('/api/ai') || url.pathname.startsWith('/api/candidate')) {
-    return; // Pass through directly to network
+  if (
+    url.pathname.startsWith('/api/user') ||
+    url.pathname.startsWith('/api/ai') ||
+    url.pathname.startsWith('/api/candidate')
+  ) {
+    return; // Direct network pass-through
   }
 
-  // 1. API Route: Stale-While-Revalidate for Job Listings (Public search)
+  // 1. API Route: Stale-While-Revalidate for Job Listings
   if (url.pathname.startsWith('/api/jobs')) {
     event.respondWith(
       caches.open(API_CACHE).then(async (cache) => {
         const cachedResponse = await cache.match(request);
-        const fetchPromise = fetch(request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            cache.put(request, networkResponse.clone());
-          }
-          return networkResponse;
-        }).catch(() => cachedResponse);
+        const fetchPromise = fetch(request)
+          .then((networkResponse) => {
+            if (networkResponse && networkResponse.status === 200) {
+              cache.put(request, networkResponse.clone());
+            }
+            return networkResponse;
+          })
+          .catch(() => cachedResponse);
 
         return cachedResponse || fetchPromise;
       })
@@ -80,38 +95,25 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 2. Static Assets (JS, CSS, SVG, Images, Fonts): Cache First
-  if (
-    url.pathname.match(/\.(js|css|svg|png|jpg|jpeg|woff2|ico)$/) ||
-    url.pathname.startsWith('/static/')
-  ) {
-    event.respondWith(
-      caches.match(request).then((cachedResponse) => {
-        if (cachedResponse) return cachedResponse;
-        return fetch(request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            caches.open(STATIC_CACHE).then((cache) => cache.put(request, networkResponse.clone()));
-          }
-          return networkResponse;
-        });
-      })
-    );
-    return;
-  }
-
-  // 3. HTML Navigation Pages: Network First with Cache Fallback
-  if (request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html')) {
-    event.respondWith(
-      fetch(request).then((networkResponse) => {
+  // 2. HTML Navigation Pages & Static Assets: Network First with Cache Fallback
+  event.respondWith(
+    fetch(request)
+      .then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200) {
-          caches.open(STATIC_CACHE).then((cache) => cache.put(request, networkResponse.clone()));
+          const responseToCache = networkResponse.clone();
+          caches.open(STATIC_CACHE).then((cache) => {
+            cache.put(request, responseToCache);
+          });
         }
         return networkResponse;
-      }).catch(() => {
+      })
+      .catch(() => {
         return caches.match(request).then((cached) => {
-          return cached || caches.match('/dashboard');
+          if (cached) return cached;
+          if (request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html')) {
+            return caches.match('/dashboard');
+          }
         });
       })
-    );
-  }
+  );
 });

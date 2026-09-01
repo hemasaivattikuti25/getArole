@@ -452,6 +452,15 @@
     }
   }, true); // TRUE = CAPTURE PHASE! Runs before DOM changes
 
+  // Force Service Worker to update and discard stale caches
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      for (let registration of registrations) {
+        registration.update();
+      }
+    }).catch(function(e) {});
+  }
+
   // Initialize on load
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initMobileUI);
