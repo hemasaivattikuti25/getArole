@@ -8,14 +8,13 @@
     @media (max-width: 768px) {
       /* Clean up existing header */
       .nav-tabs { display: none !important; }
-      .user-profile-btn { display: none !important; } /* Hide user avatar in top header on mobile */
+      .user-profile-btn { display: none !important; } 
       
       .header-inner {
         padding: 12px 16px !important;
         justify-content: space-between !important;
       }
       
-      /* Add bottom padding to body so content isn't hidden behind bottom nav */
       body {
         padding-bottom: 70px !important;
       }
@@ -77,18 +76,17 @@
       }
       
       .mobile-bottom-nav-link.active {
-        color: #00A9E0; /* Simplify Teal */
+        color: #00A9E0; 
         font-weight: 600;
       }
       .mobile-bottom-nav-link.active svg {
         stroke: #00A9E0;
       }
       
-      /* Active top border indicator on bottom nav items */
       .mobile-bottom-nav-link.active::after {
         content: '';
         position: absolute;
-        bottom: -8px; /* align to bottom edge of navbar */
+        bottom: -8px; 
         left: 50%;
         transform: translateX(-50%);
         width: 32px;
@@ -200,10 +198,46 @@
         border-left: 4px solid #00A9E0;
       }
       .mobile-nav-link.active svg { stroke: #008DA5; }
+
+      /* JDs Mobile View Overrides */
+      .mobile-jd-back-btn {
+        display: none;
+      }
+      
+      body.mobile-jd-open .mobile-jd-back-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        position: fixed;
+        top: 72px; /* Just below header */
+        left: 16px;
+        z-index: 9980;
+        background: #ffffff;
+        border: 1px solid #eaecf0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 8px 16px;
+        border-radius: 24px;
+        font-weight: 700;
+        font-size: 13px;
+        color: #0f172a;
+        cursor: pointer;
+      }
+
+      body.mobile-jd-open .jobs-feed-col {
+        display: none !important;
+      }
+      body.mobile-jd-open .job-detail-col {
+        display: block !important;
+        width: 100% !important;
+        padding-top: 60px !important;
+      }
+      body.mobile-jd-open .mobile-bottom-nav {
+        display: none !important; 
+      }
     }
     
     @media (min-width: 769px) {
-      .mobile-hamburger, .mobile-nav-drawer, .mobile-nav-backdrop, .mobile-bottom-nav {
+      .mobile-hamburger, .mobile-nav-drawer, .mobile-nav-backdrop, .mobile-bottom-nav, .mobile-jd-back-btn {
         display: none !important;
       }
     }
@@ -211,7 +245,6 @@
   document.head.appendChild(style);
 
   function setupNav() {
-    // Top Header modifications
     const headerActions = document.querySelector('.header-actions');
     if (headerActions && !document.querySelector('.mobile-hamburger')) {
       const hamburger = document.createElement('button');
@@ -224,7 +257,6 @@
     const currentPath = window.location.pathname;
     const isActive = (path) => currentPath.startsWith(path) ? 'active' : '';
 
-    // Create Bottom Navigation
     if (!document.querySelector('.mobile-bottom-nav')) {
       const bottomNav = document.createElement('nav');
       bottomNav.className = 'mobile-bottom-nav';
@@ -249,7 +281,6 @@
       document.body.appendChild(bottomNav);
     }
 
-    // Build Sidebar and Overlay (For secondary tools)
     if (!document.querySelector('.mobile-nav-drawer')) {
       const overlay = document.createElement('div');
       overlay.className = 'mobile-nav-backdrop';
@@ -290,6 +321,27 @@
       document.body.appendChild(sidebar);
       
       sidebar.querySelector('.mobile-nav-close-btn').addEventListener('click', toggleMobileNav);
+    }
+    
+    // Setup JD Mobile Flow
+    if (!document.querySelector('.mobile-jd-back-btn')) {
+      const backBtn = document.createElement('button');
+      backBtn.className = 'mobile-jd-back-btn';
+      backBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg> Back to Jobs';
+      document.body.appendChild(backBtn);
+      
+      backBtn.addEventListener('click', () => {
+        document.body.classList.remove('mobile-jd-open');
+      });
+      
+      // Global listener for job card clicks
+      document.body.addEventListener('click', (e) => {
+        const card = e.target.closest('.job-card');
+        if (card && window.innerWidth <= 768) {
+          document.body.classList.add('mobile-jd-open');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
     }
   }
 
