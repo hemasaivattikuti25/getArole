@@ -241,7 +241,7 @@
         display: none !important;
       }
     }
-  \`;
+  `;
   document.head.appendChild(style);
 
   function setupNav() {
@@ -260,8 +260,8 @@
     if (!document.querySelector('.mobile-bottom-nav')) {
       const bottomNav = document.createElement('nav');
       bottomNav.className = 'mobile-bottom-nav';
-      bottomNav.innerHTML = \`
-        <a href="/dashboard" class="mobile-bottom-nav-link \${isActive('/dashboard')}">
+      bottomNav.innerHTML = `
+        <a href="/dashboard" class="mobile-bottom-nav-link ${isActive('/dashboard')}">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
           Home
         </a>
@@ -269,15 +269,15 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
           Matches
         </a>
-        <a href="/explore" class="mobile-bottom-nav-link \${isActive('/explore')}">
+        <a href="/explore" class="mobile-bottom-nav-link ${isActive('/explore')}">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
           Jobs
         </a>
-        <a href="/profile" class="mobile-bottom-nav-link \${isActive('/profile') || isActive('/preferences') ? 'active' : ''}">
+        <a href="/profile" class="mobile-bottom-nav-link ${isActive('/profile') || isActive('/preferences') ? 'active' : ''}">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
           Profile
         </a>
-      \`;
+      `;
       document.body.appendChild(bottomNav);
     }
 
@@ -289,7 +289,7 @@
       const sidebar = document.createElement('aside');
       sidebar.className = 'mobile-nav-drawer';
       
-      sidebar.innerHTML = \`
+      sidebar.innerHTML = `
         <div class="mobile-nav-header">
           <a href="/dashboard" class="mobile-nav-brand">
             <img src="/static/logo.svg" onerror="this.src='/logo.svg'" alt="getArole">
@@ -301,21 +301,21 @@
         </div>
         <nav class="mobile-nav-list">
           <div style="padding: 12px 24px; font-size: 12px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Tools</div>
-          <a href="/resume-builder" class="mobile-nav-link \${isActive('/resume-builder')}">
+          <a href="/resume-builder" class="mobile-nav-link ${isActive('/resume-builder')}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             ATS Resume
           </a>
-          <a href="/cover-letter-builder" class="mobile-nav-link \${isActive('/cover-letter-builder')}">
+          <a href="/cover-letter-builder" class="mobile-nav-link ${isActive('/cover-letter-builder')}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
             Cover Letter
           </a>
           <div style="height: 1px; background: #EAECF0; margin: 12px 0;"></div>
-          <a href="/profile" class="mobile-nav-link \${isActive('/profile') || isActive('/preferences') ? 'active' : ''}">
+          <a href="/profile" class="mobile-nav-link ${isActive('/profile') || isActive('/preferences') ? 'active' : ''}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
             Settings
           </a>
         </nav>
-      \`;
+      `;
       
       document.body.appendChild(overlay);
       document.body.appendChild(sidebar);
