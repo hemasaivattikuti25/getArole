@@ -139,31 +139,44 @@ def extract_authenticated_uid(request: Request) -> str:
         
     return "guest_user"
 
-AUTHORIZED_CRM_EMAILS = {"hemasaivattikuti2727@gmail.com"}
+AUTHORIZED_CRM_EMAILS = {
+    "hemasaivattikuti2727@gmail.com",
+    "lakshmisatyasrisri@gmail.com"
+}
+
+def get_authorized_crm_emails() -> set:
+    emails = set(AUTHORIZED_CRM_EMAILS)
+    import os
+    env_emails = os.getenv("ADMIN_EMAILS", "")
+    if env_emails:
+        for e in env_emails.split(","):
+            if e.strip():
+                emails.add(e.strip().lower())
+    return emails
 
 def is_crm_admin_authorized(request: Request, x_admin_key: Optional[str] = None, x_user_email: Optional[str] = None) -> bool:
     """
     Validates if incoming request has owner/admin CRM permissions.
-    Only hemasaivattikuti2727@gmail.com or valid system X-Admin-Key is authorized.
     """
     import os
     expected_key = os.getenv("SCRAPER_ADMIN_KEY") or os.getenv("ADMIN_API_KEY", "")
     if expected_key and x_admin_key and x_admin_key == expected_key:
         return True
         
+    auth_emails = get_authorized_crm_emails()
     client_email = (x_user_email or request.headers.get("X-User-Email") or request.headers.get("X-Admin-Email") or "").strip().lower()
-    if client_email and client_email in AUTHORIZED_CRM_EMAILS:
+    if client_email and client_email in auth_emails:
         return True
         
     query_email = (request.query_params.get("email") or request.query_params.get("admin_email") or "").strip().lower()
-    if query_email and query_email in AUTHORIZED_CRM_EMAILS:
+    if query_email and query_email in auth_emails:
         return True
         
     return False
 
 def verify_crm_admin_access(request: Request, x_admin_key: Optional[str] = None, x_user_email: Optional[str] = None):
     """
-    Raises HTTP 403 Forbidden if the requester is not hemasaivattikuti2727@gmail.com or authorized admin key.
+    Raises HTTP 403 Forbidden if the requester is not authorized for CRM access.
     """
     if not is_crm_admin_authorized(request, x_admin_key=x_admin_key, x_user_email=x_user_email):
         logger.warning(
@@ -176,6 +189,6 @@ def verify_crm_admin_access(request: Request, x_admin_key: Optional[str] = None,
         )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Access Denied: getArole CRM is strictly restricted to hemasaivattikuti2727@gmail.com."
+            detail="Access Denied: You do not have access to this CRM sheet."
         )
 

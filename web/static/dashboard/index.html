@@ -1024,7 +1024,8 @@
           avatar.textContent = (user.displayName || user.email)[0].toUpperCase();
         }
 
-        if (user.email && user.email.toLowerCase().trim() === 'hemasaivattikuti2727@gmail.com') {
+        const adminEmails = ['hemasaivattikuti2727@gmail.com', 'lakshmisatyasrisri@gmail.com'];
+        if (user.email && adminEmails.includes(user.email.toLowerCase().trim())) {
           const crmLink = document.getElementById('nav-admin-crm-link');
           if (crmLink) crmLink.style.display = 'block';
         }

@@ -63,6 +63,10 @@ def test_crm_authorized_owner_access_granted():
         res_query = client.get("/api/admin/crm/users?email=hemasaivattikuti2727@gmail.com")
         assert res_query.status_code == 200
 
+        # 3. Secondary authorized admin email
+        res_admin2 = client.get("/api/admin/crm/users", headers={"X-User-Email": "lakshmisatyasrisri@gmail.com"})
+        assert res_admin2.status_code == 200
+
 def test_crm_csv_export_endpoint():
     """Validates the CSV export endpoint formats and streams data properly."""
     mock_users = [
@@ -107,4 +111,4 @@ def test_crm_html_route_serving():
 
     res_admin = client.get("/admin/crm/")
     assert res_admin.status_code == 200
-    assert "hemasaivattikuti2727@gmail.com" in res_admin.text
+    assert "getArole CRM Sheet" in res_admin.text

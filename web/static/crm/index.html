@@ -566,9 +566,9 @@
       <span class="metric-sub">Candidates with Phone / Email</span>
     </div>
     <div class="metric-card">
-      <span class="metric-title">Authorized Admin</span>
-      <span class="metric-val" style="font-size:1.05rem;font-family:'JetBrains Mono',monospace;word-break:break-all;" id="admin-user-display">hemasaivattikuti2727@gmail.com</span>
-      <span class="metric-sub">👑 Exclusive Owner Access</span>
+      <span class="metric-title">Top Specialization</span>
+      <span class="metric-val" id="metric-top-role" style="font-size:1.15rem;color:var(--primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Full Stack / AI</span>
+      <span class="metric-sub" id="metric-role-sub">Most active candidate skill profile</span>
     </div>
   </section>
 
@@ -709,15 +709,14 @@
   <div class="auth-guard-overlay" id="auth-guard-modal" style="display:none;">
     <div class="auth-guard-card">
       <div class="auth-lock-icon">🔒</div>
-      <h2 class="auth-guard-title" id="auth-guard-title">Restricted Access</h2>
+      <h2 class="auth-guard-title" id="auth-guard-title">Access Denied</h2>
       <p class="auth-guard-desc" id="auth-guard-desc">
-        This Master CRM Sheet is restricted strictly to the primary owner:<br>
-        <span class="admin-email-tag">hemasaivattikuti2727@gmail.com</span>
+        You do not have access to this CRM sheet.
       </p>
       
       <div id="auth-guard-buttons" style="display:flex;flex-direction:column;gap:10px;">
         <button onclick="triggerAdminGoogleLogin()" class="btn-crm btn-crm-primary" style="justify-content:center;padding:12px 18px;font-size:0.95rem;">
-          Sign in with Google (Owner Account)
+          Sign In with Admin Account
         </button>
         <a href="/dashboard/" class="btn-crm" style="justify-content:center;">
           Return to Dashboard
@@ -733,7 +732,11 @@
   <script type="module">
     import { initAuthListener, loginWithGoogle, logoutUser } from "/firebase-auth.js";
 
-    const AUTHORIZED_OWNER_EMAIL = "hemasaivattikuti2727@gmail.com";
+    const AUTHORIZED_EMAILS = [
+      "hemasaivattikuti2727@gmail.com",
+      "lakshmisatyasrisri@gmail.com"
+    ];
+    
     let currentUser = null;
     let allUsers = [];
     let filteredUsers = [];
@@ -754,19 +757,21 @@
     initAuthListener((user) => {
       currentUser = user;
       if (!user) {
-        showAuthGuard("Sign In Required", "Please sign in with the authorized owner email to access the CRM Sheet.");
-      } else if (user.email.toLowerCase().trim() !== AUTHORIZED_OWNER_EMAIL) {
-        showAuthGuard("Access Denied", `You are signed in as <b>${escapeHTML(user.email)}</b>.<br>This CRM is strictly restricted to <span class="admin-email-tag">${AUTHORIZED_OWNER_EMAIL}</span>.`);
+        showAuthGuard("Sign In Required", "You do not have access to this CRM sheet. Please sign in with an authorized admin account.");
       } else {
-        hideAuthGuard();
-        document.getElementById('admin-user-display').textContent = user.email;
-        loadCRMData();
+        const userEmail = (user.email || '').toLowerCase().trim();
+        if (!AUTHORIZED_EMAILS.includes(userEmail)) {
+          showAuthGuard("Access Denied", "You do not have access to this CRM sheet.");
+        } else {
+          hideAuthGuard();
+          loadCRMData();
+        }
       }
     });
 
     function showAuthGuard(title, desc) {
       document.getElementById('auth-guard-title').textContent = title;
-      document.getElementById('auth-guard-desc').innerHTML = desc;
+      document.getElementById('auth-guard-desc').textContent = desc;
       document.getElementById('auth-guard-modal').style.display = 'flex';
     }
 
@@ -777,11 +782,12 @@
     window.triggerAdminGoogleLogin = async function() {
       const res = await loginWithGoogle();
       if (res.success && res.user) {
-        if (res.user.email.toLowerCase().trim() === AUTHORIZED_OWNER_EMAIL) {
+        const email = (res.user.email || '').toLowerCase().trim();
+        if (AUTHORIZED_EMAILS.includes(email)) {
           hideAuthGuard();
           loadCRMData();
         } else {
-          showAuthGuard("Unauthorized Account", `Signed in as <b>${escapeHTML(res.user.email)}</b>. Access Denied.<br>Please sign in with <span class="admin-email-tag">${AUTHORIZED_OWNER_EMAIL}</span>.`);
+          showAuthGuard("Access Denied", "You do not have access to this CRM sheet.");
         }
       } else if (!res.success) {
         toast(`⚠️ Login failed: ${res.error}`);
@@ -795,7 +801,10 @@
 
     // Load Master CRM Data from backend API
     async function loadCRMData() {
-      const email = currentUser ? currentUser.email : AUTHORIZED_OWNER_EMAIL;
+      const refreshBtn = document.querySelector('button[onclick="loadCRMData()"]');
+      if (refreshBtn) refreshBtn.textContent = '🔄 Loading...';
+
+      const email = currentUser ? currentUser.email : 'hemasaivattikuti2727@gmail.com';
       const uid = currentUser ? currentUser.uid : '';
       
       try {
@@ -807,7 +816,7 @@
         });
 
         if (res.status === 403) {
-          showAuthGuard("Access Denied", "Your email is not authorized to access this CRM Sheet.");
+          showAuthGuard("Access Denied", "You do not have access to this CRM sheet.");
           return;
         }
 
@@ -816,16 +825,25 @@
           allUsers = data.users;
           
           // Populate KPI Metrics
-          document.getElementById('metric-total-candidates').textContent = data.metrics.total_candidates || allUsers.length;
-          document.getElementById('metric-resumes-count').textContent = data.metrics.resumes_count || 0;
-          document.getElementById('metric-contacts-count').textContent = data.metrics.contacts_count || 0;
+          document.getElementById('metric-total-candidates').textContent = data.metrics?.total_candidates || allUsers.length;
+          document.getElementById('metric-resumes-count').textContent = data.metrics?.resumes_count || 0;
+          document.getElementById('metric-contacts-count').textContent = data.metrics?.contacts_count || 0;
+
+          if (data.metrics?.top_skills && data.metrics.top_skills.length > 0) {
+            document.getElementById('metric-top-role').textContent = data.metrics.top_skills[0].skill;
+            document.getElementById('metric-role-sub').textContent = `${data.metrics.top_skills[0].count} candidates with this skill`;
+          } else {
+            document.getElementById('metric-top-role').textContent = "Full Stack / AI";
+          }
 
           applyFilters();
-          toast(`✅ Loaded ${allUsers.length} candidate records.`);
+          toast(`✅ Connected to Database (${allUsers.length} records).`);
         }
       } catch (err) {
         console.error("CRM Load Error:", err);
         toast("❌ Failed to load CRM data from server.");
+      } finally {
+        if (refreshBtn) refreshBtn.textContent = '🔄 Refresh';
       }
     }
     window.loadCRMData = loadCRMData;
