@@ -30,64 +30,34 @@
     
   </script>
   <style>
-            :root {
-      --primary: #0071e3;
-      --primary-hover: #0077ed;
-      --primary-accent: #0071e3;
-      --primary-light: #e8f0fe;
-      --primary-border: #bfdbfe;
-      --primary-gradient: linear-gradient(135deg, #0071e3 0%, #4facfe 100%);
-      --accent: #4f46e5;
-      --accent-emerald: #10b981;
-      --surface: #ffffff;
-      --bg: #f8fafc;
-      --bg-subtle: #f1f5f9;
-      --bg-surface: #ffffff;
-      --background: #f8fafc;
-
-      /* Essential short aliases used throughout the codebase */
-      --bd: #cbd5e1;
-      --bd-light: #e2e8f0;
-      --bd-focus: #0071e3;
-      --sf: #ffffff;
-      --tx: #0f172a;
-      --txm: #475569;
-      --txs: #64748b;
-      --pr: #0071e3;
-      --prh: #005bb5;
-      --prl: #eff6ff;
-      --prb: #bfdbfe;
-
-      --border-subtle: #e2e8f0;
-      --border: #cbd5e1;
-      --border-strong: #94a3b8;
-      --border-glow: rgba(0, 113, 227, 0.25);
-      --text-main: #0f172a;
-      --text-muted: #475569;
-      --text-subtle: #64748b;
-      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
-      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
-      --shadow-glow: 0 0 35px rgba(0, 113, 227, 0.15);
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 18px;
-      --radius-xl: 24px;
-      --nav-height: 64px;
+    /* ═══════ EXACT SIMPLIFY.JOBS DESIGN SYSTEM ═══════ */
+    :root {
+      --simplify-blue: #0284c7;
+      --simplify-blue-hover: #0369a1;
+      --simplify-blue-light: #f0f9ff;
+      --simplify-cyan: #06b6d4;
+      --simplify-bg-canvas: #f3f4f6;
+      --simplify-bg-sidebar: #f8fafc;
+      --simplify-card-bg: #ffffff;
+      --simplify-border: #e2e8f0;
+      --simplify-border-hover: #cbd5e1;
+      --simplify-text-main: #0f172a;
+      --simplify-text-muted: #64748b;
+      --simplify-text-subtle: #94a3b8;
+      --simplify-radius-card: 10px;
+      --simplify-radius-input: 8px;
     }
 
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg);
-      color: var(--tx);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--simplify-bg-canvas);
+      color: var(--simplify-text-main);
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -95,371 +65,294 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    h1,
-    h2,
-    h3,
-    h4 {
-      font-family: 'Outfit', sans-serif;
-      letter-spacing: -.02em;
-    }
-
-    ::-webkit-scrollbar {
-      width: 5px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 99px;
-    }
-
-    /* ═══════ TOP BAR ═══════ */
-    .tb {
-      height: var(--nh);
-      background: var(--sf);
-      border-bottom: 1px solid var(--bd);
+    /* Top Navbar */
+    .simplify-topbar {
+      height: 56px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--simplify-border);
       display: flex;
       align-items: center;
+      justify-content: space-between;
       padding: 0 20px;
-      gap: 14px;
       flex-shrink: 0;
       z-index: 100;
     }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-    }
-
-    .bi {
-      width: 28px;
-      height: 28px;
-      background: linear-gradient(135deg, #4f46e5, #6366f1);
-      border-radius: 7px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-family: 'Outfit', sans-serif;
-      font-weight: 800;
-      font-size: 14px;
-      box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2);
-    }
-
-    .bt {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 800;
-      font-size: 17px;
-      color: var(--tx);
-    }
-
-    .bt span {
-      color: var(--pr);
-    }
-
-    .back {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--txm);
-      text-decoration: none;
-      padding: 6px 11px;
-      border-radius: 8px;
-      border: 1px solid var(--bd);
-      transition: all .15s;
-    }
-
-    .back:hover {
-      color: var(--pr);
-      border-color: var(--prb);
-      background: var(--prl);
-    }
-
-    .dv {
-      width: 1px;
-      height: 24px;
-      background: var(--bd);
-    }
-
-    /* Document Mode Switcher (Resume vs Cover Letter) */
-    .mode-switch {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      background: var(--bg);
-      padding: 4px;
-      border-radius: 10px;
-      border: 1px solid var(--bd);
-    }
-
-    .btn-mode {
-      padding: 6px 14px;
-      border-radius: 7px;
-      font-size: 12.5px;
-      font-weight: 700;
-      color: var(--txm);
-      background: none;
-      border: none;
-      cursor: pointer;
-      transition: all .15s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn-mode.active {
-      background: var(--sf);
-      color: var(--pr);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
-      font-weight: 800;
-    }
-
-    /* Sync Status & Action Buttons */
-    .tbr {
+    .simplify-brand-crumbs {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-left: auto;
+      font-size: 13.5px;
     }
-
-    .profile-synced-badge {
+    .simplify-logo-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: #0f172a;
+      text-decoration: none;
+    }
+    .simplify-logo-badge span {
+      color: var(--simplify-blue);
+    }
+    .crumb-sep {
+      color: var(--simplify-text-subtle);
+      font-size: 13px;
+    }
+    .crumb-item {
+      color: var(--simplify-text-muted);
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .crumb-current {
+      color: var(--simplify-text-main);
+      font-weight: 700;
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--pr);
-      background: var(--prl);
-      border: 1px solid var(--prb);
-      padding: 4px 10px;
-      border-radius: 20px;
     }
 
-    .bto {
-      padding: 7px 14px;
+    .simplify-topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .status-save-pill {
+      font-size: 12px;
+      color: var(--simplify-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn-share-simplify {
+      padding: 6px 14px;
       border-radius: 8px;
-      border: 1.5px solid var(--bd);
-      background: var(--sf);
-      font-size: 12.5px;
-      font-weight: 700;
-      color: var(--tx);
+      border: 1px solid var(--simplify-border);
+      background: #ffffff;
+      color: var(--simplify-text-main);
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.15s;
     }
-
-    .bto:hover {
-      border-color: var(--prb);
-      color: var(--pr);
-      transform: translateY(-1px);
+    .btn-share-simplify:hover {
+      border-color: var(--simplify-border-hover);
+      background: #f8fafc;
     }
-    .bto:active {
-      transform: scale(0.97);
-    }
-
-    .btp {
-      padding: 7px 18px;
+    .btn-export-simplify {
+      padding: 6px 16px;
       border-radius: 8px;
       border: none;
-      background: var(--pr);
+      background: #0284c7;
+      color: #ffffff;
       font-size: 13px;
-      font-weight: 800;
-      color: #fff;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
-      box-shadow: 0 2px 8px rgba(79, 70, 229, .25);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(2, 132, 199, 0.3);
+      transition: all 0.15s;
     }
-
-    .btp:hover {
-      background: var(--prh);
+    .btn-export-simplify:hover {
+      background: #0369a1;
       transform: translateY(-1px);
-      box-shadow: 0 4px 14px rgba(79, 70, 229, .35);
-    }
-    .btp:active {
-      transform: scale(0.97);
     }
 
-    /* ═══════ SIMPLIFY-STYLE 3-COLUMN LAYOUT ═══════ */
-    :root {
-      --left-sidebar: 340px;
-      --right-sidebar: 320px;
-    }
-    .ly {
+    /* 3-Column Layout */
+    .simplify-workspace {
       flex: 1;
       display: grid;
-      grid-template-columns: var(--left-sidebar) 1fr var(--right-sidebar);
+      grid-template-columns: 360px 1fr 360px;
       overflow: hidden;
       min-height: 0;
-      background: var(--bg-subtle, #f1f1f4);
+      background: var(--simplify-bg-canvas);
     }
     @media (max-width: 1200px) {
-      .ly {
-        grid-template-columns: 300px 1fr 300px;
+      .simplify-workspace {
+        grid-template-columns: 320px 1fr 320px;
       }
     }
     @media (max-width: 992px) {
-      .ly {
-        height: auto;
-        min-height: auto;
-        flex: 1 0 auto;
+      .simplify-workspace {
         grid-template-columns: 1fr;
         overflow-y: auto;
       }
     }
 
-    
-    /* Accordion Editor Styles (Simplify Card List Style - High Contrast) */
-    .ep {
-      background: #f1f4f9;
-      border-right: 1px solid #cbd5e1;
+    /* Left Sidebar: Editor Cards */
+    .simplify-sidebar-left {
+      background: var(--simplify-bg-sidebar);
+      border-right: 1px solid var(--simplify-border);
+      display: flex;
+      flex-direction: column;
       overflow-y: auto;
+    }
+    .sidebar-mode-tabs {
       display: flex;
-      flex-direction: column;
-      padding: 0;
-    }
-    .eh {
-      padding: 16px 20px 14px;
-      border-bottom: 1px solid #e2e8f0;
-      background: #ffffff;
-      flex-shrink: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-    }
-    .eh h2 {
-      font-size: 16px;
-      font-weight: 800;
-      color: #0f172a;
-      letter-spacing: -0.01em;
-    }
-    .eh p {
-      font-size: 12px;
-      color: #64748b;
-      margin-top: 1px;
-    }
-    .eb {
-      padding: 16px 16px 36px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-    .accordion-header {
-      padding: 14px 18px;
-      font-size: 14.5px;
-      font-weight: 700;
-      color: #0f172a;
-      border: 1.5px solid #e2e8f0;
+      gap: 4px;
+      background: #f1f5f9;
+      padding: 4px;
       border-radius: 10px;
+      margin: 16px 16px 12px 16px;
+    }
+    .btn-sidebar-tab {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--simplify-text-muted);
+      font-size: 12.5px;
+      font-weight: 600;
       cursor: pointer;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn-sidebar-tab.active {
       background: #ffffff;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-      margin-bottom: 8px;
-      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      color: var(--simplify-text-main);
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .simplify-sections-list {
+      padding: 0 16px 36px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .simplify-section-card {
+      background: #ffffff;
+      border: 1px solid var(--simplify-border);
+      border-radius: var(--simplify-radius-card);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+      transition: all 0.15s ease;
+      overflow: hidden;
+    }
+    .simplify-section-card:hover {
+      border-color: var(--simplify-border-hover);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+    .simplify-section-header {
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      background: #ffffff;
+    }
+    .section-drag-handle {
+      color: #cbd5e1;
+      font-size: 13px;
+      letter-spacing: -2px;
+      cursor: grab;
       user-select: none;
     }
-    .accordion-header:hover {
-      border-color: #94a3b8;
-      background: #ffffff;
-      transform: translateY(-1px);
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+    .section-icon-box {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: var(--simplify-blue-light);
+      color: var(--simplify-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
     }
-    .accordion-header.active {
-      color: #0071e3;
-      border-color: #0071e3;
-      background: #ffffff;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-      border-bottom: 1px solid #f1f5f9;
-      margin-bottom: 0;
-      box-shadow: 0 2px 8px rgba(0, 113, 227, 0.08);
+    .section-title-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--simplify-text-main);
+      flex: 1;
     }
-    .accordion-header::after {
-      content: '›';
-      font-size: 20px;
-      line-height: 1;
-      color: #94a3b8;
+    .section-badge-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 99px;
+      background: #fef2f2;
+      color: #ef4444;
+      border: 1px solid #fecaca;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .section-chevron {
+      color: var(--simplify-text-subtle);
+      font-size: 16px;
       font-weight: 600;
-      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
-      display: inline-block;
+      transition: transform 0.2s ease, color 0.2s;
     }
-    .accordion-header.active::after {
+    .simplify-section-card.active {
+      border-color: var(--simplify-border-hover);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    }
+    .simplify-section-card.active .section-chevron {
       transform: rotate(90deg);
-      color: #0071e3;
+      color: var(--simplify-blue);
     }
-    .pn {
+    .simplify-section-body {
       display: none;
-      padding: 20px;
-      border: 1.5px solid #0071e3;
-      border-top: none;
-      border-bottom-left-radius: 10px;
-      border-bottom-right-radius: 10px;
+      padding: 16px;
+      border-top: 1px solid var(--simplify-border);
       background: #ffffff;
-      margin-bottom: 12px;
-      box-shadow: 0 6px 20px rgba(0, 113, 227, 0.08);
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
-    .pn.active {
+    .simplify-section-card.active .simplify-section-body {
       display: flex;
     }
-    
-    /* Form Inputs - High Contrast & Visible */
+
+    /* Form Fields - High Visibility */
     .fg {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
       position: relative;
     }
     .fg label {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      color: #1e293b;
+      color: #475569;
       text-transform: uppercase;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.04em;
     }
-    .fi,
-    .ft,
-    .fi-sel {
+    .fi, .ft, .fi-sel {
       width: 100%;
-      padding: 10px 13px;
+      padding: 9px 12px;
       border: 1.5px solid #cbd5e1 !important;
-      border-radius: 8px;
-      background: #f8fafc !important;
-      color: #0f172a !important;
+      border-radius: var(--simplify-radius-input);
+      background: #ffffff !important;
+      color: var(--simplify-text-main) !important;
       font-size: 13.5px;
       font-weight: 500;
       font-family: inherit;
       outline: none;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
       transition: all 0.15s ease;
     }
-    .fi:hover,
-    .ft:hover,
-    .fi-sel:hover {
+    .fi:hover, .ft:hover, .fi-sel:hover {
       border-color: #94a3b8 !important;
-      background: #ffffff !important;
     }
-    .fi:focus,
-    .ft:focus,
-    .fi-sel:focus {
-      border-color: #0071e3 !important;
-      background: #ffffff !important;
-      box-shadow: 0 0 0 3.5px rgba(0, 113, 227, 0.16) !important;
+    .fi:focus, .ft:focus, .fi-sel:focus {
+      border-color: var(--simplify-blue) !important;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18) !important;
     }
-    .fi::placeholder,
-    .ft::placeholder {
+    .fi::placeholder, .ft::placeholder {
       color: #94a3b8 !important;
       font-weight: 400;
     }
@@ -468,632 +361,301 @@
       grid-template-columns: 1fr 1fr;
       gap: 10px;
     }
-    
-    /* Right Sidebar Styles */
-    .rp-sidebar {
+
+    /* Custom Section Button & Reset */
+    .btn-add-custom-sec {
+      width: 100%;
+      padding: 13px;
+      border: 1.5px dashed #cbd5e1;
+      border-radius: var(--simplify-radius-card);
+      background: #ffffff;
+      color: var(--simplify-text-main);
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn-add-custom-sec:hover {
+      border-color: var(--simplify-blue);
+      color: var(--simplify-blue);
+      background: var(--simplify-blue-light);
+    }
+    .btn-reset-profile {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--simplify-border);
+      border-radius: 8px;
+      background: #ffffff;
+      color: var(--simplify-text-muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 14px;
+      transition: all 0.15s;
+    }
+    .btn-reset-profile:hover {
       background: #f8fafc;
-      border-left: 1px solid #e2e8f0;
+      color: var(--simplify-text-main);
+    }
+
+    /* Center Preview Canvas */
+    .simplify-preview-canvas {
+      background: var(--simplify-bg-canvas);
       overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .rp-sidebar > div {
-      background: #ffffff !important;
-      border: 1.5px solid #e2e8f0 !important;
-      border-radius: 12px !important;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
-      padding: 16px !important;
-    }
-
-    /* Sidebar Navigation */
-    .sn {
-      display: none; /* Hidden in Simplify layout */
-      background: var(--sf);
-      border-right: 1px solid var(--bd);
-      padding: 14px 10px;
-      flex-direction: column;
-      gap: 4px;
-      overflow-y: auto;
-    }
-
-    .snl {
-      font-size: 10px;
-      font-weight: 800;
-      color: var(--txs);
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      padding: 8px 10px 3px;
-    }
-
-    .si {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 9px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--txm);
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .si:hover {
-      background: var(--bg);
-      color: var(--tx);
-      transform: translateX(2px);
-    }
-
-    .si.active {
-      background: var(--prl);
-      color: var(--pr);
-      font-weight: 700;
-    }
-
-    .sic {
-      font-size: 15px;
-      width: 18px;
-      text-align: center;
-    }
-
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--bd);
-      margin-left: auto;
-      flex-shrink: 0;
-      transition: background .3s;
-    }
-
-    .dot.done {
-      background: var(--pr);
-    }
-
-    .cl-only {
-      display: none;
-    }
-
-    .mode-cl-active .resume-only {
-      display: none;
-    }
-
-    .mode-cl-active .cl-only {
-      display: flex;
-    }
-
-    .fg {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .fg label {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--txm);
-      text-transform: uppercase;
-      letter-spacing: .04em;
-    }
-
-    .fi,
-    .ft,
-    .fi-sel {
-      width: 100%;
-      padding: 9px 13px;
-      border: 1.5px solid #cbd5e1 !important;
-      border-radius: 8px;
-      background: #ffffff !important;
-      color: #0f172a !important;
-      font-size: 13.5px;
-      font-family: inherit;
-      outline: none;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .fi:hover,
-    .ft:hover,
-    .fi-sel:hover {
-      border-color: #94a3b8 !important;
-    }
-
-    .fi:focus,
-    .ft:focus,
-    .fi-sel:focus {
-      border-color: #0071e3 !important;
-      box-shadow: 0 0 0 3.5px rgba(0, 113, 227, 0.15) !important;
-      background: #ffffff !important;
-      transform: translateY(-1px);
-    }
-
-    .fi::placeholder,
-    .ft::placeholder {
-      color: #94a3b8 !important;
-      font-weight: 400;
-    }
-    
-    /* TITAN FOCUS MODE */
-    .ep.focus-mode-active .fc {
-      opacity: 0.4;
-      filter: blur(1px);
-      transition: all 0.3s ease;
-    }
-    .ep.focus-mode-active .fc:focus-within {
-      opacity: 1;
-      filter: blur(0px);
-      transform: scale(1.01);
-      box-shadow: 0 12px 30px -10px rgba(0,0,0,0.15);
-      z-index: 10;
-      border-color: var(--pr);
-    }
-    
-    /* TITAN AI ORB */
-    .ai-orb {
-      position: absolute; width: 24px; height: 24px; border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #fff, var(--pr));
-      box-shadow: 0 0 15px var(--pr);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; cursor: pointer; opacity: 0; pointer-events: none;
-      transform: scale(0.8) translateY(-50%); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      z-index: 20; right: 20px; top: 50%;
-    }
-    .fg { position: relative; }
-    .fg:focus-within .ai-orb {
-      opacity: 1; pointer-events: auto; transform: scale(1) translateY(-50%);
-    }
-    .ai-orb:hover { transform: scale(1.15) translateY(-50%); box-shadow: 0 0 25px var(--pr); }
-    .ai-orb::after {
-      content: 'Rewrite'; position: absolute; right: 30px; background: #1e1e1e; color: #fff;
-      font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px;
-      opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap;
-    }
-    .ai-orb:hover::after { opacity: 1; transform: translateX(-5px); }
-
-    /* HAPTIC FEEDBACK ANIMATION */
-    @keyframes hapticFlash {
-      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); border-color: #10b981; }
-      50% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); border-color: #10b981; }
-      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-    }
-    .haptic-success { animation: hapticFlash 0.5s ease-out !important; }
-
-    .ft {
-      resize: vertical;
-      min-height: 72px;
-      line-height: 1.55;
-    }
-
-    .fr2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    /* Form Cards */
-    .fc {
-      background: var(--sf);
-      border: 1.5px solid var(--bd);
-      border-radius: 11px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 11px;
-    }
-
-    .fch {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .fct {
-      font-size: 13.5px;
-      font-weight: 800;
-      color: var(--tx);
-    }
-
-    .brm {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--txs);
-      font-size: 13px;
-      padding: 3px 6px;
-      border-radius: 4px;
-      transition: all .15s;
-    }
-
-    .brm:hover {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-
-    .bad {
-      padding: 9px 14px;
-      border-radius: 8px;
-      border: 1.5px dashed var(--bd);
-      background: transparent;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--txm);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all .15s;
-    }
-
-    .bad:hover {
-      border-color: var(--pr);
-      color: var(--pr);
-      background: var(--prl);
-    }
-
-    /* Bullet point rows */
-    .bls {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .blr {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .blr input {
-      flex: 1;
-      padding: 7px 10px;
-      border-radius: 6px;
-      border: 1px solid var(--bd);
-      background: var(--sf);
-      font-size: 12.5px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color .15s;
-    }
-
-    .blr input:focus {
-      border-color: var(--pr);
-    }
-
-    .bai {
-      padding: 4px 8px;
-      border-radius: 5px;
-      border: 1px solid var(--prb);
-      background: var(--prl);
-      color: var(--pr);
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all .15s;
-    }
-
-    .bai:hover {
-      background: var(--pr);
-      color: #fff;
-    }
-
-    .bri {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--txs);
-      font-size: 13px;
-      padding: 2px 5px;
-    }
-
-    .bri:hover {
-      color: #dc2626;
-    }
-
-    .bads {
-      padding: 5px 10px;
-      border-radius: 6px;
-      border: 1.5px dashed var(--bd);
-      background: transparent;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--txm);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      margin-top: 3px;
-      transition: all .15s;
-    }
-
-    .bads:hover {
-      border-color: var(--pr);
-      color: var(--pr);
-    }
-
-    /* Structured Date Picker */
-    .date-picker-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .date-picker-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .date-group {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .date-lbl {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--txs);
-      text-transform: uppercase;
-      letter-spacing: .03em;
-    }
-    .fi-sel {
-      padding: 7px 8px;
-      border: 1.5px solid var(--bd);
-      border-radius: 6px;
-      background: var(--sf);
-      color: var(--tx);
-      font-size: 12.5px;
-      font-family: inherit;
-      outline: none;
-      cursor: pointer;
-      transition: border-color .15s;
-    }
-    .fi-sel:focus {
-      border-color: var(--pr);
-    }
-    .fi-sel:disabled {
-      background: var(--bg);
-      color: var(--txs);
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-    .date-sep {
-      color: var(--txs);
-      font-weight: 700;
-      font-size: 13px;
-    }
-    .cb-present {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--txm);
-      cursor: pointer;
-      margin-left: 4px;
-      user-select: none;
-    }
-    .cb-present input {
-      accent-color: var(--pr);
-      cursor: pointer;
-    }
-    .disabled-date {
-      opacity: 0.45;
-      pointer-events: none;
-    }
-
-    /* Dynamic Skill Categories */
-    .skill-cat-card {
-      background: var(--sf);
-      border: 1.5px solid var(--bd);
-      border-radius: 9px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .skill-cat-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .skill-cat-label-input {
-      font-weight: 800;
-      font-size: 13px;
-      color: var(--tx);
-      border: 1px solid transparent;
-      padding: 4px 8px;
-      border-radius: 6px;
-      background: transparent;
-      outline: none;
-      width: 100%;
-      transition: all .15s;
-    }
-    .skill-cat-label-input:focus {
-      border-color: var(--prb);
-      background: var(--bg);
-    }
-
-    /* ATS Score Card */
-    .ac {
-      background: var(--sf);
-      border: 1.5px solid var(--bd);
-      border-radius: 10px;
-      padding: 14px;
-    }
-
-    .ach {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-
-    .acn {
-      font-size: 24px;
-      font-weight: 900;
-      font-family: 'Outfit', sans-serif;
-      color: var(--pr);
-    }
-
-    .abb {
-      height: 6px;
-      background: var(--bd);
-      border-radius: 99px;
-      overflow: hidden;
-    }
-
-    .abf {
-      height: 100%;
-      border-radius: 99px;
-      transition: width .5s ease, background .5s;
-      background: linear-gradient(90deg, var(--pr), #6366f1);
-    }
-
-    .ats-tips {
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .ats-tip {
-      font-size: 11.5px;
-      color: var(--txm);
-    }
-
-    #toast {
-      position: fixed;
-      bottom: 22px;
-      right: 22px;
-      z-index: 9999;
-      background: #0f172a;
-      color: #fff;
-      padding: 11px 18px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
-      opacity: 0;
-      transform: translateY(8px);
-      transition: all .25s ease;
-      pointer-events: none;
-    }
-
-    #toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* ═══════ PREVIEW PANEL (Dark Room Executive Canvas) ═══════ */
-    .pv {
-      background: #1e2430;
-      overflow-y: auto;
-      padding: 24px 20px 80px 20px;
+      padding: 28px 20px 90px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
       position: relative;
     }
-
-    .pvl {
-      font-size: 11px;
-      font-weight: 700;
-      color: #cbd5e1;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      margin-bottom: 16px;
-      align-self: center;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      padding: 5px 14px;
-      border-radius: 99px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    }
-    .pvl span#doc-mode-label {
-      color: #38bdf8;
-      font-weight: 800;
-    }
-
     .a4w {
       width: 100%;
       display: flex;
       justify-content: center;
     }
-
     #rp {
       width: 794px;
       min-height: 1123px;
       background: #ffffff;
-      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
-      border: none;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
       border-radius: 2px;
       transform-origin: top center;
       flex-shrink: 0;
     }
-    
-    @media print {
-      @page {
-        size: A4;
-        margin: 0;
-      }
 
-      body>* {
-        display: none !important;
-      }
-
-      #pw {
-        display: block !important;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 210mm;
-        min-height: 297mm;
-        z-index: 99999;
-        background: #fff;
-      }
+    /* Floating Canvas Bottom Toolbar */
+    .simplify-floating-toolbar {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ffffff;
+      border: 1px solid var(--simplify-border);
+      border-radius: 99px;
+      padding: 6px 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 50;
+    }
+    .floating-tool-btn {
+      background: none;
+      border: none;
+      color: var(--simplify-text-muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px;
+      border-radius: 99px;
+      transition: all 0.15s;
+    }
+    .floating-tool-btn:hover {
+      color: var(--simplify-text-main);
+      background: #f1f5f9;
+    }
+    .floating-tool-sep {
+      width: 1px;
+      height: 16px;
+      background: var(--simplify-border);
     }
 
-    /* ═════════════════════════════════════════════════════════════════
-       LATEX MASTER RESUME STYLES (Computer Modern / Overleaf Standard)
-    ═════════════════════════════════════════════════════════════════ */
-    .latex-doc,
-    .latex-doc * {
+    /* Right Sidebar: ATS & Matcher */
+    .simplify-sidebar-right {
+      background: #ffffff;
+      border-left: 1px solid var(--simplify-border);
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .sidebar-right-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--simplify-border);
+      margin-bottom: 4px;
+    }
+    .btn-right-tab {
+      flex: 1;
+      padding: 10px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--simplify-text-muted);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-right-tab.active {
+      color: var(--simplify-blue);
+      border-bottom-color: var(--simplify-blue);
+    }
+    .beta-pill {
+      font-size: 10px;
+      font-weight: 800;
+      background: #e0f2fe;
+      color: #0284c7;
+      padding: 2px 6px;
+      border-radius: 99px;
+    }
+
+    /* Cards in Right Sidebar */
+    .simplify-tracker-card {
+      background: #ffffff;
+      border: 1px solid var(--simplify-border);
+      border-radius: var(--simplify-radius-card);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    .tracker-card-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--simplify-text-main);
+    }
+    .tracker-sep-or {
+      text-align: center;
+      font-size: 11.5px;
+      color: var(--simplify-text-subtle);
+      margin: 2px 0;
+    }
+    .btn-tracker-done {
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+      background: #0284c7;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-tracker-done:hover {
+      background: #0369a1;
+    }
+
+    .simplify-score-card {
+      background: #ffffff;
+      border: 1px solid var(--simplify-border);
+      border-radius: var(--simplify-radius-card);
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    .score-card-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--simplify-text-main);
+      align-self: flex-start;
+    }
+    .score-radial-wrap {
+      position: relative;
+      width: 170px;
+      height: 170px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .score-radial-svg {
+      width: 170px;
+      height: 170px;
+      transform: rotate(-90deg);
+    }
+    .score-radial-bg {
+      fill: none;
+      stroke: #f1f5f9;
+      stroke-width: 14;
+    }
+    .score-radial-progress {
+      fill: none;
+      stroke: #0284c7;
+      stroke-width: 14;
+      stroke-linecap: round;
+      stroke-dasharray: 440;
+      stroke-dashoffset: 88; /* 80% */
+      transition: stroke-dashoffset 0.8s ease;
+    }
+    .score-radial-center {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .score-big-num {
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--simplify-text-main);
+      line-height: 1;
+      font-family: 'Outfit', sans-serif;
+    }
+    .score-issues-text {
+      font-size: 12px;
+      color: var(--simplify-text-muted);
+      margin-top: 4px;
+    }
+    .score-issues-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .score-issue-item {
+      font-size: 12px;
+      color: var(--simplify-text-muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.4;
+    }
+
+    /* LaTeX Resume Output Styles */
+    .latex-doc, .latex-doc * {
       font-family: 'Computer Modern Serif', 'Latin Modern Roman', 'CMU Serif', 'Times New Roman', serif !important;
       box-sizing: border-box;
       color: #000;
     }
-
     .latex-doc {
       color: #000;
       padding: 40px 48px;
-      font-size: 9.8pt;
+      font-size: 10pt;
       line-height: 1.28;
       background: #fff;
     }
-
     .latex-doc a {
       color: #000;
       text-decoration: none;
     }
-
     .latex-doc a:hover {
       text-decoration: underline;
     }
-
-    /* Header */
     .lr-header {
       text-align: center;
       margin-bottom: 10px;
     }
-
     .lr-name {
-      font-size: 24pt;
+      font-size: 22pt;
       font-weight: bold;
       text-align: center;
       text-transform: uppercase;
@@ -1101,7 +663,6 @@
       margin-bottom: 3px;
       line-height: 1.15;
     }
-
     .lr-headline {
       font-size: 10.5pt;
       font-style: italic;
@@ -1110,26 +671,19 @@
       margin-bottom: 4px;
       color: #222;
     }
-
     .lr-contacts {
       font-size: 9.5pt;
       text-align: center;
       line-height: 1.35;
       margin-top: 3px;
     }
-
-    .lr-contacts span,
-    .lr-contacts a {
+    .lr-contacts span, .lr-contacts a {
       margin: 0 3px;
       color: #000;
-      text-decoration: none;
     }
-
-    /* Section Headings with crisp LaTeX \hrule */
     .lr-sec {
       margin-bottom: 8px;
     }
-
     .lr-sec-title {
       font-size: 10.5pt;
       font-weight: bold;
@@ -1141,8 +695,6 @@
       margin-bottom: 4px;
       margin-top: 8px;
     }
-
-    /* Summary & Narrative */
     .lr-summary-text {
       font-size: 9.5pt;
       line-height: 1.3;
@@ -1150,74 +702,51 @@
       margin-bottom: 4px;
       color: #111;
     }
-
-    /* Skills Table */
     .lr-skills-table {
       width: 100%;
       font-size: 9.5pt;
       line-height: 1.3;
     }
-
     .lr-skills-row {
       margin-bottom: 2px;
     }
-
     .lr-skills-label {
       font-weight: bold;
-      color: #000;
     }
-
-    /* Experience & Projects Entries */
     .lr-entry {
       margin-bottom: 6px;
     }
-
     .lr-entry-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
       font-size: 9.8pt;
     }
-
     .lr-org {
       font-weight: bold;
-      color: #000;
     }
-
     .lr-date {
       font-size: 9.5pt;
-      font-style: normal;
       color: #111;
     }
-
     .lr-subline {
       display: flex;
       justify-content: space-between;
       font-style: italic;
       font-size: 9.5pt;
       color: #222;
-      margin-top: 0px;
       margin-bottom: 2px;
     }
-
-    .lr-links {
-      font-style: normal;
-      margin-left: 6px;
-    }
-
     .lr-links a {
       color: #000;
       text-decoration: underline;
       font-size: 9pt;
       margin-left: 4px;
     }
-
-    /* Bullet Lists */
     .lr-bullets {
       margin: 0;
       padding-left: 14px;
     }
-
     .lr-bullets li {
       font-size: 9.3pt;
       line-height: 1.25;
@@ -1225,828 +754,15 @@
       text-align: justify;
       color: #111;
     }
-
     .lr-bullets li strong {
       font-weight: bold;
-      color: #000;
     }
-
-    /* Single-line Items (Achievements, Certs) */
     .lr-single-line {
       display: flex;
       justify-content: space-between;
       font-size: 9.3pt;
       line-height: 1.35;
       margin-bottom: 2px;
-    }
-
-    /* ════════ COVER LETTER SPECIFIC STYLES ════════ */
-    .cl-header-box {
-      border-bottom: 1.5px solid #000;
-      padding-bottom: 12px;
-      margin-bottom: 20px;
-    }
-
-    .cl-meta-block {
-      font-size: 10pt;
-      line-height: 1.4;
-      color: #111;
-      margin-bottom: 20px;
-    }
-
-    .cl-salutation {
-      font-weight: bold;
-      font-size: 10.5pt;
-      margin-bottom: 14px;
-    }
-
-    .cl-body-p {
-      font-size: 10.5pt;
-      line-height: 1.55;
-      text-align: justify;
-      margin-bottom: 14px;
-      color: #111;
-    }
-
-    /* Template Presets Bar */
-    .template-presets-bar {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-    .btn-template-preset {
-      padding: 6px 12px;
-      border-radius: 7px;
-      border: 1.5px solid var(--bd);
-      background: var(--sf);
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--txm);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      transition: all .15s;
-    }
-    .btn-template-preset:hover {
-      border-color: var(--prb);
-      color: var(--pr);
-      background: var(--prl);
-    }
-    .btn-template-preset.active {
-      border-color: var(--pr);
-      background: var(--prl);
-      color: var(--pr);
-    }
-
-    /* ════════ AI SUITE MODAL & PANELS ════════ */
-    .ai-modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .2s;
-    }
-    .ai-modal-overlay.show {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .ai-modal-card {
-      background: var(--sf);
-      border: 1px solid var(--bd);
-      border-radius: 14px;
-      width: 100%;
-      max-width: 600px;
-      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.25);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      max-height: 90vh;
-      animation: modalPop .2s ease-out;
-    }
-    @keyframes modalPop {
-      from { transform: scale(0.95); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    .ai-modal-header {
-      padding: 16px 20px;
-      background: linear-gradient(135deg, rgba(79,70,229,0.08), rgba(99,102,241,0.04));
-      border-bottom: 1px solid var(--bd);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .ai-modal-title {
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--tx);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .ai-modal-body {
-      padding: 20px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-    .ai-variation-card {
-      border: 1.5px solid var(--bd);
-      border-radius: 10px;
-      padding: 14px;
-      background: var(--bg);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      transition: border-color .15s, transform .15s;
-    }
-    .ai-variation-card:hover {
-      border-color: var(--prb);
-      background: var(--sf);
-    }
-    .ai-var-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .ai-var-tag {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .ai-tag-star { background: #dbeafe; color: #1d4ed8; }
-    .ai-tag-tech { background: #fef3c7; color: #b45309; }
-    .ai-tag-concise { background: #dcfce7; color: #15803d; }
-    .ai-var-text {
-      font-size: 13px;
-      line-height: 1.5;
-      color: var(--tx);
-    }
-    .ai-btn-apply {
-      align-self: flex-end;
-      padding: 6px 14px;
-      border-radius: 7px;
-      background: var(--pr);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      transition: background .15s;
-    }
-    .ai-btn-apply:hover {
-      background: #4338ca;
-    }
-    .ai-chips-wrap {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 6px;
-    }
-    .ai-chip {
-      font-size: 11.5px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 6px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .ai-chip-green { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-    .ai-chip-orange { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
-    .ai-chip-blue { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; cursor: pointer; }
-    .ai-chip-blue:hover { background: #bfdbfe; }
-    .ai-quick-btn {
-      padding: 5px 10px;
-      font-size: 11.5px;
-      font-weight: 700;
-      border-radius: 6px;
-      border: 1px solid var(--bd);
-      background: var(--sf);
-      color: var(--txm);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      transition: all .15s;
-    }
-    .ai-quick-btn:hover {
-      border-color: var(--prb);
-      color: var(--pr);
-      background: var(--prl);
-    }
-  
-    /* ════════════════════ TOP NAVIGATION BAR (UNIFORM STYLE) ════════════════════ */
-    header {
-      position: sticky; top: 0; z-index: 100;
-      background: var(--surface, #ffffff);
-      border-bottom: 1px solid var(--border, #e2e8f0);
-      height: var(--nav-height, 64px);
-      display: flex; align-items: center;
-    }
-    .header-inner {
-      max-width: 1500px; width: 100%; margin: 0 auto; padding: 0 24px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .brand-group { display: flex; align-items: center; gap: 32px; }
-    .brand-logo {
-      display: flex; align-items: center; gap: 10px; text-decoration: none;
-    }
-    .brand-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 19px; color: var(--text-main, #0f172a); }
-    .brand-title span { color: var(--primary, #4f46e5); }
-
-    /* Nav Links */
-    .nav-tabs { display: flex; align-items: center; gap: 4px; }
-    .nav-tab {
-      display: flex; align-items: center; gap: 8px;
-      padding: 8px 14px; border-radius: 8px;
-      font-size: 13.5px; font-weight: 600; color: var(--text-muted, #64748b);
-      text-decoration: none; cursor: pointer; transition: all 0.15s ease;
-    }
-    .nav-tab:hover { background: var(--border-subtle, #f8fafc); color: var(--text-main, #0f172a); }
-    .nav-tab.active {
-      background: var(--primary-light, #e0e7ff); color: var(--primary, #4f46e5); font-weight: 700;
-    }
-    .nav-badge {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
-      padding: 1px 7px; border-radius: 99px; background: var(--primary, #4f46e5); color: white;
-    }
-
-    /* Right Actions & User Menu */
-    .header-actions { display: flex; align-items: center; gap: 12px; }
-    .btn-refresh {
-      background: var(--surface, #ffffff); border: 1.5px solid var(--border, #e2e8f0);
-      padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 700;
-      color: var(--text-main, #0f172a); cursor: pointer; display: flex; align-items: center; gap: 6px;
-      transition: all 0.15s;
-    }
-    .btn-refresh:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
-
-    .user-profile-btn {
-      display: flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px;
-      border-radius: 20px; border: 1.5px solid var(--border, #e2e8f0);
-      background: var(--surface, #ffffff); cursor: pointer; position: relative;
-    }
-    .user-avatar {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-      color: white; font-weight: 800; font-size: 12px;
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden;
-    }
-    .user-name-text { font-size: 13px; font-weight: 700; color: var(--text-main, #0f172a); }
-
-    .user-dropdown {
-      position: absolute; top: calc(100% + 8px); right: 0; width: 220px;
-      background: var(--surface, #ffffff); border: 1px solid var(--border, #e2e8f0);
-      border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      padding: 8px; display: none; flex-direction: column; gap: 4px; z-index: 200;
-    }
-    .user-dropdown.show { display: flex; }
-    /* WCAG 2.2 AA Focus Visibility & Scroll Padding */
-    html {
-      scroll-padding-top: calc(var(--nh, 64px) + 8px);
-    }
-    .skip-link {
-      position: absolute; top: -100px; left: 16px; z-index: 9999;
-      background: var(--pr, #4f46e5); color: white; padding: 10px 18px;
-      border-radius: 8px; font-weight: 700; text-decoration: none;
-      box-shadow: 0 4px 12px rgba(79,70,229,0.3);
-      transition: top 0.15s ease;
-    }
-    .skip-link:focus { top: 16px; outline: 3px solid #ffffff; }
-
-    :focus-visible {
-      outline: 2.5px solid var(--pr, #4f46e5);
-      outline-offset: 2px;
-      border-radius: 4px;
-    }
-    :focus:not(:focus-visible) {
-      outline: none;
-    }
-    @media (max-width: 640px) {
-      input, select, textarea, .fi, .ft { font-size: 16px !important; }
-      body { touch-action: manipulation; }
-      .ep, .sn, .pv { word-break: break-word; overflow-wrap: anywhere; }
-    }
-    .dropdown-item {
-      padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 600;
-      color: var(--text-main, #0f172a); text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
-    }
-    .dropdown-item:hover { background: var(--background, #f8fafc); color: var(--primary, #4f46e5); }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-      }
-    }
-  
-    /* ── CINEMATIC REDESIGN CLASSES ── */
-    .glass-panel-light {
-      background: rgba(255, 255, 255, 0.65) !important;
-      backdrop-filter: blur(24px) !important;
-      -webkit-backdrop-filter: blur(24px) !important;
-      border: 1px solid rgba(255, 255, 255, 0.8) !important;
-      box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
-      border-radius: 24px !important;
-      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
-    }
-    .glass-panel-light:hover {
-      transform: translateY(-6px) scale(1.01) !important;
-      box-shadow: 0 32px 64px -12px rgba(79, 70, 229, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
-      border-color: rgba(79, 70, 229, 0.3) !important;
-    }
-
-
-    /* ── GLOBAL MOBILE RESPONSIVENESS (320px - 768px) ── */
-    @media (max-width: 768px) {
-      body, html { overflow-x: hidden !important; }
-      
-      /* Typography Clamps Override for extremely small screens */
-      h1, .hero-title { font-size: clamp(32px, 8vw, 50px) !important; line-height: 1.1 !important; word-wrap: break-word !important; }
-      h2 { font-size: clamp(24px, 6vw, 36px) !important; line-height: 1.2 !important; }
-      
-      /* Glass panel padding reduction */
-      .glass-panel-light { padding: 16px !important; border-radius: 16px !important; }
-      
-      /* Grids -> Single Column */
-      .form-grid, .grid, .metrics-grid, .bento-grid, .cat-grid, .jobs-split-container { 
-        grid-template-columns: 1fr !important; 
-        height: auto !important; 
-      }
-      .bento-col-2 { grid-column: span 1 !important; }
-      
-      /* Horizontal Scroll Setup for Kanban/Boards */
-      .kanban-board, .board, #kanban-board, .pipeline-board, .board-container { 
-        display: flex !important; 
-        flex-direction: row !important;
-        overflow-x: auto !important; 
-        scroll-snap-type: x mandatory; 
-        gap: 16px;
-        padding-bottom: 24px;
-        -webkit-overflow-scrolling: touch;
-      }
-      .kanban-column, .board-column, .pipeline-col { 
-        min-width: 85vw !important; 
-        max-width: 85vw !important; 
-        scroll-snap-align: center; 
-        flex-shrink: 0;
-      }
-
-      /* Navbar Simplification */
-      .nav-links, .nav-actions { display: none !important; }
-      .nav-inner { padding: 12px 16px !important; }
-      
-      /* Footer */
-      .footer-grid, .footer-inner { grid-template-columns: 1fr !important; gap: 24px !important; }
-      
-      /* Modals */
-      .modal-content, #preferences-modal > div {
-        width: 95vw !important;
-        max-height: 95vh !important;
-        padding: 16px !important;
-        margin: 0 !important;
-      }
-      
-      /* Profile / Resume Editor specific */
-      .split-layout, .editor-layout { flex-direction: column !important; }
-      .sidebar { width: 100% !important; border-right: none !important; border-bottom: 1px solid var(--border); }
-    }
-
-
-    /* ════════════════════ MOBILE FIRST NAVIGATION & JD OVERLAYS ════════════════════ */
-    @media (max-width: 768px) {
-      header .nav-tabs,
-      .nav-tabs,
-      .header-actions .user-profile-btn,
-      .header-actions .btn-refresh {
-        display: none !important;
-      }
-
-      header {
-        position: sticky !important;
-        top: 0 !important;
-        z-index: 999 !important;
-        height: 56px !important;
-        background: #ffffff !important;
-        border-bottom: 1px solid #e2e8f0 !important;
-      }
-
-      .header-inner {
-        padding: 0 16px !important;
-        height: 100% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        max-width: 100% !important;
-      }
-
-      body {
-        padding-bottom: 74px !important;
-      }
-
-      .mobile-hamburger-btn {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        color: #334155;
-        padding: 8px;
-        margin-right: -8px;
-        border-radius: 8px;
-      }
-
-      .mobile-bottom-nav {
-        position: fixed !important;
-        bottom: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        width: 100% !important;
-        height: 62px !important;
-        background: #ffffff !important;
-        border-top: 1px solid #e2e8f0 !important;
-        display: flex !important;
-        justify-content: space-around !important;
-        align-items: center !important;
-        padding: 4px 8px !important;
-        padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px)) !important;
-        z-index: 9990 !important;
-        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05) !important;
-      }
-
-      .mobile-bottom-nav-link {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 3px !important;
-        flex: 1 !important;
-        text-decoration: none !important;
-        color: #64748b !important;
-        font-size: 11px !important;
-        font-weight: 600 !important;
-        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
-        position: relative !important;
-        padding: 6px 0 !important;
-        transition: color 0.15s ease !important;
-      }
-
-      .mobile-bottom-nav-link svg {
-        width: 22px !important;
-        height: 22px !important;
-        stroke: currentColor !important;
-        stroke-width: 2 !important;
-        fill: none !important;
-      }
-
-      .mobile-bottom-nav-link.active {
-        color: #008DA5 !important;
-        font-weight: 700 !important;
-      }
-
-      .mobile-bottom-nav-link.active svg {
-        stroke: #008DA5 !important;
-      }
-
-      .mobile-bottom-nav-link.active::after {
-        content: '' !important;
-        position: absolute !important;
-        top: -4px !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        width: 32px !important;
-        height: 3px !important;
-        background-color: #00A9E0 !important;
-        border-radius: 0 0 4px 4px !important;
-      }
-
-      .mobile-nav-backdrop {
-        position: fixed !important;
-        inset: 0 !important;
-        background-color: rgba(15, 23, 42, 0.5) !important;
-        backdrop-filter: blur(2px) !important;
-        z-index: 9998 !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-        transition: opacity 0.25s ease, visibility 0.25s ease !important;
-      }
-
-      .mobile-nav-backdrop.open {
-        opacity: 1 !important;
-        visibility: visible !important;
-      }
-
-      .mobile-nav-drawer {
-        position: fixed !important;
-        top: 0 !important;
-        left: -300px !important;
-        bottom: 0 !important;
-        width: 280px !important;
-        max-width: 80vw !important;
-        background-color: #ffffff !important;
-        z-index: 9999 !important;
-        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15) !important;
-        display: flex !important;
-        flex-direction: column !important;
-        transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-        overflow-y: auto !important;
-      }
-
-      .mobile-nav-drawer.open {
-        left: 0 !important;
-      }
-
-      .mobile-nav-header {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        padding: 16px 20px !important;
-        border-bottom: 1px solid #e2e8f0 !important;
-      }
-
-      .mobile-nav-brand {
-        display: flex !important;
-        align-items: center !important;
-        gap: 10px !important;
-        text-decoration: none !important;
-      }
-
-      .mobile-nav-brand img {
-        width: 26px !important;
-        height: 26px !important;
-      }
-
-      .mobile-nav-close-btn {
-        background: transparent !important;
-        border: none !important;
-        color: #475569 !important;
-        cursor: pointer !important;
-        padding: 6px !important;
-        border-radius: 6px !important;
-      }
-
-      .mobile-nav-list {
-        display: flex !important;
-        flex-direction: column !important;
-        padding: 12px 0 !important;
-        margin: 0 !important;
-        list-style: none !important;
-      }
-
-      .mobile-nav-link {
-        display: flex !important;
-        align-items: center !important;
-        gap: 14px !important;
-        padding: 12px 20px !important;
-        color: #334155 !important;
-        font-size: 15px !important;
-        font-weight: 600 !important;
-        text-decoration: none !important;
-      }
-
-      .mobile-nav-link svg {
-        width: 20px !important;
-        height: 20px !important;
-        stroke: #64748b !important;
-        stroke-width: 2 !important;
-        fill: none !important;
-      }
-
-      .mobile-nav-link.active {
-        background-color: #e0f7fa !important;
-        color: #008da5 !important;
-        border-left: 4px solid #00a9e0 !important;
-      }
-
-      .mobile-nav-link.active svg {
-        stroke: #008da5 !important;
-      }
-
-      /* JD Split Pane Mobile Behavior */
-      .jobs-split-container {
-        display: block !important;
-        width: 100% !important;
-        position: relative !important;
-      }
-
-      .jobs-feed-col {
-        display: block !important;
-        width: 100% !important;
-      }
-
-      .job-detail-col {
-        display: none !important;
-      }
-
-      body.mobile-jd-open .jobs-feed-col {
-        display: none !important;
-      }
-
-      body.mobile-jd-open .job-detail-col {
-        display: block !important;
-        width: 100% !important;
-        min-height: calc(100vh - 120px) !important;
-        background: #ffffff !important;
-      }
-
-      body.mobile-jd-open .filter-bar {
-        display: none !important;
-      }
-
-      .mobile-jd-back-btn {
-        display: none;
-      }
-
-      body.mobile-jd-open .mobile-jd-back-btn {
-        display: flex !important;
-        align-items: center !important;
-        gap: 8px !important;
-        width: 100% !important;
-        margin: 12px 0 !important;
-        padding: 12px 16px !important;
-        background: #f8fafc !important;
-        border: 1.5px solid #cbd5e1 !important;
-        border-radius: 12px !important;
-        font-size: 14px !important;
-        font-weight: 700 !important;
-        color: #0f172a !important;
-        cursor: pointer !important;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.04) !important;
-      }
-    }
-
-    @media (min-width: 769px) {
-      .mobile-bottom-nav,
-      .mobile-hamburger-btn,
-      .mobile-nav-drawer,
-      .mobile-nav-backdrop,
-      .mobile-jd-back-btn {
-        display: none !important;
-      }
-    }
-
-  
-    /* ═══════ RESUME BUILDER ULTRA-PREMIUM MOBILE OVERRIDES ═══════ */
-    @media (max-width: 992px) {
-      .ly {
-        display: flex !important;
-        flex-direction: column !important;
-        height: auto !important;
-        overflow: visible !important;
-      }
-
-      /* Horizontal Scrollable Document Sections */
-      .sn {
-        display: flex !important;
-        flex-direction: row !important;
-        overflow-x: auto !important;
-        -webkit-overflow-scrolling: touch !important;
-        scrollbar-width: none !important;
-        padding: 8px 12px !important;
-        gap: 6px !important;
-        border-bottom: 1px solid #e2e8f0 !important;
-        border-right: none !important;
-        background: #ffffff !important;
-        position: sticky !important;
-        top: 56px !important;
-        z-index: 80 !important;
-        max-height: 52px !important;
-      }
-      .sn::-webkit-scrollbar { display: none !important; }
-      .snl { display: none !important; }
-      .si {
-        flex-shrink: 0 !important;
-        padding: 6px 12px !important;
-        border-radius: 20px !important;
-        font-size: 12px !important;
-        background: #f8fafc !important;
-        border: 1px solid #cbd5e1 !important;
-        color: #334155 !important;
-        white-space: nowrap !important;
-      }
-      .si.active {
-        background: #00A9E0 !important;
-        color: #ffffff !important;
-        border-color: #00A9E0 !important;
-        font-weight: 700 !important;
-      }
-      .si .dot { display: none !important; }
-      .si:hover { transform: none !important; }
-
-      /* Mobile Editor & Preview Switcher */
-      .mobile-view-tabs {
-        display: flex !important;
-        background: #e2e8f0 !important;
-        border-radius: 10px !important;
-        padding: 3px !important;
-        margin: 10px 16px 0 !important;
-        gap: 4px !important;
-      }
-      .btn-view-tab {
-        flex: 1 !important;
-        padding: 8px 12px !important;
-        border: none !important;
-        background: transparent !important;
-        font-size: 13px !important;
-        font-weight: 700 !important;
-        color: #64748b !important;
-        border-radius: 8px !important;
-        cursor: pointer !important;
-        transition: all 0.2s !important;
-      }
-      .btn-view-tab.active {
-        background: #ffffff !important;
-        color: #0f172a !important;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
-      }
-
-      /* Editor Panel Mobile View */
-      .ep {
-        border-right: none !important;
-        width: 100% !important;
-      }
-
-      /* Preview Panel Mobile Scaling */
-      .pv {
-        width: 100% !important;
-        padding: 16px 8px !important;
-        overflow-x: hidden !important;
-      }
-      .a4w {
-        width: 100% !important;
-        overflow: hidden !important;
-        display: flex !important;
-        justify-content: center !important;
-      }
-      #rp {
-        transform: scale(0.48) !important;
-        transform-origin: top center !important;
-        margin-bottom: -550px !important;
-      }
-
-      /* Toggle between Editor and Preview */
-      body.show-preview-mode .ep {
-        display: none !important;
-      }
-      body.show-preview-mode .pv {
-        display: flex !important;
-      }
-      body:not(.show-preview-mode) .pv {
-        display: none !important;
-      }
-      body:not(.show-preview-mode) .ep {
-        display: flex !important;
-      }
-    }
-
-    @media (min-width: 993px) {
-      .mobile-view-tabs {
-        display: none !important;
-      }
-    }
-
-  
-    
-    /* ── APPLE-STYLE AMBIENT AURORA BACKGROUND ── */
-    body::before {
-      content: ''; position: fixed; top: -10vw; left: -10vw; width: 60vw; height: 60vw;
-      z-index: -3; pointer-events: none; border-radius: 50%; filter: blur(100px); opacity: 0.5;
-      background: radial-gradient(circle, rgba(0, 113, 227, 0.15) 0%, transparent 70%);
-      animation: ambientPulse1 20s ease-in-out infinite alternate;
-    }
-    body::after {
-      content: ''; position: fixed; bottom: -10vw; right: -10vw; width: 60vw; height: 60vw;
-      z-index: -4; pointer-events: none; border-radius: 50%; filter: blur(100px); opacity: 0.4;
-      background: radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, transparent 70%);
-      animation: ambientPulse2 24s ease-in-out infinite alternate;
-    }
-    @keyframes ambientPulse1 {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(5vw, 5vw) scale(1.2); }
-    }
-    @keyframes ambientPulse2 {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(-5vw, -5vw) scale(1.1); }
     }
 </style>
 
@@ -2064,372 +780,371 @@
 
   <!-- ════════ TOP BAR ════════ -->
     <!-- ════════════════════ UNIFORM GLOBAL HEADER ════════════════════ -->
-  <header>
-    <div class="header-inner">
-      <div class="brand-group">
-        <a href="/dashboard/" class="brand-logo">
-          <img src="/logo.svg" alt="getArole" style="width:34px;height:34px;object-fit:contain;">
-          <span class="brand-title">get<span>A</span>role</span>
-        </a>
-
-        <nav class="nav-tabs">
-          <a class="nav-tab" href="/dashboard/" id="tab-btn-home">Overview</a>
-          <a class="nav-tab" href="/matches/" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
-          <a class="nav-tab" href="/explore/" id="tab-btn-jobs">Explore Jobs</a>
-          <a class="nav-tab active" href="/resume-builder/" id="tab-btn-resume">ATS Resume</a>
-          <a class="nav-tab" href="/cover-letter-builder/" id="tab-btn-cover-letter">Cover Letter</a>
-          <a class="nav-tab" href="/profile/" id="tab-btn-profile">Profile</a>
-        </nav>
-      </div>
-
-      <div class="header-actions">
-        <button class="btn-sync-action" onclick="resyncFromProfile()" title="Reload fresh data from candidate profile">
-          Re-Sync Profile
-        </button>
-        <button class="btn-export-pdf" onclick="exportPDF()">
-          Export PDF
-        </button>
-
-        <div class="user-profile-btn" onclick="document.getElementById('user-dropdown') && document.getElementById('user-dropdown').classList.toggle('show')">
-          <div class="user-avatar" id="nav-avatar">U</div>
-          <span class="user-name-text" id="nav-username">User</span>
-          <span style="font-size: 10px; color: var(--text-subtle, #94a3b8)">▼</span>
-
-          <div class="user-dropdown" id="user-dropdown">
-            <a href="/profile/" class="dropdown-item">Profile & Preferences</a>
-            <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
-            <a href="#" onclick="typeof handleLogout === 'function' ? handleLogout() : (localStorage.clear(), window.location.href='/')" class="dropdown-item" style="color:#ef4444">Sign Out</a>
-          </div>
-        </div>
+  <!-- ════════ SIMPLIFY 1:1 TOP BAR ════════ -->
+  <div class="simplify-topbar">
+    <div class="simplify-brand-crumbs">
+      <a href="/dashboard/" class="simplify-logo-badge">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        get<span>A</span>role
+      </a>
+      <span class="crumb-sep">›</span>
+      <a href="/dashboard/" class="crumb-item">Documents</a>
+      <span class="crumb-sep">›</span>
+      <div class="crumb-current">
+        <span id="resume-doc-title">Master_Resume</span>
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor:pointer;color:#94a3b8;"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
       </div>
     </div>
-  </header>
 
-  <!-- Mobile Edit Form / Live Preview Switcher -->
-  <div class="mobile-view-tabs">
-    <button id="btn-tab-edit" class="btn-view-tab active" type="button" onclick="setResumeMobileTab('edit')">✏️ Edit Form</button>
-    <button id="btn-tab-preview" class="btn-view-tab" type="button" onclick="setResumeMobileTab('preview')">👁️ Live Resume Preview</button>
+    <div class="simplify-topbar-actions">
+      <div class="status-save-pill">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="asv">Saved just now</span>
+      </div>
+      <button class="btn-share-simplify" onclick="resyncFromProfile()" title="Re-sync data from profile">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+        Re-Sync
+      </button>
+      <button class="btn-export-simplify" onclick="exportPDF()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export PDF
+      </button>
+      <div class="user-avatar" id="nav-avatar" style="width:30px;height:30px;border-radius:50%;background:#0284c7;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer;">H</div>
+    </div>
   </div>
 
-  <!-- ════════ THREE COLUMN LAYOUT ════════ -->
-  <main class="ly" id="main-content">
-    <!-- 1. SECTIONS SIDEBAR -->
-    <aside class="sn">
-      <div class="snl">Document Sections</div>
-      <div class="si active" id="nav-header" onclick="gS('header')"><span class="sic">👤</span>1. Contact &amp; Header<span class="dot done" id="dot-header"></span></div>
-      <div class="si" id="nav-summary" onclick="gS('summary')"><span class="sic">📝</span>2. Executive Summary<span class="dot done" id="dot-summary"></span></div>
-      <div class="si" id="nav-skills" onclick="gS('skills')"><span class="sic">⚡</span>3. Technical Competencies<span class="dot done" id="dot-skills"></span></div>
-      <div class="si" id="nav-exp" onclick="gS('exp')"><span class="sic">💼</span>4. Professional Experience<span class="dot done" id="dot-exp"></span></div>
-      <div class="si" id="nav-proj" onclick="gS('proj')"><span class="sic">🚀</span>5. Technical Projects<span class="dot done" id="dot-proj"></span></div>
-      <div class="si" id="nav-achieve" onclick="gS('achieve')"><span class="sic">🏅</span>6. Key Achievements<span class="dot done" id="dot-achieve"></span></div>
-      <div class="si" id="nav-certs" onclick="gS('certs')"><span class="sic">🏆</span>7. Certifications &amp; Licenses<span class="dot done" id="dot-certs"></span></div>
-      <div class="si" id="nav-edu" onclick="gS('edu')"><span class="sic">🎓</span>8. Academic Credentials<span class="dot done" id="dot-edu"></span></div>
+  <!-- ════════ SIMPLIFY 3-COLUMN WORKSPACE ════════ -->
+  <main class="simplify-workspace" id="main-content">
+    <!-- 1. LEFT SIDEBAR: EDITOR -->
+    <aside class="simplify-sidebar-left">
+      <!-- 3 Navigation Tabs -->
+      <div class="sidebar-mode-tabs">
+        <button class="btn-sidebar-tab active" id="tab-editor" onclick="setSimplifySidebarTab('editor')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Editor
+        </button>
+        <button class="btn-sidebar-tab" id="tab-layout" onclick="setSimplifySidebarTab('layout')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          Layout
+        </button>
+        <button class="btn-sidebar-tab" id="tab-ai" onclick="setSimplifySidebarTab('ai')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
+          AI Settings
+        </button>
+      </div>
 
-      <div class="snl" style="margin-top:10px;">AI Optimization &amp; Analysis</div>
-      <div class="si" id="nav-ats" onclick="gS('ats')"><span class="sic">📊</span>9. ATS Compatibility Score</div>
-      <div class="si" id="nav-tailor" onclick="gS('tailor')"><span class="sic">🎯</span>10. Role &amp; Keyword Matcher</div>
+      <!-- Section Cards Accordion -->
+      <div class="simplify-sections-list">
+        <!-- 1. Resume Header -->
+        <div class="simplify-section-card active" id="card-header">
+          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-header')">
+            <span class="section-drag-handle">⋮⋮</span>
+            <div class="section-icon-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <span class="section-title-text">Resume Header</span>
+            <span class="section-badge-pill" id="badge-header-missing">! 3</span>
+            <span class="section-chevron">›</span>
+          </div>
+          <div class="simplify-section-body">
+            <div class="fr2">
+              <div class="fg">
+                <label>Full Name</label>
+                <input class="fi" id="ffn" placeholder="e.g. John Doe" oninput="ud('header','name',this.value)">
+              </div>
+              <div class="fg" style="max-width:120px;">
+                <label>Suffix Name</label>
+                <input class="fi" id="fsuf" placeholder="e.g. M.S." oninput="ud('header','suffix',this.value)">
+              </div>
+            </div>
+
+            <div class="fg">
+              <label>Location</label>
+              <input class="fi" id="floc" placeholder="e.g. Philadelphia, PA, USA" oninput="ud('header','location',this.value)">
+            </div>
+
+            <div class="fr2">
+              <div class="fg" style="max-width:110px;">
+                <label>Country Code</label>
+                <input class="fi" id="fcc" placeholder="e.g. +1, +91" oninput="ud('header','country_code',this.value)">
+              </div>
+              <div class="fg">
+                <label>Phone Number</label>
+                <input class="fi" id="fph" placeholder="e.g. (215) 555-5555" oninput="ud('header','phone',this.value)">
+              </div>
+            </div>
+
+            <div class="fg">
+              <label>Email Address</label>
+              <input class="fi" id="fem" type="email" placeholder="you@example.com" oninput="ud('header','email',this.value)">
+            </div>
+
+            <div class="fg">
+              <label>LinkedIn URL</label>
+              <input class="fi" id="fli" placeholder="https://linkedin.com/in/username" oninput="ud('header','linkedin',this.value)">
+            </div>
+
+            <div class="fg">
+              <label>GitHub URL</label>
+              <input class="fi" id="fgh" placeholder="https://github.com/username" oninput="ud('header','github',this.value)">
+            </div>
+
+            <div class="fg">
+              <label>Portfolio URL</label>
+              <input class="fi" id="fpo" placeholder="https://yourportfolio.dev" oninput="ud('header','portfolio',this.value)">
+            </div>
+
+            <div class="fg">
+              <label>Other URL</label>
+              <input class="fi" id="fot" placeholder="https://blog.example.com" oninput="ud('header','other_url',this.value)">
+            </div>
+
+            <!-- Toggles -->
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+              <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;cursor:pointer;">
+                <input type="checkbox" id="f-show-full-urls" onchange="ud('header','show_full_urls',this.checked)" style="margin-top:2px;">
+                <div>
+                  <strong style="color:#0f172a;">Show Full URLs</strong>
+                  <div style="font-size:11px;color:#64748b;">Display "linkedin.com/in/..." instead of "LinkedIn" in preview</div>
+                </div>
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;cursor:pointer;">
+                <input type="checkbox" id="f-show-country-code" checked onchange="ud('header','show_country_code',this.checked)" style="margin-top:2px;">
+                <div>
+                  <strong style="color:#0f172a;">Show Phone Country Code</strong>
+                  <div style="font-size:11px;color:#64748b;">Display "+1 (215) 555-5555" instead of local number</div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Headline -->
+        <div class="simplify-section-card" id="card-headline">
+          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-headline')">
+            <span class="section-drag-handle">⋮⋮</span>
+            <div class="section-icon-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg>
+            </div>
+            <span class="section-title-text">Headline</span>
+            <span class="section-chevron">›</span>
+          </div>
+          <div class="simplify-section-body">
+            <div class="fg">
+              <label>Professional Headline</label>
+              <input class="fi" id="fhl" placeholder="e.g. Software Engineer | Distributed Systems" oninput="ud('header','headline',this.value)">
+              <span style="font-size:11px;color:#64748b;margin-top:2px;">1-line title displayed beneath your name in the live preview.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Professional Summary -->
+        <div class="simplify-section-card" id="card-summary">
+          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-summary')">
+            <span class="section-drag-handle">⋮⋮</span>
+            <div class="section-icon-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            </div>
+            <span class="section-title-text">Professional Summary</span>
+            <span class="section-chevron">›</span>
+          </div>
+          <div class="simplify-section-body">
+            <div class="fg">
+              <label>Summary Statement</label>
+              <textarea class="ft" id="fsu" rows="4" style="min-height:95px;" oninput="ud('summary','text',this.value)"></textarea>
+            </div>
+            <!-- AI Presets -->
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-top:2px;">
+              <div style="font-size:11.5px;font-weight:700;color:#475569;margin-bottom:6px;">AI Style Synthesizer</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+                <button class="bto" style="padding:4px 10px;font-size:11.5px;" onclick="selectSummaryStyle('technical')">Technical</button>
+                <button class="bto" style="padding:4px 10px;font-size:11.5px;" onclick="selectSummaryStyle('fresher')">Fresher</button>
+                <button class="bto" style="padding:4px 10px;font-size:11.5px;" onclick="selectSummaryStyle('leadership')">Leadership</button>
+              </div>
+              <button class="btn-tracker-done" onclick="genSum()" style="padding:6px;font-size:12px;">Generate Summaries</button>
+              <div id="ai-summary-results" style="display:none;margin-top:8px;display:flex;flex-direction:column;gap:6px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Education -->
+        <div class="simplify-section-card" id="card-edu">
+          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-edu')">
+            <span class="section-drag-handle">⋮⋮</span>
+            <div class="section-icon-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            </div>
+            <span class="section-title-text">Education</span>
+            <span class="section-chevron">›</span>
+          </div>
+          <div class="simplify-section-body">
+            <div id="edc"></div>
+            <button class="btn-add-custom-sec" onclick="addEdu()" style="padding:8px;font-size:12.5px;">+ Add Education</button>
+          </div>
+        </div>
+
+        <!-- 5. Professional Experience -->
+        <div class="simplify-section-card" id="card-exp">
+          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-exp')">
+            <span class="section-drag-handle">⋮⋮</span>
+            <div class="section-icon-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </div>
+            <span class="section-title-text">Professional Experience</span>
+            <span class="section-chevron">›</span>
+          </div>
+          <div class="simplify-section-body">
+            <div id="ec"></div>
+            <button class="btn-add-custom-sec" onclick="addExp()" style="padding:8px;font-size:12.5px;">+ Add Work Experience</button>
+          </div>
+        </div>
+
+        <!-- 6. Projects & Outside Experience -->
+        <div class="simplify-section-card" id="card-proj">
+          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-proj')">
+            <span class="section-drag-handle">⋮⋮</span>
+            <div class="section-icon-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <span class="section-title-text">Projects &amp; Outside Experience</span>
+            <span class="section-chevron">›</span>
+          </div>
+          <div class="simplify-section-body">
+            <div id="pc"></div>
+            <button class="btn-add-custom-sec" onclick="addProj()" style="padding:8px;font-size:12.5px;">+ Add Project</button>
+          </div>
+        </div>
+
+        <!-- 7. Skills -->
+        <div class="simplify-section-card" id="card-skills">
+          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-skills')">
+            <span class="section-drag-handle">⋮⋮</span>
+            <div class="section-icon-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            </div>
+            <span class="section-title-text">Skills</span>
+            <span class="section-chevron">›</span>
+          </div>
+          <div class="simplify-section-body">
+            <div id="skills-categories-container" style="display:flex;flex-direction:column;gap:10px;"></div>
+            <button class="btn-add-custom-sec" onclick="addSkillCat()" style="padding:8px;font-size:12.5px;">+ Add Skill Category</button>
+          </div>
+        </div>
+
+        <!-- 8. Certifications -->
+        <div class="simplify-section-card" id="card-certs">
+          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-certs')">
+            <span class="section-drag-handle">⋮⋮</span>
+            <div class="section-icon-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+            </div>
+            <span class="section-title-text">Certifications</span>
+            <span class="section-chevron">›</span>
+          </div>
+          <div class="simplify-section-body">
+            <div id="cc"></div>
+            <button class="btn-add-custom-sec" onclick="addCert()" style="padding:8px;font-size:12.5px;">+ Add Certification</button>
+          </div>
+        </div>
+
+        <!-- 9. Dynamic Custom Sections Container -->
+        <div id="custom-sections-accordion-container" style="display:flex;flex-direction:column;gap:8px;"></div>
+
+        <!-- + Add Custom Section -->
+        <button class="btn-add-custom-sec" onclick="addCustomSection()">
+          + Add Custom Section
+        </button>
+
+        <!-- Reset to Profile Button -->
+        <button class="btn-reset-profile" onclick="resyncFromProfile()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Reset to Profile
+        </button>
+        <div style="font-size:11px;color:#94a3b8;text-align:center;line-height:1.4;margin-top:4px;">
+          Replace the profile-backed sections with your saved profile data.
+        </div>
+      </div>
     </aside>
 
-    <!-- 2. FORM EDITOR COLUMN -->
-    <div class="ep">
-      <div class="eh" style="display:none;">
-        <div>
-          <h2 id="ed-t">1. Contact &amp; Header Information</h2>
-          <p id="ed-s">Personal links, phone number, email &amp; professional portfolio</p>
-        </div>
-        <span
-          style="font-size:11px;font-weight:700;color:var(--txs);background:var(--bg);padding:3px 8px;border-radius:6px;"
-          id="asv">Saved</span>
-      </div>
-
-      <div class="eb">
-        <!-- 1. RESUME HEADER -->
-        <div class="accordion-header active" onclick="toggleAccordion('panel-header', this)">Resume Header</div>
-        <div class="pn active" id="panel-header">
-          <div class="fr2">
-            <div class="fg">
-              <label>Full Name</label>
-              <input class="fi" id="ffn" placeholder="e.g. John Doe" oninput="ud('header','name',this.value)">
-            </div>
-            <div class="fg" style="max-width:120px;">
-              <label>Suffix Name</label>
-              <input class="fi" id="fsuf" placeholder="e.g. M.S., Ph.D." oninput="ud('header','suffix',this.value)">
-            </div>
-          </div>
-
-          <div class="fg">
-            <label>Location</label>
-            <input class="fi" id="floc" placeholder="e.g. Philadelphia, PA, USA" oninput="ud('header','location',this.value)">
-          </div>
-
-          <div class="fr2">
-            <div class="fg" style="max-width:110px;">
-              <label>Country Code</label>
-              <input class="fi" id="fcc" placeholder="e.g. +1, +91" oninput="ud('header','country_code',this.value)">
-            </div>
-            <div class="fg">
-              <label>Phone Number</label>
-              <input class="fi" id="fph" placeholder="e.g. (215) 555-5555" oninput="ud('header','phone',this.value)">
-            </div>
-          </div>
-
-          <div class="fg">
-            <label>Email Address</label>
-            <input class="fi" id="fem" type="email" placeholder="you@example.com" oninput="ud('header','email',this.value)">
-          </div>
-
-          <div class="fg">
-            <label>LinkedIn URL</label>
-            <input class="fi" id="fli" placeholder="https://linkedin.com/in/username" oninput="ud('header','linkedin',this.value)">
-          </div>
-
-          <div class="fg">
-            <label>GitHub URL</label>
-            <input class="fi" id="fgh" placeholder="https://github.com/username" oninput="ud('header','github',this.value)">
-          </div>
-
-          <div class="fg">
-            <label>Portfolio URL</label>
-            <input class="fi" id="fpo" placeholder="https://yourportfolio.dev" oninput="ud('header','portfolio',this.value)">
-          </div>
-
-          <div class="fg">
-            <label>Other URL (Website / Blog / Substack)</label>
-            <input class="fi" id="fot" placeholder="https://blog.example.com" oninput="ud('header','other_url',this.value)">
-          </div>
-
-          <!-- URL & Phone formatting toggles matching Simplify -->
-          <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px;margin-top:6px;">
-            <div style="font-size:11.5px;font-weight:700;color:var(--txm);">Display Settings</div>
-            
-            <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;cursor:pointer;line-height:1.4;">
-              <input type="checkbox" id="f-show-full-urls" onchange="ud('header','show_full_urls',this.checked)" style="margin-top:2px;">
-              <div>
-                <strong style="color:var(--tx);">Show Full URLs</strong>
-                <div style="font-size:11px;color:var(--txs);">Display "linkedin.com/in/john-doe" instead of "LinkedIn" in preview</div>
-              </div>
-            </label>
-
-            <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;cursor:pointer;line-height:1.4;">
-              <input type="checkbox" id="f-show-country-code" checked onchange="ud('header','show_country_code',this.checked)" style="margin-top:2px;">
-              <div>
-                <strong style="color:var(--tx);">Show Phone Country Code</strong>
-                <div style="font-size:11px;color:var(--txs);">Display "+1 (215) 555-5555" instead of local digits</div>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        <!-- 2. HEADLINE -->
-        <div class="accordion-header" onclick="toggleAccordion('panel-headline', this)">Headline</div>
-        <div class="pn" id="panel-headline">
-          <div class="fg">
-            <label>Professional Headline / Target Role Title</label>
-            <input class="fi" id="fhl" placeholder="e.g. Software Engineer | Distributed Systems &amp; Applied AI" oninput="ud('header','headline',this.value)">
-            <span style="font-size:11.5px;color:var(--txm);margin-top:4px;display:block;">
-              A 1-line professional title displayed beneath your name in the live preview.
-            </span>
-          </div>
-        </div>
-
-        <!-- 3. PROFESSIONAL SUMMARY -->
-        <div class="accordion-header" onclick="toggleAccordion('panel-summary', this)">Professional Summary</div>
-        <div class="pn" id="panel-summary">
-          <div class="fg">
-            <label>Summary Statement</label>
-            <textarea class="ft" id="fsu" rows="4" style="min-height:95px;" oninput="ud('summary','text',this.value)"></textarea>
-          </div>
-
-          <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-top:4px;">
-            <div style="font-size:12px;font-weight:700;color:var(--txm);margin-bottom:8px;">AI Tone &amp; Style Synthesizer:</div>
-            <div class="template-presets-bar" style="margin-bottom:10px;">
-              <button class="btn-template-preset active" id="sum-style-technical" onclick="selectSummaryStyle('technical')">Technical Specialist</button>
-              <button class="btn-template-preset" id="sum-style-fresher" onclick="selectSummaryStyle('fresher')">Fresher / Graduate</button>
-              <button class="btn-template-preset" id="sum-style-leadership" onclick="selectSummaryStyle('leadership')">Engineering Lead</button>
-              <button class="btn-template-preset" id="sum-style-general" onclick="selectSummaryStyle('general')">General Professional</button>
-            </div>
-            <div class="fg" style="margin-bottom:10px;">
-              <label>Personalized AI Instructions &amp; Career Focus (Optional)</label>
-              <input class="fi" id="ai-summary-custom-prompt" style="background:#fff;">
-            </div>
-            <button class="btp" onclick="genSum()">Synthesize Personalized Summaries</button>
-            <div id="ai-summary-results" style="display:none;margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
-          </div>
-        </div>
-
-        <!-- 4. EDUCATION -->
-        <div class="accordion-header" onclick="toggleAccordion('panel-edu', this)">Education</div>
-        <div class="pn" id="panel-edu">
-          <div id="edc"></div>
-          <button class="bad" onclick="addEdu()">+ Add Education</button>
-        </div>
-
-        <!-- 5. PROFESSIONAL EXPERIENCE -->
-        <div class="accordion-header" onclick="toggleAccordion('panel-exp', this)">Professional Experience</div>
-        <div class="pn" id="panel-exp">
-          <div id="ec"></div>
-          <button class="bad" onclick="addExp()">+ Add Work Experience</button>
-        </div>
-
-        <!-- 6. PROJECTS & OUTSIDE EXPERIENCE -->
-        <div class="accordion-header" onclick="toggleAccordion('panel-proj', this)">Projects & Outside Experience</div>
-        <div class="pn" id="panel-proj">
-          <div id="pc"></div>
-          <button class="bad" onclick="addProj()">+ Add Project</button>
-        </div>
-
-        <!-- 7. SKILLS -->
-        <div class="accordion-header" onclick="toggleAccordion('panel-skills', this)">Skills</div>
-        <div class="pn" id="panel-skills">
-          <div style="background:linear-gradient(135deg, rgba(79,70,229,0.06), rgba(99,102,241,0.03));border:1px solid var(--prb);border-radius:10px;padding:12px;margin-bottom:12px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-              <div style="font-size:12.5px;font-weight:800;color:var(--pr);">AI Industry Skills Recommender</div>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-              <input class="fi" id="ai-skills-role-input" placeholder="Role (e.g. Backend Engineer)" style="background:#fff;flex:1;min-width:180px;">
-              <input class="fi" id="ai-skills-focus-input" placeholder="Focus (e.g. LLMs / Cloud)" style="background:#fff;flex:1;min-width:160px;">
-              <button class="btp" onclick="aiSuggestSkills()" style="white-space:nowrap;padding:7px 14px;">Suggest Skills</button>
-            </div>
-            <div id="ai-skills-results" style="display:none;margin-top:10px;"></div>
-          </div>
-
-          <div style="font-size:12.5px;color:var(--txm);line-height:1.45;margin-bottom:8px;">
-            Add custom skill groups matching your profile (e.g. <em>Languages</em>, <em>Frameworks</em>, <em>Databases</em>, <em>DevOps</em>).
-          </div>
-          <div id="skills-categories-container" style="display:flex;flex-direction:column;gap:10px;"></div>
-          <button class="bad" onclick="addSkillCat()">+ Add Skill Category</button>
-        </div>
-
-        <!-- 8. CERTIFICATIONS -->
-        <div class="accordion-header" onclick="toggleAccordion('panel-certs', this)">Certifications</div>
-        <div class="pn" id="panel-certs">
-          <div id="cc"></div>
-          <button class="bad" onclick="addCert()">+ Add Certification</button>
-        </div>
-
-        <!-- 9. DYNAMIC CUSTOM SECTIONS -->
-        <div id="custom-sections-accordion-container"></div>
-        <button class="bad" onclick="addCustomSection()" style="margin:16px 20px;width:calc(100% - 40px);background:var(--bg);border:1.5px dashed var(--bd);color:var(--pr);font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;">+ Add Custom Section</button>
-
-        <!-- COVER LETTER (WHEN IN CL MODE) -->
-        <div id="cl-sections-wrapper" style="display:none;">
-          <div class="accordion-header" onclick="toggleAccordion('panel-cl-target', this)">Cover Letter: Target &amp; Company</div>
-          <div class="pn" id="panel-cl-target">
-            <div class="template-presets-bar">
-              <button class="btn-template-preset active" id="cl-preset-professional" onclick="applyCoverLetterPreset('professional')">General Professional</button>
-              <button class="btn-template-preset" id="cl-preset-fresher" onclick="applyCoverLetterPreset('fresher')">Fresher / Graduate</button>
-              <button class="btn-template-preset" id="cl-preset-technical" onclick="applyCoverLetterPreset('technical')">High-Impact Technical</button>
-              <button class="btn-template-preset" id="cl-preset-referral" onclick="applyCoverLetterPreset('referral')">Referral Outreach</button>
-            </div>
-
-            <div class="fr2">
-              <div class="fg">
-                <label>Target Company</label>
-                <input class="fi" id="fcl-comp" oninput="udCL('company',this.value)">
-              </div>
-              <div class="fg">
-                <label>Target Role Title</label>
-                <input class="fi" id="fcl-role" oninput="udCL('role',this.value)">
-              </div>
-            </div>
-
-            <div class="fr2">
-              <div class="fg">
-                <label>Hiring Manager / Team</label>
-                <input class="fi" id="fcl-mgr" oninput="udCL('manager',this.value)">
-              </div>
-              <div class="fg">
-                <label>Letter Date</label>
-                <div style="display:flex;gap:6px;align-items:center;">
-                  <select class="fi-sel" id="fcl-date-month" onchange="uCLDate('month', this.value)" style="flex:1;">
-                    <option value="">Month</option>
-                  </select>
-                  <select class="fi-sel" id="fcl-date-year" onchange="uCLDate('year', this.value)" style="flex:1;">
-                    <option value="">Year</option>
-                  </select>
-                  <button class="bto" type="button" onclick="setCLTodayDate()" style="padding:6px 10px;font-size:11.5px;white-space:nowrap;">Today</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="fg">
-              <label>Personalized AI Instructions (Optional)</label>
-              <textarea class="ft" id="fcl-custom-prompt" rows="2" style="min-height:55px;"></textarea>
-            </div>
-
-            <div class="fg">
-              <label>Target Job Description</label>
-              <textarea class="ft" id="fcl-jd" rows="3" style="min-height:75px;" oninput="udCL('jd',this.value)"></textarea>
-            </div>
-
-            <div style="display:flex;gap:10px;align-items:center;margin-top:4px;">
-              <button class="btp" onclick="aiGenerateCoverLetter()">Generate Personalized Cover Letter</button>
-            </div>
-          </div>
-
-          <div class="accordion-header" onclick="toggleAccordion('panel-cl-body', this)">Cover Letter: Body Content</div>
-          <div class="pn" id="panel-cl-body">
-            <div class="fg">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                <label>Cover Letter Body</label>
-                <span style="font-size:11.5px;color:var(--txs);" id="cl-word-count">0 words</span>
-              </div>
-              <textarea class="ft" id="fcl-text" rows="14" style="min-height:280px;font-size:13px;line-height:1.6;" oninput="handleCLTextInput(this.value)"></textarea>
-            </div>
-
-            <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
-              <button class="btp" onclick="aiGenerateCoverLetter()">Regenerate Full Letter</button>
-              <button class="bto" onclick="resetToCurrentPreset()">Reset to Preset</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3. LIVE PREVIEW COLUMN -->
-    <div class="pv">
-      <div class="pvl">
-        <span></span> <span id="doc-mode-label">1-Page ATS Resume</span> &mdash; Live A4 Preview
-      </div>
+    <!-- 2. CENTER CANVAS: LIVE A4 PREVIEW -->
+    <div class="simplify-preview-canvas">
       <div class="a4w">
         <div id="rp"></div>
       </div>
+
+      <!-- Bottom Floating Pill Toolbar matching Simplify -->
+      <div class="simplify-floating-toolbar">
+        <button class="floating-tool-btn" onclick="scale()" title="Fit to Screen">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+          Fit to Page
+        </button>
+        <div class="floating-tool-sep"></div>
+        <button class="floating-tool-btn" onclick="aiPolishCL('concise')" title="Ask AI assistant">
+          Ask AI...
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        </button>
+        <div class="floating-tool-sep"></div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#64748b;">
+          <button class="floating-tool-btn" style="padding:2px 4px;" onclick="zoom(-0.05)">-</button>
+          <span id="zoom-level-text">89%</span>
+          <button class="floating-tool-btn" style="padding:2px 4px;" onclick="zoom(0.05)">+</button>
+        </div>
+        <div class="floating-tool-sep"></div>
+        <button class="floating-tool-btn" style="padding:4px;" onclick="toggleFullscreen()" title="Fullscreen">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        </button>
+      </div>
     </div>
-    <!-- 3. RIGHT SIDEBAR (ATS & MATCHER) -->
-    <aside class="rp-sidebar" id="rp-tools-sidebar">
-      <!-- ATS Score Card -->
-      <div style="background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:15px;color:var(--tx);">Resume Score</div>
-          <div class="acn" id="ats-n" style="font-size:18px;font-weight:900;color:var(--pr);">100%</div>
-        </div>
-        <div class="abb" style="height:6px;background:var(--bg-subtle,#f1f1f4);border-radius:99px;overflow:hidden;margin-bottom:12px;">
-          <div class="abf" id="ats-b" style="width:100%;height:100%;background:linear-gradient(90deg,var(--pr),#10b981);border-radius:99px;transition:width 0.4s ease;"></div>
-        </div>
-        <div class="ats-tips" id="ats-t" style="font-size:12px;line-height:1.45;color:var(--txm);"></div>
+
+    <!-- 3. RIGHT SIDEBAR: ATS SCORE & JOB TRACKER -->
+    <aside class="simplify-sidebar-right">
+      <div class="sidebar-right-tabs">
+        <button class="btn-right-tab active" id="right-tab-score">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+          Resume Score
+        </button>
+        <button class="btn-right-tab" id="right-tab-chat" onclick="toast('AI Resume Assistant connected!')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Chat <span class="beta-pill">Beta</span>
+        </button>
       </div>
 
-      <!-- Job Matcher Card -->
-      <div style="background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;">
-        <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:15px;color:var(--tx);">Role &amp; Keyword Matcher</div>
-        
+      <!-- Card 1: Select job from tracker -->
+      <div class="simplify-tracker-card">
+        <div class="tracker-card-label">Select job from tracker</div>
+        <input class="fi" id="ftarget-job-title" placeholder="Search a job or type role..." style="font-size:12.5px;">
+        <div class="tracker-sep-or">or enter manually</div>
+
         <div class="fg">
-          <label style="font-size:11.5px;font-weight:700;color:var(--txm);">Target Job Title</label>
-          <input class="fi" id="ftarget-job-title" placeholder="e.g. Senior Backend Engineer" style="font-size:12.5px;">
+          <label style="font-size:11px;">Job Title</label>
+          <input class="fi" id="fjd-custom-prompt" placeholder="Add Job Title" style="font-size:12.5px;">
         </div>
 
         <div class="fg">
-          <label style="font-size:11.5px;font-weight:700;color:var(--txm);">Job Description</label>
-          <textarea class="ft" id="fjd" rows="6" placeholder="Paste target job description to match keywords, calculate ATS score, and get tailored suggestions..." style="min-height:110px;font-size:12px;line-height:1.4;"></textarea>
+          <label style="font-size:11px;">Job Description</label>
+          <textarea class="ft" id="fjd" rows="5" placeholder="Paste the job description here to get tailored suggestions..." style="min-height:100px;font-size:12px;line-height:1.45;"></textarea>
         </div>
 
-        <div class="fg">
-          <label style="font-size:11.5px;font-weight:700;color:var(--txm);">Personalized AI Instructions (Optional)</label>
-          <input class="fi" id="fjd-custom-prompt" placeholder="e.g. Prioritize distributed systems &amp; Go" style="font-size:12px;">
+        <button class="btn-tracker-done" onclick="tailorR()">Done</button>
+        <div id="tout" style="display:none;margin-top:8px;font-size:12px;line-height:1.45;"></div>
+      </div>
+
+      <!-- Card 2: Resume Score (Radial Meter matching Simplify) -->
+      <div class="simplify-score-card">
+        <div class="score-card-title">Resume Score</div>
+        <div class="score-radial-wrap">
+          <svg class="score-radial-svg" viewBox="0 0 170 170">
+            <circle class="score-radial-bg" cx="85" cy="85" r="70" />
+            <circle class="score-radial-progress" id="score-radial-circle" cx="85" cy="85" r="70" />
+          </svg>
+          <div class="score-radial-center">
+            <div class="score-big-num" id="ats-n">79</div>
+            <div class="score-issues-text" id="ats-issues-count">7 issues found</div>
+          </div>
         </div>
 
-        <button class="btp" onclick="tailorR()" style="width:100%;justify-content:center;padding:9px 14px;">Run ATS Match Analysis</button>
-        <div id="tout" style="display:none;margin-top:10px;font-size:12px;line-height:1.45;"></div>
+        <!-- Issue List -->
+        <div class="score-issues-list" id="ats-t"></div>
       </div>
     </aside>
   </main>
@@ -2471,6 +1186,52 @@
     ═════════════════════════════════════════════════════════════════ */
     
     // SIMPLIFY ACCORDION LOGIC
+    
+    function toggleSimplifyCard(cardId) {
+      const card = document.getElementById(cardId);
+      if (!card) return;
+      const wasActive = card.classList.contains('active');
+      
+      // Close all cards
+      document.querySelectorAll('.simplify-section-card').forEach(c => c.classList.remove('active'));
+      
+      // If was not active, open it
+      if (!wasActive) {
+        card.classList.add('active');
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    function setSimplifySidebarTab(tabName) {
+      document.querySelectorAll('.btn-sidebar-tab').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`tab-${tabName}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      if (tabName === 'editor') {
+        document.querySelector('.simplify-sections-list').style.display = 'flex';
+      } else {
+        toast(`Switched to ${tabName.charAt(0).toUpperCase() + tabName.slice(1)} mode`);
+      }
+    }
+
+    let currentZoom = 0.89;
+    function zoom(delta) {
+      currentZoom = Math.min(1.4, Math.max(0.5, currentZoom + delta));
+      const rp = document.getElementById('rp');
+      if (rp) {
+        rp.style.transform = `scale(${currentZoom})`;
+      }
+      const txt = document.getElementById('zoom-level-text');
+      if (txt) txt.textContent = `${Math.round(currentZoom * 100)}%`;
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
     function toggleAccordion(panelId, headerEl) {
       const panel = document.getElementById(panelId);
       if (!panel) return;
@@ -3524,19 +2285,25 @@ ${r.header?.name || 'Candidate Name'}`
 
       R.custom_sections.forEach((cs, sIdx) => {
         const wrap = document.createElement('div');
-        wrap.className = 'custom-section-item';
+        wrap.className = 'simplify-section-card';
+        wrap.id = `card-custom-${sIdx}`;
         wrap.innerHTML = `
-          <div class="accordion-header" onclick="toggleAccordion('panel-custom-${sIdx}', this)" style="display:flex;justify-content:space-between;align-items:center;">
-            <span>${esc(cs.title || 'Custom Section')}</span>
-            <button class="brm" style="padding:2px 8px;font-size:11px;margin-left:auto;margin-right:12px;" onclick="event.stopPropagation(); rmCustomSection(${sIdx})">Delete</button>
+          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-custom-${sIdx}')">
+            <span class="section-drag-handle">⋮⋮</span>
+            <div class="section-icon-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </div>
+            <span class="section-title-text">${esc(cs.title || 'Custom Section')}</span>
+            <button class="brm" style="padding:2px 8px;font-size:11px;margin-left:auto;margin-right:8px;" onclick="event.stopPropagation(); rmCustomSection(${sIdx})">Delete</button>
+            <span class="section-chevron">›</span>
           </div>
-          <div class="pn" id="panel-custom-${sIdx}">
+          <div class="simplify-section-body">
             <div class="fg">
               <label>Section Title</label>
               <input class="fi" value="${esc(cs.title || '')}" placeholder="e.g. Leadership &amp; Activities, Publications, Awards" oninput="uCustomSectionTitle(${sIdx}, this.value)">
             </div>
             <div id="cs-entries-${sIdx}" style="display:flex;flex-direction:column;gap:12px;"></div>
-            <button class="bad" onclick="addCustomSectionEntry(${sIdx})" style="margin-top:6px;">+ Add Item to ${esc(cs.title || 'Section')}</button>
+            <button class="btn-add-custom-sec" onclick="addCustomSectionEntry(${sIdx})" style="padding:8px;font-size:12.5px;margin-top:6px;">+ Add Item to ${esc(cs.title || 'Section')}</button>
           </div>
         `;
         container.appendChild(wrap);
@@ -3552,37 +2319,37 @@ ${r.header?.name || 'Candidate Name'}`
 
       entries.forEach((en, eIdx) => {
         const card = document.createElement('div');
-        card.style.cssText = 'background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:12px;position:relative;display:flex;flex-direction:column;gap:8px;';
+        card.style.cssText = 'background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;position:relative;display:flex;flex-direction:column;gap:8px;';
         card.innerHTML = `
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:11.5px;font-weight:700;color:var(--txm);">Entry #${eIdx + 1}</span>
+            <span style="font-size:11.5px;font-weight:700;color:#64748b;">Entry #${eIdx + 1}</span>
             <button class="brm" style="padding:2px 6px;font-size:11px;" onclick="rmCustomSectionEntry(${sIdx}, ${eIdx})">Remove</button>
           </div>
           <div class="fr2">
             <div class="fg">
               <label>Title / Role / Honor</label>
-              <input class="fi" value="${esc(en.title || '')}" placeholder="e.g. Lead Organizer / Winner" oninput="uCustomSectionEntry(${sIdx}, ${eIdx}, 'title', this.value)" style="background:#fff;">
+              <input class="fi" value="${esc(en.title || '')}" placeholder="e.g. Lead Organizer / Winner" oninput="uCustomSectionEntry(${sIdx}, ${eIdx}, 'title', this.value)">
             </div>
             <div class="fg">
               <label>Dates / Year</label>
-              <input class="fi" value="${esc(en.date || '')}" placeholder="e.g. 2025 – Present" oninput="uCustomSectionEntry(${sIdx}, ${eIdx}, 'date', this.value)" style="background:#fff;">
+              <input class="fi" value="${esc(en.date || '')}" placeholder="e.g. 2025 – Present" oninput="uCustomSectionEntry(${sIdx}, ${eIdx}, 'date', this.value)">
             </div>
           </div>
           <div class="fg">
             <label>Organization / Subtitle (Optional)</label>
-            <input class="fi" value="${esc(en.subtitle || '')}" placeholder="e.g. Google Developer Student Clubs" oninput="uCustomSectionEntry(${sIdx}, ${eIdx}, 'subtitle', this.value)" style="background:#fff;">
+            <input class="fi" value="${esc(en.subtitle || '')}" placeholder="e.g. Google Developer Student Clubs" oninput="uCustomSectionEntry(${sIdx}, ${eIdx}, 'subtitle', this.value)">
           </div>
           <div class="fg">
             <label>Bullet Points / Description</label>
             <div id="cs-bullets-${sIdx}-${eIdx}" style="display:flex;flex-direction:column;gap:6px;">
               ${(en.bullets || ['']).map((b, bIdx) => `
                 <div style="display:flex;gap:6px;align-items:center;">
-                  <input class="fi" value="${esc(b)}" placeholder="Describe achievement, scope, or measurable impact..." oninput="uCustomSectionBullet(${sIdx}, ${eIdx}, ${bIdx}, this.value)" style="background:#fff;flex:1;">
+                  <input class="fi" value="${esc(b)}" placeholder="Describe achievement, scope, or measurable impact..." oninput="uCustomSectionBullet(${sIdx}, ${eIdx}, ${bIdx}, this.value)" style="flex:1;">
                   <button class="brm" style="padding:4px 8px;font-size:11px;" onclick="rmCustomSectionBullet(${sIdx}, ${eIdx}, ${bIdx})">✕</button>
                 </div>
               `).join('')}
             </div>
-            <button class="bad" onclick="addCustomSectionBullet(${sIdx}, ${eIdx})" style="font-size:11.5px;padding:4px 8px;margin-top:6px;align-self:flex-start;">+ Add Bullet</button>
+            <button class="bads" onclick="addCustomSectionBullet(${sIdx}, ${eIdx})" style="font-size:11.5px;padding:4px 8px;margin-top:6px;align-self:flex-start;">+ Add Bullet</button>
           </div>
         `;
         el.appendChild(card);
@@ -3603,11 +2370,7 @@ ${r.header?.name || 'Candidate Name'}`
       ss();
       setTimeout(() => {
         const newIdx = R.custom_sections.length - 1;
-        const panel = document.getElementById(`panel-custom-${newIdx}`);
-        if (panel) {
-          const hdr = panel.previousElementSibling;
-          if (hdr) toggleAccordion(`panel-custom-${newIdx}`, hdr);
-        }
+        toggleSimplifyCard(`card-custom-${newIdx}`);
       }, 50);
     }
 
@@ -4422,16 +3185,22 @@ ${r.header?.name || 'Candidate Name'}`
       score = Math.min(100, Math.max(20, Math.round(score)));
 
       const nEl = document.getElementById('ats-n');
-      const bEl = document.getElementById('ats-b');
       const tEl = document.getElementById('ats-t');
+      const circleEl = document.getElementById('score-radial-circle');
+      const countEl = document.getElementById('ats-issues-count');
 
       if (nEl) {
-        nEl.textContent = score + '%';
-        nEl.style.color = score >= 80 ? 'var(--pr)' : (score >= 60 ? '#ea580c' : '#dc2626');
+        nEl.textContent = score;
+        nEl.style.color = score >= 80 ? '#0284c7' : (score >= 60 ? '#ea580c' : '#dc2626');
       }
-      if (bEl) {
-        bEl.style.width = score + '%';
-        bEl.style.background = score >= 80 ? 'var(--pr)' : (score >= 60 ? '#ea580c' : '#dc2626');
+      if (circleEl) {
+        // circumference = 2 * PI * 70 ≈ 440
+        const offset = 440 - (440 * (score / 100));
+        circleEl.style.strokeDashoffset = offset;
+        circleEl.style.stroke = score >= 80 ? '#0284c7' : (score >= 60 ? '#ea580c' : '#dc2626');
+      }
+      if (countEl) {
+        countEl.textContent = `${tips.length} issue${tips.length === 1 ? '' : 's'} found`;
       }
       if (tEl) {
         if (tips.length === 0) {
