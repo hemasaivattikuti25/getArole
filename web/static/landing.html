@@ -105,31 +105,36 @@
   <link rel="apple-touch-icon" href="/logo.svg">
 
   <style>
-    :root {
-      --bg: #ffffff;
-      --bg-subtle: #f8fafc;
-      --bg-surface: #ffffff;
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --primary-light: #eef2ff;
-      --primary-border: #c7d2fe;
-      --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #2563eb 100%);
-      --accent: #6366f1;
+            :root {
+      --primary: #0071e3;
+      --primary-hover: #0077ed;
+      --primary-accent: #0071e3;
+      --primary-light: #e8f0fe;
+      --primary-border: #bfdbfe;
+      --primary-gradient: linear-gradient(135deg, #0071e3 0%, #4facfe 100%);
+      --accent: #4f46e5;
       --accent-emerald: #10b981;
-      --text-main: #0f172a;
-      --text-muted: #475569;
-      --text-subtle: #94a3b8;
-      --border: #e2e8f0;
-      --border-strong: #cbd5e1;
-      --border-glow: rgba(79, 70, 229, 0.25);
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-      --shadow-md: 0 6px 20px -2px rgba(15, 23, 42, 0.08);
-      --shadow-lg: 0 16px 40px -6px rgba(79, 70, 229, 0.14);
-      --shadow-glow: 0 0 35px rgba(79, 70, 229, 0.18);
+      --surface: #ffffff;
+      --bg: #F8F8FA;
+      --bg-subtle: #F1F1F4;
+      --bg-surface: #ffffff;
+      --background: #F8F8FA;
+      --border-subtle: rgba(0, 0, 0, 0.04);
+      --border: rgba(0, 0, 0, 0.06);
+      --border-strong: rgba(0, 0, 0, 0.12);
+      --border-glow: rgba(0, 113, 227, 0.25);
+      --text-main: #2C2C2E;
+      --text-muted: #6E6E73;
+      --text-subtle: #99999F;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+      --shadow-glow: 0 0 35px rgba(0, 113, 227, 0.15);
       --radius-sm: 8px;
-      --radius-md: 14px;
-      --radius-lg: 20px;
-      --radius-xl: 28px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --nav-height: 64px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -149,7 +154,9 @@
     main { flex: 1 0 auto; }
     ::selection { background: #e0e7ff; color: #3730a3; }
 
-    h1, h2, h3, h4, h5 { font-family: 'Outfit', sans-serif; letter-spacing: -0.025em; }
+    h1, h2, h3, h4, h5 { font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 700; color: var(--text-main); }
+    h1 { letter-spacing: -0.04em; }
+    h2, h3 { letter-spacing: -0.03em; }
 
     /* ── AMBIENT BACKGROUND GLOW ORBS ── */
     .ambient-glow-wrap {
@@ -246,25 +253,27 @@
       border: 1px solid transparent; outline: none; white-space: nowrap; font-family: inherit;
     }
     .btn-primary {
-      background: var(--primary-gradient); color: #ffffff;
-      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3); position: relative; overflow: hidden;
+      background: var(--primary); color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 113, 227, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      position: relative; overflow: hidden; border: 1px solid transparent;
     }
     .btn-primary:hover {
-      transform: translateY(-2px); box-shadow: 0 8px 24px rgba(79, 70, 229, 0.42);
+      background: var(--primary-hover);
+      transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
     .btn-primary:active {
-      transform: scale(0.98);
+      transform: scale(0.98); box-shadow: 0 1px 4px rgba(0, 113, 227, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
     .btn-secondary {
       background: #ffffff; color: var(--text-main);
       border-color: var(--border-strong); box-shadow: var(--shadow-sm);
     }
     .btn-secondary:hover {
-      background: var(--bg-subtle); border-color: var(--primary); color: var(--primary);
-      transform: translateY(-2px); box-shadow: var(--shadow-md);
+      background: var(--bg-subtle); color: var(--text-main);
+      transform: translateY(-1px); box-shadow: var(--shadow-md); border-color: rgba(0, 0, 0, 0.2);
     }
     .btn-secondary:active {
-      transform: scale(0.98);
+      transform: scale(0.98); box-shadow: var(--shadow-sm);
     }
     .btn-lg { padding: 15px 32px; font-size: 16px; border-radius: 12px; }
 
@@ -786,14 +795,14 @@
       <!-- ── TRENDING SEARCH CHIPS ── -->
       <div class="trending-pills">
         <span class="pill-label">Trending:</span>
-        <a href="/explore?q=Remote" class="trending-pill">🌐 Remote (190+)</a>
-        <a href="/explore?q=MNC" class="trending-pill">🏢 Top MNCs (420+)</a>
-        <a href="/explore?q=Fresher" class="trending-pill">🎓 Batch 2025/2026</a>
-        <a href="/explore?q=Unicorn" class="trending-pill">🦄 Indian Unicorns</a>
+        <a href="/explore?q=Remote" class="trending-pill">🌐 Remote</a>
+        <a href="/explore?q=MNC" class="trending-pill">🏢 Enterprise &amp; MNCs</a>
+        <a href="/explore?q=Fresher" class="trending-pill">🎓 Early Career &amp; Graduates</a>
+        <a href="/explore?q=Unicorn" class="trending-pill">🦄 High-Growth Tech</a>
         <a href="/explore?q=Frontend" class="trending-pill">⚡ Frontend</a>
         <a href="/explore?q=Backend" class="trending-pill">⚡ Backend</a>
-        <a href="/explore?q=AI" class="trending-pill">🧠 AI / ML Roles</a>
-        <a href="/explore?q=Internship" class="trending-pill">🎯 Summer 2026 Internships</a>
+        <a href="/explore?q=AI" class="trending-pill">🧠 AI &amp; Machine Learning</a>
+        <a href="/explore?q=Internship" class="trending-pill">🎯 Internships</a>
       </div>
 
       <div style="display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
@@ -814,8 +823,8 @@
               <span class="window-dot dot-yellow"></span>
               <span class="window-dot dot-green"></span>
             </div>
-            <div class="window-title">getArole AI Match Matrix v2.4 • Active Vector Calibrator</div>
-            <div style="font-size:11.5px; color:#10b981; font-weight:700;">● Live Stream</div>
+            <div class="window-title">getArole • Match Overview</div>
+            <div style="font-size:11.5px; color:#10b981; font-weight:700;">● Active</div>
           </div>
 
           <div class="window-body">
@@ -831,14 +840,14 @@
 
               <div class="mock-score-badge">
                 <div>
-                  <div style="font-size:11px; font-weight:800; color:#15803d; text-transform:uppercase;">Semantic Fit Score</div>
-                  <div style="font-size:12px; color:#166534;">High ATS Alignment</div>
+                  <div style="font-size:11px; font-weight:800; color:#15803d; text-transform:uppercase;">Match Score</div>
+                  <div style="font-size:12px; color:#166534;">Strong fit for this role</div>
                 </div>
-                <div class="mock-score-num">98.4%</div>
+                <div class="mock-score-num">94%</div>
               </div>
 
               <div>
-                <div style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Calibrated Skill Vector:</div>
+                <div style="font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Key Skills:</div>
                 <div class="mock-tags-box">
                   <span class="mock-tag">FastAPI</span>
                   <span class="mock-tag">React.js</span>
@@ -895,44 +904,44 @@
       <div class="metrics-grid">
         <div class="metric-card">
           <div class="metric-number">100%</div>
-          <div class="metric-label">Verified Tech Roles</div>
-          <div class="metric-sub">Direct employer portal postings</div>
+          <div class="metric-label">Direct Employer Postings</div>
+          <div class="metric-sub">Verified against official career portals</div>
         </div>
 
         <div class="metric-card">
-          <div class="metric-number">&lt;85ms</div>
-          <div class="metric-label">Vector Match Speed</div>
-          <div class="metric-sub">Instant semantic calibration</div>
+          <div class="metric-number">Smart Matching</div>
+          <div class="metric-label">AI-Powered Fit Analysis</div>
+          <div class="metric-sub">Your skills matched against job requirements</div>
         </div>
 
         <div class="metric-card">
-          <div class="metric-number">98.4%</div>
-          <div class="metric-label">ATS Accuracy Rate</div>
-          <div class="metric-sub">Overleaf-grade LaTeX formatting</div>
+          <div class="metric-number">ATS-Ready</div>
+          <div class="metric-label">Resume Formatting</div>
+          <div class="metric-sub">Clean, single-page layouts that pass ATS systems</div>
         </div>
 
         <div class="metric-card">
-          <div class="metric-number">₹0</div>
-          <div class="metric-label">Free for Job Seekers</div>
-          <div class="metric-sub">No paywalls on live opportunities</div>
+          <div class="metric-number">100% Free</div>
+          <div class="metric-label">For Job Seekers</div>
+          <div class="metric-sub">Zero paywalls on live opportunities</div>
         </div>
       </div>
     </section>
 
     <!-- ═══════ DIRECT ATS INGESTION STREAM ═══════ -->
     <section class="ingestion-band reveal-on-scroll">
-      <div class="ingestion-title">Autonomous Ingestion Directly From Official Enterprise Portals</div>
+      <div class="ingestion-title">Jobs sourced from top career platforms</div>
       <div class="ats-badges-row">
-        <div class="ats-badge"><span>⚡</span> Greenhouse ATS</div>
-        <div class="ats-badge"><span>⚡</span> Lever API</div>
-        <div class="ats-badge"><span>⚡</span> Ashby Ingestion</div>
-        <div class="ats-badge"><span>⚡</span> Workday Official</div>
-        <div class="ats-badge"><span>⚡</span> LinkedIn Direct</div>
-        <div class="ats-badge"><span>⚡</span> Internshala Freshers</div>
-        <div class="ats-badge"><span>⚡</span> Unstop Hackathons</div>
+        <div class="ats-badge"><span>⚡</span> Greenhouse</div>
+        <div class="ats-badge"><span>⚡</span> Lever</div>
+        <div class="ats-badge"><span>⚡</span> Ashby</div>
+        <div class="ats-badge"><span>⚡</span> Workday</div>
+        <div class="ats-badge"><span>⚡</span> LinkedIn</div>
+        <div class="ats-badge"><span>⚡</span> Internshala</div>
+        <div class="ats-badge"><span>⚡</span> Unstop</div>
       </div>
       <div style="font-size:12.5px; color:var(--text-subtle); margin-top:16px; font-weight:600;">
-        🔒 0% Ghost Jobs • 100% Direct Application Links • Re-indexed Every 3 Hours
+        Every listing verified · Direct apply links · Updated daily
       </div>
     </section>
 
@@ -941,26 +950,26 @@
       <div class="section-header">
         <div class="section-tag">COMPLETE APPLICATION ECOSYSTEM</div>
         <h2 class="section-title">Everything You Need From Discovery to Offer</h2>
-        <p class="section-sub">One profile to discover openings, check ATS compatibility, and manage interviews.</p>
+        <p class="section-sub">One master profile to discover openings, check ATS compatibility, and manage interviews.</p>
       </div>
 
       <!-- Tab Buttons -->
       <div class="tab-pills-nav">
-        <button class="tab-pill-btn active" onclick="switchProductTab(0)">🎯 Semantic AI Matcher</button>
-        <button class="tab-pill-btn" onclick="switchProductTab(1)">📄 LaTeX ATS Resume Builder</button>
-        <button class="tab-pill-btn" onclick="switchProductTab(2)">✉️ AI Cover Letter Generator</button>
-        <button class="tab-pill-btn" onclick="switchProductTab(3)">📊 Kanban Interview Pipeline</button>
+        <button class="tab-pill-btn active" onclick="switchProductTab(0)">🎯 Intelligent Role Matcher</button>
+        <button class="tab-pill-btn" onclick="switchProductTab(1)">📄 LaTeX Resume Builder</button>
+        <button class="tab-pill-btn" onclick="switchProductTab(2)">✉️ Tailored Cover Letter AI</button>
+        <button class="tab-pill-btn" onclick="switchProductTab(3)">📊 Application Pipeline Tracker</button>
       </div>
 
       <!-- Tab 0: Semantic Matcher -->
       <div class="tab-content-panel active" id="tab-panel-0">
         <div class="tab-text-side">
-          <h3>Dense Semantic Vector Matching</h3>
-          <p>Unlike primitive keyword searches, getArole models your technical skills, experience depth, and career preferences as dense vectors to calculate explainable match scores.</p>
+          <h3>Semantic Profile &amp; Role Matching</h3>
+          <p>Unlike primitive keyword searches, getArole models your technical skills, experience depth, and career preferences to calculate accurate, explainable match scores.</p>
           <ul class="tab-feature-list">
-            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Multi-dimensional 0–100% match breakdown</li>
-            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Real-time missing keyword analysis</li>
-            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> One-click bookmarking to Kanban pipeline</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Multi-dimensional match diagnostics</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Real-time keyword &amp; requirement gap analysis</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Direct bookmarking to your application board</li>
           </ul>
           <a href="/onboarding/" class="btn btn-primary">Start Matching Your Resume →</a>
         </div>
@@ -984,12 +993,12 @@
       <!-- Tab 1: Resume Builder -->
       <div class="tab-content-panel" id="tab-panel-1">
         <div class="tab-text-side">
-          <h3>Overleaf-Grade LaTeX ATS Resume Builder</h3>
-          <p>Craft clean, single-page A4 resumes with Harvard and tech-industry styling. Optimized for 100% parse rates across Workday, Greenhouse, and Taleo.</p>
+          <h3>Professional LaTeX ATS Resume Builder</h3>
+          <p>Craft clean, single-page resumes with proven engineering and executive layouts. Designed for optimal parsing across Workday, Greenhouse, Lever, and Taleo.</p>
           <ul class="tab-feature-list">
-            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Real-time A4 PDF export with Overleaf typography</li>
-            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> AI bullet point optimizer with metric enhancement</li>
-            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Instant JD keyword tailor tool</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Clean A4 PDF export with modern typography</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Bullet point enhancer with quantifiable impact metrics</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Instant job description keyword tailor tool</li>
           </ul>
           <a href="/resume-builder/" class="btn btn-primary">Open Resume Builder Free →</a>
         </div>
@@ -1002,7 +1011,7 @@
             <div style="font-size:12px; font-weight:bold; border-bottom:1px solid #000; margin-bottom:6px;">EXPERIENCE</div>
             <div style="font-size:11.5px; line-height:1.4;">
               <strong>Software Engineer</strong> — Razorpay (2024–Present)<br>
-              • Architected high-throughput payment webhook handler processing <strong>15M+ requests/day</strong> with <strong>99.99% uptime</strong>.
+              • Architected high-throughput payment webhook processing system with high reliability.
             </div>
           </div>
         </div>
@@ -1011,12 +1020,12 @@
       <!-- Tab 2: Cover Letter Generator -->
       <div class="tab-content-panel" id="tab-panel-2">
         <div class="tab-text-side">
-          <h3>1-Click Tailored Cover Letters</h3>
-          <p>Generate role-specific cover letters customized to your experience and the target hiring manager in seconds, with presets for freshers, engineers, and referrals.</p>
+          <h3>Tailored Cover Letter Generator</h3>
+          <p>Generate role-specific cover letters customized to your experience and target positions in seconds, with presets for freshers, engineers, and referrals.</p>
           <ul class="tab-feature-list">
-            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> 4 Industry Presets: Professional, Fresher, High-Impact Tech, Referral</li>
-            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> AI Tone Polisher (Concise, Metrics, Executive)</li>
-            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Instant Overleaf LaTeX A4 PDF Export</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> 4 Industry Presets: Professional, Early Career, High-Impact Tech, Referral</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Tone Selector (Concise, Metrics-Driven, Executive)</li>
+            <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Instant LaTeX PDF &amp; Text Export</li>
           </ul>
           <a href="/cover-letter-builder/" class="btn btn-primary">Generate Cover Letter →</a>
         </div>
@@ -1034,8 +1043,8 @@
       <!-- Tab 3: Kanban Tracker -->
       <div class="tab-content-panel" id="tab-panel-3">
         <div class="tab-text-side">
-          <h3>Visual Kanban Application Pipeline</h3>
-          <p>Never lose track of an interview. Organize your job search across four stages with direct application links, interview notes, and timeline reminders.</p>
+          <h3>Visual Application Pipeline Tracker</h3>
+          <p>Organize your job search seamlessly across key hiring stages with direct application links, interview notes, and timeline tracking.</p>
           <ul class="tab-feature-list">
             <li class="tab-feature-item"><span class="tab-check-icon">✓</span> 4 Lifecycle Stages: Saved, Applied, Interviewing, Offered</li>
             <li class="tab-feature-item"><span class="tab-check-icon">✓</span> Direct company career portal deep-links</li>
@@ -1046,11 +1055,11 @@
         <div class="tab-visual-side">
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <div style="background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:12px;">
-              <div style="font-size:11.5px; font-weight:800; color:#3b82f6; margin-bottom:6px;">📌 SAVED (12)</div>
+              <div style="font-size:11.5px; font-weight:800; color:#3b82f6; margin-bottom:6px;">📌 SAVED</div>
               <div style="background:#f8fafc; padding:8px; border-radius:6px; font-size:12px; font-weight:700;">Google • SDE II</div>
             </div>
             <div style="background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:12px;">
-              <div style="font-size:11.5px; font-weight:800; color:#10b981; margin-bottom:6px;">🚀 INTERVIEWING (3)</div>
+              <div style="font-size:11.5px; font-weight:800; color:#10b981; margin-bottom:6px;">🚀 INTERVIEWING</div>
               <div style="background:#f0fdf4; padding:8px; border-radius:6px; font-size:12px; font-weight:700; color:#15803d;">Razorpay • System Design</div>
             </div>
           </div>
@@ -1061,59 +1070,59 @@
     <!-- ═══════ BENTO GRID OF CORE AI CAPABILITIES ═══════ -->
     <section class="bento-section reveal-on-scroll">
       <div class="section-header">
-        <div class="section-tag">ENGINEERING EXCELLENCE</div>
-        <h2 class="section-title">Built for Modern Tech Talent</h2>
-        <p class="section-sub">Engineered to bypass ATS gatekeepers and connect you directly to engineering teams.</p>
+        <div class="section-tag">HOW IT WORKS</div>
+        <h2 class="section-title">Built for engineers, by engineers</h2>
+        <p class="section-sub">Tools designed around how engineers actually search for jobs.</p>
       </div>
 
       <div class="bento-grid">
         <div class="bento-card bento-col-2">
           <div>
             <div class="bento-icon">🧠</div>
-            <h3 class="bento-card-title">Dense Semantic Vector Calibration</h3>
+            <h3 class="bento-card-title">Intelligent Semantic Matching</h3>
             <p class="bento-card-desc">
-              Traditional job portals use rigid keyword matches that miss qualified engineers. getArole transforms your candidate profile and job requirements into high-dimensional vector embeddings, computing true conceptual similarity with millisecond latency.
+              Traditional job boards rely on rigid keyword filters that miss qualified engineers. getArole evaluates your technical skills, experience depth, and career preferences against live job requirements to calculate true conceptual relevance.
             </p>
           </div>
           <div style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;">
-            <span style="background:var(--bg-subtle); border:1px solid var(--border); padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:700;">⚡ 384-Dim Vector Embeddings</span>
-            <span style="background:var(--bg-subtle); border:1px solid var(--border); padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:700;">🔒 NVIDIA NIM 70B ATS Parser</span>
+            <span style="background:var(--bg-subtle); border:1px solid var(--border); padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:700;">Skills &amp; experience matching</span>
+            <span style="background:var(--bg-subtle); border:1px solid var(--border); padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:700;">ATS compatibility checks</span>
           </div>
         </div>
 
         <div class="bento-card">
           <div>
             <div class="bento-icon">🛡️</div>
-            <h3 class="bento-card-title">Anti-Ghosting Intelligence</h3>
+            <h3 class="bento-card-title">Continuous Verification Engine</h3>
             <p class="bento-card-desc">
-              Every job is checked every 3 hours against source career portals. Dead links, expired postings, and duplicate recruiter spam are purged instantly.
+              Every role is verified continuously against source career portals. Inactive postings and duplicate recruiter spam are purged automatically.
             </p>
           </div>
-          <div style="font-size:12.5px; font-weight:700; color:#15803d; margin-top:16px;">✓ 100% Active URLs Guaranteed</div>
+          <div style="font-size:12.5px; font-weight:700; color:#15803d; margin-top:16px;">✓ Verified Direct Portal Links</div>
         </div>
 
         <div class="bento-card">
           <div>
             <div class="bento-icon">📊</div>
-            <h3 class="bento-card-title">Metric Bullet Point Enhancer</h3>
+            <h3 class="bento-card-title">Achievement-Focused Bullet Optimizer</h3>
             <p class="bento-card-desc">
-              Turn vague job duties into quantifiable achievements using our built-in metric booster (e.g. latency reductions, scale metrics, team impact).
+              Transform standard job duties into high-impact achievements using structured metrics, quantifiable impact, and clear action verbs.
             </p>
           </div>
-          <div style="font-size:12.5px; font-weight:700; color:var(--primary); margin-top:16px;">✓ Google 'XYZ' Formula Compliant</div>
+          <div style="font-size:12.5px; font-weight:700; color:var(--primary); margin-top:16px;">✓ Proven Industry Resume Framework</div>
         </div>
 
         <div class="bento-card bento-col-2">
           <div>
             <div class="bento-icon">🔒</div>
-            <h3 class="bento-card-title">Privacy-First &amp; DPDP Act 2023 Compliant</h3>
+            <h3 class="bento-card-title">Privacy-First Architecture</h3>
             <p class="bento-card-desc">
-              We never sell your resume or personal contact details to third-party telemarketers or recruiter spam lists. You retain full ownership with one-click GDPR/DPDP permanent account erasure.
+              We never sell or distribute your resume or personal details to third parties. You retain complete ownership with one-click permanent account erasure at any time.
             </p>
           </div>
           <div style="display:flex; gap:10px; margin-top:20px; flex-wrap:wrap;">
-            <span style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:700;">🔒 DPDP Act 2023 &amp; GDPR Compliant</span>
-            <span style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:700;">🛡️ 256-Bit SSL Transit Security</span>
+            <span style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:700;">🔒 DPDP &amp; GDPR Compliant</span>
+            <span style="background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:700;">🛡️ 256-Bit TLS Security</span>
           </div>
         </div>
       </div>
@@ -1125,56 +1134,56 @@
         <div class="section-header">
           <div class="section-tag">TOP COMPANIES HIRING NOW</div>
           <h2 class="section-title">Explore by Company Tier &amp; Category</h2>
-          <p class="section-sub">Direct access to verified hiring pipelines across India's top employers.</p>
+          <p class="section-sub">Direct access to verified hiring pipelines across top employers.</p>
         </div>
 
         <div class="cat-grid">
           <a href="/explore?q=MNC" class="cat-card">
             <div>
-              <div class="cat-name">🏢 Top MNCs</div>
+              <div class="cat-name">🏢 Enterprise &amp; MNCs</div>
               <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">TCS, Infosys, Wipro, HCL</div>
             </div>
-            <span class="cat-count">420+ Jobs</span>
+            <span class="cat-count">Explore Roles →</span>
           </a>
 
           <a href="/explore?q=Unicorn" class="cat-card">
             <div>
-              <div class="cat-name">🦄 Indian Unicorns</div>
+              <div class="cat-name">🦄 High-Growth Tech</div>
               <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Razorpay, Zerodha, CRED, Swiggy</div>
             </div>
-            <span class="cat-count">180+ Jobs</span>
+            <span class="cat-count">Explore Roles →</span>
           </a>
 
           <a href="/explore?q=Global" class="cat-card">
             <div>
               <div class="cat-name">🌐 Global Tech Giants</div>
-              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Google, Microsoft, Amazon SDE</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Google, Microsoft, Amazon</div>
             </div>
-            <span class="cat-count">140+ Jobs</span>
+            <span class="cat-count">Explore Roles →</span>
           </a>
 
           <a href="/explore?q=Remote" class="cat-card">
             <div>
-              <div class="cat-name">🌍 High-Paying Remote</div>
-              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Global USD/INR Engineering</div>
+              <div class="cat-name">🌍 Remote Opportunities</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Global Engineering Positions</div>
             </div>
-            <span class="cat-count">190+ Jobs</span>
+            <span class="cat-count">Explore Roles →</span>
           </a>
 
           <a href="/explore?q=Fresher" class="cat-card">
             <div>
-              <div class="cat-name">🎓 Freshers &amp; Batch 2026</div>
-              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Graduate Trainee &amp; Off-Campus</div>
+              <div class="cat-name">🎓 Early Career &amp; Graduates</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Graduate Trainee &amp; Associate Roles</div>
             </div>
-            <span class="cat-count">210+ Jobs</span>
+            <span class="cat-count">Explore Roles →</span>
           </a>
 
           <a href="/explore?q=Internship" class="cat-card">
             <div>
-              <div class="cat-name">🎯 Summer 2026 Internships</div>
-              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Paid Engineering Internships</div>
+              <div class="cat-name">🎯 Engineering Internships</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Paid Engineering Programs</div>
             </div>
-            <span class="cat-count">95+ Jobs</span>
+            <span class="cat-count">Explore Roles →</span>
           </a>
 
           <a href="/explore?q=Fintech" class="cat-card">
@@ -1182,15 +1191,15 @@
               <div class="cat-name">💳 Fintech &amp; Banking</div>
               <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">PhonePe, Paytm, Slice, Jupiter</div>
             </div>
-            <span class="cat-count">125+ Jobs</span>
+            <span class="cat-count">Explore Roles →</span>
           </a>
 
           <a href="/explore?q=AI" class="cat-card">
             <div>
               <div class="cat-name">🧠 AI &amp; Machine Learning</div>
-              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">LLMs, NLP, Vision, RAG</div>
+              <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Applied AI, NLP, Vision, Systems</div>
             </div>
-            <span class="cat-count">160+ Jobs</span>
+            <span class="cat-count">Explore Roles →</span>
           </a>
         </div>
       </div>
@@ -1199,9 +1208,9 @@
     <!-- ═══════ CANDIDATE WALL OF LOVE (Testimonials) ═══════ -->
     <section class="testimonials-section reveal-on-scroll">
       <div class="section-header">
-        <div class="section-tag">EARLY ADOPTER STORIES &amp; WORKFLOW BENCHMARKS</div>
+        <div class="section-tag">WHAT PEOPLE ARE SAYING</div>
         <h2 class="section-title">Engineers Landing Roles Faster with getArole</h2>
-        <p class="section-sub">See how developers and freshers cut application time by 10+ hours every week.</p>
+        <p class="section-sub">Engineers sharing their experience with getArole.</p>
       </div>
 
       <div class="test-grid">
@@ -1220,7 +1229,7 @@
 
         <div class="test-card">
           <p class="test-quote">
-            "The Overleaf-grade LaTeX builder identified 4 crucial missing keywords for my Google Cloud application. The match score went from 68% to 94%."
+            "The LaTeX resume builder identified crucial missing keywords for my Google Cloud application, raising my match alignment significantly."
           </p>
           <div class="test-author">
             <div class="test-avatar" style="background:#4338ca;">PS</div>
@@ -1255,11 +1264,11 @@
 
       <div class="faq-item open">
         <div class="faq-question" onclick="toggleFaq(this)">
-          <span>How does getArole differ from Naukri, LinkedIn, and Simplify?</span>
+          <span>How does getArole differ from traditional job boards?</span>
           <span class="faq-icon">▾</span>
         </div>
         <div class="faq-answer">
-          getArole combines deep company coverage with modern AI intelligence. We scrape directly from official enterprise career pages (Greenhouse, Lever, Ashby, Workday) every 3 hours to ensure zero ghost jobs and direct application links without middleman redirects.
+          getArole provides a modern, high-precision job discovery platform. We ingest openings directly from official enterprise career portals (Greenhouse, Lever, Ashby, Workday) to ensure zero ghost jobs and direct application links without middleman redirects.
         </div>
       </div>
 
@@ -1269,7 +1278,7 @@
           <span class="faq-icon">▾</span>
         </div>
         <div class="faq-answer">
-          When you upload your resume, getArole extracts your skills and experience depth into dense vector embeddings. It compares your profile against the full job description using semantic AI analysis, providing a precise 0–100% percentage fit and actionable keyword tips.
+          When you upload your resume, getArole evaluates your technical skills and experience depth against the job description using AI analysis to give you a fit percentage and keyword suggestions.
         </div>
       </div>
 
@@ -1297,9 +1306,9 @@
     <!-- ═══════ FINAL CTA SECTION ═══════ -->
     <section class="cta-section reveal-on-scroll">
       <div class="cta-card">
-        <h2 class="cta-title">Your AI Job Search Partner — From Search to Offer.</h2>
+        <h2 class="cta-title">Ready to find your next role?</h2>
         <p class="cta-sub">
-          Join thousands of engineers and freshers across India discovering verified tech roles with AI intelligence today.
+          Upload your resume and start getting matched with verified opportunities.
         </p>
         <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
           <button onclick="requireAuthAndProceed('/onboarding/')" class="btn btn-secondary btn-lg" style="background:#ffffff; color:var(--primary); font-weight:800;">
@@ -1323,7 +1332,7 @@
           <span style="font-family:'Outfit', sans-serif; font-size:18px; font-weight:800; color:#0f172a; letter-spacing:-0.02em;">get<span style="color:#4f46e5">A</span>role</span>
         </a>
         <p style="font-size:12px; color:#64748b; line-height:1.5; max-width:280px; margin-bottom:10px;">
-          India's #1 AI Job Discovery Engine. Autonomous multi-platform job aggregation across Greenhouse, Lever, Ashby, LinkedIn &amp; Internshala.
+          AI-powered job search platform. Verified listings from top career portals.
         </p>
 
         <!-- Team / Founder Spotlight -->
@@ -1630,10 +1639,10 @@
       // Make elements visible before animating to avoid flash
       gsap.set(".hero-title, .hero-subtitle, .hero-actions", { visibility: "visible" });
 
-      tl.from(".hero-announcement-pill", { y: 20, opacity: 0, duration: 0.6, ease: "back.out(1.5)" })
+      tl.from(".hero-announcement-pill", { y: 20, opacity: 0, duration: 0.8, ease: "power4.out" })
         .from(".hero-title", { y: 40, opacity: 0, duration: 0.8, ease: "power3.out" }, "-=0.4")
-        .from(".hero-subtitle", { y: 20, opacity: 0, duration: 0.6, ease: "power2.out" }, "-=0.4")
-        .from(".hero-actions .btn", { y: 20, opacity: 0, duration: 0.5, stagger: 0.1, ease: "power2.out" }, "-=0.3");
+        .from(".hero-subtitle", { y: 20, opacity: 0, duration: 0.8, ease: "power2.out" }, "-=0.4")
+        .from(".hero-actions .btn", { y: 20, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power2.out" }, "-=0.3");
 
       // Scroll Reveals for sections
       gsap.utils.toArray('.reveal-on-scroll').forEach(section => {
@@ -1659,8 +1668,8 @@
           },
           y: 30,
           opacity: 0,
-          duration: 0.6,
-          ease: "back.out(1.2)"
+          duration: 0.8,
+          ease: "power4.out"
         });
       });
     });

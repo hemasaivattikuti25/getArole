@@ -11,14 +11,36 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Outfit:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="/favicon.png">
   <style>
-    :root {
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
+            :root {
+      --primary: #0071e3;
+      --primary-hover: #0077ed;
+      --primary-accent: #0071e3;
+      --primary-light: #e8f0fe;
+      --primary-border: #bfdbfe;
+      --primary-gradient: linear-gradient(135deg, #0071e3 0%, #4facfe 100%);
+      --accent: #4f46e5;
+      --accent-emerald: #10b981;
       --surface: #ffffff;
-      --background: #f8fafc;
-      --border: #e2e8f0;
-      --text-main: #0f172a;
-      --text-muted: #475569;
+      --bg: #F8F8FA;
+      --bg-subtle: #F1F1F4;
+      --bg-surface: #ffffff;
+      --background: #F8F8FA;
+      --border-subtle: rgba(0, 0, 0, 0.04);
+      --border: rgba(0, 0, 0, 0.06);
+      --border-strong: rgba(0, 0, 0, 0.12);
+      --border-glow: rgba(0, 113, 227, 0.25);
+      --text-main: #2C2C2E;
+      --text-muted: #6E6E73;
+      --text-subtle: #99999F;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+      --shadow-glow: 0 0 35px rgba(0, 113, 227, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --nav-height: 64px;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -175,7 +197,7 @@
     <div class="last-updated">Effective Date: August 25, 2026</div>
 
     <div class="highlight-card">
-      <p>⚖️ <strong>Summary</strong>: getArole is an autonomous job discovery platform that aggregates publicly available engineering job postings and provides AI-powered resume matching. By accessing getArole, you agree to these terms.</p>
+      <p>⚖️ <strong>Summary</strong>: getArole is an AI job search platform that aggregates verified engineering opportunities and provides resume matching tools. By accessing getArole, you agree to these terms.</p>
     </div>
 
     <h2>1. Acceptance of Terms</h2>
@@ -223,7 +245,7 @@
           <span style="font-family:'Outfit', sans-serif; font-size:18px; font-weight:800; color:#0f172a; letter-spacing:-0.02em;">get<span style="color:#4f46e5">A</span>role</span>
         </a>
         <p style="font-size:12px; color:#64748b; line-height:1.5; max-width:280px; margin-bottom:10px;">
-          India's #1 AI Job Discovery Engine. Autonomous multi-platform job aggregation across Greenhouse, Lever, Ashby, LinkedIn &amp; Internshala.
+          AI-powered job search platform. Verified listings from top career portals.
         </p>
 
         <!-- Team / Founder Spotlight -->
@@ -289,8 +311,8 @@
           gsap.from(card, {
             y: 30,
             opacity: 0,
-            duration: 0.6,
-            ease: "back.out(1.2)",
+            duration: 0.8,
+            ease: "power4.out",
             stagger: 0.1
           });
         });

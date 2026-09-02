@@ -34,20 +34,35 @@
   </script>
 
   <style>
-    :root {
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --primary-accent: #6366f1;
-      --primary-light: #eef2ff;
-      --primary-border: #c7d2fe;
+            :root {
+      --primary: #0071e3;
+      --primary-hover: #0077ed;
+      --primary-accent: #0071e3;
+      --primary-light: #e8f0fe;
+      --primary-border: #bfdbfe;
+      --primary-gradient: linear-gradient(135deg, #0071e3 0%, #4facfe 100%);
+      --accent: #4f46e5;
+      --accent-emerald: #10b981;
       --surface: #ffffff;
-      --background: #f8fafc;
-      --border-subtle: #f1f5f9;
-      --border: #e2e8f0;
-      --border-strong: #cbd5e1;
-      --text-main: #0f172a;
-      --text-muted: #475569;
-      --text-subtle: #94a3b8;
+      --bg: #F8F8FA;
+      --bg-subtle: #F1F1F4;
+      --bg-surface: #ffffff;
+      --background: #F8F8FA;
+      --border-subtle: rgba(0, 0, 0, 0.04);
+      --border: rgba(0, 0, 0, 0.06);
+      --border-strong: rgba(0, 0, 0, 0.12);
+      --border-glow: rgba(0, 113, 227, 0.25);
+      --text-main: #2C2C2E;
+      --text-muted: #6E6E73;
+      --text-subtle: #99999F;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+      --shadow-glow: 0 0 35px rgba(0, 113, 227, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
       --nav-height: 64px;
     }
 
@@ -176,21 +191,25 @@
 
     .filter-dropdown {
       padding: 7px 14px; border-radius: 99px; font-size: 12.5px; font-weight: 600;
-      border: 1.5px solid var(--border, #e2e8f0); background: var(--surface, #ffffff);
-      color: var(--text-muted, #475569); cursor: pointer; outline: none;
+      border: 1px solid var(--border, #e2e8f0); background: var(--surface, #ffffff);
+      color: var(--text-main); cursor: pointer; outline: none; box-shadow: var(--shadow-sm);
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); appearance: auto;
     }
-    .filter-dropdown:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
-    .filter-dropdown:focus { border-color: var(--primary, #4f46e5); background: var(--primary-light, #e0e7ff); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+    .filter-dropdown:hover { background: var(--background); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .filter-dropdown:focus { border-color: var(--primary, #4f46e5); box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15); }
 
     .btn-filter-pill {
-      padding: 7px 14px; border-radius: 99px; font-size: 12px; font-weight: 700;
-      border: 1.5px solid var(--border, #e2e8f0); background: var(--surface, #ffffff);
-      color: var(--text-muted, #475569); cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 7px 16px; border-radius: 99px; font-size: 13px; font-weight: 600;
+      border: 1px solid transparent; background: transparent;
+      color: var(--text-muted); cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .btn-filter-pill:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); transform: translateY(-1px); }
-    .btn-filter-pill.active { background: var(--primary-light, #e0e7ff); border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
-    .btn-filter-pill:active { transform: scale(0.97); }
+    .btn-filter-pill:hover { color: var(--text-main); background: rgba(0,0,0,0.03); }
+    .btn-filter-pill.active {
+      background: #ffffff; color: var(--text-main); font-weight: 700;
+      border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .btn-filter-pill:active { transform: scale(0.96); }
 
     .btn-filter-action {
       padding: 8px 16px; border-radius: 99px; font-size: 12.5px; font-weight: 700;
@@ -247,19 +266,20 @@
     .feed-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
 
     .job-card {
-      background: var(--surface, #ffffff); border: 1.5px solid var(--border, #e2e8f0);
+      background: #ffffff; border: 1px solid rgba(0,0,0,0.06);
       border-radius: 12px; padding: 16px; cursor: pointer;
-      position: relative; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
     }
     .job-card:hover {
-      border-color: var(--primary-border, #c7d2fe);
-      background: #fafbfc;
-      transform: translateY(-1.5px);
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+      border-color: rgba(0,0,0,0.08);
+      background: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
     .job-card.selected {
-      border-color: var(--primary, #4f46e5); background: var(--primary-light, #eef2ff);
-      box-shadow: 0 4px 16px rgba(79,70,229,0.1);
+      border-color: var(--primary, #0071e3); background: var(--bg-subtle);
+      box-shadow: 0 4px 16px rgba(0,113,227,0.1);
     }
 
     .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
@@ -295,13 +315,13 @@
       position: sticky;
       top: 0;
       z-index: 60;
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(24px) saturate(150%);
+      -webkit-backdrop-filter: blur(24px) saturate(150%);
       margin: 0 -36px 20px -36px;
       padding: 16px 36px 14px 36px;
-      border-bottom: 1px solid var(--border, #e2e8f0);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
     }
 
     .jd-top-bar {
@@ -1361,7 +1381,7 @@
           <span style="font-family:'Outfit', sans-serif; font-size:18px; font-weight:800; color:#0f172a; letter-spacing:-0.02em;">get<span style="color:#4f46e5">A</span>role</span>
         </a>
         <p style="font-size:12px; color:#64748b; line-height:1.5; max-width:280px; margin-bottom:10px;">
-          India's #1 AI Job Discovery Engine. Autonomous multi-platform job aggregation across Greenhouse, Lever, Ashby, LinkedIn &amp; Internshala.
+          AI-powered job search platform. Verified listings from top career portals.
         </p>
 
         <!-- Team / Founder Spotlight -->
@@ -2608,8 +2628,8 @@
           gsap.from(card, {
             y: 30,
             opacity: 0,
-            duration: 0.6,
-            ease: "back.out(1.2)",
+            duration: 0.8,
+            ease: "power4.out",
             stagger: 0.1
           });
         });

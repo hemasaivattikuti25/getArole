@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>getArole — ATS Resume & Cover Letter Architect</title>
+  <title>Resume Builder — getArole | Your AI Job Search Partner</title>
   <meta name="description"
-    content="Official 1-Page ATS Resume and AI Tailored Cover Letter Builder synchronized directly with candidate profile data.">
+    content="Build and export ATS-optimized LaTeX resumes and tailored applications on getArole.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -31,21 +31,36 @@
     
   </script>
   <style>
-    :root {
-      --pr: #4f46e5;
-      --prh: #4338ca;
-      --prl: #eef2ff;
-      --prb: #c7d2fe;
-      --sf: #fff;
-      --bg: #f8fafc;
-      --bd: #e2e8f0;
-      --bds: #cbd5e1;
-      --tx: #0f172a;
-      --txm: #475569;
-      --txs: #94a3b8;
-      --nh: 60px;
-      --sw: 220px;
-      --ew: 440px;
+            :root {
+      --primary: #0071e3;
+      --primary-hover: #0077ed;
+      --primary-accent: #0071e3;
+      --primary-light: #e8f0fe;
+      --primary-border: #bfdbfe;
+      --primary-gradient: linear-gradient(135deg, #0071e3 0%, #4facfe 100%);
+      --accent: #4f46e5;
+      --accent-emerald: #10b981;
+      --surface: #ffffff;
+      --bg: #F8F8FA;
+      --bg-subtle: #F1F1F4;
+      --bg-surface: #ffffff;
+      --background: #F8F8FA;
+      --border-subtle: rgba(0, 0, 0, 0.04);
+      --border: rgba(0, 0, 0, 0.06);
+      --border-strong: rgba(0, 0, 0, 0.12);
+      --border-glow: rgba(0, 113, 227, 0.25);
+      --text-main: #2C2C2E;
+      --text-muted: #6E6E73;
+      --text-subtle: #99999F;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+      --shadow-glow: 0 0 35px rgba(0, 113, 227, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --nav-height: 64px;
     }
 
     *,
@@ -436,8 +451,8 @@
 
     .fi:focus,
     .ft:focus {
-      border-color: var(--pr);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+      border-color: var(--pr, #0071e3);
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
     }
 
     .ft {
@@ -3883,8 +3898,8 @@ ${r.header?.name || 'Candidate Name'}`
           gsap.from(card, {
             y: 30,
             opacity: 0,
-            duration: 0.6,
-            ease: "back.out(1.2)",
+            duration: 0.8,
+            ease: "power4.out",
             stagger: 0.1
           });
         });

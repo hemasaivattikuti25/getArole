@@ -34,20 +34,35 @@
   </script>
 
   <style>
-    :root {
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --primary-accent: #6366f1;
-      --primary-light: #eef2ff;
-      --primary-border: #c7d2fe;
+            :root {
+      --primary: #0071e3;
+      --primary-hover: #0077ed;
+      --primary-accent: #0071e3;
+      --primary-light: #e8f0fe;
+      --primary-border: #bfdbfe;
+      --primary-gradient: linear-gradient(135deg, #0071e3 0%, #4facfe 100%);
+      --accent: #4f46e5;
+      --accent-emerald: #10b981;
       --surface: #ffffff;
-      --background: #f8fafc;
-      --border-subtle: #f1f5f9;
-      --border: #e2e8f0;
-      --border-strong: #cbd5e1;
-      --text-main: #0f172a;
-      --text-muted: #475569;
-      --text-subtle: #94a3b8;
+      --bg: #F8F8FA;
+      --bg-subtle: #F1F1F4;
+      --bg-surface: #ffffff;
+      --background: #F8F8FA;
+      --border-subtle: rgba(0, 0, 0, 0.04);
+      --border: rgba(0, 0, 0, 0.06);
+      --border-strong: rgba(0, 0, 0, 0.12);
+      --border-glow: rgba(0, 113, 227, 0.25);
+      --text-main: #2C2C2E;
+      --text-muted: #6E6E73;
+      --text-subtle: #99999F;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+      --shadow-glow: 0 0 35px rgba(0, 113, 227, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
       --nav-height: 64px;
     }
 
@@ -73,10 +88,13 @@
     /* ════════════════════ TOP NAVIGATION BAR (SIMPLIFY STYLE) ════════════════════ */
     header {
       position: sticky; top: 0; z-index: 100;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
       height: var(--nav-height);
       display: flex; align-items: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
     }
     .header-inner {
       max-width: 1500px; width: 100%; margin: 0 auto; padding: 0 24px;
@@ -320,15 +338,16 @@
 
     /* ── AI RESUME MATCH CARD (CIRCULAR RING) ── */
     .ai-match-card {
-      background: #fafbfc; border: 1.5px solid var(--border);
-      border-radius: 16px; padding: 20px 24px; margin-bottom: 28px;
+      background: #ffffff; border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 16px; padding: 24px; margin-bottom: 28px;
       display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      box-shadow: var(--shadow-sm);
     }
     .match-ring-wrap { display: flex; align-items: center; gap: 18px; }
     .circle-progress-container { position: relative; width: 68px; height: 68px; }
     .circle-progress-container svg { width: 68px; height: 68px; transform: rotate(-90deg); }
-    .circle-bg { fill: none; stroke: #e2e8f0; stroke-width: 6; }
-    .circle-fill { fill: none; stroke: var(--primary); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
+    .circle-bg { fill: none; stroke: rgba(0,0,0,0.06); stroke-width: 6; }
+    .circle-fill { fill: none; stroke: url(#matchGradient); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
     .circle-text {
       position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
       font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 800; color: var(--text-main);
@@ -1228,10 +1247,10 @@
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 1px solid var(--border); padding-bottom: 16px;">
           <div>
             <h2 style="font-size:22px; font-weight:800; color:var(--text-main); display:flex; align-items:center; gap:8px;">
-              ✨ Top AI Recommended Opportunities
+              ✨ Recommended Opportunities
             </h2>
             <p style="font-size:14px; color:var(--text-muted); margin-top:4px;">
-              Calibrated by dense semantic vector similarity to your profile.
+              Roles that match your skills and preferences.
             </p>
           </div>
           <button class="btn-refresh" onclick="window.location.href='/matches/'" style="padding: 10px 20px; background: var(--primary-light); color: var(--primary-hover); border: 1px solid var(--primary-border);">
@@ -1254,7 +1273,7 @@
           <span style="font-family:'Outfit', sans-serif; font-size:18px; font-weight:800; color:#0f172a; letter-spacing:-0.02em;">get<span style="color:#4f46e5">A</span>role</span>
         </a>
         <p style="font-size:12px; color:#64748b; line-height:1.5; max-width:280px; margin-bottom:10px;">
-          India's #1 AI Job Discovery Engine. Autonomous multi-platform job aggregation across Greenhouse, Lever, Ashby, LinkedIn &amp; Internshala.
+          AI-powered job search platform. Verified listings from top career portals.
         </p>
 
         <!-- Team / Founder Spotlight -->
@@ -2549,8 +2568,8 @@
           gsap.from(card, {
             y: 30,
             opacity: 0,
-            duration: 0.6,
-            ease: "back.out(1.2)",
+            duration: 0.8,
+            ease: "power4.out",
             stagger: 0.1
           });
         });
