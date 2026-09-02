@@ -9,9 +9,8 @@
     content="Build and export ATS-optimized LaTeX resumes and tailored applications on getArole.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
-    rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts.css">
   <script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();
     function setResumeMobileTab(mode) {
       const btnEdit = document.getElementById('btn-tab-edit');
@@ -562,7 +561,7 @@
     }
     .ai-orb:hover { transform: scale(1.15) translateY(-50%); box-shadow: 0 0 25px var(--pr); }
     .ai-orb::after {
-      content: '✨ Rewrite'; position: absolute; right: 30px; background: #1e1e1e; color: #fff;
+      content: 'Rewrite'; position: absolute; right: 30px; background: #1e1e1e; color: #fff;
       font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px;
       opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap;
     }
@@ -999,125 +998,108 @@
       margin-bottom: 4px;
     }
 
-    .lr-contacts {
-      font-size: 9.5pt;
-      color: #222;
-      margin-top: 3px;
-    }
-
-    .lr-contacts span {
-      margin: 0 4px;
-    }
-
-    /* Section Headings */
-    .lr-sec {
-      margin-bottom: 10px;
-    }
-
-    .lr-sec-title {
-      font-size: 10.5pt;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      border-bottom: 1px solid #000;
-      padding-bottom: 1px;
-      margin-bottom: 5px;
-    }
-
-    /* Summary & Text */
-    .lr-summary-text {
-      font-size: 9.5pt;
-      line-height: 1.35;
-      text-align: justify;
-      color: #111;
-    }
-
-    /* Technical Skills */
-    .lr-skills-table {
-      width: 100%;
-      font-size: 9.5pt;
-      line-height: 1.35;
-    }
-
-    .lr-skills-row {
-      margin-bottom: 2px;
-    }
-
-    .lr-skills-label {
-      font-weight: bold;
+    
+    /* ════════ LATEX RESUME STYLES (Computer Modern) ════════ */
+    .a4 * {
+      font-family: "Computer Modern Serif", "Times New Roman", Times, serif;
+      line-height: 1.3;
       color: #000;
     }
-
-    /* Experience & Projects Entries */
-    .lr-entry {
+    .lr-header-box {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .lr-name {
+      font-size: 26pt;
+      font-weight: bold;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .lr-contacts {
+      font-size: 10pt;
+      text-align: center;
+    }
+    .lr-contacts span, .lr-contacts a {
+      margin: 0 4px;
+      color: #000;
+      text-decoration: none;
+    }
+    .lr-sec {
       margin-bottom: 8px;
     }
-
+    .lr-sec-title {
+      font-size: 11.5pt;
+      font-weight: bold;
+      color: #000;
+      border-bottom: 0.5px solid #000;
+      padding-bottom: 2px;
+      margin-bottom: 4px;
+    }
+    .lr-entry {
+      margin-bottom: 6px;
+    }
     .lr-entry-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
       font-size: 10pt;
     }
-
     .lr-org {
       font-weight: bold;
-      color: #000;
     }
-
     .lr-date {
-      font-style: italic;
-      font-size: 9.5pt;
-      color: #222;
+      font-size: 10pt;
     }
-
     .lr-subline {
       display: flex;
       justify-content: space-between;
       font-style: italic;
-      font-size: 9.5pt;
-      color: #333;
-      margin-top: 1px;
-      margin-bottom: 3px;
+      font-size: 10pt;
+      margin-top: 0px;
+      margin-bottom: 2px;
     }
-
     .lr-links {
       font-style: normal;
       margin-left: 6px;
     }
-
     .lr-links a {
-      color: #4f46e5;
+      color: #000;
       text-decoration: none;
-      font-size: 9pt;
+      font-size: 9.5pt;
       margin-left: 4px;
     }
-
-    /* Bullet lists */
     .lr-bullets {
       margin: 0;
-      padding-left: 18px;
+      padding-left: 14px;
     }
-
     .lr-bullets li {
-      font-size: 9.2pt;
-      line-height: 1.35;
-      color: #111;
-      margin-bottom: 2px;
+      font-size: 10pt;
+      line-height: 1.25;
+      margin-bottom: 1px;
       text-align: justify;
     }
-
-    .lr-bullets li strong {
-      color: #000;
+    .lr-bullets li::marker {
+      font-size: 9pt;
     }
-
-    /* Achievements & Certifications lines */
     .lr-single-line {
       display: flex;
       justify-content: space-between;
-      font-size: 9.3pt;
+      font-size: 10pt;
       line-height: 1.35;
       margin-bottom: 2px;
+    }
+    .lr-summary-text {
+      font-size: 10pt;
+      line-height: 1.3;
+      text-align: justify;
+      margin-bottom: 8px;
+    }
+    .lr-skills-table {
+      width: 100%;
+      font-size: 10pt;
+      line-height: 1.3;
     }
 
     /* ════════ COVER LETTER SPECIFIC STYLES ════════ */
@@ -1956,8 +1938,8 @@
           <a class="nav-tab" href="/dashboard/" id="tab-btn-home">Overview</a>
           <a class="nav-tab" href="/matches/" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
           <a class="nav-tab" href="/explore/" id="tab-btn-jobs">Explore Jobs</a>
-          <a class="nav-tab active" href="/resume-builder/" id="tab-btn-resume">📄 ATS Resume</a>
-          <a class="nav-tab" href="/cover-letter-builder/" id="tab-btn-cover-letter">✉️ Cover Letter</a>
+          <a class="nav-tab active" href="/resume-builder/" id="tab-btn-resume">ATS Resume</a>
+          <a class="nav-tab" href="/cover-letter-builder/" id="tab-btn-cover-letter">Cover Letter</a>
           <a class="nav-tab" href="/profile/" id="tab-btn-profile">Profile</a>
         </nav>
       </div>
@@ -2024,63 +2006,58 @@
 
       <div class="eb">
         <!-- 1. HEADER & INFO -->
-        <div class='accordion-header active' onclick="toggleAccordion('panel-header', this)">👤 Contact & Header</div>
+        <div class='accordion-header active' onclick="toggleAccordion('panel-header', this)">Contact & Header</div>
         <div class="pn active" id="panel-header">
-          <div class="fg"><label>Full Name</label><input class="fi" id="ffn" placeholder="e.g. Jane Doe"
+          <div class="fg"><label>Full Name</label><input class="fi" id="ffn"
               oninput="ud('header','name',this.value)"></div>
           <div class="fr2">
-            <div class="fg"><label>Phone Number</label><input class="fi" id="fph" placeholder="+91 98765 43210"
+            <div class="fg"><label>Phone Number</label><input class="fi" id="fph"
                 oninput="ud('header','phone',this.value)"></div>
-            <div class="fg"><label>Email Address</label><input class="fi" id="fem" type="email"
-                placeholder="you@example.com" oninput="ud('header','email',this.value)"></div>
+            <div class="fg"><label>Email Address</label><input class="fi" id="fem" type="email" oninput="ud('header','email',this.value)"></div>
           </div>
           <div class="fr2">
-            <div class="fg"><label>LinkedIn Handle / URL</label><input class="fi" id="fli"
-                placeholder="linkedin.com/in/yourhandle" oninput="ud('header','linkedin',this.value)"></div>
-            <div class="fg"><label>GitHub Handle / URL</label><input class="fi" id="fgh"
-                placeholder="github.com/yourhandle" oninput="ud('header','github',this.value)"></div>
+            <div class="fg"><label>LinkedIn Handle / URL</label><input class="fi" id="fli" oninput="ud('header','linkedin',this.value)"></div>
+            <div class="fg"><label>GitHub Handle / URL</label><input class="fi" id="fgh" oninput="ud('header','github',this.value)"></div>
           </div>
-          <div class="fg"><label>Personal Portfolio / Website</label><input class="fi" id="fpo"
-              placeholder="yourportfolio.dev" oninput="ud('header','portfolio',this.value)"></div>
+          <div class="fg"><label>Personal Portfolio / Website</label><input class="fi" id="fpo" oninput="ud('header','portfolio',this.value)"></div>
         </div>
 
         <!-- 2. SUMMARY -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-summary', this)">📝 Executive Summary</div>
+        <div class='accordion-header' onclick="toggleAccordion('panel-summary', this)">Executive Summary</div>
         <div class="pn" id="panel-summary">
           <div class="fg">
             <label>Summary Statement</label>
             <textarea class="ft" id="fsu" rows="4" style="min-height:95px;"
-              placeholder="Backend Applied AI Engineer building scalable, high-availability distributed systems..."
               oninput="ud('summary','text',this.value)"></textarea>
           </div>
 
           <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-top:4px;">
             <div style="font-size:12px;font-weight:700;color:var(--txm);margin-bottom:8px;">AI Tone &amp; Style Synthesizer:</div>
             <div class="template-presets-bar" style="margin-bottom:10px;">
-              <button class="btn-template-preset active" id="sum-style-technical" onclick="selectSummaryStyle('technical')">🎯 Technical Specialist</button>
-              <button class="btn-template-preset" id="sum-style-fresher" onclick="selectSummaryStyle('fresher')">🎓 Fresher / Graduate</button>
-              <button class="btn-template-preset" id="sum-style-leadership" onclick="selectSummaryStyle('leadership')">🚀 Engineering Lead</button>
-              <button class="btn-template-preset" id="sum-style-general" onclick="selectSummaryStyle('general')">💼 General Professional</button>
+              <button class="btn-template-preset active" id="sum-style-technical" onclick="selectSummaryStyle('technical')">Technical Specialist</button>
+              <button class="btn-template-preset" id="sum-style-fresher" onclick="selectSummaryStyle('fresher')">Fresher / Graduate</button>
+              <button class="btn-template-preset" id="sum-style-leadership" onclick="selectSummaryStyle('leadership')">Engineering Lead</button>
+              <button class="btn-template-preset" id="sum-style-general" onclick="selectSummaryStyle('general')">General Professional</button>
             </div>
             <div class="fg" style="margin-bottom:10px;">
               <label>Personalized AI Instructions &amp; Career Focus (Optional)</label>
-              <input class="fi" id="ai-summary-custom-prompt" placeholder="e.g. 'Transitioning into Applied AI', 'Emphasize startup leadership &amp; open-source', 'Focus on FinTech payments'..." style="background:#fff;">
+              <input class="fi" id="ai-summary-custom-prompt" style="background:#fff;">
             </div>
-            <button class="btp" onclick="genSum()">✨ Synthesize Personalized Summaries</button>
+            <button class="btp" onclick="genSum()">Synthesize Personalized Summaries</button>
             <div id="ai-summary-results" style="display:none;margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
           </div>
         </div>
 
         <!-- 3. TECHNICAL SKILLS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-skills', this)">⚡ Technical Skills</div>
+        <div class='accordion-header' onclick="toggleAccordion('panel-skills', this)">Technical Skills</div>
         <div class="pn" id="panel-skills">
           <div style="background:linear-gradient(135deg, rgba(79,70,229,0.06), rgba(99,102,241,0.03));border:1px solid var(--prb);border-radius:10px;padding:12px;margin-bottom:12px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-              <div style="font-size:12.5px;font-weight:800;color:var(--pr);">✨ AI Industry Skills Recommender</div>
+              <div style="font-size:12.5px;font-weight:800;color:var(--pr);">AI Industry Skills Recommender</div>
             </div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-              <input class="fi" id="ai-skills-role-input" placeholder="Target Role (e.g. Full-Stack / Backend / DevOps / AI Engineer)" style="background:#fff;flex:1;min-width:200px;">
-              <input class="fi" id="ai-skills-focus-input" placeholder="Specific Focus (e.g. LLM Agents / Cloud)" style="background:#fff;flex:1;min-width:180px;">
+              <input class="fi" id="ai-skills-role-input" style="background:#fff;flex:1;min-width:200px;">
+              <input class="fi" id="ai-skills-focus-input" style="background:#fff;flex:1;min-width:180px;">
               <button class="btp" onclick="aiSuggestSkills()" style="white-space:nowrap;padding:7px 14px;">Suggest Skills</button>
             </div>
             <div id="ai-skills-results" style="display:none;margin-top:10px;"></div>
@@ -2094,35 +2071,35 @@
         </div>
 
         <!-- 4. EXPERIENCE -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-exp', this)">💼 Professional Experience</div>
+        <div class='accordion-header' onclick="toggleAccordion('panel-exp', this)">Professional Experience</div>
         <div class="pn" id="panel-exp">
           <div id="ec"></div>
           <button class="bad" onclick="addExp()">+ Add Work Experience</button>
         </div>
 
         <!-- 5. PROJECTS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-proj', this)">🚀 Projects & Experience</div>
+        <div class='accordion-header' onclick="toggleAccordion('panel-proj', this)">Projects & Experience</div>
         <div class="pn" id="panel-proj">
           <div id="pc"></div>
           <button class="bad" onclick="addProj()">+ Add Project</button>
         </div>
 
         <!-- 6. ACHIEVEMENTS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-achieve', this)">🏅 Key Achievements</div>
+        <div class='accordion-header' onclick="toggleAccordion('panel-achieve', this)">Key Achievements</div>
         <div class="pn" id="panel-achieve">
           <div id="ac-cont"></div>
           <button class="bad" onclick="addAchieve()">+ Add Achievement</button>
         </div>
 
         <!-- 7. CERTIFICATIONS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-certs', this)">🏆 Certifications</div>
+        <div class='accordion-header' onclick="toggleAccordion('panel-certs', this)">Certifications</div>
         <div class="pn" id="panel-certs">
           <div id="cc"></div>
           <button class="bad" onclick="addCert()">+ Add Certification</button>
         </div>
 
         <!-- 8. EDUCATION -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-edu', this)">🎓 Education</div>
+        <div class='accordion-header' onclick="toggleAccordion('panel-edu', this)">Education</div>
         <div class="pn" id="panel-edu">
           <div id="edc"></div>
           <button class="bad" onclick="addEdu()">+ Add Education</button>
@@ -2131,27 +2108,27 @@
         <!-- CL: TARGET ROLE & COMPANY -->
         <div class="pn" id="panel-cl-target">
           <div class="template-presets-bar">
-            <button class="btn-template-preset active" id="cl-preset-professional" onclick="applyCoverLetterPreset('professional')">💼 General Professional</button>
-            <button class="btn-template-preset" id="cl-preset-fresher" onclick="applyCoverLetterPreset('fresher')">🎓 Fresher / Graduate</button>
-            <button class="btn-template-preset" id="cl-preset-technical" onclick="applyCoverLetterPreset('technical')">🚀 High-Impact Technical</button>
-            <button class="btn-template-preset" id="cl-preset-referral" onclick="applyCoverLetterPreset('referral')">🤝 Referral Outreach</button>
+            <button class="btn-template-preset active" id="cl-preset-professional" onclick="applyCoverLetterPreset('professional')">General Professional</button>
+            <button class="btn-template-preset" id="cl-preset-fresher" onclick="applyCoverLetterPreset('fresher')">Fresher / Graduate</button>
+            <button class="btn-template-preset" id="cl-preset-technical" onclick="applyCoverLetterPreset('technical')">High-Impact Technical</button>
+            <button class="btn-template-preset" id="cl-preset-referral" onclick="applyCoverLetterPreset('referral')">Referral Outreach</button>
           </div>
 
           <div class="fr2">
             <div class="fg">
               <label>Target Company</label>
-              <input class="fi" id="fcl-comp" placeholder="e.g. Razorpay / Microsoft / Swiggy" oninput="udCL('company',this.value)">
+              <input class="fi" id="fcl-comp" oninput="udCL('company',this.value)">
             </div>
             <div class="fg">
               <label>Target Role Title</label>
-              <input class="fi" id="fcl-role" placeholder="e.g. Software Engineer / Frontend Developer" oninput="udCL('role',this.value)">
+              <input class="fi" id="fcl-role" oninput="udCL('role',this.value)">
             </div>
           </div>
 
           <div class="fr2">
             <div class="fg">
               <label>Hiring Manager / Team</label>
-              <input class="fi" id="fcl-mgr" placeholder="e.g. Hiring Team / Engineering Manager" oninput="udCL('manager',this.value)">
+              <input class="fi" id="fcl-mgr" oninput="udCL('manager',this.value)">
             </div>
             <div class="fg">
               <label>Letter Date</label>
@@ -2169,19 +2146,17 @@
 
           <div class="fg">
             <label>Personalized AI Instructions &amp; Talking Points (Optional)</label>
-            <textarea class="ft" id="fcl-custom-prompt" rows="2" style="min-height:55px;"
-              placeholder="e.g. 'Mention I was referred by Alex', 'Highlight my passion for developer tooling and APIs', 'Keep tone punchy &amp; direct'..."></textarea>
+            <textarea class="ft" id="fcl-custom-prompt" rows="2" style="min-height:55px;"></textarea>
           </div>
 
           <div class="fg">
             <label>Target Job Description (Optional for Deep Keyword Tailoring)</label>
             <textarea class="ft" id="fcl-jd" rows="3" style="min-height:75px;"
-              placeholder="Paste job description snippets here to tailor letter keywords &amp; requirements..."
               oninput="udCL('jd',this.value)"></textarea>
           </div>
 
           <div style="display:flex;gap:10px;align-items:center;margin-top:4px;">
-            <button class="btp" onclick="aiGenerateCoverLetter()">✨ Generate Personalized Cover Letter</button>
+            <button class="btp" onclick="aiGenerateCoverLetter()">Generate Personalized Cover Letter</button>
             <button class="bto" onclick="gS('cl-body')">Edit Letter Content →</button>
           </div>
         </div>
@@ -2189,10 +2164,10 @@
         <!-- CL: LETTER BODY CONTENT -->
         <div class="pn" id="panel-cl-body">
           <div class="template-presets-bar">
-            <button class="btn-template-preset" onclick="applyCoverLetterPreset('professional')">💼 Professional</button>
-            <button class="btn-template-preset" onclick="applyCoverLetterPreset('fresher')">🎓 Fresher</button>
-            <button class="btn-template-preset" onclick="applyCoverLetterPreset('technical')">🚀 Technical</button>
-            <button class="btn-template-preset" onclick="applyCoverLetterPreset('referral')">🤝 Referral</button>
+            <button class="btn-template-preset" onclick="applyCoverLetterPreset('professional')">Professional</button>
+            <button class="btn-template-preset" onclick="applyCoverLetterPreset('fresher')">Fresher</button>
+            <button class="btn-template-preset" onclick="applyCoverLetterPreset('technical')">Technical</button>
+            <button class="btn-template-preset" onclick="applyCoverLetterPreset('referral')">Referral</button>
           </div>
 
           <div class="fg">
@@ -2201,35 +2176,34 @@
               <span style="font-size:11.5px;color:var(--txs);" id="cl-word-count">0 words</span>
             </div>
             <textarea class="ft" id="fcl-text" rows="14" style="min-height:280px;font-size:13px;line-height:1.6;"
-              placeholder="Dear Hiring Team,&#10;&#10;I am writing to express my strong enthusiasm..."
               oninput="handleCLTextInput(this.value)"></textarea>
           </div>
 
           <!-- AI Polish Toolbar -->
           <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-top:6px;display:flex;flex-direction:column;gap:8px;">
-            <div style="font-size:11.5px;font-weight:700;color:var(--txm);">✨ Quick Tone Polish:</div>
+            <div style="font-size:11.5px;font-weight:700;color:var(--txm);">Quick Tone Polish:</div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button class="ai-quick-btn" onclick="aiPolishCL('concise')">✂️ Make Concise</button>
-              <button class="ai-quick-btn" onclick="aiPolishCL('technical')">📊 Emphasize Metrics</button>
-              <button class="ai-quick-btn" onclick="aiPolishCL('executive')">💎 Executive Tone</button>
-              <button class="ai-quick-btn" onclick="aiPolishCL('fix_grammar')">🔍 Fix Grammar &amp; Flow</button>
+              <button class="ai-quick-btn" onclick="aiPolishCL('concise')">Make Concise</button>
+              <button class="ai-quick-btn" onclick="aiPolishCL('technical')">Emphasize Metrics</button>
+              <button class="ai-quick-btn" onclick="aiPolishCL('executive')">Executive Tone</button>
+              <button class="ai-quick-btn" onclick="aiPolishCL('fix_grammar')">Fix Grammar &amp; Flow</button>
             </div>
             <div style="display:flex;gap:6px;margin-top:4px;">
-              <input class="fi" id="cl-custom-polish-input" placeholder="Personalized instruction (e.g. 'Emphasize my distributed database experience', 'Make conclusion bolder')..." style="background:#fff;">
-              <button class="btp" onclick="aiPolishCLCustom()" style="white-space:nowrap;padding:6px 14px;">✨ Polish with Prompt</button>
+              <input class="fi" id="cl-custom-polish-input" style="background:#fff;">
+              <button class="btp" onclick="aiPolishCLCustom()" style="white-space:nowrap;padding:6px 14px;">Polish with Prompt</button>
             </div>
           </div>
 
           <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
-            <button class="btp" onclick="aiGenerateCoverLetter()">✨ Regenerate Full Letter</button>
+            <button class="btp" onclick="aiGenerateCoverLetter()">Regenerate Full Letter</button>
             <button class="bto" onclick="resetToCurrentPreset()">Reset to Preset</button>
           </div>
         </div>
           <div class="fg">
             <label>Personalized AI Tailoring Instructions (Optional)</label>
-            <input class="fi" id="fjd-custom-prompt" placeholder="e.g. 'Prioritize my Kubernetes and Go experience', 'Tailor for an early-stage startup'...">
+            <input class="fi" id="fjd-custom-prompt">
           </div>
-          <button class="btp" onclick="tailorR()">✨ Run ATS Match &amp; Personalized Keyword Analysis</button>
+          <button class="btp" onclick="tailorR()">Run ATS Match &amp; Personalized Keyword Analysis</button>
           <div id="tout" style="display:none;margin-top:14px;"></div>
         </div>
       </div>
@@ -2250,7 +2224,7 @@
   <div class="ai-modal-overlay" id="ai-bullet-modal">
     <div class="ai-modal-card">
       <div class="ai-modal-header">
-        <div class="ai-modal-title">✨ AI Personalized Bullet Point Optimizer</div>
+        <div class="ai-modal-title">AI Personalized Bullet Point Optimizer</div>
         <button class="brm" onclick="closeAIBulletModal()" style="font-size:13px;padding:4px 8px;">✕ Close</button>
       </div>
       <div class="ai-modal-body">
@@ -2260,8 +2234,8 @@
 
         <!-- Personalized prompt input inside modal -->
         <div style="display:flex;gap:6px;align-items:center;">
-          <input class="fi" id="ai-bullet-custom-prompt" placeholder="Personalized focus (e.g. 'Quantify with cost savings', 'Highlight Kafka &amp; scalability')..." style="font-size:12.5px;background:#fff;">
-          <button class="bad" onclick="enhBWithCustomPrompt()" style="padding:7px 12px;white-space:nowrap;margin:0;border-color:var(--pr);color:var(--pr);">✨ Refine</button>
+          <input class="fi" id="ai-bullet-custom-prompt" style="font-size:12.5px;background:#fff;">
+          <button class="bad" onclick="enhBWithCustomPrompt()" style="padding:7px 12px;white-space:nowrap;margin:0;border-color:var(--pr);color:var(--pr);">Refine</button>
         </div>
 
         <div id="ai-modal-variations" style="display:flex;flex-direction:column;gap:12px;">
@@ -2524,6 +2498,10 @@
           R.skills = [{ label: 'Skills & Competencies', items: '' }];
         }
       }
+      
+      // Update UI immediately with local data before network fetch
+      populateFormFields();
+      rp();
 
       // Cloud Fetch from Supabase
       const uid = getFirebaseUID();
@@ -2632,10 +2610,10 @@
         card.className = 'skill-cat-card';
         card.innerHTML = `
           <div class="skill-cat-header">
-            <input class="skill-cat-label-input" value="${esc(s.label)}" placeholder="Category Name (e.g. Languages / Design Tools)" oninput="uSkillCat(${i}, 'label', this.value)">
+            <input class="skill-cat-label-input" value="${esc(s.label)}" oninput="uSkillCat(${i}, 'label', this.value)">
             <button class="brm" onclick="rmSkillCat(${i})" title="Remove this category">✕</button>
           </div>
-          <input class="fi" value="${esc(s.items)}" placeholder="e.g. Python, SQL, React, Figma, Docker..." oninput="uSkillCat(${i}, 'items', this.value)">
+          <input class="fi" value="${esc(s.items)}" oninput="uSkillCat(${i}, 'items', this.value)">
         `;
         cont.appendChild(card);
       });
@@ -2926,7 +2904,7 @@ ${r.header?.name || 'Candidate Name'}`
         <!-- Letterhead -->
         <div class="cl-header-box">
           <div class="lr-name" style="font-size:24pt;text-align:center;">${h.name || 'Your Full Name'}</div>
-          <div class="lr-contacts" style="text-align:center;">${contacts.join(' | ') || '<span>Email · Phone · Location</span>'}</div>
+          <div class="lr-contacts" style="text-align:center;">${contacts.join(' &bull; ') || '<span>Email &bull; Phone &bull; Location</span>'}</div>
         </div>
 
         <!-- Date & Addressee -->
@@ -3061,11 +3039,11 @@ ${r.header?.name || 'Candidate Name'}`
         <!-- 1. Header -->
         <div class="lr-header">
           <div class="lr-name">${h.name || 'Your Full Name'}</div>
-          <div class="lr-contacts">${contacts.join(' | ') || '<span>Email · Phone · Location</span>'}</div>
+          <div class="lr-contacts">${contacts.join(' &bull; ') || '<span>Email &bull; Phone &bull; Location</span>'}</div>
         </div>
 
         <!-- 2. SUMMARY -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-summary', this)">📝 Executive Summary</div>
+        <div class='accordion-header' onclick="toggleAccordion('panel-summary', this)">Executive Summary</div>
         ${R.summary && R.summary.text ? `
         <div class="lr-sec">
           <div class="lr-sec-title">SUMMARY</div>
@@ -3073,27 +3051,27 @@ ${r.header?.name || 'Candidate Name'}`
         </div>` : ''}
 
         <!-- 3. TECHNICAL SKILLS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-skills', this)">⚡ Technical Skills</div>
+        <div class='accordion-header' onclick="toggleAccordion('panel-skills', this)">Technical Skills</div>
         ${skillsHtml}
 
         <!-- 4. EXPERIENCE -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-exp', this)">💼 Professional Experience</div>
+        <div class='accordion-header' onclick="toggleAccordion('panel-exp', this)">Professional Experience</div>
         ${expHtml}
 
         <!-- 5. PROJECTS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-proj', this)">🚀 Projects & Experience</div>
+        <div class='accordion-header' onclick="toggleAccordion('panel-proj', this)">Projects & Experience</div>
         ${projHtml}
 
         <!-- 6. ACHIEVEMENTS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-achieve', this)">🏅 Key Achievements</div>
+        <div class='accordion-header' onclick="toggleAccordion('panel-achieve', this)">Key Achievements</div>
         ${achieveHtml}
 
         <!-- 7. CERTIFICATIONS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-certs', this)">🏆 Certifications</div>
+        <div class='accordion-header' onclick="toggleAccordion('panel-certs', this)">Certifications</div>
         ${certsHtml}
 
         <!-- 8. EDUCATION -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-edu', this)">🎓 Education</div>
+        <div class='accordion-header' onclick="toggleAccordion('panel-edu', this)">Education</div>
         ${eduHtml}
       </div>
     `;
@@ -3253,8 +3231,8 @@ ${r.header?.name || 'Candidate Name'}`
       document.getElementById(id).innerHTML = `
         <div class="fch"><div class="fct">Experience ${i + 1}</div><button class="brm" onclick="rmExp(${i})">✕ Remove</button></div>
         <div class="fr2">
-          <div class="fg"><label>Organization / Company</label><input class="fi" value="${esc(e.company)}" placeholder="Company / Organization Name" oninput="uad('experience',${i},'company',this.value)"></div>
-          <div class="fg"><label>Job Title & Location</label><input class="fi" value="${esc(e.title)}" placeholder="Job Title · Department / Location" oninput="uad('experience',${i},'title',this.value)"></div>
+          <div class="fg"><label>Organization / Company</label><input class="fi" value="${esc(e.company)}" oninput="uad('experience',${i},'company',this.value)"></div>
+          <div class="fg"><label>Job Title & Location</label><input class="fi" value="${esc(e.title)}" oninput="uad('experience',${i},'title',this.value)"></div>
         </div>
         <div class="fg">
           <label>Work Dates</label>
@@ -3264,7 +3242,7 @@ ${r.header?.name || 'Candidate Name'}`
           <label>Key Accomplishments & Responsibilities</label>
           <div class="bls">${(e.bullets || []).map((b, bi) => `
             <div class="blr">
-              <input value="${esc(b)}" placeholder="Action verb + Context + Measurable Result (e.g. Built API reducing latency by 40%)..." oninput="ubl('experience',${i},${bi},this.value)">
+              <input value="${esc(b)}" oninput="ubl('experience',${i},${bi},this.value)">
               <button class="bai" onclick="enhB('experience',${i},${bi})">AI</button>
               <button class="bri" onclick="rmBl('experience',${i},${bi})">✕</button>
             </div>`).join('')}
@@ -3307,12 +3285,12 @@ ${r.header?.name || 'Candidate Name'}`
       document.getElementById(id).innerHTML = `
         <div class="fch"><div class="fct">Project ${i + 1}</div><button class="brm" onclick="rmProj(${i})">✕</button></div>
         <div class="fr2">
-          <div class="fg"><label>Project Name</label><input class="fi" value="${esc(p.name)}" placeholder="Project Name" oninput="uad('projects',${i},'name',this.value)"></div>
-          <div class="fg"><label>Tech Stack Subline</label><input class="fi" value="${esc(p.stack)}" placeholder="Technologies · Frameworks · Tools" oninput="uad('projects',${i},'stack',this.value)"></div>
+          <div class="fg"><label>Project Name</label><input class="fi" value="${esc(p.name)}" oninput="uad('projects',${i},'name',this.value)"></div>
+          <div class="fg"><label>Tech Stack Subline</label><input class="fi" value="${esc(p.stack)}" oninput="uad('projects',${i},'stack',this.value)"></div>
         </div>
         <div class="fr2">
-          <div class="fg"><label>Live Demo URL (optional)</label><input class="fi" value="${esc(p.liveLink)}" placeholder="https://..." oninput="uad('projects',${i},'liveLink',this.value)"></div>
-          <div class="fg"><label>GitHub / Source URL (optional)</label><input class="fi" value="${esc(p.githubLink)}" placeholder="https://github.com/..." oninput="uad('projects',${i},'githubLink',this.value)"></div>
+          <div class="fg"><label>Live Demo URL (optional)</label><input class="fi" value="${esc(p.liveLink)}" oninput="uad('projects',${i},'liveLink',this.value)"></div>
+          <div class="fg"><label>GitHub / Source URL (optional)</label><input class="fi" value="${esc(p.githubLink)}" oninput="uad('projects',${i},'githubLink',this.value)"></div>
         </div>
         <div class="fg">
           <label>Project Timeline</label>
@@ -3322,7 +3300,7 @@ ${r.header?.name || 'Candidate Name'}`
           <label>Impact Bullet Points</label>
           <div class="bls">${(p.bullets || []).map((b, bi) => `
             <div class="blr">
-              <input value="${esc(b)}" placeholder="Built / Designed / Deployed..." oninput="ubl('projects',${i},${bi},this.value)">
+              <input value="${esc(b)}" oninput="ubl('projects',${i},${bi},this.value)">
               <button class="bai" onclick="enhB('projects',${i},${bi})">AI</button>
               <button class="bri" onclick="rmBl('projects',${i},${bi})">✕</button>
             </div>`).join('')}
@@ -3352,7 +3330,7 @@ ${r.header?.name || 'Candidate Name'}`
       document.getElementById(id).className = 'fc';
       document.getElementById(id).innerHTML = `
         <div class="fch"><div class="fct">Achievement ${i + 1}</div><button class="brm" onclick="rmAchieve(${i})">✕</button></div>
-        <div class="fg"><label>Achievement Description</label><input class="fi" value="${esc(a.text)}" placeholder="Award / Competition / Honor" oninput="uad('achievements',${i},'text',this.value)"></div>
+        <div class="fg"><label>Achievement Description</label><input class="fi" value="${esc(a.text)}" oninput="uad('achievements',${i},'text',this.value)"></div>
         <div class="fg">
           <label>Date / Year</label>
           ${renderSingleDateInput('achievements', i, a)}
@@ -3381,8 +3359,8 @@ ${r.header?.name || 'Candidate Name'}`
       document.getElementById(id).innerHTML = `
         <div class="fch"><div class="fct">Certification ${i + 1}</div><button class="brm" onclick="rmCert(${i})">✕</button></div>
         <div class="fr2">
-          <div class="fg"><label>Certification Name</label><input class="fi" value="${esc(ct.name)}" placeholder="Credential / Certification Name" oninput="uad('certifications',${i},'name',this.value)"></div>
-          <div class="fg"><label>Issuer</label><input class="fi" value="${esc(ct.issuer)}" placeholder="Issuing Organization" oninput="uad('certifications',${i},'issuer',this.value)"></div>
+          <div class="fg"><label>Certification Name</label><input class="fi" value="${esc(ct.name)}" oninput="uad('certifications',${i},'name',this.value)"></div>
+          <div class="fg"><label>Issuer</label><input class="fi" value="${esc(ct.issuer)}" oninput="uad('certifications',${i},'issuer',this.value)"></div>
         </div>
         <div class="fg">
           <label>Issue Date</label>
@@ -3422,14 +3400,14 @@ ${r.header?.name || 'Candidate Name'}`
       document.getElementById(id).innerHTML = `
         <div class="fch"><div class="fct">Education ${i + 1}</div><button class="brm" onclick="rmEdu(${i})">✕</button></div>
         <div class="fr2">
-          <div class="fg"><label>School / University</label><input class="fi" value="${esc(e.school)}" placeholder="University / College Name" oninput="uad('education',${i},'school',this.value)"></div>
-          <div class="fg"><label>Degree & Major</label><input class="fi" value="${esc(e.degree)}" placeholder="Degree / Major · Location" oninput="uad('education',${i},'degree',this.value)"></div>
+          <div class="fg"><label>School / University</label><input class="fi" value="${esc(e.school)}" oninput="uad('education',${i},'school',this.value)"></div>
+          <div class="fg"><label>Degree & Major</label><input class="fi" value="${esc(e.degree)}" oninput="uad('education',${i},'degree',this.value)"></div>
         </div>
         <div class="fg">
           <label>Graduation Timeline / Dates</label>
           ${renderDateRangeInput('education', i, e)}
         </div>
-        <div class="fg"><label>Coursework / Honors</label><input class="fi" value="${esc(e.coursework)}" placeholder="Key Courses, Honors, GPA..." oninput="uad('education',${i},'coursework',this.value)"></div>
+        <div class="fg"><label>Coursework / Honors</label><input class="fi" value="${esc(e.coursework)}" oninput="uad('education',${i},'coursework',this.value)"></div>
       `;
     }
 
@@ -3458,7 +3436,7 @@ ${r.header?.name || 'Candidate Name'}`
       origEl.textContent = cur;
       varContainer.innerHTML = `
         <div style="text-align:center;padding:24px;color:var(--pr);font-size:13px;font-weight:700;">
-          ✨ Generating STAR, Technical &amp; Executive variations${customPrompt ? ` (Focus: ${esc(customPrompt)})` : ''}...
+          Generating STAR, Technical &amp; Executive variations${customPrompt ? ` (Focus: ${esc(customPrompt)})` : ''}...
         </div>
       `;
       modal.classList.add('show');
@@ -3490,7 +3468,7 @@ ${r.header?.name || 'Candidate Name'}`
           <!-- Technical Architecture Option -->
           <div class="ai-variation-card">
             <div class="ai-var-header">
-              <span class="ai-var-tag ai-tag-tech">🚀 Technical Depth &amp; Scale</span>
+              <span class="ai-var-tag ai-tag-tech">Technical Depth &amp; Scale</span>
               <button class="ai-btn-apply" onclick="applyBulletVariation('${esc(data.technical || data.enhanced).replace(/'/g, "\\'")}')">Apply This</button>
             </div>
             <div class="ai-var-text">${esc(data.technical || data.enhanced)}</div>
@@ -3499,7 +3477,7 @@ ${r.header?.name || 'Candidate Name'}`
           <!-- Crisp ATS Executive Option -->
           <div class="ai-variation-card">
             <div class="ai-var-header">
-              <span class="ai-var-tag ai-tag-concise">🎯 Crisp ATS Executive</span>
+              <span class="ai-var-tag ai-tag-concise">Crisp ATS Executive</span>
               <button class="ai-btn-apply" onclick="applyBulletVariation('${esc(data.concise || data.enhanced).replace(/'/g, "\\'")}')">Apply This</button>
             </div>
             <div class="ai-var-text">${esc(data.concise || data.enhanced)}</div>
@@ -3562,7 +3540,7 @@ ${r.header?.name || 'Candidate Name'}`
       toast('Synthesizing executive summaries...');
       const resultsDiv = document.getElementById('ai-summary-results');
       resultsDiv.style.display = 'flex';
-      resultsDiv.innerHTML = '<div style="color:var(--pr);font-size:12.5px;font-weight:700;">✨ Generating personalized summaries...</div>';
+      resultsDiv.innerHTML = '<div style="color:var(--pr);font-size:12.5px;font-weight:700;">Generating personalized summaries...</div>';
 
       const expContext = (R.experience || []).filter(e => e.company || e.title).map(e => `${e.company} (${e.title})`).join(', ');
       const allSkills = Array.isArray(R.skills) ? R.skills.map(s => `${s.label}: ${s.items}`).filter(Boolean).join('; ') : '';
@@ -3613,7 +3591,7 @@ ${r.header?.name || 'Candidate Name'}`
       const resultsDiv = document.getElementById('ai-skills-results');
       
       resultsDiv.style.display = 'block';
-      resultsDiv.innerHTML = '<div style="color:var(--pr);font-size:12.5px;font-weight:700;">✨ Analyzing industry skill standards for ' + esc(targetRole) + '...</div>';
+      resultsDiv.innerHTML = '<div style="color:var(--pr);font-size:12.5px;font-weight:700;">Analyzing industry skill standards for ' + esc(targetRole) + '...</div>';
 
       const currentSkillsStr = Array.isArray(R.skills) ? R.skills.map(s => s.items).join(', ') : '';
 
@@ -3803,7 +3781,7 @@ ${r.header?.name || 'Candidate Name'}`
       const customPrompt = (document.getElementById('fjd-custom-prompt') || {}).value || '';
       const out = document.getElementById('tout');
       out.style.display = 'block';
-      out.innerHTML = '<div style="color:var(--pr);font-size:13px;font-weight:700;">✨ Analyzing resume against target job description requirements...</div>';
+      out.innerHTML = '<div style="color:var(--pr);font-size:13px;font-weight:700;">Analyzing resume against target job description requirements...</div>';
 
       try {
         const r = await fetch('/api/ai/tailor-resume', {
