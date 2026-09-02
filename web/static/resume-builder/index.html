@@ -915,7 +915,7 @@
     .pvl {
       font-size: 11px;
       font-weight: 800;
-      color: #e2e8f0;
+      color: #5f6368;
       text-transform: uppercase;
       letter-spacing: .08em;
       margin-bottom: 14px;
@@ -935,8 +935,9 @@
       width: 794px;
       min-height: 1123px;
       background: #fff;
-      box-shadow: 0 12px 40px -10px rgba(0, 0, 0, .45), 0 0 0 1px rgba(255, 255, 255, .08);
-      border-radius: 2px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 0;
       transform-origin: top center;
       flex-shrink: 0;
     }
@@ -970,7 +971,7 @@
     .latex-doc {
       font-family: 'Times New Roman', 'CMU Serif', 'Latin Modern Roman', 'Liberation Serif', Times, serif;
       color: #000;
-      padding: 40px 48px;
+      padding: 48px 54px;
       font-size: 10.5pt;
       line-height: 1.25;
       background: #fff;
@@ -1958,7 +1959,7 @@
           <span style="font-size: 10px; color: var(--text-subtle, #94a3b8)">▼</span>
 
           <div class="user-dropdown" id="user-dropdown">
-            <a href="/profile/" class="dropdown-item">⚙️ Profile & Preferences</a>
+            <a href="/profile/" class="dropdown-item">Profile & Preferences</a>
             <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
             <a href="#" onclick="typeof handleLogout === 'function' ? handleLogout() : (localStorage.clear(), window.location.href='/')" class="dropdown-item" style="color:#ef4444">Sign Out</a>
           </div>
@@ -2001,7 +2002,7 @@
         </div>
         <span
           style="font-size:11px;font-weight:700;color:var(--txs);background:var(--bg);padding:3px 8px;border-radius:6px;"
-          id="asv">✓ Saved</span>
+          id="asv">Saved</span>
       </div>
 
       <div class="eb">
@@ -2021,9 +2022,6 @@
           </div>
           <div class="fg"><label>Personal Portfolio / Website</label><input class="fi" id="fpo" oninput="ud('header','portfolio',this.value)"></div>
         </div>
-
-        <!-- 2. SUMMARY -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-summary', this)">Executive Summary</div>
         <div class="pn" id="panel-summary">
           <div class="fg">
             <label>Summary Statement</label>
@@ -2047,9 +2045,6 @@
             <div id="ai-summary-results" style="display:none;margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
           </div>
         </div>
-
-        <!-- 3. TECHNICAL SKILLS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-skills', this)">Technical Skills</div>
         <div class="pn" id="panel-skills">
           <div style="background:linear-gradient(135deg, rgba(79,70,229,0.06), rgba(99,102,241,0.03));border:1px solid var(--prb);border-radius:10px;padding:12px;margin-bottom:12px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
@@ -2069,37 +2064,22 @@
           <div id="skills-categories-container" style="display:flex;flex-direction:column;gap:10px;"></div>
           <button class="bad" onclick="addSkillCat()">+ Add Skill Category</button>
         </div>
-
-        <!-- 4. EXPERIENCE -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-exp', this)">Professional Experience</div>
         <div class="pn" id="panel-exp">
           <div id="ec"></div>
           <button class="bad" onclick="addExp()">+ Add Work Experience</button>
         </div>
-
-        <!-- 5. PROJECTS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-proj', this)">Projects & Experience</div>
         <div class="pn" id="panel-proj">
           <div id="pc"></div>
           <button class="bad" onclick="addProj()">+ Add Project</button>
         </div>
-
-        <!-- 6. ACHIEVEMENTS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-achieve', this)">Key Achievements</div>
         <div class="pn" id="panel-achieve">
           <div id="ac-cont"></div>
           <button class="bad" onclick="addAchieve()">+ Add Achievement</button>
         </div>
-
-        <!-- 7. CERTIFICATIONS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-certs', this)">Certifications</div>
         <div class="pn" id="panel-certs">
           <div id="cc"></div>
           <button class="bad" onclick="addCert()">+ Add Certification</button>
         </div>
-
-        <!-- 8. EDUCATION -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-edu', this)">Education</div>
         <div class="pn" id="panel-edu">
           <div id="edc"></div>
           <button class="bad" onclick="addEdu()">+ Add Education</button>
@@ -2457,20 +2437,62 @@
     async function loadDataFromProfile() {
       const profileRaw = localStorage.getItem('getarole_profile');
       const resumeSaved = localStorage.getItem('getarole_resume_v2');
+      const userRaw = localStorage.getItem('getarole_user');
 
-      // Always try to hydrate from profile (name, email, phone, links)
+      // First: pull basic user info (name, email) from getarole_user
+      if (userRaw) {
+        try {
+          const user = JSON.parse(userRaw);
+          if (user.name && !R.header.name) R.header.name = user.name;
+          if (user.displayName && !R.header.name) R.header.name = user.displayName;
+          if (user.email && !R.header.email) R.header.email = user.email;
+        } catch (e) { }
+      }
+
+      // Second: pull richer data from getarole_profile
       if (profileRaw) {
         try {
           const prof = JSON.parse(profileRaw);
-          if (prof.name && !R.header.name) R.header.name = prof.name;
+          // Name (multiple possible fields)
+          if (!R.header.name) {
+            R.header.name = prof.name || prof.full_name || prof.displayName || '';
+            if (!R.header.name && (prof.first || prof.first_name)) {
+              R.header.name = [prof.first || prof.first_name, prof.last || prof.last_name].filter(Boolean).join(' ');
+            }
+          }
+          // Contact
           if (prof.phone && !R.header.phone) R.header.phone = prof.phone;
           if (prof.email && !R.header.email) R.header.email = prof.email;
+          // Links (both flat and nested)
+          if (prof.linkedin_url && !R.header.linkedin) R.header.linkedin = prof.linkedin_url;
+          if (prof.github_url && !R.header.github) R.header.github = prof.github_url;
+          if (prof.portfolio_url && !R.header.portfolio) R.header.portfolio = prof.portfolio_url;
           if (prof.links?.linkedin && !R.header.linkedin) R.header.linkedin = prof.links.linkedin;
           if (prof.links?.github && !R.header.github) R.header.github = prof.links.github;
           if (prof.links?.portfolio && !R.header.portfolio) R.header.portfolio = prof.links.portfolio;
-          if (prof.skills && prof.skills.length > 0 && (!Array.isArray(R.skills) || R.skills.length === 0)) {
-            R.skills = [{ label: 'Technical Skills', items: prof.skills.join(', ') }];
+          // Skills
+          if (prof.skills && prof.skills.length > 0 && (!Array.isArray(R.skills) || R.skills.length === 0 || !R.skills[0].items)) {
+            if (Array.isArray(prof.skills) && prof.skills.length > 0 && typeof prof.skills[0] === 'object' && prof.skills[0].label) {
+              R.skills = prof.skills;
+            } else {
+              R.skills = [{ label: 'Technical Skills', items: Array.isArray(prof.skills) ? prof.skills.join(', ') : prof.skills }];
+            }
           }
+          // Education
+          if (prof.education && Array.isArray(prof.education) && prof.education.length > 0 && (!R.education || R.education.length === 0 || (!R.education[0].school && !R.education[0].degree))) {
+            R.education = prof.education;
+          }
+          // Experience
+          if (prof.experience && Array.isArray(prof.experience) && prof.experience.length > 0 && (!R.experience || R.experience.length === 0 || (!R.experience[0].company && !R.experience[0].title))) {
+            R.experience = prof.experience;
+          }
+          // Projects
+          if (prof.projects && Array.isArray(prof.projects) && prof.projects.length > 0 && (!R.projects || R.projects.length === 0 || !R.projects[0].name)) {
+            R.projects = prof.projects;
+          }
+          // Summary/headline
+          if (prof.headline && !R.summary.text) R.summary.text = prof.headline;
+          if (prof.summary && !R.summary.text) R.summary.text = prof.summary;
         } catch (e) { }
       }
 
@@ -2903,20 +2925,20 @@ ${r.header?.name || 'Candidate Name'}`
       <div class="latex-doc">
         <!-- Letterhead -->
         <div class="cl-header-box">
-          <div class="lr-name" style="font-size:24pt;text-align:center;">${h.name || 'Your Full Name'}</div>
-          <div class="lr-contacts" style="text-align:center;">${contacts.join(' &bull; ') || '<span>Email &bull; Phone &bull; Location</span>'}</div>
+          <div class="lr-name" style="font-size:24pt;text-align:center;">${h.name || ''}</div>
+          <div class="lr-contacts" style="text-align:center;">${contacts.join(' &bull; ') || ''}</div>
         </div>
 
         <!-- Date & Addressee -->
         <div class="cl-meta-block">
           <div><strong>Date:</strong> ${cl.date || new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
-          <div style="margin-top:6px;"><strong>To:</strong> ${cl.manager || 'Hiring Team'}</div>
-          <div><strong>Company:</strong> ${cl.company || 'Target Organization'}</div>
-          <div><strong>Subject:</strong> Application for ${cl.role || 'Open Position'}</div>
+          <div style="margin-top:6px;"><strong>To:</strong> ${cl.manager || ''}</div>
+          <div><strong>Company:</strong> ${cl.company || ''}</div>
+          <div><strong>Subject:</strong> Application for ${cl.role || ''}</div>
         </div>
 
         <!-- Letter Body -->
-        <div class="cl-salutation">Dear ${cl.manager || 'Hiring Team'},</div>
+        <div class="cl-salutation">Dear ${cl.manager || ''},</div>
 
         ${paragraphs.map(p => {
           if (p.startsWith('Dear ') || p.startsWith('Sincerely,') || p === h.name) return '';
@@ -2926,7 +2948,7 @@ ${r.header?.name || 'Candidate Name'}`
         <!-- Sign-off -->
         <div class="cl-signoff">
           <div>Sincerely,</div>
-          <div class="cl-signoff-name">${h.name || 'Candidate Name'}</div>
+          <div class="cl-signoff-name">${h.name || ''}</div>
         </div>
       </div>
     `;
@@ -3038,40 +3060,19 @@ ${r.header?.name || 'Candidate Name'}`
       <div class="latex-doc">
         <!-- 1. Header -->
         <div class="lr-header">
-          <div class="lr-name">${h.name || 'Your Full Name'}</div>
-          <div class="lr-contacts">${contacts.join(' &bull; ') || '<span>Email &bull; Phone &bull; Location</span>'}</div>
+          <div class="lr-name">${h.name || ''}</div>
+          <div class="lr-contacts">${contacts.join(' &bull; ') || ''}</div>
         </div>
-
-        <!-- 2. SUMMARY -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-summary', this)">Executive Summary</div>
         ${R.summary && R.summary.text ? `
         <div class="lr-sec">
           <div class="lr-sec-title">SUMMARY</div>
           <div class="lr-summary-text">${R.summary.text}</div>
         </div>` : ''}
-
-        <!-- 3. TECHNICAL SKILLS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-skills', this)">Technical Skills</div>
         ${skillsHtml}
-
-        <!-- 4. EXPERIENCE -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-exp', this)">Professional Experience</div>
         ${expHtml}
-
-        <!-- 5. PROJECTS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-proj', this)">Projects & Experience</div>
         ${projHtml}
-
-        <!-- 6. ACHIEVEMENTS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-achieve', this)">Key Achievements</div>
         ${achieveHtml}
-
-        <!-- 7. CERTIFICATIONS -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-certs', this)">Certifications</div>
         ${certsHtml}
-
-        <!-- 8. EDUCATION -->
-        <div class='accordion-header' onclick="toggleAccordion('panel-edu', this)">Education</div>
         ${eduHtml}
       </div>
     `;
@@ -3155,7 +3156,7 @@ ${r.header?.name || 'Candidate Name'}`
       document.getElementById('asv').textContent = '...';
       st = setTimeout(async () => {
         localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
-        document.getElementById('asv').textContent = '✓ Saved';
+        document.getElementById('asv').textContent = 'Saved';
         const uid = getFirebaseUID();
         if (uid) {
           try {
@@ -3814,7 +3815,7 @@ ${r.header?.name || 'Candidate Name'}`
             <div>
               <div style="font-size:11.5px;font-weight:800;color:var(--txm);">MATCHED KEYWORDS IN YOUR RESUME:</div>
               <div class="ai-chips-wrap">
-                ${matched.map(kw => `<span class="ai-chip ai-chip-green">✓ ${esc(kw)}</span>`).join('') || '<span style="font-size:12px;color:var(--txs);">None yet</span>'}
+                ${matched.map(kw => `<span class="ai-chip ai-chip-green">${esc(kw)}</span>`).join('') || '<span style="font-size:12px;color:var(--txs);">None yet</span>'}
               </div>
             </div>
 
@@ -3949,7 +3950,7 @@ ${r.header?.name || 'Candidate Name'}`
       }
       if (tEl) {
         if (tips.length === 0) {
-          tEl.innerHTML = '<div class="ats-tip" style="color:#16a34a;background:#dcfce7;border-color:#bbf7d0;">✓ Outstanding! 100% ATS-Compliant with verified LaTeX typography, quantified STAR metrics, and complete structure.</div>';
+          tEl.innerHTML = '<div class="ats-tip" style="color:#16a34a;background:#dcfce7;border-color:#bbf7d0;">Outstanding! 100% ATS-Compliant with verified LaTeX typography, quantified STAR metrics, and complete structure.</div>';
         } else {
           tEl.innerHTML = tips.map(t => `<div class="ats-tip">💡 ${esc(t)}</div>`).join('');
         }
