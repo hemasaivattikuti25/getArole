@@ -274,13 +274,23 @@
       transform: scale(0.97);
     }
 
-    /* ═══════ THREE-COLUMN LAYOUT ═══════ */
+    /* ═══════ SIMPLIFY-STYLE 3-COLUMN LAYOUT ═══════ */
+    :root {
+      --left-sidebar: 340px;
+      --right-sidebar: 320px;
+    }
     .ly {
       flex: 1;
       display: grid;
-      grid-template-columns: var(--sw) var(--ew) 1fr;
+      grid-template-columns: var(--left-sidebar) 1fr var(--right-sidebar);
       overflow: hidden;
       min-height: 0;
+      background: var(--bg-subtle, #f1f1f4);
+    }
+    @media (max-width: 1200px) {
+      .ly {
+        grid-template-columns: 300px 1fr 300px;
+      }
     }
     @media (max-width: 992px) {
       .ly {
@@ -292,12 +302,76 @@
       }
     }
 
+    
+    /* Accordion Editor Styles */
+    .ep {
+      background: var(--sf);
+      border-right: 1px solid var(--bd);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+    }
+    .accordion-header {
+      padding: 16px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--tx);
+      border-bottom: 1px solid var(--bd);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--sf);
+      transition: all 0.2s ease;
+    }
+    .accordion-header:hover {
+      background: var(--bg);
+    }
+    .accordion-header.active {
+      color: var(--pr);
+      border-left: 3px solid var(--pr);
+      background: var(--prl);
+    }
+    .accordion-header::after {
+      content: '+';
+      font-size: 18px;
+      color: var(--txm);
+      font-weight: 400;
+    }
+    .accordion-header.active::after {
+      content: '−';
+      color: var(--pr);
+    }
+    .pn {
+      display: none;
+      padding: 20px;
+      border-bottom: 1px solid var(--bd);
+      background: var(--sf);
+      flex-direction: column;
+      gap: 14px;
+    }
+    .pn.active {
+      display: flex;
+    }
+    
+    /* Right Sidebar Styles */
+    .rp-sidebar {
+      background: var(--sf);
+      border-left: 1px solid var(--bd);
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
     /* Sidebar Navigation */
     .sn {
+      display: none; /* Hidden in Simplify layout */
       background: var(--sf);
       border-right: 1px solid var(--bd);
       padding: 14px 10px;
-      display: flex;
       flex-direction: column;
       gap: 4px;
       overflow-y: auto;
@@ -1938,7 +2012,7 @@
 
     <!-- 2. FORM EDITOR COLUMN -->
     <div class="ep">
-      <div class="eh">
+      <div class="eh" style="display:none;">
         <div>
           <h2 id="ed-t">1. Contact &amp; Header Information</h2>
           <p id="ed-s">Personal links, phone number, email &amp; professional portfolio</p>
@@ -1950,6 +2024,7 @@
 
       <div class="eb">
         <!-- 1. HEADER & INFO -->
+        <div class='accordion-header active' onclick="toggleAccordion('panel-header', this)">👤 Contact & Header</div>
         <div class="pn active" id="panel-header">
           <div class="fg"><label>Full Name</label><input class="fi" id="ffn" placeholder="e.g. Jane Doe"
               oninput="ud('header','name',this.value)"></div>
@@ -1970,6 +2045,7 @@
         </div>
 
         <!-- 2. SUMMARY -->
+        <div class='accordion-header' onclick="toggleAccordion('panel-summary', this)">📝 Executive Summary</div>
         <div class="pn" id="panel-summary">
           <div class="fg">
             <label>Summary Statement</label>
@@ -1996,6 +2072,7 @@
         </div>
 
         <!-- 3. TECHNICAL SKILLS -->
+        <div class='accordion-header' onclick="toggleAccordion('panel-skills', this)">⚡ Technical Skills</div>
         <div class="pn" id="panel-skills">
           <div style="background:linear-gradient(135deg, rgba(79,70,229,0.06), rgba(99,102,241,0.03));border:1px solid var(--prb);border-radius:10px;padding:12px;margin-bottom:12px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
@@ -2017,30 +2094,35 @@
         </div>
 
         <!-- 4. EXPERIENCE -->
+        <div class='accordion-header' onclick="toggleAccordion('panel-exp', this)">💼 Professional Experience</div>
         <div class="pn" id="panel-exp">
           <div id="ec"></div>
           <button class="bad" onclick="addExp()">+ Add Work Experience</button>
         </div>
 
         <!-- 5. PROJECTS -->
+        <div class='accordion-header' onclick="toggleAccordion('panel-proj', this)">🚀 Projects & Experience</div>
         <div class="pn" id="panel-proj">
           <div id="pc"></div>
           <button class="bad" onclick="addProj()">+ Add Project</button>
         </div>
 
         <!-- 6. ACHIEVEMENTS -->
+        <div class='accordion-header' onclick="toggleAccordion('panel-achieve', this)">🏅 Key Achievements</div>
         <div class="pn" id="panel-achieve">
           <div id="ac-cont"></div>
           <button class="bad" onclick="addAchieve()">+ Add Achievement</button>
         </div>
 
         <!-- 7. CERTIFICATIONS -->
+        <div class='accordion-header' onclick="toggleAccordion('panel-certs', this)">🏆 Certifications</div>
         <div class="pn" id="panel-certs">
           <div id="cc"></div>
           <button class="bad" onclick="addCert()">+ Add Certification</button>
         </div>
 
         <!-- 8. EDUCATION -->
+        <div class='accordion-header' onclick="toggleAccordion('panel-edu', this)">🎓 Education</div>
         <div class="pn" id="panel-edu">
           <div id="edc"></div>
           <button class="bad" onclick="addEdu()">+ Add Education</button>
@@ -2143,31 +2225,6 @@
             <button class="bto" onclick="resetToCurrentPreset()">Reset to Preset</button>
           </div>
         </div>
-
-        <!-- AI: ATS CHECK -->
-        <div class="pn" id="panel-ats">
-          <div class="ac">
-            <div class="ach">
-              <div>
-                <div style="font-size:14px;font-weight:800;">ATS Parse &amp; Impact Score</div>
-                <div style="font-size:12px;color:var(--txm);margin-top:2px;">Real-time analysis of keywords, typography &amp; quantifiable metrics</div>
-              </div>
-              <div class="acn" id="ats-n">100%</div>
-            </div>
-            <div class="abb">
-              <div class="abf" id="ats-b" style="width:100%"></div>
-            </div>
-            <div class="ats-tips" id="ats-t"></div>
-          </div>
-        </div>
-
-        <!-- AI: JOB TAILOR -->
-        <div class="pn" id="panel-tailor">
-          <div class="fg">
-            <label>Target Job Description</label>
-            <textarea class="ft" id="fjd" rows="5" style="min-height:110px;"
-              placeholder="Paste the target job description to match keywords, calculate ATS match score, and generate tailored bullet points..."></textarea>
-          </div>
           <div class="fg">
             <label>Personalized AI Tailoring Instructions (Optional)</label>
             <input class="fi" id="fjd-custom-prompt" placeholder="e.g. 'Prioritize my Kubernetes and Go experience', 'Tailor for an early-stage startup'...">
@@ -2224,6 +2281,23 @@
     /* ═════════════════════════════════════════════════════════════════
        MASTER DATA MODEL & DATE SELECTOR ENGINE
     ═════════════════════════════════════════════════════════════════ */
+    
+    // SIMPLIFY ACCORDION LOGIC
+    function toggleAccordion(panelId, headerEl) {
+      // Close all panels
+      document.querySelectorAll('.ep .pn').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.ep .accordion-header').forEach(h => h.classList.remove('active'));
+      
+      // Open clicked panel
+      const panel = document.getElementById(panelId);
+      if (panel) {
+        panel.classList.add('active');
+        headerEl.classList.add('active');
+        // Scroll to header
+        headerEl.scrollIntoView({behavior: "smooth", block: "start"});
+      }
+    }
+
     let docMode = 'resume'; // 'resume' | 'cover_letter'
 
     const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -2991,6 +3065,7 @@ ${r.header?.name || 'Candidate Name'}`
         </div>
 
         <!-- 2. SUMMARY -->
+        <div class='accordion-header' onclick="toggleAccordion('panel-summary', this)">📝 Executive Summary</div>
         ${R.summary && R.summary.text ? `
         <div class="lr-sec">
           <div class="lr-sec-title">SUMMARY</div>
@@ -2998,21 +3073,27 @@ ${r.header?.name || 'Candidate Name'}`
         </div>` : ''}
 
         <!-- 3. TECHNICAL SKILLS -->
+        <div class='accordion-header' onclick="toggleAccordion('panel-skills', this)">⚡ Technical Skills</div>
         ${skillsHtml}
 
         <!-- 4. EXPERIENCE -->
+        <div class='accordion-header' onclick="toggleAccordion('panel-exp', this)">💼 Professional Experience</div>
         ${expHtml}
 
         <!-- 5. PROJECTS -->
+        <div class='accordion-header' onclick="toggleAccordion('panel-proj', this)">🚀 Projects & Experience</div>
         ${projHtml}
 
         <!-- 6. ACHIEVEMENTS -->
+        <div class='accordion-header' onclick="toggleAccordion('panel-achieve', this)">🏅 Key Achievements</div>
         ${achieveHtml}
 
         <!-- 7. CERTIFICATIONS -->
+        <div class='accordion-header' onclick="toggleAccordion('panel-certs', this)">🏆 Certifications</div>
         ${certsHtml}
 
         <!-- 8. EDUCATION -->
+        <div class='accordion-header' onclick="toggleAccordion('panel-edu', this)">🎓 Education</div>
         ${eduHtml}
       </div>
     `;
