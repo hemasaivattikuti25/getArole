@@ -196,7 +196,7 @@
       position: relative; z-index: 10;
       flex: 1;
       display: grid;
-      grid-template-columns: 360px 1fr 360px;
+      grid-template-columns: 360px 1fr;
       overflow: hidden;
       min-height: 0;
       background: var(--background);
@@ -204,7 +204,7 @@
     @media (max-width: 1200px) {
       .workspace {
       position: relative; z-index: 10;
-        grid-template-columns: 320px 1fr 320px;
+        grid-template-columns: 320px 1fr;
       }
     }
     @media (max-width: 992px) {
@@ -1270,58 +1270,6 @@
         </button>
       </div>
     </div>
-
-    <!-- 3. RIGHT SIDEBAR: ATS SCORE & JOB TRACKER -->
-    <aside class="sidebar-right">
-      <div class="sidebar-right-tabs">
-        <button class="btn-right-tab active" id="right-tab-score">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-          Resume Score
-        </button>
-        <button class="btn-right-tab" id="right-tab-chat" onclick="toast('AI Resume Assistant connected!')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Chat <span class="beta-pill">Beta</span>
-        </button>
-      </div>
-
-      <!-- Card 1: Select job from tracker -->
-      <div class="tracker-card glass-panel-light">
-        <div class="tracker-card-label">Select job from tracker</div>
-        <input class="fi" id="ftarget-job-title" placeholder="Search a job or type role..." style="font-size:12.5px;">
-        <div class="tracker-sep-or">or enter manually</div>
-
-        <div class="fg">
-          <label style="font-size:11px;">Job Title</label>
-          <input class="fi" id="fjd-custom-prompt" placeholder="Add Job Title" style="font-size:12.5px;">
-        </div>
-
-        <div class="fg">
-          <label style="font-size:11px;">Job Description</label>
-          <textarea class="ft" id="fjd" rows="5" placeholder="Paste the job description here to get tailored suggestions..." style="min-height:100px;font-size:12px;line-height:1.45;"></textarea>
-        </div>
-
-        <button class="btn-tracker-done" onclick="tailorR()">Done</button>
-        <div id="tout" style="display:none;margin-top:8px;font-size:12px;line-height:1.45;"></div>
-      </div>
-
-      <!-- Card 2: Resume Score (Radial Meter matching Simplify) -->
-      <div class="score-card glass-panel-light">
-        <div class="score-card-title">Resume Score</div>
-        <div class="score-radial-wrap">
-          <svg class="score-radial-svg" viewBox="0 0 170 170">
-            <circle class="score-radial-bg" cx="85" cy="85" r="70" />
-            <circle class="score-radial-progress" id="score-radial-circle" cx="85" cy="85" r="70" />
-          </svg>
-          <div class="score-radial-center">
-            <div class="score-big-num" id="ats-n">79</div>
-            <div class="score-issues-text" id="ats-issues-count">7 issues found</div>
-          </div>
-        </div>
-
-        <!-- Issue List -->
-        <div class="score-issues-list" id="ats-t"></div>
-      </div>
-    </aside>
   </main>
 
     <!-- AI BULLET OPTIMIZER MODAL -->
