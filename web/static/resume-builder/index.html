@@ -4,9 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resume Builder — getArole | Your AI Job Search Partner</title>
+    <title>Master Resume — getArole</title>
   <meta name="description"
     content="Build and export ATS-optimized LaTeX resumes and tailored applications on getArole.">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/logo.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -30,34 +32,40 @@
     
   </script>
   <style>
-    /* ═══════ EXACT SIMPLIFY.JOBS DESIGN SYSTEM ═══════ */
+            /* ═══════ GETAROLE DESIGN SYSTEM ═══════ */
     :root {
-      --simplify-blue: #0284c7;
-      --simplify-blue-hover: #0369a1;
-      --simplify-blue-light: #f0f9ff;
-      --simplify-cyan: #06b6d4;
-      --simplify-bg-canvas: #f3f4f6;
-      --simplify-bg-sidebar: #f8fafc;
-      --simplify-card-bg: #ffffff;
-      --simplify-border: #e2e8f0;
-      --simplify-border-hover: #cbd5e1;
-      --simplify-text-main: #0f172a;
-      --simplify-text-muted: #64748b;
-      --simplify-text-subtle: #94a3b8;
-      --simplify-radius-card: 10px;
-      --simplify-radius-input: 8px;
+      --primary: #0071e3;
+      --primary-hover: #0077ed;
+      --primary-gradient: linear-gradient(135deg, #0071e3 0%, #4facfe 100%);
+      --primary-light: #e8f0fe;
+      --primary-border: #bfdbfe;
+      --accent: #4f46e5;
+      --accent-emerald: #10b981;
+      --surface: #ffffff;
+      --background: #F8F8FA;
+      --border: #e2e8f0;
+      --border-subtle: #f8fafc;
+      --border-hover: #cbd5e1;
+      --text-main: #2C2C2E;
+      --text-muted: #6E6E73;
+      --text-subtle: #99999F;
+      
+      --radius-card: 12px;
+      --radius-input: 8px;
+      
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+      --shadow-glow: 0 0 35px rgba(0, 113, 227, 0.15);
+      --nav-height: 64px;
     }
 
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--simplify-bg-canvas);
-      color: var(--simplify-text-main);
+      background: var(--background);
+      color: var(--text-main);
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -65,132 +73,152 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Top Navbar */
-    .simplify-topbar {
-      height: 56px;
-      background: #ffffff;
-      border-bottom: 1px solid var(--simplify-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
+    /* ════════════════════ TOP NAVIGATION BAR (UNIFORM STYLE) ════════════════════ */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      height: var(--nav-height, 64px);
+      display: flex; align-items: center;
       flex-shrink: 0;
-      z-index: 100;
     }
-    .simplify-brand-crumbs {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13.5px;
+    .header-inner {
+      max-width: 1500px; width: 100%; margin: 0 auto; padding: 0 24px;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .simplify-logo-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-family: 'Outfit', sans-serif;
-      font-weight: 800;
-      font-size: 18px;
-      color: #0f172a;
-      text-decoration: none;
+    .brand-group { display: flex; align-items: center; gap: 32px; }
+    .brand-logo {
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
+      transition: transform 0.2s ease;
     }
-    .simplify-logo-badge span {
-      color: var(--simplify-blue);
+    .brand-logo:hover { transform: scale(1.02); }
+    .brand-logo-img { width: 34px; height: 34px; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(79,70,229,0.2); }
+    .brand-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 19px; color: var(--text-main, #0f172a); }
+    .brand-title span { color: var(--primary, #4f46e5); }
+
+    /* Nav Links */
+    .nav-tabs { display: flex; align-items: center; gap: 4px; }
+    .nav-tab {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 14px; border-radius: 8px;
+      font-size: 13.5px; font-weight: 600; color: var(--text-muted, #64748b);
+      text-decoration: none; cursor: pointer; transition: all 0.15s ease;
     }
-    .crumb-sep {
-      color: var(--simplify-text-subtle);
-      font-size: 13px;
+    .nav-tab:hover { background: var(--border-subtle, #f8fafc); color: var(--text-main, #0f172a); }
+    .nav-tab.active {
+      background: var(--primary-light, #e0e7ff); color: var(--primary, #4f46e5); font-weight: 700;
     }
-    .crumb-item {
-      color: var(--simplify-text-muted);
-      font-weight: 600;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .crumb-current {
-      color: var(--simplify-text-main);
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+    .nav-badge {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+      padding: 1px 7px; border-radius: 99px; background: var(--primary, #4f46e5); color: white;
     }
 
-    .simplify-topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    /* Right Actions & User Menu */
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    
     .status-save-pill {
-      font-size: 12px;
-      color: var(--simplify-text-muted);
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      font-size: 13px; font-weight: 600; color: var(--text-muted);
+      display: flex; align-items: center; gap: 5px; margin-right: 8px;
     }
-    .btn-share-simplify {
-      padding: 6px 14px;
-      border-radius: 8px;
-      border: 1px solid var(--simplify-border);
-      background: #ffffff;
-      color: var(--simplify-text-main);
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+
+    .btn-secondary {
+      background: var(--surface, #ffffff); border: 1.5px solid var(--border, #e2e8f0);
+      padding: 7px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 700;
+      color: var(--text-main, #0f172a); cursor: pointer; display: flex; align-items: center; gap: 6px;
       transition: all 0.15s;
     }
-    .btn-share-simplify:hover {
-      border-color: var(--simplify-border-hover);
-      background: #f8fafc;
+    .btn-secondary:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    .btn-secondary:active { transform: scale(0.98); }
+
+    .btn-primary {
+      padding: 8px 18px; border-radius: 8px; border: none;
+      background: var(--primary-gradient); color: #ffffff;
+      font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .btn-export-simplify {
-      padding: 6px 16px;
-      border-radius: 8px;
-      border: none;
-      background: #0284c7;
-      color: #ffffff;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 1px 3px rgba(2, 132, 199, 0.3);
-      transition: all 0.15s;
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(79, 70, 229, 0.42); }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .user-profile-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px;
+      border-radius: 10px; border: 1.5px solid var(--primary-border);
+      background: var(--primary-light); cursor: pointer; position: relative;
+      color: var(--primary); font-weight: 800; font-size: 14px;
+      transition: all 0.2s;
     }
-    .btn-export-simplify:hover {
-      background: #0369a1;
-      transform: translateY(-1px);
+    .user-profile-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+    
+    /* Glass Panel Animation */
+    .glass-panel-light {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    
+    /* ── AMBIENT BACKGROUND GLOW ORBS ── */
+    .ambient-glow-wrap {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      overflow: hidden; pointer-events: none; z-index: 0;
+    }
+    .ambient-orb {
+      position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.65;
+      animation: floatSlow 18s ease-in-out infinite alternate;
+    }
+    .orb-1 {
+      width: 550px; height: 550px; top: -100px; left: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(79,70,229,0.18) 0%, rgba(124,58,237,0.08) 60%, transparent 100%);
+    }
+    .orb-2 {
+      width: 420px; height: 420px; top: 250px; left: 10%;
+      background: radial-gradient(circle, rgba(37,99,235,0.12) 0%, rgba(79,70,229,0.05) 70%, transparent 100%);
+      animation-delay: -4s;
+    }
+    .orb-3 {
+      width: 480px; height: 480px; top: 320px; right: 8%;
+      background: radial-gradient(circle, rgba(16,185,129,0.1) 0%, rgba(79,70,229,0.06) 70%, transparent 100%);
+      animation-delay: -8s;
+    }
+    @keyframes floatSlow {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(25px, 35px) scale(1.06); }
+      100% { transform: translate(-20px, -15px) scale(0.95); }
     }
 
     /* 3-Column Layout */
-    .simplify-workspace {
+    .workspace {
+      position: relative; z-index: 10;
       flex: 1;
       display: grid;
       grid-template-columns: 360px 1fr 360px;
       overflow: hidden;
       min-height: 0;
-      background: var(--simplify-bg-canvas);
+      background: var(--background);
     }
     @media (max-width: 1200px) {
-      .simplify-workspace {
+      .workspace {
+      position: relative; z-index: 10;
         grid-template-columns: 320px 1fr 320px;
       }
     }
     @media (max-width: 992px) {
-      .simplify-workspace {
+      .workspace {
+      position: relative; z-index: 10;
         grid-template-columns: 1fr;
         overflow-y: auto;
       }
     }
 
     /* Left Sidebar: Editor Cards */
-    .simplify-sidebar-left {
-      background: var(--simplify-bg-sidebar);
-      border-right: 1px solid var(--simplify-border);
+    .sidebar-left {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       overflow-y: auto;
@@ -209,7 +237,7 @@
       border-radius: 8px;
       border: none;
       background: transparent;
-      color: var(--simplify-text-muted);
+      color: var(--text-muted);
       font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
@@ -221,7 +249,7 @@
     }
     .btn-sidebar-tab.active {
       background: #ffffff;
-      color: var(--simplify-text-main);
+      color: var(--text-main);
       font-weight: 700;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
@@ -233,87 +261,37 @@
       gap: 8px;
     }
 
-    .simplify-section-card {
+        .section-card {
       background: #ffffff;
-      border: 1px solid var(--simplify-border);
-      border-radius: var(--simplify-radius-card);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
-      transition: all 0.15s ease;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       overflow: hidden;
     }
-    .simplify-section-card:hover {
-      border-color: var(--simplify-border-hover);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    .section-card:hover {
+      border-color: var(--primary-border);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
     }
-    .simplify-section-header {
-      padding: 13px 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      user-select: none;
-      background: #ffffff;
+    .section-card.active {
+      border-color: var(--primary);
+      box-shadow: 0 4px 16px rgba(0, 113, 227, 0.12);
+      transform: translateY(-2px);
     }
-    .section-drag-handle {
-      color: #cbd5e1;
-      font-size: 13px;
-      letter-spacing: -2px;
-      cursor: grab;
-      user-select: none;
-    }
-    .section-icon-box {
-      width: 26px;
-      height: 26px;
-      border-radius: 6px;
-      background: var(--simplify-blue-light);
-      color: var(--simplify-blue);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      flex-shrink: 0;
-    }
-    .section-title-text {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--simplify-text-main);
-      flex: 1;
-    }
-    .section-badge-pill {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 1px 6px;
-      border-radius: 99px;
-      background: #fef2f2;
-      color: #ef4444;
-      border: 1px solid #fecaca;
-      display: flex;
-      align-items: center;
-      gap: 3px;
-    }
-    .section-chevron {
-      color: var(--simplify-text-subtle);
-      font-size: 16px;
-      font-weight: 600;
-      transition: transform 0.2s ease, color 0.2s;
-    }
-    .simplify-section-card.active {
-      border-color: var(--simplify-border-hover);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-    }
-    .simplify-section-card.active .section-chevron {
+    .section-card.active .section-chevron {
       transform: rotate(90deg);
-      color: var(--simplify-blue);
+      color: var(--primary);
     }
-    .simplify-section-body {
+    .section-body {
       display: none;
       padding: 16px;
-      border-top: 1px solid var(--simplify-border);
+      border-top: 1px solid var(--border);
       background: #ffffff;
       flex-direction: column;
       gap: 12px;
     }
-    .simplify-section-card.active .simplify-section-body {
+    .section-card.active .section-body {
       display: flex;
     }
 
@@ -331,26 +309,26 @@
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
-    .fi, .ft, .fi-sel {
+        .fi, .ft, .fi-sel {
       width: 100%;
-      padding: 9px 12px;
+      padding: 10px 12px;
       border: 1.5px solid #cbd5e1 !important;
-      border-radius: var(--simplify-radius-input);
+      border-radius: var(--radius-input);
       background: #ffffff !important;
-      color: var(--simplify-text-main) !important;
+      color: var(--text-main) !important;
       font-size: 13.5px;
       font-weight: 500;
       font-family: inherit;
       outline: none;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-      transition: all 0.15s ease;
+      transition: all 0.2s ease;
     }
     .fi:hover, .ft:hover, .fi-sel:hover {
       border-color: #94a3b8 !important;
     }
     .fi:focus, .ft:focus, .fi-sel:focus {
-      border-color: var(--simplify-blue) !important;
-      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18) !important;
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.18) !important;
     }
     .fi::placeholder, .ft::placeholder {
       color: #94a3b8 !important;
@@ -367,9 +345,9 @@
       width: 100%;
       padding: 13px;
       border: 1.5px dashed #cbd5e1;
-      border-radius: var(--simplify-radius-card);
+      border-radius: var(--radius-card);
       background: #ffffff;
-      color: var(--simplify-text-main);
+      color: var(--text-main);
       font-size: 13.5px;
       font-weight: 700;
       cursor: pointer;
@@ -387,10 +365,10 @@
     .btn-reset-profile {
       width: 100%;
       padding: 10px;
-      border: 1px solid var(--simplify-border);
+      border: 1px solid var(--border);
       border-radius: 8px;
       background: #ffffff;
-      color: var(--simplify-text-muted);
+      color: var(--text-muted);
       font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
@@ -403,12 +381,12 @@
     }
     .btn-reset-profile:hover {
       background: #f8fafc;
-      color: var(--simplify-text-main);
+      color: var(--text-main);
     }
 
     /* Center Preview Canvas */
-    .simplify-preview-canvas {
-      background: var(--simplify-bg-canvas);
+    .preview-canvas {
+      background: var(--background);
       overflow-y: auto;
       padding: 28px 20px 90px 20px;
       display: flex;
@@ -432,13 +410,13 @@
     }
 
     /* Floating Canvas Bottom Toolbar */
-    .simplify-floating-toolbar {
+    .floating-toolbar {
       position: absolute;
       bottom: 24px;
       left: 50%;
       transform: translateX(-50%);
       background: #ffffff;
-      border: 1px solid var(--simplify-border);
+      border: 1px solid var(--border);
       border-radius: 99px;
       padding: 6px 14px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
@@ -450,7 +428,7 @@
     .floating-tool-btn {
       background: none;
       border: none;
-      color: var(--simplify-text-muted);
+      color: var(--text-muted);
       font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
@@ -462,19 +440,19 @@
       transition: all 0.15s;
     }
     .floating-tool-btn:hover {
-      color: var(--simplify-text-main);
+      color: var(--text-main);
       background: #f1f5f9;
     }
     .floating-tool-sep {
       width: 1px;
       height: 16px;
-      background: var(--simplify-border);
+      background: var(--border);
     }
 
     /* Right Sidebar: ATS & Matcher */
-    .simplify-sidebar-right {
+    .sidebar-right {
       background: #ffffff;
-      border-left: 1px solid var(--simplify-border);
+      border-left: 1px solid var(--border);
       overflow-y: auto;
       padding: 16px;
       display: flex;
@@ -483,7 +461,7 @@
     }
     .sidebar-right-tabs {
       display: flex;
-      border-bottom: 1px solid var(--simplify-border);
+      border-bottom: 1px solid var(--border);
       margin-bottom: 4px;
     }
     .btn-right-tab {
@@ -492,7 +470,7 @@
       background: none;
       border: none;
       border-bottom: 2px solid transparent;
-      color: var(--simplify-text-muted);
+      color: var(--text-muted);
       font-size: 13px;
       font-weight: 700;
       cursor: pointer;
@@ -509,16 +487,16 @@
       font-size: 10px;
       font-weight: 800;
       background: #e0f2fe;
-      color: #0284c7;
+      color: var(--primary);
       padding: 2px 6px;
       border-radius: 99px;
     }
 
     /* Cards in Right Sidebar */
-    .simplify-tracker-card {
+    .tracker-card {
       background: #ffffff;
-      border: 1px solid var(--simplify-border);
-      border-radius: var(--simplify-radius-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
       padding: 16px;
       display: flex;
       flex-direction: column;
@@ -528,12 +506,12 @@
     .tracker-card-label {
       font-size: 12px;
       font-weight: 700;
-      color: var(--simplify-text-main);
+      color: var(--text-main);
     }
     .tracker-sep-or {
       text-align: center;
       font-size: 11.5px;
-      color: var(--simplify-text-subtle);
+      color: var(--text-subtle);
       margin: 2px 0;
     }
     .btn-tracker-done {
@@ -541,7 +519,7 @@
       padding: 8px;
       border-radius: 8px;
       border: none;
-      background: #0284c7;
+      background: var(--primary);
       color: #ffffff;
       font-weight: 700;
       font-size: 13px;
@@ -549,13 +527,13 @@
       transition: all 0.15s;
     }
     .btn-tracker-done:hover {
-      background: #0369a1;
+      background: var(--primary-hover);
     }
 
-    .simplify-score-card {
+    .score-card {
       background: #ffffff;
-      border: 1px solid var(--simplify-border);
-      border-radius: var(--simplify-radius-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
       padding: 20px 16px;
       display: flex;
       flex-direction: column;
@@ -566,7 +544,7 @@
     .score-card-title {
       font-size: 14px;
       font-weight: 800;
-      color: var(--simplify-text-main);
+      color: var(--text-main);
       align-self: flex-start;
     }
     .score-radial-wrap {
@@ -589,7 +567,7 @@
     }
     .score-radial-progress {
       fill: none;
-      stroke: #0284c7;
+      stroke: var(--primary);
       stroke-width: 14;
       stroke-linecap: round;
       stroke-dasharray: 440;
@@ -605,13 +583,13 @@
     .score-big-num {
       font-size: 42px;
       font-weight: 900;
-      color: var(--simplify-text-main);
+      color: var(--text-main);
       line-height: 1;
       font-family: 'Outfit', sans-serif;
     }
     .score-issues-text {
       font-size: 12px;
-      color: var(--simplify-text-muted);
+      color: var(--text-muted);
       margin-top: 4px;
     }
     .score-issues-list {
@@ -623,7 +601,7 @@
     }
     .score-issue-item {
       font-size: 12px;
-      color: var(--simplify-text-muted);
+      color: var(--text-muted);
       display: flex;
       align-items: flex-start;
       gap: 6px;
@@ -765,26 +743,15 @@
       margin-bottom: 2px;
     }
 
-    /* Skip link & Modal & Toast utilities */
-    .skip-link {
-      position: absolute;
-      top: -100px;
-      left: 0;
-    }
-    .skip-link:focus {
-      top: 10px;
-      left: 10px;
-      z-index: 9999;
-      background: #0284c7;
-      color: #fff;
-      padding: 8px 16px;
-      border-radius: 6px;
-    }
-    .ai-modal-overlay {
+    
+    /* ═══════ PDF EXPORT (PRINT) ═══════ */
+    @media print {
+      body { background: #fff !important; }
+      .simplify-topbar, .sidebar-left, .sidebar-right, .floating-toolbar,     .ai-modal-overlay {
       position: fixed;
       inset: 0;
       background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(8px);
       z-index: 9999;
       display: none;
       align-items: center;
@@ -796,14 +763,37 @@
     }
     .ai-modal-card {
       background: #ffffff;
-      border-radius: 12px;
+      border-radius: 16px;
       max-width: 600px;
       width: 100%;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
-      border: 1px solid #e2e8f0;
+    }
+    .ai-modal-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--primary-light);
+    }
+    .ai-modal-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ai-modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: #ffffff;
     }
     .ai-modal-header {
       padding: 16px 20px;
@@ -881,14 +871,14 @@
       outline: none;
     }
     .blr input:focus {
-      border-color: #0284c7;
+      border-color: var(--primary);
     }
     .bai {
       padding: 4px 8px;
       border-radius: 5px;
       border: 1px solid #bae6fd;
       background: #f0f9ff;
-      color: #0284c7;
+      color: var(--primary);
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
@@ -918,8 +908,8 @@
       margin-top: 4px;
     }
     .bads:hover {
-      border-color: #0284c7;
-      color: #0284c7;
+      border-color: var(--primary);
+      color: var(--primary);
     }
     #toast {
       position: fixed;
@@ -953,49 +943,55 @@
 </head>
 
 <body>
+  <!-- AMBIENT GLOW -->
+  <div class="ambient-glow-wrap">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+  </div>
+
 
   <!-- WCAG 2.4.1 Bypass Blocks -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- ════════ TOP BAR ════════ -->
-    <!-- ════════════════════ UNIFORM GLOBAL HEADER ════════════════════ -->
-  <!-- ════════ SIMPLIFY 1:1 TOP BAR ════════ -->
-  <div class="simplify-topbar">
-    <div class="simplify-brand-crumbs">
-      <a href="/dashboard/" class="simplify-logo-badge">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        get<span>A</span>role
-      </a>
-      <span class="crumb-sep">›</span>
-      <a href="/dashboard/" class="crumb-item">Documents</a>
-      <span class="crumb-sep">›</span>
-      <div class="crumb-current">
-        <span id="resume-doc-title">Master_Resume</span>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor:pointer;color:#94a3b8;"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <!-- ════════════════════ TOP NAVIGATION BAR (UNIFORM STYLE) ════════════════════ -->
+  <header>
+    <div class="header-inner">
+      <div class="brand-group">
+        <a href="/" class="brand-logo">
+          <img src="/logo.svg" alt="getArole Logo" class="brand-logo-img" onerror="this.src='/favicon.png';this.style.width='32px'">
+          <div class="brand-title">get<span>A</span>role</div>
+        </a>
+        <div class="nav-tabs">
+          <a href="/explore/" class="nav-tab">Explore Jobs</a>
+          <a href="/onboarding/" class="nav-tab active">
+            Documents
+            <span class="nav-badge" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;">Master Resume</span>
+          </a>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="status-save-pill">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <span id="asv">Saved just now</span>
+        </div>
+        <button class="btn-secondary" onclick="resyncFromProfile()" title="Re-sync from profile">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Re-Sync
+        </button>
+        <button class="btn-primary" onclick="window.print()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          Export PDF
+        </button>
+        <div class="user-profile-btn" id="nav-avatar">H</div>
       </div>
     </div>
-
-    <div class="simplify-topbar-actions">
-      <div class="status-save-pill">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-        <span id="asv">Saved just now</span>
-      </div>
-      <button class="btn-share-simplify" onclick="resyncFromProfile()" title="Re-sync data from profile">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
-        Re-Sync
-      </button>
-      <button class="btn-export-simplify" onclick="exportPDF()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Export PDF
-      </button>
-      <div class="user-avatar" id="nav-avatar" style="width:30px;height:30px;border-radius:50%;background:#0284c7;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;cursor:pointer;">H</div>
-    </div>
-  </div>
+  </header>
 
   <!-- ════════ SIMPLIFY 3-COLUMN WORKSPACE ════════ -->
-  <main class="simplify-workspace" id="main-content">
+  <main class="workspace" id="main-content">
     <!-- 1. LEFT SIDEBAR: EDITOR -->
-    <aside class="simplify-sidebar-left">
+    <aside class="sidebar-left">
       <!-- 3 Navigation Tabs -->
       <div class="sidebar-mode-tabs">
         <button class="btn-sidebar-tab active" id="tab-editor" onclick="setSimplifySidebarTab('editor')">
@@ -1015,8 +1011,8 @@
       <!-- Section Cards Accordion -->
       <div class="simplify-sections-list">
         <!-- 1. Resume Header -->
-        <div class="simplify-section-card active" id="card-header">
-          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-header')">
+        <div class="section-card active" id="card-header">
+          <div class="section-header" onclick="toggleSimplifyCard('card-header')">
             <span class="section-drag-handle">⋮⋮</span>
             <div class="section-icon-box">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -1025,7 +1021,7 @@
             <span class="section-badge-pill" id="badge-header-missing">! 3</span>
             <span class="section-chevron">›</span>
           </div>
-          <div class="simplify-section-body">
+          <div class="section-body">
             <div class="fr2">
               <div class="fg">
                 <label>Full Name</label>
@@ -1099,8 +1095,8 @@
         </div>
 
         <!-- 2. Headline -->
-        <div class="simplify-section-card" id="card-headline">
-          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-headline')">
+        <div class="section-card glass-panel-light" id="card-headline">
+          <div class="section-header" onclick="toggleSimplifyCard('card-headline')">
             <span class="section-drag-handle">⋮⋮</span>
             <div class="section-icon-box">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg>
@@ -1108,7 +1104,7 @@
             <span class="section-title-text">Headline</span>
             <span class="section-chevron">›</span>
           </div>
-          <div class="simplify-section-body">
+          <div class="section-body">
             <div class="fg">
               <label>Professional Headline</label>
               <input class="fi" id="fhl" placeholder="e.g. Software Engineer | Distributed Systems" oninput="ud('header','headline',this.value)">
@@ -1118,8 +1114,8 @@
         </div>
 
         <!-- 3. Professional Summary -->
-        <div class="simplify-section-card" id="card-summary">
-          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-summary')">
+        <div class="section-card glass-panel-light" id="card-summary">
+          <div class="section-header" onclick="toggleSimplifyCard('card-summary')">
             <span class="section-drag-handle">⋮⋮</span>
             <div class="section-icon-box">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
@@ -1127,7 +1123,7 @@
             <span class="section-title-text">Professional Summary</span>
             <span class="section-chevron">›</span>
           </div>
-          <div class="simplify-section-body">
+          <div class="section-body">
             <div class="fg">
               <label>Summary Statement</label>
               <textarea class="ft" id="fsu" rows="4" style="min-height:95px;" oninput="ud('summary','text',this.value)"></textarea>
@@ -1147,8 +1143,8 @@
         </div>
 
         <!-- 4. Education -->
-        <div class="simplify-section-card" id="card-edu">
-          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-edu')">
+        <div class="section-card glass-panel-light" id="card-edu">
+          <div class="section-header" onclick="toggleSimplifyCard('card-edu')">
             <span class="section-drag-handle">⋮⋮</span>
             <div class="section-icon-box">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
@@ -1156,15 +1152,15 @@
             <span class="section-title-text">Education</span>
             <span class="section-chevron">›</span>
           </div>
-          <div class="simplify-section-body">
+          <div class="section-body">
             <div id="edc"></div>
             <button class="btn-add-custom-sec" onclick="addEdu()" style="padding:8px;font-size:12.5px;">+ Add Education</button>
           </div>
         </div>
 
         <!-- 5. Professional Experience -->
-        <div class="simplify-section-card" id="card-exp">
-          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-exp')">
+        <div class="section-card glass-panel-light" id="card-exp">
+          <div class="section-header" onclick="toggleSimplifyCard('card-exp')">
             <span class="section-drag-handle">⋮⋮</span>
             <div class="section-icon-box">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
@@ -1172,15 +1168,15 @@
             <span class="section-title-text">Professional Experience</span>
             <span class="section-chevron">›</span>
           </div>
-          <div class="simplify-section-body">
+          <div class="section-body">
             <div id="ec"></div>
             <button class="btn-add-custom-sec" onclick="addExp()" style="padding:8px;font-size:12.5px;">+ Add Work Experience</button>
           </div>
         </div>
 
         <!-- 6. Projects & Outside Experience -->
-        <div class="simplify-section-card" id="card-proj">
-          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-proj')">
+        <div class="section-card glass-panel-light" id="card-proj">
+          <div class="section-header" onclick="toggleSimplifyCard('card-proj')">
             <span class="section-drag-handle">⋮⋮</span>
             <div class="section-icon-box">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
@@ -1188,15 +1184,15 @@
             <span class="section-title-text">Projects &amp; Outside Experience</span>
             <span class="section-chevron">›</span>
           </div>
-          <div class="simplify-section-body">
+          <div class="section-body">
             <div id="pc"></div>
             <button class="btn-add-custom-sec" onclick="addProj()" style="padding:8px;font-size:12.5px;">+ Add Project</button>
           </div>
         </div>
 
         <!-- 7. Skills -->
-        <div class="simplify-section-card" id="card-skills">
-          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-skills')">
+        <div class="section-card glass-panel-light" id="card-skills">
+          <div class="section-header" onclick="toggleSimplifyCard('card-skills')">
             <span class="section-drag-handle">⋮⋮</span>
             <div class="section-icon-box">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
@@ -1204,15 +1200,15 @@
             <span class="section-title-text">Skills</span>
             <span class="section-chevron">›</span>
           </div>
-          <div class="simplify-section-body">
+          <div class="section-body">
             <div id="skills-categories-container" style="display:flex;flex-direction:column;gap:10px;"></div>
             <button class="btn-add-custom-sec" onclick="addSkillCat()" style="padding:8px;font-size:12.5px;">+ Add Skill Category</button>
           </div>
         </div>
 
         <!-- 8. Certifications -->
-        <div class="simplify-section-card" id="card-certs">
-          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-certs')">
+        <div class="section-card glass-panel-light" id="card-certs">
+          <div class="section-header" onclick="toggleSimplifyCard('card-certs')">
             <span class="section-drag-handle">⋮⋮</span>
             <div class="section-icon-box">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
@@ -1220,7 +1216,7 @@
             <span class="section-title-text">Certifications</span>
             <span class="section-chevron">›</span>
           </div>
-          <div class="simplify-section-body">
+          <div class="section-body">
             <div id="cc"></div>
             <button class="btn-add-custom-sec" onclick="addCert()" style="padding:8px;font-size:12.5px;">+ Add Certification</button>
           </div>
@@ -1246,21 +1242,21 @@
     </aside>
 
     <!-- 2. CENTER CANVAS: LIVE A4 PREVIEW -->
-    <div class="simplify-preview-canvas">
+    <div class="preview-canvas">
       <div class="a4w">
         <div id="rp"></div>
       </div>
 
       <!-- Bottom Floating Pill Toolbar matching Simplify -->
-      <div class="simplify-floating-toolbar">
+      <div class="floating-toolbar">
         <button class="floating-tool-btn" onclick="scale()" title="Fit to Screen">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
           Fit to Page
         </button>
         <div class="floating-tool-sep"></div>
         <button class="floating-tool-btn" onclick="aiPolishCL('concise')" title="Ask AI assistant">
           Ask AI...
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
         </button>
         <div class="floating-tool-sep"></div>
         <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#64748b;">
@@ -1276,7 +1272,7 @@
     </div>
 
     <!-- 3. RIGHT SIDEBAR: ATS SCORE & JOB TRACKER -->
-    <aside class="simplify-sidebar-right">
+    <aside class="sidebar-right">
       <div class="sidebar-right-tabs">
         <button class="btn-right-tab active" id="right-tab-score">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
@@ -1289,7 +1285,7 @@
       </div>
 
       <!-- Card 1: Select job from tracker -->
-      <div class="simplify-tracker-card">
+      <div class="tracker-card glass-panel-light">
         <div class="tracker-card-label">Select job from tracker</div>
         <input class="fi" id="ftarget-job-title" placeholder="Search a job or type role..." style="font-size:12.5px;">
         <div class="tracker-sep-or">or enter manually</div>
@@ -1309,7 +1305,7 @@
       </div>
 
       <!-- Card 2: Resume Score (Radial Meter matching Simplify) -->
-      <div class="simplify-score-card">
+      <div class="score-card glass-panel-light">
         <div class="score-card-title">Resume Score</div>
         <div class="score-radial-wrap">
           <svg class="score-radial-svg" viewBox="0 0 170 170">
@@ -1328,29 +1324,32 @@
     </aside>
   </main>
 
-  <!-- AI BULLET OPTIMIZER MODAL -->
+    <!-- AI BULLET OPTIMIZER MODAL -->
   <div class="ai-modal-overlay" id="ai-bullet-modal">
     <div class="ai-modal-card">
       <div class="ai-modal-header">
-        <div class="ai-modal-title">AI Personalized Bullet Point Optimizer</div>
-        <button class="brm" onclick="closeAIBulletModal()" style="font-size:13px;padding:4px 8px;">✕ Close</button>
+        <div class="ai-modal-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          AI Bullet Optimizer
+        </div>
+        <button class="btn-secondary" onclick="closeAIBulletModal()" style="padding:6px 10px;font-size:12px;border-radius:6px;border:none;background:transparent;box-shadow:none;">✕ Close</button>
       </div>
       <div class="ai-modal-body">
-        <div style="font-size:12.5px;color:var(--txm);background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--bd);">
-          <strong style="color:var(--tx);">Original:</strong> <span id="ai-modal-orig" style="color:var(--txs);"></span>
+        <div style="font-size:13px;color:var(--text-muted);background:var(--background);padding:14px;border-radius:10px;border:1px solid var(--border);">
+          <strong style="color:var(--text-main);">Original:</strong> <span id="ai-modal-orig" style="color:var(--text-muted);line-height:1.5;"></span>
         </div>
 
-        <!-- Personalized prompt input inside modal -->
-        <div style="display:flex;gap:6px;align-items:center;">
-          <input class="fi" id="ai-bullet-custom-prompt" style="font-size:12.5px;background:#fff;">
-          <button class="bad" onclick="enhBWithCustomPrompt()" style="padding:7px 12px;white-space:nowrap;margin:0;border-color:var(--pr);color:var(--pr);">Refine</button>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input class="fi" id="ai-bullet-custom-prompt" placeholder="E.g. Make it more quantitative, focus on leadership..." style="font-size:13px;flex:1;">
+          <button class="btn-primary" onclick="enhBWithCustomPrompt()" style="padding:10px 16px;border-radius:8px;">Refine</button>
         </div>
 
-        <div id="ai-modal-variations" style="display:flex;flex-direction:column;gap:12px;">
+        <div id="ai-modal-variations" style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
           <!-- Injected via JS -->
         </div>
       </div>
     </div>
+  </div>
   </div>
 
   <div id="pw" style="display:none;"></div>
@@ -1372,7 +1371,7 @@
       const wasActive = card.classList.contains('active');
       
       // Close all cards
-      document.querySelectorAll('.simplify-section-card').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.section-card').forEach(c => c.classList.remove('active'));
       
       // If was not active, open it
       if (!wasActive) {
@@ -2381,26 +2380,15 @@ ${r.header?.name || 'Candidate Name'}`
     body { margin: 0; padding: 0; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     #sh { width: 794px; min-height: 1123px; margin: 0 auto; background: white; }
   
-    /* Skip link & Modal & Toast utilities */
-    .skip-link {
-      position: absolute;
-      top: -100px;
-      left: 0;
-    }
-    .skip-link:focus {
-      top: 10px;
-      left: 10px;
-      z-index: 9999;
-      background: #0284c7;
-      color: #fff;
-      padding: 8px 16px;
-      border-radius: 6px;
-    }
-    .ai-modal-overlay {
+    
+    /* ═══════ PDF EXPORT (PRINT) ═══════ */
+    @media print {
+      body { background: #fff !important; }
+      .simplify-topbar, .sidebar-left, .sidebar-right, .floating-toolbar,     .ai-modal-overlay {
       position: fixed;
       inset: 0;
       background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(8px);
       z-index: 9999;
       display: none;
       align-items: center;
@@ -2412,14 +2400,37 @@ ${r.header?.name || 'Candidate Name'}`
     }
     .ai-modal-card {
       background: #ffffff;
-      border-radius: 12px;
+      border-radius: 16px;
       max-width: 600px;
       width: 100%;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
-      border: 1px solid #e2e8f0;
+    }
+    .ai-modal-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--primary-light);
+    }
+    .ai-modal-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ai-modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: #ffffff;
     }
     .ai-modal-header {
       padding: 16px 20px;
@@ -2497,14 +2508,14 @@ ${r.header?.name || 'Candidate Name'}`
       outline: none;
     }
     .blr input:focus {
-      border-color: #0284c7;
+      border-color: var(--primary);
     }
     .bai {
       padding: 4px 8px;
       border-radius: 5px;
       border: 1px solid #bae6fd;
       background: #f0f9ff;
-      color: #0284c7;
+      color: var(--primary);
       font-size: 11px;
       font-weight: 700;
       cursor: pointer;
@@ -2534,8 +2545,8 @@ ${r.header?.name || 'Candidate Name'}`
       margin-top: 4px;
     }
     .bads:hover {
-      border-color: #0284c7;
-      color: #0284c7;
+      border-color: var(--primary);
+      color: var(--primary);
     }
     #toast {
       position: fixed;
@@ -2562,6 +2573,13 @@ ${r.header?.name || 'Candidate Name'}`
 </style>
 </head>
 <body>
+  <!-- AMBIENT GLOW -->
+  <div class="ambient-glow-wrap">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+  </div>
+
   <div id="sh">${html}</div>
   </body>
 </html>`);
@@ -2653,10 +2671,10 @@ ${r.header?.name || 'Candidate Name'}`
 
       R.custom_sections.forEach((cs, sIdx) => {
         const wrap = document.createElement('div');
-        wrap.className = 'simplify-section-card';
+        wrap.className = 'section-card';
         wrap.id = `card-custom-${sIdx}`;
         wrap.innerHTML = `
-          <div class="simplify-section-header" onclick="toggleSimplifyCard('card-custom-${sIdx}')">
+          <div class="section-header" onclick="toggleSimplifyCard('card-custom-${sIdx}')">
             <span class="section-drag-handle">⋮⋮</span>
             <div class="section-icon-box">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
@@ -2665,7 +2683,7 @@ ${r.header?.name || 'Candidate Name'}`
             <button class="brm" style="padding:2px 8px;font-size:11px;margin-left:auto;margin-right:8px;" onclick="event.stopPropagation(); rmCustomSection(${sIdx})">Delete</button>
             <span class="section-chevron">›</span>
           </div>
-          <div class="simplify-section-body">
+          <div class="section-body">
             <div class="fg">
               <label>Section Title</label>
               <input class="fi" value="${esc(cs.title || '')}" placeholder="e.g. Leadership &amp; Activities, Publications, Awards" oninput="uCustomSectionTitle(${sIdx}, this.value)">
@@ -3559,13 +3577,13 @@ ${r.header?.name || 'Candidate Name'}`
 
       if (nEl) {
         nEl.textContent = score;
-        nEl.style.color = score >= 80 ? '#0284c7' : (score >= 60 ? '#ea580c' : '#dc2626');
+        nEl.style.color = score >= 80 ? 'var(--primary)' : (score >= 60 ? '#ea580c' : '#dc2626');
       }
       if (circleEl) {
         // circumference = 2 * PI * 70 ≈ 440
         const offset = 440 - (440 * (score / 100));
         circleEl.style.strokeDashoffset = offset;
-        circleEl.style.stroke = score >= 80 ? '#0284c7' : (score >= 60 ? '#ea580c' : '#dc2626');
+        circleEl.style.stroke = score >= 80 ? 'var(--primary)' : (score >= 60 ? '#ea580c' : '#dc2626');
       }
       if (countEl) {
         countEl.textContent = `${tips.length} issue${tips.length === 1 ? '' : 's'} found`;
@@ -3597,7 +3615,7 @@ ${r.header?.name || 'Candidate Name'}`
     }
 
     function scale() {
-      const pv = document.querySelector('.simplify-preview-canvas') || document.querySelector('.pv');
+      const pv = document.querySelector('.preview-canvas') || document.querySelector('.pv');
       const sh = document.getElementById('rp');
       if (!pv || !sh) return;
       const av = pv.clientWidth - 48;
