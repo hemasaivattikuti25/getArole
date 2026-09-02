@@ -333,13 +333,16 @@
       background: var(--prl);
     }
     .accordion-header::after {
-      content: '+';
-      font-size: 18px;
-      color: var(--txm);
-      font-weight: 400;
+      content: '›';
+      font-size: 20px;
+      line-height: 1;
+      color: var(--txs, #94a3b8);
+      font-weight: 500;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
+      display: inline-block;
     }
     .accordion-header.active::after {
-      content: '−';
+      transform: rotate(90deg);
       color: var(--pr);
     }
     .pn {
@@ -965,15 +968,20 @@
     }
 
     /* ═════════════════════════════════════════════════════════════════
-       LATEX MASTER RESUME & COVER LETTER STYLES
-       Typography: Times New Roman / Computer Modern Serif
+       LATEX MASTER RESUME STYLES (Computer Modern / Overleaf Standard)
     ═════════════════════════════════════════════════════════════════ */
-    .latex-doc {
-      font-family: 'Times New Roman', 'CMU Serif', 'Latin Modern Roman', 'Liberation Serif', Times, serif;
+    .latex-doc,
+    .latex-doc * {
+      font-family: 'Computer Modern Serif', 'Latin Modern Roman', 'CMU Serif', 'Times New Roman', serif !important;
+      box-sizing: border-box;
       color: #000;
-      padding: 48px 54px;
-      font-size: 10.5pt;
-      line-height: 1.25;
+    }
+
+    .latex-doc {
+      color: #000;
+      padding: 40px 48px;
+      font-size: 9.8pt;
+      line-height: 1.28;
       background: #fff;
     }
 
@@ -989,118 +997,155 @@
     /* Header */
     .lr-header {
       text-align: center;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .lr-name {
-      font-size: 22pt;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
-    }
-
-    
-    /* ════════ LATEX RESUME STYLES (Computer Modern) ════════ */
-    .a4 * {
-      font-family: "Computer Modern Serif", "Times New Roman", Times, serif;
-      line-height: 1.3;
-      color: #000;
-    }
-    .lr-header-box {
-      text-align: center;
-      margin-bottom: 12px;
-    }
-    .lr-name {
-      font-size: 26pt;
+      font-size: 24pt;
       font-weight: bold;
       text-align: center;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 4px;
+      letter-spacing: 0.8px;
+      margin-bottom: 3px;
+      line-height: 1.15;
     }
-    .lr-contacts {
-      font-size: 10pt;
+
+    .lr-headline {
+      font-size: 10.5pt;
+      font-style: italic;
       text-align: center;
+      margin-top: 2px;
+      margin-bottom: 4px;
+      color: #222;
     }
-    .lr-contacts span, .lr-contacts a {
-      margin: 0 4px;
+
+    .lr-contacts {
+      font-size: 9.5pt;
+      text-align: center;
+      line-height: 1.35;
+      margin-top: 3px;
+    }
+
+    .lr-contacts span,
+    .lr-contacts a {
+      margin: 0 3px;
       color: #000;
       text-decoration: none;
     }
+
+    /* Section Headings with crisp LaTeX \hrule */
     .lr-sec {
       margin-bottom: 8px;
     }
+
     .lr-sec-title {
-      font-size: 11.5pt;
+      font-size: 10.5pt;
       font-weight: bold;
       color: #000;
-      border-bottom: 0.5px solid #000;
-      padding-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 0.75px solid #000;
+      padding-bottom: 1.5px;
       margin-bottom: 4px;
+      margin-top: 8px;
     }
+
+    /* Summary & Narrative */
+    .lr-summary-text {
+      font-size: 9.5pt;
+      line-height: 1.3;
+      text-align: justify;
+      margin-bottom: 4px;
+      color: #111;
+    }
+
+    /* Skills Table */
+    .lr-skills-table {
+      width: 100%;
+      font-size: 9.5pt;
+      line-height: 1.3;
+    }
+
+    .lr-skills-row {
+      margin-bottom: 2px;
+    }
+
+    .lr-skills-label {
+      font-weight: bold;
+      color: #000;
+    }
+
+    /* Experience & Projects Entries */
     .lr-entry {
       margin-bottom: 6px;
     }
+
     .lr-entry-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      font-size: 10pt;
+      font-size: 9.8pt;
     }
+
     .lr-org {
       font-weight: bold;
+      color: #000;
     }
+
     .lr-date {
-      font-size: 10pt;
+      font-size: 9.5pt;
+      font-style: normal;
+      color: #111;
     }
+
     .lr-subline {
       display: flex;
       justify-content: space-between;
       font-style: italic;
-      font-size: 10pt;
+      font-size: 9.5pt;
+      color: #222;
       margin-top: 0px;
       margin-bottom: 2px;
     }
+
     .lr-links {
       font-style: normal;
       margin-left: 6px;
     }
+
     .lr-links a {
       color: #000;
-      text-decoration: none;
-      font-size: 9.5pt;
+      text-decoration: underline;
+      font-size: 9pt;
       margin-left: 4px;
     }
+
+    /* Bullet Lists */
     .lr-bullets {
       margin: 0;
       padding-left: 14px;
     }
+
     .lr-bullets li {
-      font-size: 10pt;
+      font-size: 9.3pt;
       line-height: 1.25;
-      margin-bottom: 1px;
+      margin-bottom: 1.5px;
       text-align: justify;
+      color: #111;
     }
-    .lr-bullets li::marker {
-      font-size: 9pt;
+
+    .lr-bullets li strong {
+      font-weight: bold;
+      color: #000;
     }
+
+    /* Single-line Items (Achievements, Certs) */
     .lr-single-line {
       display: flex;
       justify-content: space-between;
-      font-size: 10pt;
+      font-size: 9.3pt;
       line-height: 1.35;
       margin-bottom: 2px;
-    }
-    .lr-summary-text {
-      font-size: 10pt;
-      line-height: 1.3;
-      text-align: justify;
-      margin-bottom: 8px;
-    }
-    .lr-skills-table {
-      width: 100%;
-      font-size: 10pt;
-      line-height: 1.3;
     }
 
     /* ════════ COVER LETTER SPECIFIC STYLES ════════ */
@@ -2006,27 +2051,101 @@
       </div>
 
       <div class="eb">
-        <!-- 1. HEADER & INFO -->
-        <div class='accordion-header active' onclick="toggleAccordion('panel-header', this)">Contact & Header</div>
+        <!-- 1. RESUME HEADER -->
+        <div class="accordion-header active" onclick="toggleAccordion('panel-header', this)">Resume Header</div>
         <div class="pn active" id="panel-header">
-          <div class="fg"><label>Full Name</label><input class="fi" id="ffn"
-              oninput="ud('header','name',this.value)"></div>
           <div class="fr2">
-            <div class="fg"><label>Phone Number</label><input class="fi" id="fph"
-                oninput="ud('header','phone',this.value)"></div>
-            <div class="fg"><label>Email Address</label><input class="fi" id="fem" type="email" oninput="ud('header','email',this.value)"></div>
+            <div class="fg">
+              <label>Full Name</label>
+              <input class="fi" id="ffn" placeholder="e.g. John Doe" oninput="ud('header','name',this.value)">
+            </div>
+            <div class="fg" style="max-width:120px;">
+              <label>Suffix Name</label>
+              <input class="fi" id="fsuf" placeholder="e.g. M.S., Ph.D." oninput="ud('header','suffix',this.value)">
+            </div>
           </div>
+
+          <div class="fg">
+            <label>Location</label>
+            <input class="fi" id="floc" placeholder="e.g. Philadelphia, PA, USA" oninput="ud('header','location',this.value)">
+          </div>
+
           <div class="fr2">
-            <div class="fg"><label>LinkedIn Handle / URL</label><input class="fi" id="fli" oninput="ud('header','linkedin',this.value)"></div>
-            <div class="fg"><label>GitHub Handle / URL</label><input class="fi" id="fgh" oninput="ud('header','github',this.value)"></div>
+            <div class="fg" style="max-width:110px;">
+              <label>Country Code</label>
+              <input class="fi" id="fcc" placeholder="e.g. +1, +91" oninput="ud('header','country_code',this.value)">
+            </div>
+            <div class="fg">
+              <label>Phone Number</label>
+              <input class="fi" id="fph" placeholder="e.g. (215) 555-5555" oninput="ud('header','phone',this.value)">
+            </div>
           </div>
-          <div class="fg"><label>Personal Portfolio / Website</label><input class="fi" id="fpo" oninput="ud('header','portfolio',this.value)"></div>
+
+          <div class="fg">
+            <label>Email Address</label>
+            <input class="fi" id="fem" type="email" placeholder="you@example.com" oninput="ud('header','email',this.value)">
+          </div>
+
+          <div class="fg">
+            <label>LinkedIn URL</label>
+            <input class="fi" id="fli" placeholder="https://linkedin.com/in/username" oninput="ud('header','linkedin',this.value)">
+          </div>
+
+          <div class="fg">
+            <label>GitHub URL</label>
+            <input class="fi" id="fgh" placeholder="https://github.com/username" oninput="ud('header','github',this.value)">
+          </div>
+
+          <div class="fg">
+            <label>Portfolio URL</label>
+            <input class="fi" id="fpo" placeholder="https://yourportfolio.dev" oninput="ud('header','portfolio',this.value)">
+          </div>
+
+          <div class="fg">
+            <label>Other URL (Website / Blog / Substack)</label>
+            <input class="fi" id="fot" placeholder="https://blog.example.com" oninput="ud('header','other_url',this.value)">
+          </div>
+
+          <!-- URL & Phone formatting toggles matching Simplify -->
+          <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px;margin-top:6px;">
+            <div style="font-size:11.5px;font-weight:700;color:var(--txm);">Display Settings</div>
+            
+            <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;cursor:pointer;line-height:1.4;">
+              <input type="checkbox" id="f-show-full-urls" onchange="ud('header','show_full_urls',this.checked)" style="margin-top:2px;">
+              <div>
+                <strong style="color:var(--tx);">Show Full URLs</strong>
+                <div style="font-size:11px;color:var(--txs);">Display "linkedin.com/in/john-doe" instead of "LinkedIn" in preview</div>
+              </div>
+            </label>
+
+            <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;cursor:pointer;line-height:1.4;">
+              <input type="checkbox" id="f-show-country-code" checked onchange="ud('header','show_country_code',this.checked)" style="margin-top:2px;">
+              <div>
+                <strong style="color:var(--tx);">Show Phone Country Code</strong>
+                <div style="font-size:11px;color:var(--txs);">Display "+1 (215) 555-5555" instead of local digits</div>
+              </div>
+            </label>
+          </div>
         </div>
+
+        <!-- 2. HEADLINE -->
+        <div class="accordion-header" onclick="toggleAccordion('panel-headline', this)">Headline</div>
+        <div class="pn" id="panel-headline">
+          <div class="fg">
+            <label>Professional Headline / Target Role Title</label>
+            <input class="fi" id="fhl" placeholder="e.g. Software Engineer | Distributed Systems &amp; Applied AI" oninput="ud('header','headline',this.value)">
+            <span style="font-size:11.5px;color:var(--txm);margin-top:4px;display:block;">
+              A 1-line professional title displayed beneath your name in the live preview.
+            </span>
+          </div>
+        </div>
+
+        <!-- 3. PROFESSIONAL SUMMARY -->
+        <div class="accordion-header" onclick="toggleAccordion('panel-summary', this)">Professional Summary</div>
         <div class="pn" id="panel-summary">
           <div class="fg">
             <label>Summary Statement</label>
-            <textarea class="ft" id="fsu" rows="4" style="min-height:95px;"
-              oninput="ud('summary','text',this.value)"></textarea>
+            <textarea class="ft" id="fsu" rows="4" style="min-height:95px;" oninput="ud('summary','text',this.value)"></textarea>
           </div>
 
           <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-top:4px;">
@@ -2045,146 +2164,132 @@
             <div id="ai-summary-results" style="display:none;margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
           </div>
         </div>
+
+        <!-- 4. EDUCATION -->
+        <div class="accordion-header" onclick="toggleAccordion('panel-edu', this)">Education</div>
+        <div class="pn" id="panel-edu">
+          <div id="edc"></div>
+          <button class="bad" onclick="addEdu()">+ Add Education</button>
+        </div>
+
+        <!-- 5. PROFESSIONAL EXPERIENCE -->
+        <div class="accordion-header" onclick="toggleAccordion('panel-exp', this)">Professional Experience</div>
+        <div class="pn" id="panel-exp">
+          <div id="ec"></div>
+          <button class="bad" onclick="addExp()">+ Add Work Experience</button>
+        </div>
+
+        <!-- 6. PROJECTS & OUTSIDE EXPERIENCE -->
+        <div class="accordion-header" onclick="toggleAccordion('panel-proj', this)">Projects & Outside Experience</div>
+        <div class="pn" id="panel-proj">
+          <div id="pc"></div>
+          <button class="bad" onclick="addProj()">+ Add Project</button>
+        </div>
+
+        <!-- 7. SKILLS -->
+        <div class="accordion-header" onclick="toggleAccordion('panel-skills', this)">Skills</div>
         <div class="pn" id="panel-skills">
           <div style="background:linear-gradient(135deg, rgba(79,70,229,0.06), rgba(99,102,241,0.03));border:1px solid var(--prb);border-radius:10px;padding:12px;margin-bottom:12px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
               <div style="font-size:12.5px;font-weight:800;color:var(--pr);">AI Industry Skills Recommender</div>
             </div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-              <input class="fi" id="ai-skills-role-input" style="background:#fff;flex:1;min-width:200px;">
-              <input class="fi" id="ai-skills-focus-input" style="background:#fff;flex:1;min-width:180px;">
+              <input class="fi" id="ai-skills-role-input" placeholder="Role (e.g. Backend Engineer)" style="background:#fff;flex:1;min-width:180px;">
+              <input class="fi" id="ai-skills-focus-input" placeholder="Focus (e.g. LLMs / Cloud)" style="background:#fff;flex:1;min-width:160px;">
               <button class="btp" onclick="aiSuggestSkills()" style="white-space:nowrap;padding:7px 14px;">Suggest Skills</button>
             </div>
             <div id="ai-skills-results" style="display:none;margin-top:10px;"></div>
           </div>
 
           <div style="font-size:12.5px;color:var(--txm);line-height:1.45;margin-bottom:8px;">
-            Add custom skill groups matching your profile (e.g. <em>Languages</em>, <em>Frameworks</em>, <em>Design &amp; Prototyping</em>, <em>Core Engineering</em>).
+            Add custom skill groups matching your profile (e.g. <em>Languages</em>, <em>Frameworks</em>, <em>Databases</em>, <em>DevOps</em>).
           </div>
           <div id="skills-categories-container" style="display:flex;flex-direction:column;gap:10px;"></div>
           <button class="bad" onclick="addSkillCat()">+ Add Skill Category</button>
         </div>
-        <div class="pn" id="panel-exp">
-          <div id="ec"></div>
-          <button class="bad" onclick="addExp()">+ Add Work Experience</button>
-        </div>
-        <div class="pn" id="panel-proj">
-          <div id="pc"></div>
-          <button class="bad" onclick="addProj()">+ Add Project</button>
-        </div>
-        <div class="pn" id="panel-achieve">
-          <div id="ac-cont"></div>
-          <button class="bad" onclick="addAchieve()">+ Add Achievement</button>
-        </div>
+
+        <!-- 8. CERTIFICATIONS -->
+        <div class="accordion-header" onclick="toggleAccordion('panel-certs', this)">Certifications</div>
         <div class="pn" id="panel-certs">
           <div id="cc"></div>
           <button class="bad" onclick="addCert()">+ Add Certification</button>
         </div>
-        <div class="pn" id="panel-edu">
-          <div id="edc"></div>
-          <button class="bad" onclick="addEdu()">+ Add Education</button>
-        </div>
 
-        <!-- CL: TARGET ROLE & COMPANY -->
-        <div class="pn" id="panel-cl-target">
-          <div class="template-presets-bar">
-            <button class="btn-template-preset active" id="cl-preset-professional" onclick="applyCoverLetterPreset('professional')">General Professional</button>
-            <button class="btn-template-preset" id="cl-preset-fresher" onclick="applyCoverLetterPreset('fresher')">Fresher / Graduate</button>
-            <button class="btn-template-preset" id="cl-preset-technical" onclick="applyCoverLetterPreset('technical')">High-Impact Technical</button>
-            <button class="btn-template-preset" id="cl-preset-referral" onclick="applyCoverLetterPreset('referral')">Referral Outreach</button>
-          </div>
+        <!-- 9. DYNAMIC CUSTOM SECTIONS -->
+        <div id="custom-sections-accordion-container"></div>
+        <button class="bad" onclick="addCustomSection()" style="margin:16px 20px;width:calc(100% - 40px);background:var(--bg);border:1.5px dashed var(--bd);color:var(--pr);font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;">+ Add Custom Section</button>
 
-          <div class="fr2">
-            <div class="fg">
-              <label>Target Company</label>
-              <input class="fi" id="fcl-comp" oninput="udCL('company',this.value)">
+        <!-- COVER LETTER (WHEN IN CL MODE) -->
+        <div id="cl-sections-wrapper" style="display:none;">
+          <div class="accordion-header" onclick="toggleAccordion('panel-cl-target', this)">Cover Letter: Target &amp; Company</div>
+          <div class="pn" id="panel-cl-target">
+            <div class="template-presets-bar">
+              <button class="btn-template-preset active" id="cl-preset-professional" onclick="applyCoverLetterPreset('professional')">General Professional</button>
+              <button class="btn-template-preset" id="cl-preset-fresher" onclick="applyCoverLetterPreset('fresher')">Fresher / Graduate</button>
+              <button class="btn-template-preset" id="cl-preset-technical" onclick="applyCoverLetterPreset('technical')">High-Impact Technical</button>
+              <button class="btn-template-preset" id="cl-preset-referral" onclick="applyCoverLetterPreset('referral')">Referral Outreach</button>
             </div>
-            <div class="fg">
-              <label>Target Role Title</label>
-              <input class="fi" id="fcl-role" oninput="udCL('role',this.value)">
-            </div>
-          </div>
 
-          <div class="fr2">
-            <div class="fg">
-              <label>Hiring Manager / Team</label>
-              <input class="fi" id="fcl-mgr" oninput="udCL('manager',this.value)">
-            </div>
-            <div class="fg">
-              <label>Letter Date</label>
-              <div style="display:flex;gap:6px;align-items:center;">
-                <select class="fi-sel" id="fcl-date-month" onchange="uCLDate('month', this.value)" style="flex:1;">
-                  <option value="">Month</option>
-                </select>
-                <select class="fi-sel" id="fcl-date-year" onchange="uCLDate('year', this.value)" style="flex:1;">
-                  <option value="">Year</option>
-                </select>
-                <button class="bto" type="button" onclick="setCLTodayDate()" style="padding:6px 10px;font-size:11.5px;white-space:nowrap;" title="Set to Today's Date">Today</button>
+            <div class="fr2">
+              <div class="fg">
+                <label>Target Company</label>
+                <input class="fi" id="fcl-comp" oninput="udCL('company',this.value)">
+              </div>
+              <div class="fg">
+                <label>Target Role Title</label>
+                <input class="fi" id="fcl-role" oninput="udCL('role',this.value)">
               </div>
             </div>
-          </div>
 
-          <div class="fg">
-            <label>Personalized AI Instructions &amp; Talking Points (Optional)</label>
-            <textarea class="ft" id="fcl-custom-prompt" rows="2" style="min-height:55px;"></textarea>
-          </div>
-
-          <div class="fg">
-            <label>Target Job Description (Optional for Deep Keyword Tailoring)</label>
-            <textarea class="ft" id="fcl-jd" rows="3" style="min-height:75px;"
-              oninput="udCL('jd',this.value)"></textarea>
-          </div>
-
-          <div style="display:flex;gap:10px;align-items:center;margin-top:4px;">
-            <button class="btp" onclick="aiGenerateCoverLetter()">Generate Personalized Cover Letter</button>
-            <button class="bto" onclick="gS('cl-body')">Edit Letter Content →</button>
-          </div>
-        </div>
-
-        <!-- CL: LETTER BODY CONTENT -->
-        <div class="pn" id="panel-cl-body">
-          <div class="template-presets-bar">
-            <button class="btn-template-preset" onclick="applyCoverLetterPreset('professional')">Professional</button>
-            <button class="btn-template-preset" onclick="applyCoverLetterPreset('fresher')">Fresher</button>
-            <button class="btn-template-preset" onclick="applyCoverLetterPreset('technical')">Technical</button>
-            <button class="btn-template-preset" onclick="applyCoverLetterPreset('referral')">Referral</button>
-          </div>
-
-          <div class="fg">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-              <label>Cover Letter Body</label>
-              <span style="font-size:11.5px;color:var(--txs);" id="cl-word-count">0 words</span>
+            <div class="fr2">
+              <div class="fg">
+                <label>Hiring Manager / Team</label>
+                <input class="fi" id="fcl-mgr" oninput="udCL('manager',this.value)">
+              </div>
+              <div class="fg">
+                <label>Letter Date</label>
+                <div style="display:flex;gap:6px;align-items:center;">
+                  <select class="fi-sel" id="fcl-date-month" onchange="uCLDate('month', this.value)" style="flex:1;">
+                    <option value="">Month</option>
+                  </select>
+                  <select class="fi-sel" id="fcl-date-year" onchange="uCLDate('year', this.value)" style="flex:1;">
+                    <option value="">Year</option>
+                  </select>
+                  <button class="bto" type="button" onclick="setCLTodayDate()" style="padding:6px 10px;font-size:11.5px;white-space:nowrap;">Today</button>
+                </div>
+              </div>
             </div>
-            <textarea class="ft" id="fcl-text" rows="14" style="min-height:280px;font-size:13px;line-height:1.6;"
-              oninput="handleCLTextInput(this.value)"></textarea>
-          </div>
 
-          <!-- AI Polish Toolbar -->
-          <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-top:6px;display:flex;flex-direction:column;gap:8px;">
-            <div style="font-size:11.5px;font-weight:700;color:var(--txm);">Quick Tone Polish:</div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button class="ai-quick-btn" onclick="aiPolishCL('concise')">Make Concise</button>
-              <button class="ai-quick-btn" onclick="aiPolishCL('technical')">Emphasize Metrics</button>
-              <button class="ai-quick-btn" onclick="aiPolishCL('executive')">Executive Tone</button>
-              <button class="ai-quick-btn" onclick="aiPolishCL('fix_grammar')">Fix Grammar &amp; Flow</button>
+            <div class="fg">
+              <label>Personalized AI Instructions (Optional)</label>
+              <textarea class="ft" id="fcl-custom-prompt" rows="2" style="min-height:55px;"></textarea>
             </div>
-            <div style="display:flex;gap:6px;margin-top:4px;">
-              <input class="fi" id="cl-custom-polish-input" style="background:#fff;">
-              <button class="btp" onclick="aiPolishCLCustom()" style="white-space:nowrap;padding:6px 14px;">Polish with Prompt</button>
+
+            <div class="fg">
+              <label>Target Job Description</label>
+              <textarea class="ft" id="fcl-jd" rows="3" style="min-height:75px;" oninput="udCL('jd',this.value)"></textarea>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:center;margin-top:4px;">
+              <button class="btp" onclick="aiGenerateCoverLetter()">Generate Personalized Cover Letter</button>
             </div>
           </div>
 
-          <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
-            <button class="btp" onclick="aiGenerateCoverLetter()">Regenerate Full Letter</button>
-            <button class="bto" onclick="resetToCurrentPreset()">Reset to Preset</button>
+          <div class="accordion-header" onclick="toggleAccordion('panel-cl-body', this)">Cover Letter: Body Content</div>
+          <div class="pn" id="panel-cl-body">
+            <div class="fg">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                <label>Cover Letter Body</label>
+                <span style="font-size:11.5px;color:var(--txs);" id="cl-word-count">0 words</span>
+              </div>
+              <textarea class="ft" id="fcl-text" rows="14" style="min-height:280px;font-size:13px;line-height:1.6;" oninput="handleCLTextInput(this.value)"></textarea>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
+              <button class="btp" onclick="aiGenerateCoverLetter()">Regenerate Full Letter</button>
+              <button class="bto" onclick="resetToCurrentPreset()">Reset to Preset</button>
+            </div>
           </div>
-        </div>
-          <div class="fg">
-            <label>Personalized AI Tailoring Instructions (Optional)</label>
-            <input class="fi" id="fjd-custom-prompt">
-          </div>
-          <button class="btp" onclick="tailorR()">Run ATS Match &amp; Personalized Keyword Analysis</button>
-          <div id="tout" style="display:none;margin-top:14px;"></div>
         </div>
       </div>
     </div>
@@ -2198,6 +2303,43 @@
         <div id="rp"></div>
       </div>
     </div>
+    <!-- 3. RIGHT SIDEBAR (ATS & MATCHER) -->
+    <aside class="rp-sidebar" id="rp-tools-sidebar">
+      <!-- ATS Score Card -->
+      <div style="background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:15px;color:var(--tx);">Resume Score</div>
+          <div class="acn" id="ats-n" style="font-size:18px;font-weight:900;color:var(--pr);">100%</div>
+        </div>
+        <div class="abb" style="height:6px;background:var(--bg-subtle,#f1f1f4);border-radius:99px;overflow:hidden;margin-bottom:12px;">
+          <div class="abf" id="ats-b" style="width:100%;height:100%;background:linear-gradient(90deg,var(--pr),#10b981);border-radius:99px;transition:width 0.4s ease;"></div>
+        </div>
+        <div class="ats-tips" id="ats-t" style="font-size:12px;line-height:1.45;color:var(--txm);"></div>
+      </div>
+
+      <!-- Job Matcher Card -->
+      <div style="background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;">
+        <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:15px;color:var(--tx);">Role &amp; Keyword Matcher</div>
+        
+        <div class="fg">
+          <label style="font-size:11.5px;font-weight:700;color:var(--txm);">Target Job Title</label>
+          <input class="fi" id="ftarget-job-title" placeholder="e.g. Senior Backend Engineer" style="font-size:12.5px;">
+        </div>
+
+        <div class="fg">
+          <label style="font-size:11.5px;font-weight:700;color:var(--txm);">Job Description</label>
+          <textarea class="ft" id="fjd" rows="6" placeholder="Paste target job description to match keywords, calculate ATS score, and get tailored suggestions..." style="min-height:110px;font-size:12px;line-height:1.4;"></textarea>
+        </div>
+
+        <div class="fg">
+          <label style="font-size:11.5px;font-weight:700;color:var(--txm);">Personalized AI Instructions (Optional)</label>
+          <input class="fi" id="fjd-custom-prompt" placeholder="e.g. Prioritize distributed systems &amp; Go" style="font-size:12px;">
+        </div>
+
+        <button class="btp" onclick="tailorR()" style="width:100%;justify-content:center;padding:9px 14px;">Run ATS Match Analysis</button>
+        <div id="tout" style="display:none;margin-top:10px;font-size:12px;line-height:1.45;"></div>
+      </div>
+    </aside>
   </main>
 
   <!-- AI BULLET OPTIMIZER MODAL -->
@@ -2238,17 +2380,19 @@
     
     // SIMPLIFY ACCORDION LOGIC
     function toggleAccordion(panelId, headerEl) {
+      const panel = document.getElementById(panelId);
+      if (!panel) return;
+      const isAlreadyActive = panel.classList.contains('active');
+
       // Close all panels
       document.querySelectorAll('.ep .pn').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.ep .accordion-header').forEach(h => h.classList.remove('active'));
       
-      // Open clicked panel
-      const panel = document.getElementById(panelId);
-      if (panel) {
+      // Toggle: open if it was not active
+      if (!isAlreadyActive) {
         panel.classList.add('active');
-        headerEl.classList.add('active');
-        // Scroll to header
-        headerEl.scrollIntoView({behavior: "smooth", block: "start"});
+        if (headerEl) headerEl.classList.add('active');
+        headerEl.scrollIntoView({behavior: "smooth", block: "nearest"});
       }
     }
 
@@ -2264,12 +2408,20 @@
     let R = {
       header: {
         name: '',
+        suffix: '',
+        headline: '',
+        location: '',
+        country_code: '',
         phone: '',
         email: '',
         linkedin: '',
         github: '',
-        portfolio: ''
+        portfolio: '',
+        other_url: '',
+        show_full_urls: false,
+        show_country_code: true
       },
+      custom_sections: [],
       summary: {
         text: ''
       },
@@ -2453,23 +2605,60 @@
       if (profileRaw) {
         try {
           const prof = JSON.parse(profileRaw);
-          // Name (multiple possible fields)
+          // Name & Suffix
           if (!R.header.name) {
             R.header.name = prof.name || prof.full_name || prof.displayName || '';
             if (!R.header.name && (prof.first || prof.first_name)) {
               R.header.name = [prof.first || prof.first_name, prof.last || prof.last_name].filter(Boolean).join(' ');
             }
           }
-          // Contact
-          if (prof.phone && !R.header.phone) R.header.phone = prof.phone;
+          if (prof.suffix && !R.header.suffix) R.header.suffix = prof.suffix;
+          if (prof.suffix_name && !R.header.suffix) R.header.suffix = prof.suffix_name;
+          
+          // Headline / Professional Title
+          if (prof.headline && !R.header.headline) R.header.headline = prof.headline;
+          if (prof.title && !R.header.headline) R.header.headline = prof.title;
+          if (prof.role && !R.header.headline) R.header.headline = prof.role;
+
+          // Location
+          if (!R.header.location) {
+            if (prof.location) R.header.location = prof.location;
+            else if (prof.city) {
+              R.header.location = [prof.city, prof.state, prof.country].filter(Boolean).join(', ');
+            } else if (Array.isArray(prof.locations) && prof.locations[0]) {
+              R.header.location = prof.locations[0];
+            }
+          }
+
+          // Phone & Country Code
+          if (prof.phone && !R.header.phone) {
+            let p = prof.phone.trim();
+            if (p.startsWith('+')) {
+              const parts = p.split(' ');
+              if (parts.length > 1 && !R.header.country_code) {
+                R.header.country_code = parts[0];
+                p = parts.slice(1).join(' ');
+              }
+            }
+            R.header.phone = p;
+          }
+          if (prof.country_code && !R.header.country_code) R.header.country_code = prof.country_code;
+          if (prof.phone_country_code && !R.header.country_code) R.header.country_code = prof.phone_country_code;
+
+          // Contact & Links
           if (prof.email && !R.header.email) R.header.email = prof.email;
-          // Links (both flat and nested)
           if (prof.linkedin_url && !R.header.linkedin) R.header.linkedin = prof.linkedin_url;
           if (prof.github_url && !R.header.github) R.header.github = prof.github_url;
           if (prof.portfolio_url && !R.header.portfolio) R.header.portfolio = prof.portfolio_url;
           if (prof.links?.linkedin && !R.header.linkedin) R.header.linkedin = prof.links.linkedin;
           if (prof.links?.github && !R.header.github) R.header.github = prof.links.github;
           if (prof.links?.portfolio && !R.header.portfolio) R.header.portfolio = prof.links.portfolio;
+          if (prof.other_url && !R.header.other_url) R.header.other_url = prof.other_url;
+          if (prof.website && !R.header.other_url) R.header.other_url = prof.website;
+          if (prof.links?.other && !R.header.other_url) R.header.other_url = prof.links.other;
+          if (prof.custom_sections && Array.isArray(prof.custom_sections) && (!R.custom_sections || R.custom_sections.length === 0)) {
+            R.custom_sections = prof.custom_sections;
+          }
           // Skills
           if (prof.skills && prof.skills.length > 0 && (!Array.isArray(R.skills) || R.skills.length === 0 || !R.skills[0].items)) {
             if (Array.isArray(prof.skills) && prof.skills.length > 0 && typeof prof.skills[0] === 'object' && prof.skills[0].label) {
@@ -2665,14 +2854,27 @@
     }
 
     function populateFormFields() {
-      const h = R.header;
+      const h = R.header || {};
       sv('ffn', h.name);
+      sv('fsuf', h.suffix);
+      sv('floc', h.location);
+      sv('fcc', h.country_code);
       sv('fph', h.phone);
       sv('fem', h.email);
       sv('fli', h.linkedin);
       sv('fgh', h.github);
       sv('fpo', h.portfolio);
-      sv('fsu', R.summary.text);
+      sv('fot', h.other_url);
+      sv('fhl', h.headline);
+      sv('fsu', R.summary ? R.summary.text : '');
+
+      const fullUrlsCheck = document.getElementById('f-show-full-urls');
+      if (fullUrlsCheck) fullUrlsCheck.checked = !!h.show_full_urls;
+
+      const ccCheck = document.getElementById('f-show-country-code');
+      if (ccCheck) ccCheck.checked = h.show_country_code !== false;
+
+      renderCustomSections();
 
       renderSkillsPanel();
 
@@ -2882,20 +3084,23 @@ ${r.header?.name || 'Candidate Name'}`
       document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active'));
       const layout = document.getElementById('app-layout') || document.getElementById('main-content');
 
+      const clWrapper = document.getElementById('cl-sections-wrapper');
       if (mode === 'resume') {
         const btnR = document.getElementById('btn-mode-resume');
         if (btnR) btnR.classList.add('active');
         const lbl = document.getElementById('doc-mode-label');
         if (lbl) lbl.textContent = '1-Page ATS Resume';
         if (layout) layout.classList.remove('mode-cl-active');
-        gS('header');
+        if (clWrapper) clWrapper.style.display = 'none';
+        toggleAccordion('panel-header', document.querySelector('.accordion-header'));
       } else {
         const btnCL = document.getElementById('btn-mode-cl');
         if (btnCL) btnCL.classList.add('active');
         const lbl = document.getElementById('doc-mode-label');
         if (lbl) lbl.textContent = 'Tailored Cover Letter';
         if (layout) layout.classList.add('mode-cl-active');
-        gS('cl-target');
+        if (clWrapper) clWrapper.style.display = 'block';
+        toggleAccordion('panel-cl-target', clWrapper.querySelector('.accordion-header'));
       }
 
       rp();
@@ -2907,15 +3112,32 @@ ${r.header?.name || 'Candidate Name'}`
     ═════════════════════════════════════════════════════════════════ */
     function rp() {
       const container = document.getElementById('rp');
-      const h = R.header;
+      if (!container) return;
+      const h = R.header || {};
+      const showFullUrls = !!h.show_full_urls;
+      const showCountryCode = h.show_country_code !== false;
+
+      function cleanUrl(url) {
+        if (!url) return '';
+        return url.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '');
+      }
+
+      let phoneDisplay = h.phone ? h.phone.trim() : '';
+      if (phoneDisplay && h.country_code && showCountryCode && !phoneDisplay.startsWith('+')) {
+        phoneDisplay = `${h.country_code.trim()} ${phoneDisplay}`;
+      }
 
       const contacts = [
-        h.phone && `<span>${h.phone}</span>`,
-        h.email && `<a href="mailto:${h.email}">Email</a>`,
-        h.linkedin && `<a href="${h.linkedin.startsWith('http') ? h.linkedin : 'https://' + h.linkedin}" target="_blank">LinkedIn</a>`,
-        h.github && `<a href="${h.github.startsWith('http') ? h.github : 'https://' + h.github}" target="_blank">GitHub</a>`,
-        h.portfolio && `<a href="${h.portfolio.startsWith('http') ? h.portfolio : 'https://' + h.portfolio}" target="_blank">${h.portfolio.replace(/^https?:\/\//, '')}</a>`
+        h.location && `<span>${esc(h.location)}</span>`,
+        phoneDisplay && `<span>${esc(phoneDisplay)}</span>`,
+        h.email && `<a href="mailto:${esc(h.email)}">${esc(h.email)}</a>`,
+        h.linkedin && `<a href="${esc(h.linkedin.startsWith('http') ? h.linkedin : 'https://' + h.linkedin)}" target="_blank">${showFullUrls ? esc(cleanUrl(h.linkedin)) : 'LinkedIn'}</a>`,
+        h.github && `<a href="${esc(h.github.startsWith('http') ? h.github : 'https://' + h.github)}" target="_blank">${showFullUrls ? esc(cleanUrl(h.github)) : 'GitHub'}</a>`,
+        h.portfolio && `<a href="${esc(h.portfolio.startsWith('http') ? h.portfolio : 'https://' + h.portfolio)}" target="_blank">${showFullUrls ? esc(cleanUrl(h.portfolio)) : 'Portfolio'}</a>`,
+        h.other_url && `<a href="${esc(h.other_url.startsWith('http') ? h.other_url : 'https://' + h.other_url)}" target="_blank">${showFullUrls ? esc(cleanUrl(h.other_url)) : (cleanUrl(h.other_url).split('/')[0] || 'Website')}</a>`
       ].filter(Boolean);
+
+      const fullName = [h.name, h.suffix].filter(Boolean).join(', ');
 
       if (docMode === 'cover_letter') {
         const cl = R.cover_letter || {};
@@ -2925,20 +3147,21 @@ ${r.header?.name || 'Candidate Name'}`
       <div class="latex-doc">
         <!-- Letterhead -->
         <div class="cl-header-box">
-          <div class="lr-name" style="font-size:24pt;text-align:center;">${h.name || ''}</div>
-          <div class="lr-contacts" style="text-align:center;">${contacts.join(' &bull; ') || ''}</div>
+          <div class="lr-name" style="font-size:24pt;text-align:center;">${esc(fullName)}</div>
+          ${h.headline ? `<div class="lr-headline" style="font-size:10.5pt;font-style:italic;text-align:center;margin-top:2px;margin-bottom:4px;color:#222;">${esc(h.headline)}</div>` : ''}
+          <div class="lr-contacts" style="text-align:center;">${contacts.join(' &bull; ')}</div>
         </div>
 
         <!-- Date & Addressee -->
         <div class="cl-meta-block">
           <div><strong>Date:</strong> ${cl.date || new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
-          <div style="margin-top:6px;"><strong>To:</strong> ${cl.manager || ''}</div>
-          <div><strong>Company:</strong> ${cl.company || ''}</div>
-          <div><strong>Subject:</strong> Application for ${cl.role || ''}</div>
+          <div style="margin-top:6px;"><strong>To:</strong> ${esc(cl.manager || '')}</div>
+          <div><strong>Company:</strong> ${esc(cl.company || '')}</div>
+          <div><strong>Subject:</strong> Application for ${esc(cl.role || '')}</div>
         </div>
 
         <!-- Letter Body -->
-        <div class="cl-salutation">Dear ${cl.manager || ''},</div>
+        <div class="cl-salutation">Dear ${esc(cl.manager || '')},</div>
 
         ${paragraphs.map(p => {
           if (p.startsWith('Dear ') || p.startsWith('Sincerely,') || p === h.name) return '';
@@ -2948,12 +3171,12 @@ ${r.header?.name || 'Candidate Name'}`
         <!-- Sign-off -->
         <div class="cl-signoff">
           <div>Sincerely,</div>
-          <div class="cl-signoff-name">${h.name || ''}</div>
+          <div class="cl-signoff-name">${esc(fullName)}</div>
         </div>
       </div>
     `;
       } else {
-        // 1-PAGE ATS RESUME - Filter only populated sections for freshers & professionals alike
+        // 1-PAGE ATS RESUME
         const validExp = (R.experience || []).filter(e => (e.company && e.company.trim()) || (e.title && e.title.trim()));
         const expHtml = validExp.length > 0 ? `
           <div class="lr-sec">
@@ -3035,7 +3258,7 @@ ${r.header?.name || 'Candidate Name'}`
                   <span class="lr-date">${esc(getFormattedDate(e))}</span>
                 </div>
                 <div class="lr-subline">${esc(e.degree)}</div>
-                ${e.coursework ? `<div style="font-size:9pt;margin-top:2px;"><strong>Coursework:</strong> <em>${esc(e.coursework)}</em></div>` : ''}
+                ${e.coursework ? `<div style="font-size:9.5pt;margin-top:2px;"><strong>Coursework:</strong> <em>${esc(e.coursework)}</em></div>` : ''}
               </div>
             `).join('')}
           </div>
@@ -3056,21 +3279,49 @@ ${r.header?.name || 'Candidate Name'}`
           </div>
         ` : '';
 
+        // Custom Sections rendering
+        const customSecHtml = (R.custom_sections || []).map(cs => {
+          if (!cs.title || !cs.title.trim()) return '';
+          const entries = (cs.entries || []).filter(en => (en.title && en.title.trim()) || (en.bullets && en.bullets.some(b => b && b.trim())));
+          if (entries.length === 0) return '';
+          return `
+            <div class="lr-sec">
+              <div class="lr-sec-title">${esc(cs.title.toUpperCase())}</div>
+              ${entries.map(en => `
+                <div class="lr-entry">
+                  ${(en.title || en.date) ? `
+                  <div class="lr-entry-header">
+                    <span class="lr-org">${esc(en.title)}</span>
+                    <span class="lr-date">${esc(en.date || '')}</span>
+                  </div>` : ''}
+                  ${en.subtitle ? `<div class="lr-subline">${esc(en.subtitle)}</div>` : ''}
+                  ${(en.bullets && en.bullets.filter(Boolean).length > 0) ? `
+                  <ul class="lr-bullets">
+                    ${en.bullets.filter(b => b && b.trim()).map(b => `<li>${formatBulletBold(esc(b))}</li>`).join('')}
+                  </ul>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }).join('');
+
         container.innerHTML = `
       <div class="latex-doc">
-        <!-- 1. Header -->
+        <!-- Header -->
         <div class="lr-header">
-          <div class="lr-name">${h.name || ''}</div>
-          <div class="lr-contacts">${contacts.join(' &bull; ') || ''}</div>
+          <div class="lr-name">${esc(fullName)}</div>
+          ${h.headline ? `<div class="lr-headline" style="font-size:10.5pt;font-style:italic;margin-top:2px;margin-bottom:4px;color:#222;">${esc(h.headline)}</div>` : ''}
+          <div class="lr-contacts">${contacts.join(' &bull; ')}</div>
         </div>
         ${R.summary && R.summary.text ? `
         <div class="lr-sec">
           <div class="lr-sec-title">SUMMARY</div>
-          <div class="lr-summary-text">${R.summary.text}</div>
+          <div class="lr-summary-text">${formatBulletBold(esc(R.summary.text))}</div>
         </div>` : ''}
         ${skillsHtml}
         ${expHtml}
         ${projHtml}
+        ${customSecHtml}
         ${achieveHtml}
         ${certsHtml}
         ${eduHtml}
@@ -3199,6 +3450,179 @@ ${r.header?.name || 'Candidate Name'}`
     }
 
     function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+    
+    /* ═════════════════════════════════════════════════════════════════
+       CUSTOM SECTIONS SYSTEM (Simplify Parity)
+    ═════════════════════════════════════════════════════════════════ */
+    function renderCustomSections() {
+      const container = document.getElementById('custom-sections-accordion-container');
+      if (!container) return;
+      container.innerHTML = '';
+      if (!Array.isArray(R.custom_sections)) R.custom_sections = [];
+
+      R.custom_sections.forEach((cs, sIdx) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'custom-section-item';
+        wrap.innerHTML = `
+          <div class="accordion-header" onclick="toggleAccordion('panel-custom-${sIdx}', this)" style="display:flex;justify-content:space-between;align-items:center;">
+            <span>${esc(cs.title || 'Custom Section')}</span>
+            <button class="brm" style="padding:2px 8px;font-size:11px;margin-left:auto;margin-right:12px;" onclick="event.stopPropagation(); rmCustomSection(${sIdx})">Delete</button>
+          </div>
+          <div class="pn" id="panel-custom-${sIdx}">
+            <div class="fg">
+              <label>Section Title</label>
+              <input class="fi" value="${esc(cs.title || '')}" placeholder="e.g. Leadership &amp; Activities, Publications, Awards" oninput="uCustomSectionTitle(${sIdx}, this.value)">
+            </div>
+            <div id="cs-entries-${sIdx}" style="display:flex;flex-direction:column;gap:12px;"></div>
+            <button class="bad" onclick="addCustomSectionEntry(${sIdx})" style="margin-top:6px;">+ Add Item to ${esc(cs.title || 'Section')}</button>
+          </div>
+        `;
+        container.appendChild(wrap);
+        renderCustomSectionEntries(sIdx);
+      });
+    }
+
+    function renderCustomSectionEntries(sIdx) {
+      const el = document.getElementById(`cs-entries-${sIdx}`);
+      if (!el || !R.custom_sections[sIdx]) return;
+      el.innerHTML = '';
+      const entries = R.custom_sections[sIdx].entries || [];
+
+      entries.forEach((en, eIdx) => {
+        const card = document.createElement('div');
+        card.style.cssText = 'background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:12px;position:relative;display:flex;flex-direction:column;gap:8px;';
+        card.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:11.5px;font-weight:700;color:var(--txm);">Entry #${eIdx + 1}</span>
+            <button class="brm" style="padding:2px 6px;font-size:11px;" onclick="rmCustomSectionEntry(${sIdx}, ${eIdx})">Remove</button>
+          </div>
+          <div class="fr2">
+            <div class="fg">
+              <label>Title / Role / Honor</label>
+              <input class="fi" value="${esc(en.title || '')}" placeholder="e.g. Lead Organizer / Winner" oninput="uCustomSectionEntry(${sIdx}, ${eIdx}, 'title', this.value)" style="background:#fff;">
+            </div>
+            <div class="fg">
+              <label>Dates / Year</label>
+              <input class="fi" value="${esc(en.date || '')}" placeholder="e.g. 2025 – Present" oninput="uCustomSectionEntry(${sIdx}, ${eIdx}, 'date', this.value)" style="background:#fff;">
+            </div>
+          </div>
+          <div class="fg">
+            <label>Organization / Subtitle (Optional)</label>
+            <input class="fi" value="${esc(en.subtitle || '')}" placeholder="e.g. Google Developer Student Clubs" oninput="uCustomSectionEntry(${sIdx}, ${eIdx}, 'subtitle', this.value)" style="background:#fff;">
+          </div>
+          <div class="fg">
+            <label>Bullet Points / Description</label>
+            <div id="cs-bullets-${sIdx}-${eIdx}" style="display:flex;flex-direction:column;gap:6px;">
+              ${(en.bullets || ['']).map((b, bIdx) => `
+                <div style="display:flex;gap:6px;align-items:center;">
+                  <input class="fi" value="${esc(b)}" placeholder="Describe achievement, scope, or measurable impact..." oninput="uCustomSectionBullet(${sIdx}, ${eIdx}, ${bIdx}, this.value)" style="background:#fff;flex:1;">
+                  <button class="brm" style="padding:4px 8px;font-size:11px;" onclick="rmCustomSectionBullet(${sIdx}, ${eIdx}, ${bIdx})">✕</button>
+                </div>
+              `).join('')}
+            </div>
+            <button class="bad" onclick="addCustomSectionBullet(${sIdx}, ${eIdx})" style="font-size:11.5px;padding:4px 8px;margin-top:6px;align-self:flex-start;">+ Add Bullet</button>
+          </div>
+        `;
+        el.appendChild(card);
+      });
+    }
+
+    function addCustomSection() {
+      if (!Array.isArray(R.custom_sections)) R.custom_sections = [];
+      R.custom_sections.push({
+        id: 'cs_' + Date.now(),
+        title: 'Custom Section',
+        entries: [
+          { title: '', subtitle: '', date: '', bullets: [''] }
+        ]
+      });
+      renderCustomSections();
+      rp();
+      ss();
+      setTimeout(() => {
+        const newIdx = R.custom_sections.length - 1;
+        const panel = document.getElementById(`panel-custom-${newIdx}`);
+        if (panel) {
+          const hdr = panel.previousElementSibling;
+          if (hdr) toggleAccordion(`panel-custom-${newIdx}`, hdr);
+        }
+      }, 50);
+    }
+
+    function rmCustomSection(sIdx) {
+      if (!Array.isArray(R.custom_sections)) return;
+      R.custom_sections.splice(sIdx, 1);
+      renderCustomSections();
+      rp();
+      ss();
+    }
+
+    function uCustomSectionTitle(sIdx, val) {
+      if (R.custom_sections && R.custom_sections[sIdx]) {
+        R.custom_sections[sIdx].title = val;
+        // Also update the accordion header label
+        const panel = document.getElementById(`panel-custom-${sIdx}`);
+        if (panel && panel.previousElementSibling) {
+          const span = panel.previousElementSibling.querySelector('span');
+          if (span) span.textContent = val || 'Custom Section';
+        }
+        rp();
+        ss();
+      }
+    }
+
+    function addCustomSectionEntry(sIdx) {
+      if (!R.custom_sections[sIdx]) return;
+      if (!Array.isArray(R.custom_sections[sIdx].entries)) R.custom_sections[sIdx].entries = [];
+      R.custom_sections[sIdx].entries.push({ title: '', subtitle: '', date: '', bullets: [''] });
+      renderCustomSectionEntries(sIdx);
+      rp();
+      ss();
+    }
+
+    function rmCustomSectionEntry(sIdx, eIdx) {
+      if (!R.custom_sections[sIdx] || !R.custom_sections[sIdx].entries) return;
+      R.custom_sections[sIdx].entries.splice(eIdx, 1);
+      renderCustomSectionEntries(sIdx);
+      rp();
+      ss();
+    }
+
+    function uCustomSectionEntry(sIdx, eIdx, key, val) {
+      if (R.custom_sections[sIdx]?.entries?.[eIdx]) {
+        R.custom_sections[sIdx].entries[eIdx][key] = val;
+        rp();
+        ss();
+      }
+    }
+
+    function addCustomSectionBullet(sIdx, eIdx) {
+      if (!R.custom_sections[sIdx]?.entries?.[eIdx]) return;
+      if (!Array.isArray(R.custom_sections[sIdx].entries[eIdx].bullets)) {
+        R.custom_sections[sIdx].entries[eIdx].bullets = [];
+      }
+      R.custom_sections[sIdx].entries[eIdx].bullets.push('');
+      renderCustomSectionEntries(sIdx);
+      rp();
+      ss();
+    }
+
+    function rmCustomSectionBullet(sIdx, eIdx, bIdx) {
+      if (!R.custom_sections[sIdx]?.entries?.[eIdx]?.bullets) return;
+      R.custom_sections[sIdx].entries[eIdx].bullets.splice(bIdx, 1);
+      renderCustomSectionEntries(sIdx);
+      rp();
+      ss();
+    }
+
+    function uCustomSectionBullet(sIdx, eIdx, bIdx, val) {
+      if (R.custom_sections[sIdx]?.entries?.[eIdx]?.bullets) {
+        R.custom_sections[sIdx].entries[eIdx].bullets[bIdx] = val;
+        rp();
+        ss();
+      }
+    }
 
     /* Form Dynamic Lists */
     function addExp() {
