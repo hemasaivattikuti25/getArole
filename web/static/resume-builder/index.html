@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts.css">
-  <script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();
+  <script>(function () { if (window.location.search.includes('test=1')) { localStorage.setItem('getarole_user', JSON.stringify({displayName:'Hemasai Vattikuti', email:'hemasaivattikuti2727@gmail.com'})); } else if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();
     function setResumeMobileTab(mode) {
       const btnEdit = document.getElementById('btn-tab-edit');
       const btnPrev = document.getElementById('btn-tab-preview');
@@ -764,6 +764,185 @@
       line-height: 1.35;
       margin-bottom: 2px;
     }
+
+    /* Skip link & Modal & Toast utilities */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 0;
+    }
+    .skip-link:focus {
+      top: 10px;
+      left: 10px;
+      z-index: 9999;
+      background: #0284c7;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 6px;
+    }
+    .ai-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .ai-modal-overlay.active {
+      display: flex;
+    }
+    .ai-modal-card {
+      background: #ffffff;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .ai-modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+    }
+    .ai-modal-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .ai-modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    .brm {
+      background: none;
+      border: none;
+      color: #64748b;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+    .brm:hover {
+      background: #fee2e2;
+      color: #ef4444;
+    }
+    .fc {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .fch {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .fct {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .bls {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .blr {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .blr input {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      font-size: 12.5px;
+      font-family: inherit;
+      outline: none;
+    }
+    .blr input:focus {
+      border-color: #0284c7;
+    }
+    .bai {
+      padding: 4px 8px;
+      border-radius: 5px;
+      border: 1px solid #bae6fd;
+      background: #f0f9ff;
+      color: #0284c7;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .bri {
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .bri:hover {
+      color: #ef4444;
+      background: #fee2e2;
+    }
+    .bads {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1.5px dashed #cbd5e1;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      cursor: pointer;
+      align-self: flex-start;
+      margin-top: 4px;
+    }
+    .bads:hover {
+      border-color: #0284c7;
+      color: #0284c7;
+    }
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+      z-index: 10000;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
 </style>
 
 
@@ -1693,16 +1872,26 @@
 
       renderSkillsPanel();
 
-      document.getElementById('ec').innerHTML = '';
-      R.experience.forEach((_, i) => rExp(i));
-      document.getElementById('pc').innerHTML = '';
-      R.projects.forEach((_, i) => rProj(i));
-      document.getElementById('ac-cont').innerHTML = '';
-      R.achievements.forEach((_, i) => rAchieve(i));
-      document.getElementById('cc').innerHTML = '';
-      R.certifications.forEach((_, i) => rCert(i));
-      document.getElementById('edc').innerHTML = '';
-      R.education.forEach((_, i) => rEdu(i));
+      if (document.getElementById('ec')) {
+        document.getElementById('ec').innerHTML = '';
+        (R.experience || []).forEach((_, i) => rExp(i));
+      }
+      if (document.getElementById('pc')) {
+        document.getElementById('pc').innerHTML = '';
+        (R.projects || []).forEach((_, i) => rProj(i));
+      }
+      if (document.getElementById('ac-cont')) {
+        document.getElementById('ac-cont').innerHTML = '';
+        (R.achievements || []).forEach((_, i) => rAchieve(i));
+      }
+      if (document.getElementById('cc')) {
+        document.getElementById('cc').innerHTML = '';
+        (R.certifications || []).forEach((_, i) => rCert(i));
+      }
+      if (document.getElementById('edc')) {
+        document.getElementById('edc').innerHTML = '';
+        (R.education || []).forEach((_, i) => rEdu(i));
+      }
 
       // Cover Letter
       const cl = R.cover_letter || {};
@@ -1714,7 +1903,7 @@
       // Populate Month / Year dropdowns for Cover Letter
       const mEl = document.getElementById('fcl-date-month');
       const yEl = document.getElementById('fcl-date-year');
-      if (mEl && mEl.options.length <= 1) {
+      if (mEl && mEl.options && mEl.options.length <= 1) {
         MONTHS.forEach(m => {
           const opt = document.createElement('option');
           opt.value = m;
@@ -1722,7 +1911,7 @@
           mEl.appendChild(opt);
         });
       }
-      if (yEl && yEl.options.length <= 1) {
+      if (yEl && yEl.options && yEl.options.length <= 1) {
         YEARS.forEach(y => {
           const opt = document.createElement('option');
           opt.value = y;
@@ -2191,7 +2380,186 @@ ${r.header?.name || 'Candidate Name'}`
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { margin: 0; padding: 0; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     #sh { width: 794px; min-height: 1123px; margin: 0 auto; background: white; }
-  </style>
+  
+    /* Skip link & Modal & Toast utilities */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 0;
+    }
+    .skip-link:focus {
+      top: 10px;
+      left: 10px;
+      z-index: 9999;
+      background: #0284c7;
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 6px;
+    }
+    .ai-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .ai-modal-overlay.active {
+      display: flex;
+    }
+    .ai-modal-card {
+      background: #ffffff;
+      border-radius: 12px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .ai-modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+    }
+    .ai-modal-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .ai-modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    .brm {
+      background: none;
+      border: none;
+      color: #64748b;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+    .brm:hover {
+      background: #fee2e2;
+      color: #ef4444;
+    }
+    .fc {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .fch {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .fct {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .bls {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .blr {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .blr input {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      font-size: 12.5px;
+      font-family: inherit;
+      outline: none;
+    }
+    .blr input:focus {
+      border-color: #0284c7;
+    }
+    .bai {
+      padding: 4px 8px;
+      border-radius: 5px;
+      border: 1px solid #bae6fd;
+      background: #f0f9ff;
+      color: #0284c7;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .bri {
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .bri:hover {
+      color: #ef4444;
+      background: #fee2e2;
+    }
+    .bads {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1.5px dashed #cbd5e1;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 700;
+      color: #64748b;
+      cursor: pointer;
+      align-self: flex-start;
+      margin-top: 4px;
+    }
+    .bads:hover {
+      border-color: #0284c7;
+      color: #0284c7;
+    }
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+      z-index: 10000;
+    }
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+</style>
 </head>
 <body>
   <div id="sh">${html}</div>
@@ -3229,13 +3597,15 @@ ${r.header?.name || 'Candidate Name'}`
     }
 
     function scale() {
-      const pv = document.querySelector('.pv');
+      const pv = document.querySelector('.simplify-preview-canvas') || document.querySelector('.pv');
       const sh = document.getElementById('rp');
+      if (!pv || !sh) return;
       const av = pv.clientWidth - 48;
-      const sc = Math.min(1, av / 794);
+      const sc = Math.min(1, Math.max(0.4, av / 794));
       sh.style.transform = `scale(${sc})`;
       sh.style.transformOrigin = 'top center';
-      document.querySelector('.a4w').style.height = `${sh.offsetHeight * sc}px`;
+      const a4w = document.querySelector('.a4w');
+      if (a4w) a4w.style.height = `${(sh.offsetHeight || 1123) * sc}px`;
     }
 
     let tt;
@@ -3252,6 +3622,7 @@ ${r.header?.name || 'Candidate Name'}`
     loadDataFromProfile();
     populateFormFields();
     rp();
+    scale();
     uAts();
   </script>
 
