@@ -452,8 +452,55 @@
     .fi:focus,
     .ft:focus {
       border-color: var(--pr, #0071e3);
-      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+      box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+      background: #ffffff;
+      transform: translateY(-1px);
     }
+    
+    /* TITAN FOCUS MODE */
+    .ep.focus-mode-active .fc {
+      opacity: 0.4;
+      filter: blur(1px);
+      transition: all 0.3s ease;
+    }
+    .ep.focus-mode-active .fc:focus-within {
+      opacity: 1;
+      filter: blur(0px);
+      transform: scale(1.01);
+      box-shadow: 0 12px 30px -10px rgba(0,0,0,0.15);
+      z-index: 10;
+      border-color: var(--pr);
+    }
+    
+    /* TITAN AI ORB */
+    .ai-orb {
+      position: absolute; width: 24px; height: 24px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, var(--pr));
+      box-shadow: 0 0 15px var(--pr);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; cursor: pointer; opacity: 0; pointer-events: none;
+      transform: scale(0.8) translateY(-50%); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 20; right: 20px; top: 50%;
+    }
+    .fg { position: relative; }
+    .fg:focus-within .ai-orb {
+      opacity: 1; pointer-events: auto; transform: scale(1) translateY(-50%);
+    }
+    .ai-orb:hover { transform: scale(1.15) translateY(-50%); box-shadow: 0 0 25px var(--pr); }
+    .ai-orb::after {
+      content: '✨ Rewrite'; position: absolute; right: 30px; background: #1e1e1e; color: #fff;
+      font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px;
+      opacity: 0; pointer-events: none; transition: 0.2s; white-space: nowrap;
+    }
+    .ai-orb:hover::after { opacity: 1; transform: translateX(-5px); }
+
+    /* HAPTIC FEEDBACK ANIMATION */
+    @keyframes hapticFlash {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); border-color: #10b981; }
+      50% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); border-color: #10b981; }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .haptic-success { animation: hapticFlash 0.5s ease-out !important; }
 
     .ft {
       resize: vertical;
@@ -3929,6 +3976,89 @@ ${r.header?.name || 'Candidate Name'}`
           });
         });
       }
+    });
+  </script>
+  <script>
+    // TITAN 3D PAPER TILT LOGIC
+    document.addEventListener("DOMContentLoaded", () => {
+      const pv = document.querySelector('.pv');
+      const rp = document.getElementById('rp');
+      
+      if (pv && rp) {
+        // Set initial transform properties for smoother animations
+        rp.style.transition = 'transform 0.1s ease-out, box-shadow 0.1s ease-out';
+        
+        pv.addEventListener('mousemove', (e) => {
+          const rect = pv.getBoundingClientRect();
+          // Calculate mouse position relative to the center of the panel
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          
+          // Calculate rotation based on distance from center (max 8 degrees)
+          const rotateX = ((y - centerY) / centerY) * -5;
+          const rotateY = ((x - centerX) / centerX) * 5;
+          
+          // Calculate dynamic shadow
+          const shadowX = ((x - centerX) / centerX) * -20;
+          const shadowY = ((y - centerY) / centerY) * -20;
+          
+          requestAnimationFrame(() => {
+            rp.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${window.innerWidth > 900 ? 1 : 0.8})`;
+            rp.style.boxShadow = `${shadowX}px ${shadowY + 15}px 40px -10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1)`;
+          });
+        });
+        
+        pv.addEventListener('mouseleave', () => {
+          rp.style.transition = 'transform 0.5s ease-out, box-shadow 0.5s ease-out';
+          requestAnimationFrame(() => {
+            rp.style.transform = `perspective(1200px) rotateX(0deg) rotateY(0deg) scale(${window.innerWidth > 900 ? 1 : 0.8})`;
+            rp.style.boxShadow = `0 12px 40px -10px rgba(0, 0, 0, .45), 0 0 0 1px rgba(255, 255, 255, .08)`;
+          });
+          
+          // Re-enable fast transition after reset
+          setTimeout(() => {
+            rp.style.transition = 'transform 0.1s ease-out, box-shadow 0.1s ease-out';
+          }, 500);
+        });
+      }
+
+      // TITAN FOCUS MODE & HAPTIC FEEDBACK & AI ORB
+      const ep = document.querySelector('.ep');
+      let orb = document.createElement('div');
+      orb.className = 'ai-orb';
+      orb.onclick = () => { toast('AI Rewrite processing...'); setTimeout(()=>toast('Rewrite complete ✨'), 1500); };
+      
+      document.body.addEventListener('focusin', (e) => {
+        if (e.target.matches('.fi, .ft, .skill-cat-label-input') && ep.contains(e.target)) {
+          ep.classList.add('focus-mode-active');
+          
+          // Inject AI Orb if it's a textarea or a longer input (like title/role)
+          if (e.target.matches('.ft') || e.target.placeholder?.includes('Title') || e.target.placeholder?.includes('Company')) {
+            const fg = e.target.closest('.fg') || e.target.parentElement;
+            if (fg && !fg.querySelector('.ai-orb')) {
+              fg.appendChild(orb);
+            }
+          }
+          
+          // Store old value for haptic check
+          e.target.dataset.oldValue = e.target.value;
+        }
+      });
+      
+      document.body.addEventListener('focusout', (e) => {
+        if (e.target.matches('.fi, .ft, .skill-cat-label-input')) {
+          ep.classList.remove('focus-mode-active');
+          
+          // Haptic Success check
+          if (e.target.value !== e.target.dataset.oldValue && e.target.value.trim() !== '') {
+            e.target.classList.add('haptic-success');
+            setTimeout(() => e.target.classList.remove('haptic-success'), 500);
+          }
+        }
+      });
     });
   </script>
   </body>
