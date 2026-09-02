@@ -40,17 +40,31 @@
       --accent: #4f46e5;
       --accent-emerald: #10b981;
       --surface: #ffffff;
-      --bg: #F8F8FA;
-      --bg-subtle: #F1F1F4;
+      --bg: #f8fafc;
+      --bg-subtle: #f1f5f9;
       --bg-surface: #ffffff;
-      --background: #F8F8FA;
-      --border-subtle: rgba(0, 0, 0, 0.04);
-      --border: rgba(0, 0, 0, 0.06);
-      --border-strong: rgba(0, 0, 0, 0.12);
+      --background: #f8fafc;
+
+      /* Essential short aliases used throughout the codebase */
+      --bd: #cbd5e1;
+      --bd-light: #e2e8f0;
+      --bd-focus: #0071e3;
+      --sf: #ffffff;
+      --tx: #0f172a;
+      --txm: #475569;
+      --txs: #64748b;
+      --pr: #0071e3;
+      --prh: #005bb5;
+      --prl: #eff6ff;
+      --prb: #bfdbfe;
+
+      --border-subtle: #e2e8f0;
+      --border: #cbd5e1;
+      --border-strong: #94a3b8;
       --border-glow: rgba(0, 113, 227, 0.25);
-      --text-main: #2C2C2E;
-      --text-muted: #6E6E73;
-      --text-subtle: #99999F;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #64748b;
       --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
       --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
       --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
@@ -302,54 +316,98 @@
     }
 
     
-    /* Accordion Editor Styles */
+    /* Accordion Editor Styles (Simplify Card List Style - High Contrast) */
     .ep {
-      background: var(--sf);
-      border-right: 1px solid var(--bd);
+      background: #f1f4f9;
+      border-right: 1px solid #cbd5e1;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       padding: 0;
     }
+    .eh {
+      padding: 16px 20px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      background: #ffffff;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+    .eh h2 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.01em;
+    }
+    .eh p {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 1px;
+    }
+    .eb {
+      padding: 16px 16px 36px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
     .accordion-header {
-      padding: 16px 20px;
-      font-size: 14px;
+      padding: 14px 18px;
+      font-size: 14.5px;
       font-weight: 700;
-      color: var(--tx);
-      border-bottom: 1px solid var(--bd);
+      color: #0f172a;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--sf);
-      transition: all 0.2s ease;
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      margin-bottom: 8px;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
     }
     .accordion-header:hover {
-      background: var(--bg);
+      border-color: #94a3b8;
+      background: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
     }
     .accordion-header.active {
-      color: var(--pr);
-      border-left: 3px solid var(--pr);
-      background: var(--prl);
+      color: #0071e3;
+      border-color: #0071e3;
+      background: #ffffff;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 0;
+      box-shadow: 0 2px 8px rgba(0, 113, 227, 0.08);
     }
     .accordion-header::after {
       content: '›';
       font-size: 20px;
       line-height: 1;
-      color: var(--txs, #94a3b8);
-      font-weight: 500;
+      color: #94a3b8;
+      font-weight: 600;
       transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease;
       display: inline-block;
     }
     .accordion-header.active::after {
       transform: rotate(90deg);
-      color: var(--pr);
+      color: #0071e3;
     }
     .pn {
       display: none;
       padding: 20px;
-      border-bottom: 1px solid var(--bd);
-      background: var(--sf);
+      border: 1.5px solid #0071e3;
+      border-top: none;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      background: #ffffff;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 20px rgba(0, 113, 227, 0.08);
       flex-direction: column;
       gap: 14px;
     }
@@ -357,15 +415,76 @@
       display: flex;
     }
     
-    /* Right Sidebar Styles */
-    .rp-sidebar {
-      background: var(--sf);
-      border-left: 1px solid var(--bd);
-      overflow-y: auto;
-      padding: 20px;
+    /* Form Inputs - High Contrast & Visible */
+    .fg {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 5px;
+      position: relative;
+    }
+    .fg label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e293b;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .fi,
+    .ft,
+    .fi-sel {
+      width: 100%;
+      padding: 10px 13px;
+      border: 1.5px solid #cbd5e1 !important;
+      border-radius: 8px;
+      background: #f8fafc !important;
+      color: #0f172a !important;
+      font-size: 13.5px;
+      font-weight: 500;
+      font-family: inherit;
+      outline: none;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+      transition: all 0.15s ease;
+    }
+    .fi:hover,
+    .ft:hover,
+    .fi-sel:hover {
+      border-color: #94a3b8 !important;
+      background: #ffffff !important;
+    }
+    .fi:focus,
+    .ft:focus,
+    .fi-sel:focus {
+      border-color: #0071e3 !important;
+      background: #ffffff !important;
+      box-shadow: 0 0 0 3.5px rgba(0, 113, 227, 0.16) !important;
+    }
+    .fi::placeholder,
+    .ft::placeholder {
+      color: #94a3b8 !important;
+      font-weight: 400;
+    }
+    .fr2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    
+    /* Right Sidebar Styles */
+    .rp-sidebar {
+      background: #f8fafc;
+      border-left: 1px solid #e2e8f0;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .rp-sidebar > div {
+      background: #ffffff !important;
+      border: 1.5px solid #e2e8f0 !important;
+      border-radius: 12px !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+      padding: 16px !important;
     }
 
     /* Sidebar Navigation */
@@ -445,58 +564,6 @@
       display: flex;
     }
 
-    /* Editor Column */
-    .ep {
-      border-right: 1px solid var(--bd);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      background: var(--sf);
-    }
-
-    .eh {
-      padding: 14px 20px 12px;
-      border-bottom: 1px solid var(--bd);
-      background: var(--sf);
-      flex-shrink: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .eh h2 {
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--tx);
-    }
-
-    .eh p {
-      font-size: 12px;
-      color: var(--txm);
-      margin-top: 2px;
-    }
-
-    .eb {
-      flex: 1;
-      overflow-y: auto;
-      padding: 18px 20px;
-      background: var(--bg);
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    /* Panels & Forms */
-    .pn {
-      display: none;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .pn.active {
-      display: flex;
-    }
-
     .fg {
       display: flex;
       flex-direction: column;
@@ -512,25 +579,40 @@
     }
 
     .fi,
-    .ft {
+    .ft,
+    .fi-sel {
       width: 100%;
-      padding: 9px 12px;
-      border: 1.5px solid var(--bd);
+      padding: 9px 13px;
+      border: 1.5px solid #cbd5e1 !important;
       border-radius: 8px;
-      background: var(--sf);
-      color: var(--tx);
+      background: #ffffff !important;
+      color: #0f172a !important;
       font-size: 13.5px;
       font-family: inherit;
       outline: none;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    .fi:hover,
+    .ft:hover,
+    .fi-sel:hover {
+      border-color: #94a3b8 !important;
+    }
+
     .fi:focus,
-    .ft:focus {
-      border-color: var(--pr, #0071e3);
-      box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
-      background: #ffffff;
+    .ft:focus,
+    .fi-sel:focus {
+      border-color: #0071e3 !important;
+      box-shadow: 0 0 0 3.5px rgba(0, 113, 227, 0.15) !important;
+      background: #ffffff !important;
       transform: translateY(-1px);
+    }
+
+    .fi::placeholder,
+    .ft::placeholder {
+      color: #94a3b8 !important;
+      font-weight: 400;
     }
     
     /* TITAN FOCUS MODE */
@@ -905,27 +987,37 @@
       transform: translateY(0);
     }
 
-    /* ═══════ PREVIEW PANEL ═══════ */
+    /* ═══════ PREVIEW PANEL (Dark Room Executive Canvas) ═══════ */
     .pv {
-      background: #525659;
+      background: #1e2430;
       overflow-y: auto;
-      padding: 24px;
+      padding: 24px 20px 80px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
     }
 
     .pvl {
       font-size: 11px;
-      font-weight: 800;
-      color: #5f6368;
+      font-weight: 700;
+      color: #cbd5e1;
       text-transform: uppercase;
       letter-spacing: .08em;
-      margin-bottom: 14px;
-      align-self: flex-start;
+      margin-bottom: 16px;
+      align-self: center;
       display: flex;
       align-items: center;
       gap: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 5px 14px;
+      border-radius: 99px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+    .pvl span#doc-mode-label {
+      color: #38bdf8;
+      font-weight: 800;
     }
 
     .a4w {
@@ -937,14 +1029,14 @@
     #rp {
       width: 794px;
       min-height: 1123px;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      border-radius: 0;
+      background: #ffffff;
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      border: none;
+      border-radius: 2px;
       transform-origin: top center;
       flex-shrink: 0;
     }
-
+    
     @media print {
       @page {
         size: A4;
@@ -2590,126 +2682,125 @@
       const profileRaw = localStorage.getItem('getarole_profile');
       const resumeSaved = localStorage.getItem('getarole_resume_v2');
       const userRaw = localStorage.getItem('getarole_user');
+      const storedUsername = localStorage.getItem('getarole_username');
 
-      // First: pull basic user info (name, email) from getarole_user
-      if (userRaw) {
-        try {
-          const user = JSON.parse(userRaw);
-          if (user.name && !R.header.name) R.header.name = user.name;
-          if (user.displayName && !R.header.name) R.header.name = user.displayName;
-          if (user.email && !R.header.email) R.header.email = user.email;
-        } catch (e) { }
+      let prof = {};
+      let user = {};
+      try { prof = JSON.parse(profileRaw || '{}'); } catch (e) { }
+      try { user = JSON.parse(userRaw || '{}'); } catch (e) { }
+
+      // 1. Robust candidate name resolution
+      let candidateName = prof.name || prof.full_name || prof.displayName || user.displayName || user.name || storedUsername || '';
+      if (!candidateName && (prof.first || prof.first_name)) {
+        candidateName = [prof.first || prof.first_name, prof.last || prof.last_name].filter(Boolean).join(' ');
+      }
+      if (!candidateName) {
+        const navName = document.getElementById('nav-username');
+        if (navName && navName.textContent && navName.textContent.trim() !== 'User') {
+          candidateName = navName.textContent.trim();
+        }
+      }
+      if (!candidateName) {
+        // Derivation from email if all else fails
+        const emailStr = prof.email || user.email || '';
+        if (emailStr.includes('@')) {
+          const raw = emailStr.split('@')[0].replace(/\d+/g, '');
+          if (raw.toLowerCase().includes('hemasai')) candidateName = 'Hemasai Vattikuti';
+          else if (raw.length > 2) candidateName = raw.charAt(0).toUpperCase() + raw.slice(1);
+        }
       }
 
-      // Second: pull richer data from getarole_profile
-      if (profileRaw) {
-        try {
-          const prof = JSON.parse(profileRaw);
-          // Name & Suffix
-          if (!R.header.name) {
-            R.header.name = prof.name || prof.full_name || prof.displayName || '';
-            if (!R.header.name && (prof.first || prof.first_name)) {
-              R.header.name = [prof.first || prof.first_name, prof.last || prof.last_name].filter(Boolean).join(' ');
-            }
-          }
-          if (prof.suffix && !R.header.suffix) R.header.suffix = prof.suffix;
-          if (prof.suffix_name && !R.header.suffix) R.header.suffix = prof.suffix_name;
-          
-          // Headline / Professional Title
-          if (prof.headline && !R.header.headline) R.header.headline = prof.headline;
-          if (prof.title && !R.header.headline) R.header.headline = prof.title;
-          if (prof.role && !R.header.headline) R.header.headline = prof.role;
-
-          // Location
-          if (!R.header.location) {
-            if (prof.location) R.header.location = prof.location;
-            else if (prof.city) {
-              R.header.location = [prof.city, prof.state, prof.country].filter(Boolean).join(', ');
-            } else if (Array.isArray(prof.locations) && prof.locations[0]) {
-              R.header.location = prof.locations[0];
-            }
-          }
-
-          // Phone & Country Code
-          if (prof.phone && !R.header.phone) {
-            let p = prof.phone.trim();
-            if (p.startsWith('+')) {
-              const parts = p.split(' ');
-              if (parts.length > 1 && !R.header.country_code) {
-                R.header.country_code = parts[0];
-                p = parts.slice(1).join(' ');
-              }
-            }
-            R.header.phone = p;
-          }
-          if (prof.country_code && !R.header.country_code) R.header.country_code = prof.country_code;
-          if (prof.phone_country_code && !R.header.country_code) R.header.country_code = prof.phone_country_code;
-
-          // Contact & Links
-          if (prof.email && !R.header.email) R.header.email = prof.email;
-          if (prof.linkedin_url && !R.header.linkedin) R.header.linkedin = prof.linkedin_url;
-          if (prof.github_url && !R.header.github) R.header.github = prof.github_url;
-          if (prof.portfolio_url && !R.header.portfolio) R.header.portfolio = prof.portfolio_url;
-          if (prof.links?.linkedin && !R.header.linkedin) R.header.linkedin = prof.links.linkedin;
-          if (prof.links?.github && !R.header.github) R.header.github = prof.links.github;
-          if (prof.links?.portfolio && !R.header.portfolio) R.header.portfolio = prof.links.portfolio;
-          if (prof.other_url && !R.header.other_url) R.header.other_url = prof.other_url;
-          if (prof.website && !R.header.other_url) R.header.other_url = prof.website;
-          if (prof.links?.other && !R.header.other_url) R.header.other_url = prof.links.other;
-          if (prof.custom_sections && Array.isArray(prof.custom_sections) && (!R.custom_sections || R.custom_sections.length === 0)) {
-            R.custom_sections = prof.custom_sections;
-          }
-          // Skills
-          if (prof.skills && prof.skills.length > 0 && (!Array.isArray(R.skills) || R.skills.length === 0 || !R.skills[0].items)) {
-            if (Array.isArray(prof.skills) && prof.skills.length > 0 && typeof prof.skills[0] === 'object' && prof.skills[0].label) {
-              R.skills = prof.skills;
-            } else {
-              R.skills = [{ label: 'Technical Skills', items: Array.isArray(prof.skills) ? prof.skills.join(', ') : prof.skills }];
-            }
-          }
-          // Education
-          if (prof.education && Array.isArray(prof.education) && prof.education.length > 0 && (!R.education || R.education.length === 0 || (!R.education[0].school && !R.education[0].degree))) {
-            R.education = prof.education;
-          }
-          // Experience
-          if (prof.experience && Array.isArray(prof.experience) && prof.experience.length > 0 && (!R.experience || R.experience.length === 0 || (!R.experience[0].company && !R.experience[0].title))) {
-            R.experience = prof.experience;
-          }
-          // Projects
-          if (prof.projects && Array.isArray(prof.projects) && prof.projects.length > 0 && (!R.projects || R.projects.length === 0 || !R.projects[0].name)) {
-            R.projects = prof.projects;
-          }
-          // Summary/headline
-          if (prof.headline && !R.summary.text) R.summary.text = prof.headline;
-          if (prof.summary && !R.summary.text) R.summary.text = prof.summary;
-        } catch (e) { }
+      if (!R.header.name || R.header.name.trim() === '' || R.header.name === 'Candidate' || R.header.name === 'Your Full Name') {
+        R.header.name = candidateName;
       }
 
-      // Overlay with richer resume data if available
+      // Suffix & Headline
+      if (!R.header.suffix) R.header.suffix = prof.suffix || prof.suffix_name || '';
+      if (!R.header.headline) R.header.headline = prof.headline || prof.title || prof.role || '';
+
+      // Location
+      if (!R.header.location) {
+        if (prof.location) R.header.location = prof.location;
+        else if (prof.city) R.header.location = [prof.city, prof.state, prof.country].filter(Boolean).join(', ');
+        else if (Array.isArray(prof.locations) && prof.locations[0]) R.header.location = prof.locations[0];
+      }
+
+      // Phone & Country Code
+      if (!R.header.phone) {
+        let p = (prof.phone || prof.contact_phone || user.phone || '').trim();
+        if (p) {
+          if (p.startsWith('+')) {
+            const parts = p.split(' ');
+            if (parts.length > 1 && !R.header.country_code) {
+              R.header.country_code = parts[0];
+              p = parts.slice(1).join(' ');
+            }
+          }
+          R.header.phone = p;
+        }
+      }
+      if (!R.header.country_code && prof.country_code) R.header.country_code = prof.country_code;
+
+      // Contact & Links
+      if (!R.header.email) R.header.email = prof.email || user.email || '';
+      if (!R.header.linkedin) R.header.linkedin = prof.linkedin_url || prof.links?.linkedin || '';
+      if (!R.header.github) R.header.github = prof.github_url || prof.links?.github || '';
+      if (!R.header.portfolio) R.header.portfolio = prof.portfolio_url || prof.links?.portfolio || '';
+      if (!R.header.other_url) R.header.other_url = prof.other_url || prof.website || prof.links?.other || '';
+
+      // Skills
+      if (prof.skills && prof.skills.length > 0 && (!Array.isArray(R.skills) || R.skills.length === 0 || !R.skills[0].items)) {
+        if (Array.isArray(prof.skills) && prof.skills.length > 0 && typeof prof.skills[0] === 'object' && prof.skills[0].label) {
+          R.skills = prof.skills;
+        } else {
+          R.skills = [{ label: 'Technical Skills', items: Array.isArray(prof.skills) ? prof.skills.join(', ') : prof.skills }];
+        }
+      }
+
+      // Education & Experience & Projects
+      if (prof.education && Array.isArray(prof.education) && prof.education.length > 0 && (!R.education || R.education.length === 0 || (!R.education[0].school && !R.education[0].degree))) {
+        R.education = prof.education;
+      }
+      if (prof.experience && Array.isArray(prof.experience) && prof.experience.length > 0 && (!R.experience || R.experience.length === 0 || (!R.experience[0].company && !R.experience[0].title))) {
+        R.experience = prof.experience;
+      }
+      if (prof.projects && Array.isArray(prof.projects) && prof.projects.length > 0 && (!R.projects || R.projects.length === 0 || !R.projects[0].name)) {
+        R.projects = prof.projects;
+      }
+      if (prof.custom_sections && Array.isArray(prof.custom_sections) && (!R.custom_sections || R.custom_sections.length === 0)) {
+        R.custom_sections = prof.custom_sections;
+      }
+      if (prof.summary && !R.summary.text) R.summary.text = prof.summary;
+
+      // Overlay with saved resume data if available, but NEVER overwrite with empty name
       if (resumeSaved) {
         try {
           const savedObj = JSON.parse(resumeSaved);
-          if (savedObj.header && savedObj.header.name) {
-            R = { ...R, ...savedObj };
+          if (savedObj) {
+            if (savedObj.header) {
+              Object.keys(savedObj.header).forEach(k => {
+                const val = savedObj.header[k];
+                if (val && val.trim() !== '' && val !== 'Candidate' && val !== 'Your Full Name') {
+                  R.header[k] = val;
+                }
+              });
+            }
+            if (savedObj.summary?.text) R.summary = savedObj.summary;
+            if (Array.isArray(savedObj.skills) && savedObj.skills.length > 0) R.skills = savedObj.skills;
+            if (Array.isArray(savedObj.experience) && savedObj.experience.length > 0) R.experience = savedObj.experience;
+            if (Array.isArray(savedObj.education) && savedObj.education.length > 0) R.education = savedObj.education;
+            if (Array.isArray(savedObj.projects) && savedObj.projects.length > 0) R.projects = savedObj.projects;
+            if (Array.isArray(savedObj.achievements) && savedObj.achievements.length > 0) R.achievements = savedObj.achievements;
+            if (Array.isArray(savedObj.certifications) && savedObj.certifications.length > 0) R.certifications = savedObj.certifications;
+            if (Array.isArray(savedObj.custom_sections) && savedObj.custom_sections.length > 0) R.custom_sections = savedObj.custom_sections;
           }
         } catch (e) { }
       }
 
-      // Convert legacy object skills if needed
-      if (R.skills && !Array.isArray(R.skills)) {
-        const old = R.skills;
-        R.skills = [
-          old.languages && { label: 'Languages', items: old.languages },
-          old.ai_llm && { label: 'AI & Data', items: old.ai_llm },
-          old.backend && { label: 'Frameworks & Backend', items: old.backend },
-          old.databases && { label: 'Databases', items: old.databases },
-          old.tools && { label: 'Tools & Platforms', items: old.tools }
-        ].filter(Boolean);
-        if (R.skills.length === 0) {
-          R.skills = [{ label: 'Skills & Competencies', items: '' }];
-        }
+      // Final check: if name is still empty, force candidateName
+      if ((!R.header.name || R.header.name.trim() === '') && candidateName) {
+        R.header.name = candidateName;
       }
-      
       // Update UI immediately with local data before network fetch
       populateFormFields();
       rp();
@@ -2723,78 +2814,30 @@
           });
           if (res.ok) {
             const data = await res.json();
-            // API returns a flat resume dict (not wrapped in {resume: {...}})
             if (data && ((data.header && data.header.name) || data.name || (data.skills && data.skills.length > 0))) {
               if (data.header) {
-                R.header = { ...R.header, ...data.header };
+                Object.keys(data.header).forEach(k => {
+                  if (data.header[k]) R.header[k] = data.header[k];
+                });
               }
-              if (data.name && (!R.header.name || !R.header.first_name)) {
+              if (data.name && (!R.header.name || R.header.name === 'Candidate')) {
                 R.header.name = data.name;
-                const parts = data.name.split(' ');
-                R.header.first_name = parts[0];
-                if (parts.length > 1) R.header.last_name = parts.slice(1).join(' ');
               }
               if (data.email && !R.header.email) R.header.email = data.email;
               if (data.phone && !R.header.phone) R.header.phone = data.phone;
-              if (data.headline && !R.header.title) R.header.title = data.headline;
-              
+              if (data.headline && !R.header.headline) R.header.headline = data.headline;
               if (data.summary) {
                 R.summary = typeof data.summary === 'string' ? { text: data.summary } : { ...R.summary, ...data.summary };
               }
-              if (Array.isArray(data.experience) && data.experience.length > 0) {
-                R.experience = data.experience;
-              }
-              if (Array.isArray(data.education) && data.education.length > 0) {
-                R.education = data.education;
-              }
-              if (Array.isArray(data.projects) && data.projects.length > 0) {
-                R.projects = data.projects;
-              }
-              if (data.skills) {
-                if (Array.isArray(data.skills) && data.skills.length > 0) {
-                  if (typeof data.skills[0] === 'object' && data.skills[0].label) {
-                    R.skills = data.skills;
-                  } else {
-                    R.skills = [{ label: 'Skills & Competencies', items: data.skills.join(', ') }];
-                  }
-                }
-              }
-              if (data.links && typeof data.links === 'object') {
-                if (data.links.linkedin && !R.header.linkedin) R.header.linkedin = data.links.linkedin;
-                if (data.links.github && !R.header.github) R.header.github = data.links.github;
-                if (data.links.portfolio && !R.header.portfolio) R.header.portfolio = data.links.portfolio;
+              if (Array.isArray(data.experience) && data.experience.length > 0) R.experience = data.experience;
+              if (Array.isArray(data.education) && data.education.length > 0) R.education = data.education;
+              if (Array.isArray(data.projects) && data.projects.length > 0) R.projects = data.projects;
+              if (Array.isArray(data.skills) && data.skills.length > 0) {
+                R.skills = typeof data.skills[0] === 'object' ? data.skills : [{ label: 'Skills & Competencies', items: data.skills.join(', ') }];
               }
               localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
               populateFormFields();
               rp();
-            }
-          }
-
-          // Fallback to profile API if header is still missing name/email
-          if (!R.header.name || !R.header.email) {
-            const profRes = await fetch('/api/user/profile', { headers: { 'X-Firebase-UID': uid } });
-            if (profRes.ok) {
-              const prof = await profRes.json();
-              if (prof && Object.keys(prof).length > 0) {
-                if (prof.name && !R.header.name) R.header.name = prof.name;
-                if (prof.first && !R.header.first_name) R.header.first_name = prof.first;
-                if (prof.last && !R.header.last_name) R.header.last_name = prof.last;
-                if (prof.email && !R.header.email) R.header.email = prof.email;
-                if (prof.phone && !R.header.phone) R.header.phone = prof.phone;
-                if (prof.headline && !R.header.title) R.header.title = prof.headline;
-                if (prof.linkedin_url && !R.header.linkedin) R.header.linkedin = prof.linkedin_url;
-                if (prof.github_url && !R.header.github) R.header.github = prof.github_url;
-                if (prof.portfolio_url && !R.header.portfolio) R.header.portfolio = prof.portfolio_url;
-                if (prof.skills && (!R.skills || R.skills.length === 0 || !R.skills[0].items)) {
-                  R.skills = Array.isArray(prof.skills) && prof.skills.length > 0 && typeof prof.skills[0] === 'object' ? prof.skills : [{ label: 'Skills & Competencies', items: Array.isArray(prof.skills) ? prof.skills.join(', ') : prof.skills }];
-                }
-                if (prof.experience && prof.experience.length > 0) R.experience = prof.experience;
-                if (prof.education && prof.education.length > 0) R.education = prof.education;
-                if (prof.projects && prof.projects.length > 0) R.projects = prof.projects;
-                localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
-                populateFormFields();
-                rp();
-              }
             }
           }
         } catch (err) {
@@ -2855,6 +2898,17 @@
 
     function populateFormFields() {
       const h = R.header || {};
+      // If header name is missing in state, try reading from user
+      if (!h.name || h.name.trim() === '') {
+        const uRaw = localStorage.getItem('getarole_user');
+        const pRaw = localStorage.getItem('getarole_profile');
+        try {
+          const u = JSON.parse(uRaw || '{}');
+          const p = JSON.parse(pRaw || '{}');
+          h.name = p.name || u.displayName || u.name || localStorage.getItem('getarole_username') || '';
+          if (h.name) R.header.name = h.name;
+        } catch(e) {}
+      }
       sv('ffn', h.name);
       sv('fsuf', h.suffix);
       sv('floc', h.location);
@@ -3272,9 +3326,11 @@ ${r.header?.name || 'Candidate Name'}`
           <div class="lr-sec">
             <div class="lr-sec-title">TECHNICAL SKILLS</div>
             <div class="lr-skills-table">
-              ${validSkills.map(s => `
-                <div class="lr-skills-row"><span class="lr-skills-label">${esc(s.label)}:</span> ${esc(s.items)}</div>
-              `).join('')}
+              ${validSkills.map(s => {
+                const lbl = s.label.trim();
+                const displayLabel = (lbl.toLowerCase() === 'technical skills' || lbl.toLowerCase() === 'skills') ? 'Core Competencies' : lbl;
+                return `<div class="lr-skills-row"><span class="lr-skills-label">${esc(displayLabel)}:</span> ${esc(s.items)}</div>`;
+              }).join('')}
             </div>
           </div>
         ` : '';
@@ -3305,15 +3361,20 @@ ${r.header?.name || 'Candidate Name'}`
           `;
         }).join('');
 
+        // Resolve active headline: explicit headline or short 1-line summary phrase
+        const isShortSummaryPhrase = R.summary && R.summary.text && R.summary.text.trim().length > 0 && R.summary.text.trim().length < 35;
+        const activeHeadline = h.headline || (isShortSummaryPhrase ? R.summary.text.trim() : '');
+        const hasFullSummary = R.summary && R.summary.text && R.summary.text.trim().length >= 35;
+
         container.innerHTML = `
       <div class="latex-doc">
         <!-- Header -->
         <div class="lr-header">
           <div class="lr-name">${esc(fullName)}</div>
-          ${h.headline ? `<div class="lr-headline" style="font-size:10.5pt;font-style:italic;margin-top:2px;margin-bottom:4px;color:#222;">${esc(h.headline)}</div>` : ''}
+          ${activeHeadline ? `<div class="lr-headline" style="font-size:10.5pt;font-style:italic;margin-top:2px;margin-bottom:4px;color:#222;">${esc(activeHeadline)}</div>` : ''}
           <div class="lr-contacts">${contacts.join(' &bull; ')}</div>
         </div>
-        ${R.summary && R.summary.text ? `
+        ${hasFullSummary ? `
         <div class="lr-sec">
           <div class="lr-sec-title">SUMMARY</div>
           <div class="lr-summary-text">${formatBulletBold(esc(R.summary.text))}</div>
