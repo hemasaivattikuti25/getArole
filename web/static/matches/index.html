@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- SEO -->
-  <title>Matches — getArole | Your AI Job Search Partner</title>
-  <meta name="description" content="Stop searching job boards. getArole automatically matches your resume with verified jobs.">
+  <title>Dashboard — getArole | AI Job Discovery & Matcher for Engineers</title>
+  <meta name="description" content="Your personalized AI job dashboard. Browse 1,000+ live tech jobs from top companies, get AI-powered resume match scores, and track applications — all in one place.">
   <meta name="robots" content="noindex, nofollow">
-  <link rel="canonical" href="https://getarole.in/matches/">
+  <link rel="canonical" href="https://getarole.in/index.html">
   
   <!-- Open Graph -->
-  <meta property="og:title" content="getArole — Your AI Job Search Partner">
-  <meta property="og:description" content="Stop searching job boards. getArole automatically matches your resume with verified jobs.">
-  <meta property="og:url" content="https://getarole.in/matches/">
+  <meta property="og:title" content="getArole Dashboard — AI Job Discovery Engine">
+  <meta property="og:description" content="Browse 1,000+ live tech jobs, get AI match scores, and track your applications.">
+  <meta property="og:url" content="https://getarole.in/index.html">
   <meta property="og:image" content="https://getarole.in/og-image.png">
   <meta property="og:type" content="website">
 
@@ -34,51 +34,20 @@
   </script>
 
   <style>
-                :root {
-      --white: #ffffff;
-      --color-lilac: #d094ea;
-      --color-periwinkle: #c6beee;
-      --color-mauve: #c87de8;
-      --color-lime: #b6e580;
-
-      --primary: #c6beee;
-      --primary-hover: #b5a4ea;
-      --primary-accent: #d094ea;
-      --primary-light: rgba(198, 190, 238, 0.25);
-      --primary-border: #c6beee;
-      --primary-gradient: linear-gradient(135deg, #c6beee 0%, #b8abf2 100%);
-      --accent: #d094ea;
-      --accent-emerald: #b6e580;
-
-      --surface: rgba(255, 255, 255, 0.78);
-      --bg: #fbf9fd;
-      --bg-subtle: #f6f3fc;
-      --bg-surface: rgba(255, 255, 255, 0.82);
-      --background: #fbf9fd;
-
-      --glass-bg: rgba(255, 255, 255, 0.78);
-      --glass-border: rgba(255, 255, 255, 0.95);
-      --glass-border-subtle: rgba(198, 190, 238, 0.45);
-      --glass-shadow: 0 10px 32px rgba(200, 125, 232, 0.09), 0 1px 3px rgba(0, 0, 0, 0.02);
-
-      --border-subtle: rgba(198, 190, 238, 0.35);
-      --border: rgba(198, 190, 238, 0.55);
-      --border-strong: rgba(200, 125, 232, 0.45);
-      --border-glow: rgba(200, 125, 232, 0.3);
-
-      --text-main: #201a28;
-      --text-muted: #6b6378;
-      --text-subtle: #9d95aa;
-
-      --shadow-sm: 0 2px 8px rgba(200, 125, 232, 0.05);
-      --shadow-md: 0 8px 24px rgba(200, 125, 232, 0.09), 0 1px 3px rgba(0, 0, 0, 0.02);
-      --shadow-lg: 0 18px 42px rgba(200, 125, 232, 0.12), 0 2px 6px rgba(0, 0, 0, 0.03);
-      --shadow-glow: 0 0 35px rgba(200, 125, 232, 0.2);
-
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 18px;
-      --radius-xl: 24px;
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-accent: #6366f1;
+      --primary-light: #eef2ff;
+      --primary-border: #c7d2fe;
+      --surface: #ffffff;
+      --background: #f8fafc;
+      --border-subtle: #f1f5f9;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-subtle: #94a3b8;
       --nav-height: 64px;
     }
 
@@ -1366,119 +1335,7 @@
       }
     }
 
-  
-    
-    /* ── APPLE-STYLE AMBIENT AURORA BACKGROUND ── */
-    body::before {
-      content: ''; position: fixed; top: -10vw; left: -10vw; width: 60vw; height: 60vw;
-      z-index: -3; pointer-events: none; border-radius: 50%; filter: blur(100px); opacity: 0.5;
-      background: radial-gradient(circle, rgba(0, 113, 227, 0.15) 0%, transparent 70%);
-      animation: ambientPulse1 20s ease-in-out infinite alternate;
-    }
-    body::after {
-      content: ''; position: fixed; bottom: -10vw; right: -10vw; width: 60vw; height: 60vw;
-      z-index: -4; pointer-events: none; border-radius: 50%; filter: blur(100px); opacity: 0.4;
-      background: radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, transparent 70%);
-      animation: ambientPulse2 24s ease-in-out infinite alternate;
-    }
-    @keyframes ambientPulse1 {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(5vw, 5vw) scale(1.2); }
-    }
-    @keyframes ambientPulse2 {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(-5vw, -5vw) scale(1.1); }
-    }
-
-    /* ═══════ 5-COLOR FROSTED GLASS EFFECT WHITE ═══════ */
-    .glass-panel-light,
-    .job-card,
-    .profile-card,
-    .summary-card,
-    .stat-metric-card,
-    .step-card,
-    .feature-card,
-    .bento-card,
-    .bento-item,
-    .modal-window,
-    .auth-modal-card,
-    .section-card,
-    .filter-bar,
-    .search-box-wrap {
-      background: rgba(255, 255, 255, 0.78) !important;
-      backdrop-filter: blur(20px) saturate(160%) !important;
-      -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.95) !important;
-      box-shadow: 0 10px 32px rgba(200, 125, 232, 0.09), 0 1px 3px rgba(0, 0, 0, 0.02) !important;
-    }
-
-    header, .nav-container, .navbar {
-      background: rgba(255, 255, 255, 0.82) !important;
-      backdrop-filter: blur(24px) saturate(160%) !important;
-      -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
-      border-bottom: 1px solid rgba(198, 190, 238, 0.45) !important;
-    }
-
-    /* ═══════ BLUISH BUTTONS (#c6beee) ═══════ */
-    .btn-primary, .kl-btn-primary, #btn-submit-auth, .btn-hero-action, .btn-promo, button.btn-primary {
-      background: #c6beee !important;
-      background: linear-gradient(135deg, #c6beee 0%, #b8abf2 100%) !important;
-      color: #1e1b4b !important;
-      font-weight: 700 !important;
-      box-shadow: 0 4px 16px rgba(198, 190, 238, 0.5) !important;
-      border: 1px solid rgba(255, 255, 255, 0.9) !important;
-    }
-    .btn-primary:hover, .kl-btn-primary:hover, #btn-submit-auth:hover, .btn-hero-action:hover, .btn-promo:hover, button.btn-primary:hover {
-      background: #b5a4ea !important;
-      color: #0f0b29 !important;
-      box-shadow: 0 8px 24px rgba(198, 190, 238, 0.7) !important;
-      transform: translateY(-2px) !important;
-    }
-
-    .btn-secondary, .kl-btn-ghost {
-      background: rgba(255, 255, 255, 0.75) !important;
-      border: 1.5px solid rgba(198, 190, 238, 0.55) !important;
-      color: #201a28 !important;
-      backdrop-filter: blur(16px) !important;
-      -webkit-backdrop-filter: blur(16px) !important;
-    }
-    .btn-secondary:hover, .kl-btn-ghost:hover {
-      border-color: #c87de8 !important;
-      color: #c87de8 !important;
-      box-shadow: 0 4px 16px rgba(200, 125, 232, 0.15) !important;
-    }
-
-    .pulse-dot, .pulse {
-      background: #b6e580 !important;
-      box-shadow: 0 0 10px #b6e580 !important;
-    }
-
-    .tag-chip.batch, .nav-badge-pill, .match-pill, .tag-chip.match-score-chip {
-      background: rgba(182, 229, 128, 0.28) !important;
-      border: 1px solid #b6e580 !important;
-      color: #365314 !important;
-      font-weight: 800 !important;
-    }
-
-    .orb-1, .kl-orb-1 {
-      background: radial-gradient(circle, rgba(208, 148, 234, 0.38) 0%, rgba(198, 190, 238, 0.18) 60%, transparent 100%) !important;
-    }
-    .orb-2, .kl-orb-2 {
-      background: radial-gradient(circle, rgba(182, 229, 128, 0.25) 0%, rgba(200, 125, 232, 0.12) 70%, transparent 100%) !important;
-    }
-    .orb-3, .kl-orb-3 {
-      background: radial-gradient(circle, rgba(200, 125, 232, 0.32) 0%, rgba(198, 190, 238, 0.15) 70%, transparent 100%) !important;
-    }
-
-    .brand-title span, .kl-brand-title span {
-      background: linear-gradient(135deg, #c87de8 0%, #d094ea 100%) !important;
-      -webkit-background-clip: text !important;
-      -webkit-text-fill-color: transparent !important;
-    }
-
-</style>
-
-
+  </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="/static/js/mobile-nav.js?v=3"></script>
@@ -1553,7 +1410,7 @@
         <!-- Left Column: Top Matched Jobs List -->
         <div class="jobs-feed-col">
           <div class="feed-header">
-            <span>🎯 <strong id="matches-count-header">0</strong> AI Matches</span>
+            <span>🎯 <strong id="matches-count-header">0</strong> Calibrated AI Matches</span>
             <span style="font-size:12px; color:var(--primary); font-weight:700;">Ranked by Fit</span>
           </div>
           <div class="feed-list" id="matches-feed-list"></div>
@@ -1562,7 +1419,7 @@
         <!-- Right Column: Matched Job Detail Pane -->
         <div class="job-detail-col" id="matches-detail-pane">
           <div style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--text-subtle); font-size:14px; font-weight:600">
-            Select an opportunity on the left to view detailed fit breakdown and requirement analysis.
+            Select an AI-matched opportunity on the left to view fit breakdown and 70B ATS highlights.
           </div>
         </div>
       </div>
@@ -1578,7 +1435,7 @@
           <span style="font-family:'Outfit', sans-serif; font-size:18px; font-weight:800; color:#0f172a; letter-spacing:-0.02em;">get<span style="color:#4f46e5">A</span>role</span>
         </a>
         <p style="font-size:12px; color:#64748b; line-height:1.5; max-width:280px; margin-bottom:10px;">
-          AI-powered job search platform. Verified listings from top career portals.
+          India's #1 AI Job Discovery Engine. Autonomous multi-platform job aggregation across Greenhouse, Lever, Ashby, LinkedIn &amp; Internshala.
         </p>
 
         <!-- Team / Founder Spotlight -->
@@ -1589,7 +1446,7 @@
         <br>
         <div style="display:inline-flex; align-items:center; gap:6px; background:#f0fdf4; border:1px solid #bbf7d0; padding:3px 10px; border-radius:99px; font-size:11px; font-weight:700; color:#15803d;">
           <span style="width:6px; height:6px; background:#22c55e; border-radius:50%;"></span>
-          Verified Jobs • Live
+          1,000+ Verified Jobs • Live
         </div>
       </div>
 
@@ -2244,6 +2101,7 @@
               ⚠️ Could not load jobs. <button class="btn-refresh" onclick="loadJobs()" style="margin:12px auto;">Try Again</button>
             </div>`;
         }
+        toast('Error loading jobs.');
       }
     }
 
@@ -2955,8 +2813,8 @@
           gsap.from(card, {
             y: 30,
             opacity: 0,
-            duration: 0.8,
-            ease: "power4.out",
+            duration: 0.6,
+            ease: "back.out(1.2)",
             stagger: 0.1
           });
         });

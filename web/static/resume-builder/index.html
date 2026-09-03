@@ -4,16 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Resume — getArole</title>
+  <title>getArole — ATS Resume & Cover Letter Architect</title>
   <meta name="description"
-    content="Build and export ATS-optimized LaTeX resumes and tailored applications on getArole.">
-  <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="apple-touch-icon" href="/logo.svg">
+    content="Official 1-Page ATS Resume and AI Tailored Cover Letter Builder synchronized directly with candidate profile data.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/dreampulse/computer-modern-web-font@master/fonts.css">
-  <script>(function () { if (window.location.search.includes('test=1')) { localStorage.setItem('getarole_user', JSON.stringify({displayName:'Hemasai Vattikuti', email:'hemasaivattikuti2727@gmail.com'})); } else if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();
     function setResumeMobileTab(mode) {
       const btnEdit = document.getElementById('btn-tab-edit');
       const btnPrev = document.getElementById('btn-tab-preview');
@@ -32,69 +31,35 @@
     
   </script>
   <style>
-            /* ═══════ GETAROLE DESIGN SYSTEM ═══════ */
-        :root {
-      --white: #ffffff;
-      --color-lilac: #d094ea;
-      --color-periwinkle: #c6beee;
-      --color-mauve: #c87de8;
-      --color-lime: #b6e580;
-
-      --primary: #c6beee;
-      --primary-hover: #b5a4ea;
-      --primary-accent: #d094ea;
-      --primary-light: rgba(198, 190, 238, 0.25);
-      --primary-border: #c6beee;
-      --primary-gradient: linear-gradient(135deg, #c6beee 0%, #b8abf2 100%);
-      --accent: #d094ea;
-      --accent-emerald: #b6e580;
-
-      --surface: rgba(255, 255, 255, 0.78);
-      --bg: #fbf9fd;
-      --bg-subtle: #f6f3fc;
-      --bg-surface: rgba(255, 255, 255, 0.82);
-      --background: #fbf9fd;
-
-      --glass-bg: rgba(255, 255, 255, 0.78);
-      --glass-border: rgba(255, 255, 255, 0.95);
-      --glass-border-subtle: rgba(198, 190, 238, 0.45);
-      --glass-shadow: 0 10px 32px rgba(200, 125, 232, 0.09), 0 1px 3px rgba(0, 0, 0, 0.02);
-
-      --border-subtle: rgba(198, 190, 238, 0.35);
-      --border: rgba(198, 190, 238, 0.55);
-      --border-strong: rgba(200, 125, 232, 0.45);
-      --border-glow: rgba(200, 125, 232, 0.3);
-
-      --text-main: #201a28;
-      --text-muted: #6b6378;
-      --text-subtle: #9d95aa;
-
-      --shadow-sm: 0 2px 8px rgba(200, 125, 232, 0.05);
-      --shadow-md: 0 8px 24px rgba(200, 125, 232, 0.09), 0 1px 3px rgba(0, 0, 0, 0.02);
-      --shadow-lg: 0 18px 42px rgba(200, 125, 232, 0.12), 0 2px 6px rgba(0, 0, 0, 0.03);
-      --shadow-glow: 0 0 35px rgba(200, 125, 232, 0.2);
-
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 18px;
-      --radius-xl: 24px;
-      --nav-height: 64px;
+    :root {
+      --pr: #4f46e5;
+      --prh: #4338ca;
+      --prl: #eef2ff;
+      --prb: #c7d2fe;
+      --sf: #fff;
+      --bg: #f8fafc;
+      --bd: #e2e8f0;
+      --bds: #cbd5e1;
+      --tx: #0f172a;
+      --txm: #475569;
+      --txs: #94a3b8;
+      --nh: 60px;
+      --sw: 220px;
+      --ew: 440px;
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--background);
-      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--tx);
       height: 100vh;
       display: flex;
       flex-direction: column;
@@ -102,15 +67,1141 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: -.02em;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 99px;
+    }
+
+    /* ═══════ TOP BAR ═══════ */
+    .tb {
+      height: var(--nh);
+      background: var(--sf);
+      border-bottom: 1px solid var(--bd);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 14px;
+      flex-shrink: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .bi {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2);
+    }
+
+    .bt {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      color: var(--tx);
+    }
+
+    .bt span {
+      color: var(--pr);
+    }
+
+    .back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--txm);
+      text-decoration: none;
+      padding: 6px 11px;
+      border-radius: 8px;
+      border: 1px solid var(--bd);
+      transition: all .15s;
+    }
+
+    .back:hover {
+      color: var(--pr);
+      border-color: var(--prb);
+      background: var(--prl);
+    }
+
+    .dv {
+      width: 1px;
+      height: 24px;
+      background: var(--bd);
+    }
+
+    /* Document Mode Switcher (Resume vs Cover Letter) */
+    .mode-switch {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--bd);
+    }
+
+    .btn-mode {
+      padding: 6px 14px;
+      border-radius: 7px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--txm);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-mode.active {
+      background: var(--sf);
+      color: var(--pr);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
+      font-weight: 800;
+    }
+
+    /* Sync Status & Action Buttons */
+    .tbr {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .profile-synced-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--pr);
+      background: var(--prl);
+      border: 1px solid var(--prb);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .bto {
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: 1.5px solid var(--bd);
+      background: var(--sf);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--tx);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .bto:hover {
+      border-color: var(--prb);
+      color: var(--pr);
+      transform: translateY(-1px);
+    }
+    .bto:active {
+      transform: scale(0.97);
+    }
+
+    .btp {
+      padding: 7px 18px;
+      border-radius: 8px;
+      border: none;
+      background: var(--pr);
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(79, 70, 229, .25);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btp:hover {
+      background: var(--prh);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(79, 70, 229, .35);
+    }
+    .btp:active {
+      transform: scale(0.97);
+    }
+
+    /* ═══════ THREE-COLUMN LAYOUT ═══════ */
+    .ly {
+      flex: 1;
+      display: grid;
+      grid-template-columns: var(--sw) var(--ew) 1fr;
+      overflow: hidden;
+      min-height: 0;
+    }
+    @media (max-width: 992px) {
+      .ly {
+        height: auto;
+        min-height: auto;
+        flex: 1 0 auto;
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+      }
+    }
+
+    /* Sidebar Navigation */
+    .sn {
+      background: var(--sf);
+      border-right: 1px solid var(--bd);
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow-y: auto;
+    }
+
+    .snl {
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--txs);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 8px 10px 3px;
+    }
+
+    .si {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--txm);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .si:hover {
+      background: var(--bg);
+      color: var(--tx);
+      transform: translateX(2px);
+    }
+
+    .si.active {
+      background: var(--prl);
+      color: var(--pr);
+      font-weight: 700;
+    }
+
+    .sic {
+      font-size: 15px;
+      width: 18px;
+      text-align: center;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--bd);
+      margin-left: auto;
+      flex-shrink: 0;
+      transition: background .3s;
+    }
+
+    .dot.done {
+      background: var(--pr);
+    }
+
+    .cl-only {
+      display: none;
+    }
+
+    .mode-cl-active .resume-only {
+      display: none;
+    }
+
+    .mode-cl-active .cl-only {
+      display: flex;
+    }
+
+    /* Editor Column */
+    .ep {
+      border-right: 1px solid var(--bd);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--sf);
+    }
+
+    .eh {
+      padding: 14px 20px 12px;
+      border-bottom: 1px solid var(--bd);
+      background: var(--sf);
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .eh h2 {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--tx);
+    }
+
+    .eh p {
+      font-size: 12px;
+      color: var(--txm);
+      margin-top: 2px;
+    }
+
+    .eb {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 20px;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Panels & Forms */
+    .pn {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .pn.active {
+      display: flex;
+    }
+
+    .fg {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .fg label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--txm);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .fi,
+    .ft {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid var(--bd);
+      border-radius: 8px;
+      background: var(--sf);
+      color: var(--tx);
+      font-size: 13.5px;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .fi:focus,
+    .ft:focus {
+      border-color: var(--pr);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    }
+
+    .ft {
+      resize: vertical;
+      min-height: 72px;
+      line-height: 1.55;
+    }
+
+    .fr2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* Form Cards */
+    .fc {
+      background: var(--sf);
+      border: 1.5px solid var(--bd);
+      border-radius: 11px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .fch {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .fct {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--tx);
+    }
+
+    .brm {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--txs);
+      font-size: 13px;
+      padding: 3px 6px;
+      border-radius: 4px;
+      transition: all .15s;
+    }
+
+    .brm:hover {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .bad {
+      padding: 9px 14px;
+      border-radius: 8px;
+      border: 1.5px dashed var(--bd);
+      background: transparent;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--txm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .15s;
+    }
+
+    .bad:hover {
+      border-color: var(--pr);
+      color: var(--pr);
+      background: var(--prl);
+    }
+
+    /* Bullet point rows */
+    .bls {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .blr {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .blr input {
+      flex: 1;
+      padding: 7px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--bd);
+      background: var(--sf);
+      font-size: 12.5px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .blr input:focus {
+      border-color: var(--pr);
+    }
+
+    .bai {
+      padding: 4px 8px;
+      border-radius: 5px;
+      border: 1px solid var(--prb);
+      background: var(--prl);
+      color: var(--pr);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .15s;
+    }
+
+    .bai:hover {
+      background: var(--pr);
+      color: #fff;
+    }
+
+    .bri {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--txs);
+      font-size: 13px;
+      padding: 2px 5px;
+    }
+
+    .bri:hover {
+      color: #dc2626;
+    }
+
+    .bads {
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: 1.5px dashed var(--bd);
+      background: transparent;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--txm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 3px;
+      transition: all .15s;
+    }
+
+    .bads:hover {
+      border-color: var(--pr);
+      color: var(--pr);
+    }
+
+    /* Structured Date Picker */
+    .date-picker-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .date-picker-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .date-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .date-lbl {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--txs);
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+    .fi-sel {
+      padding: 7px 8px;
+      border: 1.5px solid var(--bd);
+      border-radius: 6px;
+      background: var(--sf);
+      color: var(--tx);
+      font-size: 12.5px;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      transition: border-color .15s;
+    }
+    .fi-sel:focus {
+      border-color: var(--pr);
+    }
+    .fi-sel:disabled {
+      background: var(--bg);
+      color: var(--txs);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    .date-sep {
+      color: var(--txs);
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .cb-present {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--txm);
+      cursor: pointer;
+      margin-left: 4px;
+      user-select: none;
+    }
+    .cb-present input {
+      accent-color: var(--pr);
+      cursor: pointer;
+    }
+    .disabled-date {
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    /* Dynamic Skill Categories */
+    .skill-cat-card {
+      background: var(--sf);
+      border: 1.5px solid var(--bd);
+      border-radius: 9px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .skill-cat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .skill-cat-label-input {
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--tx);
+      border: 1px solid transparent;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      transition: all .15s;
+    }
+    .skill-cat-label-input:focus {
+      border-color: var(--prb);
+      background: var(--bg);
+    }
+
+    /* ATS Score Card */
+    .ac {
+      background: var(--sf);
+      border: 1.5px solid var(--bd);
+      border-radius: 10px;
+      padding: 14px;
+    }
+
+    .ach {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .acn {
+      font-size: 24px;
+      font-weight: 900;
+      font-family: 'Outfit', sans-serif;
+      color: var(--pr);
+    }
+
+    .abb {
+      height: 6px;
+      background: var(--bd);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .abf {
+      height: 100%;
+      border-radius: 99px;
+      transition: width .5s ease, background .5s;
+      background: linear-gradient(90deg, var(--pr), #6366f1);
+    }
+
+    .ats-tips {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .ats-tip {
+      font-size: 11.5px;
+      color: var(--txm);
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      z-index: 9999;
+      background: #0f172a;
+      color: #fff;
+      padding: 11px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .2);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all .25s ease;
+      pointer-events: none;
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ═══════ PREVIEW PANEL ═══════ */
+    .pv {
+      background: #525659;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .pvl {
+      font-size: 11px;
+      font-weight: 800;
+      color: #e2e8f0;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 14px;
+      align-self: flex-start;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .a4w {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    #rp {
+      width: 794px;
+      min-height: 1123px;
+      background: #fff;
+      box-shadow: 0 12px 40px -10px rgba(0, 0, 0, .45), 0 0 0 1px rgba(255, 255, 255, .08);
+      border-radius: 2px;
+      transform-origin: top center;
+      flex-shrink: 0;
+    }
+
+    @media print {
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      body>* {
+        display: none !important;
+      }
+
+      #pw {
+        display: block !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 210mm;
+        min-height: 297mm;
+        z-index: 99999;
+        background: #fff;
+      }
+    }
+
+    /* ═════════════════════════════════════════════════════════════════
+       LATEX MASTER RESUME & COVER LETTER STYLES
+       Typography: Times New Roman / Computer Modern Serif
+    ═════════════════════════════════════════════════════════════════ */
+    .latex-doc {
+      font-family: 'Times New Roman', 'CMU Serif', 'Latin Modern Roman', 'Liberation Serif', Times, serif;
+      color: #000;
+      padding: 40px 48px;
+      font-size: 10.5pt;
+      line-height: 1.25;
+      background: #fff;
+    }
+
+    .latex-doc a {
+      color: #000;
+      text-decoration: none;
+    }
+
+    .latex-doc a:hover {
+      text-decoration: underline;
+    }
+
+    /* Header */
+    .lr-header {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .lr-name {
+      font-size: 22pt;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .lr-contacts {
+      font-size: 9.5pt;
+      color: #222;
+      margin-top: 3px;
+    }
+
+    .lr-contacts span {
+      margin: 0 4px;
+    }
+
+    /* Section Headings */
+    .lr-sec {
+      margin-bottom: 10px;
+    }
+
+    .lr-sec-title {
+      font-size: 10.5pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      border-bottom: 1px solid #000;
+      padding-bottom: 1px;
+      margin-bottom: 5px;
+    }
+
+    /* Summary & Text */
+    .lr-summary-text {
+      font-size: 9.5pt;
+      line-height: 1.35;
+      text-align: justify;
+      color: #111;
+    }
+
+    /* Technical Skills */
+    .lr-skills-table {
+      width: 100%;
+      font-size: 9.5pt;
+      line-height: 1.35;
+    }
+
+    .lr-skills-row {
+      margin-bottom: 2px;
+    }
+
+    .lr-skills-label {
+      font-weight: bold;
+      color: #000;
+    }
+
+    /* Experience & Projects Entries */
+    .lr-entry {
+      margin-bottom: 8px;
+    }
+
+    .lr-entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 10pt;
+    }
+
+    .lr-org {
+      font-weight: bold;
+      color: #000;
+    }
+
+    .lr-date {
+      font-style: italic;
+      font-size: 9.5pt;
+      color: #222;
+    }
+
+    .lr-subline {
+      display: flex;
+      justify-content: space-between;
+      font-style: italic;
+      font-size: 9.5pt;
+      color: #333;
+      margin-top: 1px;
+      margin-bottom: 3px;
+    }
+
+    .lr-links {
+      font-style: normal;
+      margin-left: 6px;
+    }
+
+    .lr-links a {
+      color: #4f46e5;
+      text-decoration: none;
+      font-size: 9pt;
+      margin-left: 4px;
+    }
+
+    /* Bullet lists */
+    .lr-bullets {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .lr-bullets li {
+      font-size: 9.2pt;
+      line-height: 1.35;
+      color: #111;
+      margin-bottom: 2px;
+      text-align: justify;
+    }
+
+    .lr-bullets li strong {
+      color: #000;
+    }
+
+    /* Achievements & Certifications lines */
+    .lr-single-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 9.3pt;
+      line-height: 1.35;
+      margin-bottom: 2px;
+    }
+
+    /* ════════ COVER LETTER SPECIFIC STYLES ════════ */
+    .cl-header-box {
+      border-bottom: 1.5px solid #000;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .cl-meta-block {
+      font-size: 10pt;
+      line-height: 1.4;
+      color: #111;
+      margin-bottom: 20px;
+    }
+
+    .cl-salutation {
+      font-weight: bold;
+      font-size: 10.5pt;
+      margin-bottom: 14px;
+    }
+
+    .cl-body-p {
+      font-size: 10.5pt;
+      line-height: 1.55;
+      text-align: justify;
+      margin-bottom: 14px;
+      color: #111;
+    }
+
+    /* Template Presets Bar */
+    .template-presets-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .btn-template-preset {
+      padding: 6px 12px;
+      border-radius: 7px;
+      border: 1.5px solid var(--bd);
+      background: var(--sf);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--txm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all .15s;
+    }
+    .btn-template-preset:hover {
+      border-color: var(--prb);
+      color: var(--pr);
+      background: var(--prl);
+    }
+    .btn-template-preset.active {
+      border-color: var(--pr);
+      background: var(--prl);
+      color: var(--pr);
+    }
+
+    /* ════════ AI SUITE MODAL & PANELS ════════ */
+    .ai-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+    .ai-modal-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .ai-modal-card {
+      background: var(--sf);
+      border: 1px solid var(--bd);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.25);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: 90vh;
+      animation: modalPop .2s ease-out;
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .ai-modal-header {
+      padding: 16px 20px;
+      background: linear-gradient(135deg, rgba(79,70,229,0.08), rgba(99,102,241,0.04));
+      border-bottom: 1px solid var(--bd);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .ai-modal-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--tx);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ai-modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .ai-variation-card {
+      border: 1.5px solid var(--bd);
+      border-radius: 10px;
+      padding: 14px;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color .15s, transform .15s;
+    }
+    .ai-variation-card:hover {
+      border-color: var(--prb);
+      background: var(--sf);
+    }
+    .ai-var-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .ai-var-tag {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .ai-tag-star { background: #dbeafe; color: #1d4ed8; }
+    .ai-tag-tech { background: #fef3c7; color: #b45309; }
+    .ai-tag-concise { background: #dcfce7; color: #15803d; }
+    .ai-var-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--tx);
+    }
+    .ai-btn-apply {
+      align-self: flex-end;
+      padding: 6px 14px;
+      border-radius: 7px;
+      background: var(--pr);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background .15s;
+    }
+    .ai-btn-apply:hover {
+      background: #4338ca;
+    }
+    .ai-chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .ai-chip {
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .ai-chip-green { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .ai-chip-orange { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+    .ai-chip-blue { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; cursor: pointer; }
+    .ai-chip-blue:hover { background: #bfdbfe; }
+    .ai-quick-btn {
+      padding: 5px 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      border-radius: 6px;
+      border: 1px solid var(--bd);
+      background: var(--sf);
+      color: var(--txm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all .15s;
+    }
+    .ai-quick-btn:hover {
+      border-color: var(--prb);
+      color: var(--pr);
+      background: var(--prl);
+    }
+  
     /* ════════════════════ TOP NAVIGATION BAR (UNIFORM STYLE) ════════════════════ */
     header {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      background: var(--surface, #ffffff);
+      border-bottom: 1px solid var(--border, #e2e8f0);
       height: var(--nav-height, 64px);
       display: flex; align-items: center;
-      flex-shrink: 0;
     }
     .header-inner {
       max-width: 1500px; width: 100%; margin: 0 auto; padding: 0 24px;
@@ -119,10 +1210,7 @@
     .brand-group { display: flex; align-items: center; gap: 32px; }
     .brand-logo {
       display: flex; align-items: center; gap: 10px; text-decoration: none;
-      transition: transform 0.2s ease;
     }
-    .brand-logo:hover { transform: scale(1.02); }
-    .brand-logo-img { width: 34px; height: 34px; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 12px rgba(79,70,229,0.2); }
     .brand-title { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 19px; color: var(--text-main, #0f172a); }
     .brand-title span { color: var(--primary, #4f46e5); }
 
@@ -145,913 +1233,543 @@
 
     /* Right Actions & User Menu */
     .header-actions { display: flex; align-items: center; gap: 12px; }
-    
-    .status-save-pill {
-      font-size: 13px; font-weight: 600; color: var(--text-muted);
-      display: flex; align-items: center; gap: 5px; margin-right: 8px;
-    }
-
-    .btn-secondary {
+    .btn-refresh {
       background: var(--surface, #ffffff); border: 1.5px solid var(--border, #e2e8f0);
-      padding: 7px 14px; border-radius: 8px; font-size: 13.5px; font-weight: 700;
+      padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 700;
       color: var(--text-main, #0f172a); cursor: pointer; display: flex; align-items: center; gap: 6px;
       transition: all 0.15s;
     }
-    .btn-secondary:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
-    .btn-secondary:active { transform: scale(0.98); }
-
-    .btn-primary {
-      padding: 8px 18px; border-radius: 8px; border: none;
-      background: var(--primary-gradient); color: #ffffff;
-      font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px;
-      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(79, 70, 229, 0.42); }
-    .btn-primary:active { transform: scale(0.98); }
+    .btn-refresh:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
 
     .user-profile-btn {
+      display: flex; align-items: center; gap: 8px; padding: 4px 8px 4px 4px;
+      border-radius: 20px; border: 1.5px solid var(--border, #e2e8f0);
+      background: var(--surface, #ffffff); cursor: pointer; position: relative;
+    }
+    .user-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+      color: white; font-weight: 800; font-size: 12px;
       display: flex; align-items: center; justify-content: center;
-      width: 34px; height: 34px;
-      border-radius: 10px; border: 1.5px solid var(--primary-border);
-      background: var(--primary-light); cursor: pointer; position: relative;
-      color: var(--primary); font-weight: 800; font-size: 14px;
-      transition: all 0.2s;
-    }
-    .user-profile-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-
-    
-    /* Glass Panel Animation */
-    .glass-panel-light {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-card);
-      box-shadow: var(--shadow-sm);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    
-    
-    /* ── AMBIENT BACKGROUND GLOW ORBS ── */
-    .ambient-glow-wrap {
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      overflow: hidden; pointer-events: none; z-index: 0;
-    }
-    .ambient-orb {
-      position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.65;
-      animation: floatSlow 18s ease-in-out infinite alternate;
-    }
-    .orb-1 {
-      width: 550px; height: 550px; top: -100px; left: 50%;
-      transform: translateX(-50%);
-      background: radial-gradient(circle, rgba(79,70,229,0.18) 0%, rgba(124,58,237,0.08) 60%, transparent 100%);
-    }
-    .orb-2 {
-      width: 420px; height: 420px; top: 250px; left: 10%;
-      background: radial-gradient(circle, rgba(37,99,235,0.12) 0%, rgba(79,70,229,0.05) 70%, transparent 100%);
-      animation-delay: -4s;
-    }
-    .orb-3 {
-      width: 480px; height: 480px; top: 320px; right: 8%;
-      background: radial-gradient(circle, rgba(16,185,129,0.1) 0%, rgba(79,70,229,0.06) 70%, transparent 100%);
-      animation-delay: -8s;
-    }
-    @keyframes floatSlow {
-      0% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(25px, 35px) scale(1.06); }
-      100% { transform: translate(-20px, -15px) scale(0.95); }
-    }
-
-    /* 3-Column Layout */
-    .workspace {
-      position: relative; z-index: 10;
-      flex: 1;
-      display: grid;
-      grid-template-columns: 360px 1fr;
-      overflow: hidden;
-      min-height: 0;
-      background: var(--background);
-    }
-    @media (max-width: 1200px) {
-      .workspace {
-      position: relative; z-index: 10;
-        grid-template-columns: 320px 1fr;
-      }
-    }
-    @media (max-width: 992px) {
-      .workspace {
-      position: relative; z-index: 10;
-        grid-template-columns: 1fr;
-        overflow-y: auto;
-      }
-    }
-
-    /* Left Sidebar: Editor Cards */
-    .sidebar-left {
-      background: var(--surface);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-    }
-    .sidebar-mode-tabs {
-      display: flex;
-      gap: 4px;
-      background: #f1f5f9;
-      padding: 4px;
-      border-radius: 10px;
-      margin: 16px 16px 12px 16px;
-    }
-    .btn-sidebar-tab {
-      flex: 1;
-      padding: 7px 10px;
-      border-radius: 8px;
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.15s;
-    }
-    .btn-sidebar-tab.active {
-      background: #ffffff;
-      color: var(--text-main);
-      font-weight: 700;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-    }
-
-    .simplify-sections-list {
-      padding: 0 16px 36px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-        .section-card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-card);
-      box-shadow: var(--shadow-sm);
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       overflow: hidden;
     }
-    .section-card:hover {
-      border-color: var(--primary-border);
-      box-shadow: var(--shadow-md);
-      transform: translateY(-1px);
-    }
-    .section-card.active {
-      border-color: var(--primary);
-      box-shadow: 0 4px 16px rgba(0, 113, 227, 0.12);
-      transform: translateY(-2px);
-    }
-    .section-card.active .section-chevron {
-      transform: rotate(90deg);
-      color: var(--primary);
-    }
-    .section-body {
-      display: none;
-      padding: 16px;
-      border-top: 1px solid var(--border);
-      background: #ffffff;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .section-card.active .section-body {
-      display: flex;
-    }
+    .user-name-text { font-size: 13px; font-weight: 700; color: var(--text-main, #0f172a); }
 
-    /* Form Fields - High Visibility */
-    .fg {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      position: relative;
+    .user-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 0; width: 220px;
+      background: var(--surface, #ffffff); border: 1px solid var(--border, #e2e8f0);
+      border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 8px; display: none; flex-direction: column; gap: 4px; z-index: 200;
     }
-    .fg label {
-      font-size: 11px;
-      font-weight: 700;
-      color: #475569;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+    .user-dropdown.show { display: flex; }
+    /* WCAG 2.2 AA Focus Visibility & Scroll Padding */
+    html {
+      scroll-padding-top: calc(var(--nh, 64px) + 8px);
     }
-        .fi, .ft, .fi-sel {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1.5px solid #cbd5e1 !important;
-      border-radius: var(--radius-input);
-      background: #ffffff !important;
-      color: var(--text-main) !important;
-      font-size: 13.5px;
-      font-weight: 500;
-      font-family: inherit;
-      outline: none;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-      transition: all 0.2s ease;
+    .skip-link {
+      position: absolute; top: -100px; left: 16px; z-index: 9999;
+      background: var(--pr, #4f46e5); color: white; padding: 10px 18px;
+      border-radius: 8px; font-weight: 700; text-decoration: none;
+      box-shadow: 0 4px 12px rgba(79,70,229,0.3);
+      transition: top 0.15s ease;
     }
-    .fi:hover, .ft:hover, .fi-sel:hover {
-      border-color: #94a3b8 !important;
-    }
-    .fi:focus, .ft:focus, .fi-sel:focus {
-      border-color: var(--primary) !important;
-      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.18) !important;
-    }
-    .fi::placeholder, .ft::placeholder {
-      color: #94a3b8 !important;
-      font-weight: 400;
-    }
-    .fr2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
+    .skip-link:focus { top: 16px; outline: 3px solid #ffffff; }
 
-    /* Custom Section Button & Reset */
-    .btn-add-custom-sec {
-      width: 100%;
-      padding: 13px;
-      border: 1.5px dashed #cbd5e1;
-      border-radius: var(--radius-card);
-      background: #ffffff;
-      color: var(--text-main);
-      font-size: 13.5px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: all 0.15s;
-    }
-    .btn-add-custom-sec:hover {
-      border-color: var(--simplify-blue);
-      color: var(--simplify-blue);
-      background: var(--simplify-blue-light);
-    }
-    .btn-reset-profile {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: #ffffff;
-      color: var(--text-muted);
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin-top: 14px;
-      transition: all 0.15s;
-    }
-    .btn-reset-profile:hover {
-      background: #f8fafc;
-      color: var(--text-main);
-    }
-
-    /* Center Preview Canvas */
-    .preview-canvas {
-      background: var(--background);
-      overflow-y: auto;
-      padding: 28px 20px 90px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-    }
-    .a4w {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-    #rp {
-      width: 794px;
-      min-height: 1123px;
-      background: #ffffff;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
-      border-radius: 2px;
-      transform-origin: top center;
-      flex-shrink: 0;
-    }
-
-    /* Floating Canvas Bottom Toolbar */
-    .floating-toolbar {
-      position: absolute;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: 99px;
-      padding: 6px 14px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      z-index: 50;
-    }
-    .floating-tool-btn {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 12.5px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 8px;
-      border-radius: 99px;
-      transition: all 0.15s;
-    }
-    .floating-tool-btn:hover {
-      color: var(--text-main);
-      background: #f1f5f9;
-    }
-    .floating-tool-sep {
-      width: 1px;
-      height: 16px;
-      background: var(--border);
-    }
-
-    /* Right Sidebar: ATS & Matcher */
-    .sidebar-right {
-      background: #ffffff;
-      border-left: 1px solid var(--border);
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .sidebar-right-tabs {
-      display: flex;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 4px;
-    }
-    .btn-right-tab {
-      flex: 1;
-      padding: 10px;
-      background: none;
-      border: none;
-      border-bottom: 2px solid transparent;
-      color: var(--text-muted);
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-    .btn-right-tab.active {
-      color: var(--simplify-blue);
-      border-bottom-color: var(--simplify-blue);
-    }
-    .beta-pill {
-      font-size: 10px;
-      font-weight: 800;
-      background: #e0f2fe;
-      color: var(--primary);
-      padding: 2px 6px;
-      border-radius: 99px;
-    }
-
-    /* Cards in Right Sidebar */
-    .tracker-card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-card);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-    }
-    .tracker-card-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-    .tracker-sep-or {
-      text-align: center;
-      font-size: 11.5px;
-      color: var(--text-subtle);
-      margin: 2px 0;
-    }
-    .btn-tracker-done {
-      width: 100%;
-      padding: 8px;
-      border-radius: 8px;
-      border: none;
-      background: var(--primary);
-      color: #ffffff;
-      font-weight: 700;
-      font-size: 13px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .btn-tracker-done:hover {
-      background: var(--primary-hover);
-    }
-
-    .score-card {
-      background: #ffffff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-card);
-      padding: 20px 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-    }
-    .score-card-title {
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--text-main);
-      align-self: flex-start;
-    }
-    .score-radial-wrap {
-      position: relative;
-      width: 170px;
-      height: 170px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .score-radial-svg {
-      width: 170px;
-      height: 170px;
-      transform: rotate(-90deg);
-    }
-    .score-radial-bg {
-      fill: none;
-      stroke: #f1f5f9;
-      stroke-width: 14;
-    }
-    .score-radial-progress {
-      fill: none;
-      stroke: var(--primary);
-      stroke-width: 14;
-      stroke-linecap: round;
-      stroke-dasharray: 440;
-      stroke-dashoffset: 88; /* 80% */
-      transition: stroke-dashoffset 0.8s ease;
-    }
-    .score-radial-center {
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .score-big-num {
-      font-size: 42px;
-      font-weight: 900;
-      color: var(--text-main);
-      line-height: 1;
-      font-family: 'Outfit', sans-serif;
-    }
-    .score-issues-text {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-    .score-issues-list {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-top: 6px;
-    }
-    .score-issue-item {
-      font-size: 12px;
-      color: var(--text-muted);
-      display: flex;
-      align-items: flex-start;
-      gap: 6px;
-      line-height: 1.4;
-    }
-
-    /* LaTeX Resume Output Styles */
-    .latex-doc, .latex-doc * {
-      font-family: 'Computer Modern Serif', 'Latin Modern Roman', 'CMU Serif', 'Times New Roman', serif !important;
-      box-sizing: border-box;
-      color: #000;
-    }
-    .latex-doc {
-      color: #000;
-      padding: 40px 48px;
-      font-size: 10pt;
-      line-height: 1.28;
-      background: #fff;
-    }
-    .latex-doc a {
-      color: #000;
-      text-decoration: none;
-    }
-    .latex-doc a:hover {
-      text-decoration: underline;
-    }
-    .lr-header {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .lr-name {
-      font-size: 22pt;
-      font-weight: bold;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 3px;
-      line-height: 1.15;
-    }
-    .lr-headline {
-      font-size: 10.5pt;
-      font-style: italic;
-      text-align: center;
-      margin-top: 2px;
-      margin-bottom: 4px;
-      color: #222;
-    }
-    .lr-contacts {
-      font-size: 9.5pt;
-      text-align: center;
-      line-height: 1.35;
-      margin-top: 3px;
-    }
-    .lr-contacts span, .lr-contacts a {
-      margin: 0 3px;
-      color: #000;
-    }
-    .lr-sec {
-      margin-bottom: 8px;
-    }
-    .lr-sec-title {
-      font-size: 10.5pt;
-      font-weight: bold;
-      color: #000;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-bottom: 0.75px solid #000;
-      padding-bottom: 1.5px;
-      margin-bottom: 4px;
-      margin-top: 8px;
-    }
-    .lr-summary-text {
-      font-size: 9.5pt;
-      line-height: 1.3;
-      text-align: justify;
-      margin-bottom: 4px;
-      color: #111;
-    }
-    .lr-skills-table {
-      width: 100%;
-      font-size: 9.5pt;
-      line-height: 1.3;
-    }
-    .lr-skills-row {
-      margin-bottom: 2px;
-    }
-    .lr-skills-label {
-      font-weight: bold;
-    }
-    .lr-entry {
-      margin-bottom: 6px;
-    }
-    .lr-entry-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      font-size: 9.8pt;
-    }
-    .lr-org {
-      font-weight: bold;
-    }
-    .lr-date {
-      font-size: 9.5pt;
-      color: #111;
-    }
-    .lr-subline {
-      display: flex;
-      justify-content: space-between;
-      font-style: italic;
-      font-size: 9.5pt;
-      color: #222;
-      margin-bottom: 2px;
-    }
-    .lr-links a {
-      color: #000;
-      text-decoration: underline;
-      font-size: 9pt;
-      margin-left: 4px;
-    }
-    .lr-bullets {
-      margin: 0;
-      padding-left: 14px;
-    }
-    .lr-bullets li {
-      font-size: 9.3pt;
-      line-height: 1.25;
-      margin-bottom: 1.5px;
-      text-align: justify;
-      color: #111;
-    }
-    .lr-bullets li strong {
-      font-weight: bold;
-    }
-    .lr-single-line {
-      display: flex;
-      justify-content: space-between;
-      font-size: 9.3pt;
-      line-height: 1.35;
-      margin-bottom: 2px;
-    }
-
-    
-    /* ═══════ PDF EXPORT (PRINT) ═══════ */
-    @media print {
-      body { background: #fff !important; }
-      .simplify-topbar, .sidebar-left, .sidebar-right, .floating-toolbar,     .ai-modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(8px);
-      z-index: 9999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .ai-modal-overlay.active {
-      display: flex;
-    }
-    .ai-modal-card {
-      background: #ffffff;
-      border-radius: 16px;
-      max-width: 600px;
-      width: 100%;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    .ai-modal-header {
-      padding: 16px 24px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--primary-light);
-    }
-    .ai-modal-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .ai-modal-body {
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      background: #ffffff;
-    }
-    .ai-modal-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid #e2e8f0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #f8fafc;
-    }
-    .ai-modal-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: #0f172a;
-    }
-    .ai-modal-body {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      max-height: 70vh;
-      overflow-y: auto;
-    }
-    .brm {
-      background: none;
-      border: none;
-      color: #64748b;
-      font-size: 13px;
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 6px;
-      transition: all 0.15s;
-    }
-    .brm:hover {
-      background: #fee2e2;
-      color: #ef4444;
-    }
-    .fc {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-    .fch {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .fct {
-      font-size: 13px;
-      font-weight: 700;
-      color: #0f172a;
-    }
-    .bls {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .blr {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .blr input {
-      flex: 1;
-      padding: 7px 10px;
-      border-radius: 6px;
-      border: 1px solid #cbd5e1;
-      background: #ffffff;
-      font-size: 12.5px;
-      font-family: inherit;
-      outline: none;
-    }
-    .blr input:focus {
-      border-color: var(--primary);
-    }
-    .bai {
-      padding: 4px 8px;
-      border-radius: 5px;
-      border: 1px solid #bae6fd;
-      background: #f0f9ff;
-      color: var(--primary);
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .bri {
-      background: none;
-      border: none;
-      color: #64748b;
-      cursor: pointer;
-      padding: 2px 6px;
+    :focus-visible {
+      outline: 2.5px solid var(--pr, #4f46e5);
+      outline-offset: 2px;
       border-radius: 4px;
     }
-    .bri:hover {
-      color: #ef4444;
-      background: #fee2e2;
+    :focus:not(:focus-visible) {
+      outline: none;
     }
-    .bads {
-      padding: 5px 10px;
-      border-radius: 6px;
-      border: 1.5px dashed #cbd5e1;
-      background: transparent;
-      font-size: 12px;
-      font-weight: 700;
-      color: #64748b;
-      cursor: pointer;
-      align-self: flex-start;
-      margin-top: 4px;
+    @media (max-width: 640px) {
+      input, select, textarea, .fi, .ft { font-size: 16px !important; }
+      body { touch-action: manipulation; }
+      .ep, .sn, .pv { word-break: break-word; overflow-wrap: anywhere; }
     }
-    .bads:hover {
-      border-color: var(--primary);
-      color: var(--primary);
+    .dropdown-item {
+      padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: 600;
+      color: var(--text-main, #0f172a); text-decoration: none; cursor: pointer; display: flex; align-items: center; gap: 8px;
     }
-    #toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: #0f172a;
-      color: #ffffff;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(10px);
-      transition: all 0.2s ease;
-      z-index: 10000;
+    .dropdown-item:hover { background: var(--background, #f8fafc); color: var(--primary, #4f46e5); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
     }
-    #toast.show {
-      opacity: 1;
-      transform: translateY(0);
+  
+    /* ── CINEMATIC REDESIGN CLASSES ── */
+    .glass-panel-light {
+      background: rgba(255, 255, 255, 0.65) !important;
+      backdrop-filter: blur(24px) !important;
+      -webkit-backdrop-filter: blur(24px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.8) !important;
+      box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+      border-radius: 24px !important;
+      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
+    }
+    .glass-panel-light:hover {
+      transform: translateY(-6px) scale(1.01) !important;
+      box-shadow: 0 32px 64px -12px rgba(79, 70, 229, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+      border-color: rgba(79, 70, 229, 0.3) !important;
     }
 
 
-    /* ═══════ 5-COLOR FROSTED GLASS EFFECT WHITE ═══════ */
-    .glass-panel-light,
-    .job-card,
-    .profile-card,
-    .summary-card,
-    .stat-metric-card,
-    .step-card,
-    .feature-card,
-    .bento-card,
-    .bento-item,
-    .modal-window,
-    .auth-modal-card,
-    .section-card,
-    .filter-bar,
-    .search-box-wrap {
-      background: rgba(255, 255, 255, 0.78) !important;
-      backdrop-filter: blur(20px) saturate(160%) !important;
-      -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.95) !important;
-      box-shadow: 0 10px 32px rgba(200, 125, 232, 0.09), 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+    /* ── GLOBAL MOBILE RESPONSIVENESS (320px - 768px) ── */
+    @media (max-width: 768px) {
+      body, html { overflow-x: hidden !important; }
+      
+      /* Typography Clamps Override for extremely small screens */
+      h1, .hero-title { font-size: clamp(32px, 8vw, 50px) !important; line-height: 1.1 !important; word-wrap: break-word !important; }
+      h2 { font-size: clamp(24px, 6vw, 36px) !important; line-height: 1.2 !important; }
+      
+      /* Glass panel padding reduction */
+      .glass-panel-light { padding: 16px !important; border-radius: 16px !important; }
+      
+      /* Grids -> Single Column */
+      .form-grid, .grid, .metrics-grid, .bento-grid, .cat-grid, .jobs-split-container { 
+        grid-template-columns: 1fr !important; 
+        height: auto !important; 
+      }
+      .bento-col-2 { grid-column: span 1 !important; }
+      
+      /* Horizontal Scroll Setup for Kanban/Boards */
+      .kanban-board, .board, #kanban-board, .pipeline-board, .board-container { 
+        display: flex !important; 
+        flex-direction: row !important;
+        overflow-x: auto !important; 
+        scroll-snap-type: x mandatory; 
+        gap: 16px;
+        padding-bottom: 24px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .kanban-column, .board-column, .pipeline-col { 
+        min-width: 85vw !important; 
+        max-width: 85vw !important; 
+        scroll-snap-align: center; 
+        flex-shrink: 0;
+      }
+
+      /* Navbar Simplification */
+      .nav-links, .nav-actions { display: none !important; }
+      .nav-inner { padding: 12px 16px !important; }
+      
+      /* Footer */
+      .footer-grid, .footer-inner { grid-template-columns: 1fr !important; gap: 24px !important; }
+      
+      /* Modals */
+      .modal-content, #preferences-modal > div {
+        width: 95vw !important;
+        max-height: 95vh !important;
+        padding: 16px !important;
+        margin: 0 !important;
+      }
+      
+      /* Profile / Resume Editor specific */
+      .split-layout, .editor-layout { flex-direction: column !important; }
+      .sidebar { width: 100% !important; border-right: none !important; border-bottom: 1px solid var(--border); }
     }
 
-    header, .nav-container, .navbar {
-      background: rgba(255, 255, 255, 0.82) !important;
-      backdrop-filter: blur(24px) saturate(160%) !important;
-      -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
-      border-bottom: 1px solid rgba(198, 190, 238, 0.45) !important;
+
+    /* ════════════════════ MOBILE FIRST NAVIGATION & JD OVERLAYS ════════════════════ */
+    @media (max-width: 768px) {
+      header .nav-tabs,
+      .nav-tabs,
+      .header-actions .user-profile-btn,
+      .header-actions .btn-refresh {
+        display: none !important;
+      }
+
+      header {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 999 !important;
+        height: 56px !important;
+        background: #ffffff !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+      }
+
+      .header-inner {
+        padding: 0 16px !important;
+        height: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        max-width: 100% !important;
+      }
+
+      body {
+        padding-bottom: 74px !important;
+      }
+
+      .mobile-hamburger-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        color: #334155;
+        padding: 8px;
+        margin-right: -8px;
+        border-radius: 8px;
+      }
+
+      .mobile-bottom-nav {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: 62px !important;
+        background: #ffffff !important;
+        border-top: 1px solid #e2e8f0 !important;
+        display: flex !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+        padding: 4px 8px !important;
+        padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px)) !important;
+        z-index: 9990 !important;
+        box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05) !important;
+      }
+
+      .mobile-bottom-nav-link {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 3px !important;
+        flex: 1 !important;
+        text-decoration: none !important;
+        color: #64748b !important;
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+        position: relative !important;
+        padding: 6px 0 !important;
+        transition: color 0.15s ease !important;
+      }
+
+      .mobile-bottom-nav-link svg {
+        width: 22px !important;
+        height: 22px !important;
+        stroke: currentColor !important;
+        stroke-width: 2 !important;
+        fill: none !important;
+      }
+
+      .mobile-bottom-nav-link.active {
+        color: #008DA5 !important;
+        font-weight: 700 !important;
+      }
+
+      .mobile-bottom-nav-link.active svg {
+        stroke: #008DA5 !important;
+      }
+
+      .mobile-bottom-nav-link.active::after {
+        content: '' !important;
+        position: absolute !important;
+        top: -4px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        width: 32px !important;
+        height: 3px !important;
+        background-color: #00A9E0 !important;
+        border-radius: 0 0 4px 4px !important;
+      }
+
+      .mobile-nav-backdrop {
+        position: fixed !important;
+        inset: 0 !important;
+        background-color: rgba(15, 23, 42, 0.5) !important;
+        backdrop-filter: blur(2px) !important;
+        z-index: 9998 !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transition: opacity 0.25s ease, visibility 0.25s ease !important;
+      }
+
+      .mobile-nav-backdrop.open {
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+
+      .mobile-nav-drawer {
+        position: fixed !important;
+        top: 0 !important;
+        left: -300px !important;
+        bottom: 0 !important;
+        width: 280px !important;
+        max-width: 80vw !important;
+        background-color: #ffffff !important;
+        z-index: 9999 !important;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        overflow-y: auto !important;
+      }
+
+      .mobile-nav-drawer.open {
+        left: 0 !important;
+      }
+
+      .mobile-nav-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 16px 20px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+      }
+
+      .mobile-nav-brand {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        text-decoration: none !important;
+      }
+
+      .mobile-nav-brand img {
+        width: 26px !important;
+        height: 26px !important;
+      }
+
+      .mobile-nav-close-btn {
+        background: transparent !important;
+        border: none !important;
+        color: #475569 !important;
+        cursor: pointer !important;
+        padding: 6px !important;
+        border-radius: 6px !important;
+      }
+
+      .mobile-nav-list {
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 12px 0 !important;
+        margin: 0 !important;
+        list-style: none !important;
+      }
+
+      .mobile-nav-link {
+        display: flex !important;
+        align-items: center !important;
+        gap: 14px !important;
+        padding: 12px 20px !important;
+        color: #334155 !important;
+        font-size: 15px !important;
+        font-weight: 600 !important;
+        text-decoration: none !important;
+      }
+
+      .mobile-nav-link svg {
+        width: 20px !important;
+        height: 20px !important;
+        stroke: #64748b !important;
+        stroke-width: 2 !important;
+        fill: none !important;
+      }
+
+      .mobile-nav-link.active {
+        background-color: #e0f7fa !important;
+        color: #008da5 !important;
+        border-left: 4px solid #00a9e0 !important;
+      }
+
+      .mobile-nav-link.active svg {
+        stroke: #008da5 !important;
+      }
+
+      /* JD Split Pane Mobile Behavior */
+      .jobs-split-container {
+        display: block !important;
+        width: 100% !important;
+        position: relative !important;
+      }
+
+      .jobs-feed-col {
+        display: block !important;
+        width: 100% !important;
+      }
+
+      .job-detail-col {
+        display: none !important;
+      }
+
+      body.mobile-jd-open .jobs-feed-col {
+        display: none !important;
+      }
+
+      body.mobile-jd-open .job-detail-col {
+        display: block !important;
+        width: 100% !important;
+        min-height: calc(100vh - 120px) !important;
+        background: #ffffff !important;
+      }
+
+      body.mobile-jd-open .filter-bar {
+        display: none !important;
+      }
+
+      .mobile-jd-back-btn {
+        display: none;
+      }
+
+      body.mobile-jd-open .mobile-jd-back-btn {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        width: 100% !important;
+        margin: 12px 0 !important;
+        padding: 12px 16px !important;
+        background: #f8fafc !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 12px !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        cursor: pointer !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.04) !important;
+      }
     }
 
-    /* ═══════ BLUISH BUTTONS (#c6beee) ═══════ */
-    .btn-primary, .kl-btn-primary, #btn-submit-auth, .btn-hero-action, .btn-promo, button.btn-primary {
-      background: #c6beee !important;
-      background: linear-gradient(135deg, #c6beee 0%, #b8abf2 100%) !important;
-      color: #1e1b4b !important;
-      font-weight: 700 !important;
-      box-shadow: 0 4px 16px rgba(198, 190, 238, 0.5) !important;
-      border: 1px solid rgba(255, 255, 255, 0.9) !important;
-    }
-    .btn-primary:hover, .kl-btn-primary:hover, #btn-submit-auth:hover, .btn-hero-action:hover, .btn-promo:hover, button.btn-primary:hover {
-      background: #b5a4ea !important;
-      color: #0f0b29 !important;
-      box-shadow: 0 8px 24px rgba(198, 190, 238, 0.7) !important;
-      transform: translateY(-2px) !important;
+    @media (min-width: 769px) {
+      .mobile-bottom-nav,
+      .mobile-hamburger-btn,
+      .mobile-nav-drawer,
+      .mobile-nav-backdrop,
+      .mobile-jd-back-btn {
+        display: none !important;
+      }
     }
 
-    .btn-secondary, .kl-btn-ghost {
-      background: rgba(255, 255, 255, 0.75) !important;
-      border: 1.5px solid rgba(198, 190, 238, 0.55) !important;
-      color: #201a28 !important;
-      backdrop-filter: blur(16px) !important;
-      -webkit-backdrop-filter: blur(16px) !important;
-    }
-    .btn-secondary:hover, .kl-btn-ghost:hover {
-      border-color: #c87de8 !important;
-      color: #c87de8 !important;
-      box-shadow: 0 4px 16px rgba(200, 125, 232, 0.15) !important;
+  
+    /* ═══════ RESUME BUILDER ULTRA-PREMIUM MOBILE OVERRIDES ═══════ */
+    @media (max-width: 992px) {
+      .ly {
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      /* Horizontal Scrollable Document Sections */
+      .sn {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        padding: 8px 12px !important;
+        gap: 6px !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        border-right: none !important;
+        background: #ffffff !important;
+        position: sticky !important;
+        top: 56px !important;
+        z-index: 80 !important;
+        max-height: 52px !important;
+      }
+      .sn::-webkit-scrollbar { display: none !important; }
+      .snl { display: none !important; }
+      .si {
+        flex-shrink: 0 !important;
+        padding: 6px 12px !important;
+        border-radius: 20px !important;
+        font-size: 12px !important;
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #334155 !important;
+        white-space: nowrap !important;
+      }
+      .si.active {
+        background: #00A9E0 !important;
+        color: #ffffff !important;
+        border-color: #00A9E0 !important;
+        font-weight: 700 !important;
+      }
+      .si .dot { display: none !important; }
+      .si:hover { transform: none !important; }
+
+      /* Mobile Editor & Preview Switcher */
+      .mobile-view-tabs {
+        display: flex !important;
+        background: #e2e8f0 !important;
+        border-radius: 10px !important;
+        padding: 3px !important;
+        margin: 10px 16px 0 !important;
+        gap: 4px !important;
+      }
+      .btn-view-tab {
+        flex: 1 !important;
+        padding: 8px 12px !important;
+        border: none !important;
+        background: transparent !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        color: #64748b !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        transition: all 0.2s !important;
+      }
+      .btn-view-tab.active {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
+      }
+
+      /* Editor Panel Mobile View */
+      .ep {
+        border-right: none !important;
+        width: 100% !important;
+      }
+
+      /* Preview Panel Mobile Scaling */
+      .pv {
+        width: 100% !important;
+        padding: 16px 8px !important;
+        overflow-x: hidden !important;
+      }
+      .a4w {
+        width: 100% !important;
+        overflow: hidden !important;
+        display: flex !important;
+        justify-content: center !important;
+      }
+      #rp {
+        transform: scale(0.48) !important;
+        transform-origin: top center !important;
+        margin-bottom: -550px !important;
+      }
+
+      /* Toggle between Editor and Preview */
+      body.show-preview-mode .ep {
+        display: none !important;
+      }
+      body.show-preview-mode .pv {
+        display: flex !important;
+      }
+      body:not(.show-preview-mode) .pv {
+        display: none !important;
+      }
+      body:not(.show-preview-mode) .ep {
+        display: flex !important;
+      }
     }
 
-    .pulse-dot, .pulse {
-      background: #b6e580 !important;
-      box-shadow: 0 0 10px #b6e580 !important;
+    @media (min-width: 993px) {
+      .mobile-view-tabs {
+        display: none !important;
+      }
     }
 
-    .tag-chip.batch, .nav-badge-pill, .match-pill, .tag-chip.match-score-chip {
-      background: rgba(182, 229, 128, 0.28) !important;
-      border: 1px solid #b6e580 !important;
-      color: #365314 !important;
-      font-weight: 800 !important;
-    }
-
-    .orb-1, .kl-orb-1 {
-      background: radial-gradient(circle, rgba(208, 148, 234, 0.38) 0%, rgba(198, 190, 238, 0.18) 60%, transparent 100%) !important;
-    }
-    .orb-2, .kl-orb-2 {
-      background: radial-gradient(circle, rgba(182, 229, 128, 0.25) 0%, rgba(200, 125, 232, 0.12) 70%, transparent 100%) !important;
-    }
-    .orb-3, .kl-orb-3 {
-      background: radial-gradient(circle, rgba(200, 125, 232, 0.32) 0%, rgba(198, 190, 238, 0.15) 70%, transparent 100%) !important;
-    }
-
-    .brand-title span, .kl-brand-title span {
-      background: linear-gradient(135deg, #c87de8 0%, #d094ea 100%) !important;
-      -webkit-background-clip: text !important;
-      -webkit-text-fill-color: transparent !important;
-    }
-
-</style>
-
-
+  </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -1059,361 +1777,354 @@
 </head>
 
 <body>
-  <!-- AMBIENT GLOW -->
-  <div class="ambient-glow-wrap">
-    <div class="ambient-orb orb-1"></div>
-    <div class="ambient-orb orb-2"></div>
-    <div class="ambient-orb orb-3"></div>
-  </div>
-
 
   <!-- WCAG 2.4.1 Bypass Blocks -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-      <!-- ════════════════════ TOP NAVIGATION BAR (UNIFORM STYLE) ════════════════════ -->
+  <!-- ════════ TOP BAR ════════ -->
+    <!-- ════════════════════ UNIFORM GLOBAL HEADER ════════════════════ -->
   <header>
     <div class="header-inner">
       <div class="brand-group">
-        <a href="/" class="brand-logo">
-          <img src="/logo.svg" alt="getArole Logo" class="brand-logo-img" onerror="this.src='/favicon.png';this.style.width='32px'">
-          <div class="brand-title">get<span>A</span>role</div>
+        <a href="/dashboard/" class="brand-logo">
+          <img src="/logo.svg" alt="getArole" style="width:34px;height:34px;object-fit:contain;">
+          <span class="brand-title">get<span>A</span>role</span>
         </a>
-        <div class="nav-tabs">
-          <a href="/explore/" class="nav-tab">Explore Jobs</a>
-          <a href="/onboarding/" class="nav-tab active">
-            Documents
-            <span class="nav-badge" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;">Master Resume</span>
-          </a>
-        </div>
+
+        <nav class="nav-tabs">
+          <a class="nav-tab" href="/dashboard/" id="tab-btn-home">Overview</a>
+          <a class="nav-tab" href="/matches/" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
+          <a class="nav-tab" href="/explore/" id="tab-btn-jobs">Explore Jobs</a>
+          <a class="nav-tab active" href="/resume-builder/" id="tab-btn-resume">📄 ATS Resume</a>
+          <a class="nav-tab" href="/cover-letter-builder/" id="tab-btn-cover-letter">✉️ Cover Letter</a>
+          <a class="nav-tab" href="/profile/" id="tab-btn-profile">Profile</a>
+        </nav>
       </div>
+
       <div class="header-actions">
-        <div class="status-save-pill">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-          <span id="asv">Saved just now</span>
-        </div>
-        <button class="btn-secondary" onclick="resyncFromProfile()" title="Re-sync from profile">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-          Re-Sync
+        <button class="btn-sync-action" onclick="resyncFromProfile()" title="Reload fresh data from candidate profile">
+          Re-Sync Profile
         </button>
-        <button class="btn-primary" onclick="window.print()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        <button class="btn-export-pdf" onclick="exportPDF()">
           Export PDF
         </button>
-        <div class="user-profile-btn" id="nav-avatar">H</div>
+
+        <div class="user-profile-btn" onclick="document.getElementById('user-dropdown') && document.getElementById('user-dropdown').classList.toggle('show')">
+          <div class="user-avatar" id="nav-avatar">U</div>
+          <span class="user-name-text" id="nav-username">User</span>
+          <span style="font-size: 10px; color: var(--text-subtle, #94a3b8)">▼</span>
+
+          <div class="user-dropdown" id="user-dropdown">
+            <a href="/profile/" class="dropdown-item">⚙️ Profile & Preferences</a>
+            <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
+            <a href="#" onclick="typeof handleLogout === 'function' ? handleLogout() : (localStorage.clear(), window.location.href='/')" class="dropdown-item" style="color:#ef4444">Sign Out</a>
+          </div>
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- ════════ SIMPLIFY 3-COLUMN WORKSPACE ════════ -->
-  <main class="workspace" id="main-content">
-    <!-- 1. LEFT SIDEBAR: EDITOR -->
-    <aside class="sidebar-left">
-      <!-- 3 Navigation Tabs -->
-      <div class="sidebar-mode-tabs">
-        <button class="btn-sidebar-tab active" id="tab-editor" onclick="setSimplifySidebarTab('editor')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-          Editor
-        </button>
-        <button class="btn-sidebar-tab" id="tab-layout" onclick="setSimplifySidebarTab('layout')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-          Layout
-        </button>
-        <button class="btn-sidebar-tab" id="tab-ai" onclick="setSimplifySidebarTab('ai')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
-          AI Settings
-        </button>
-      </div>
+  <!-- Mobile Edit Form / Live Preview Switcher -->
+  <div class="mobile-view-tabs">
+    <button id="btn-tab-edit" class="btn-view-tab active" type="button" onclick="setResumeMobileTab('edit')">✏️ Edit Form</button>
+    <button id="btn-tab-preview" class="btn-view-tab" type="button" onclick="setResumeMobileTab('preview')">👁️ Live Resume Preview</button>
+  </div>
 
-      <!-- Section Cards Accordion -->
-      <div class="simplify-sections-list">
-        <!-- 1. Resume Header -->
-        <div class="section-card active" id="card-header">
-          <div class="section-header" onclick="toggleSimplifyCard('card-header')">
-            <span class="section-drag-handle">⋮⋮</span>
-            <div class="section-icon-box">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
-            <span class="section-title-text">Resume Header</span>
-            <span class="section-badge-pill" id="badge-header-missing">! 3</span>
-            <span class="section-chevron">›</span>
-          </div>
-          <div class="section-body">
-            <div class="fr2">
-              <div class="fg">
-                <label>Full Name</label>
-                <input class="fi" id="ffn" placeholder="e.g. John Doe" oninput="ud('header','name',this.value)">
-              </div>
-              <div class="fg" style="max-width:120px;">
-                <label>Suffix Name</label>
-                <input class="fi" id="fsuf" placeholder="e.g. M.S." oninput="ud('header','suffix',this.value)">
-              </div>
-            </div>
+  <!-- ════════ THREE COLUMN LAYOUT ════════ -->
+  <main class="ly" id="main-content">
+    <!-- 1. SECTIONS SIDEBAR -->
+    <aside class="sn">
+      <div class="snl">Document Sections</div>
+      <div class="si active" id="nav-header" onclick="gS('header')"><span class="sic">👤</span>1. Contact &amp; Header<span class="dot done" id="dot-header"></span></div>
+      <div class="si" id="nav-summary" onclick="gS('summary')"><span class="sic">📝</span>2. Executive Summary<span class="dot done" id="dot-summary"></span></div>
+      <div class="si" id="nav-skills" onclick="gS('skills')"><span class="sic">⚡</span>3. Technical Competencies<span class="dot done" id="dot-skills"></span></div>
+      <div class="si" id="nav-exp" onclick="gS('exp')"><span class="sic">💼</span>4. Professional Experience<span class="dot done" id="dot-exp"></span></div>
+      <div class="si" id="nav-proj" onclick="gS('proj')"><span class="sic">🚀</span>5. Technical Projects<span class="dot done" id="dot-proj"></span></div>
+      <div class="si" id="nav-achieve" onclick="gS('achieve')"><span class="sic">🏅</span>6. Key Achievements<span class="dot done" id="dot-achieve"></span></div>
+      <div class="si" id="nav-certs" onclick="gS('certs')"><span class="sic">🏆</span>7. Certifications &amp; Licenses<span class="dot done" id="dot-certs"></span></div>
+      <div class="si" id="nav-edu" onclick="gS('edu')"><span class="sic">🎓</span>8. Academic Credentials<span class="dot done" id="dot-edu"></span></div>
 
-            <div class="fg">
-              <label>Location</label>
-              <input class="fi" id="floc" placeholder="e.g. Philadelphia, PA, USA" oninput="ud('header','location',this.value)">
-            </div>
-
-            <div class="fr2">
-              <div class="fg" style="max-width:110px;">
-                <label>Country Code</label>
-                <input class="fi" id="fcc" placeholder="e.g. +1, +91" oninput="ud('header','country_code',this.value)">
-              </div>
-              <div class="fg">
-                <label>Phone Number</label>
-                <input class="fi" id="fph" placeholder="e.g. (215) 555-5555" oninput="ud('header','phone',this.value)">
-              </div>
-            </div>
-
-            <div class="fg">
-              <label>Email Address</label>
-              <input class="fi" id="fem" type="email" placeholder="you@example.com" oninput="ud('header','email',this.value)">
-            </div>
-
-            <div class="fg">
-              <label>LinkedIn URL</label>
-              <input class="fi" id="fli" placeholder="https://linkedin.com/in/username" oninput="ud('header','linkedin',this.value)">
-            </div>
-
-            <div class="fg">
-              <label>GitHub URL</label>
-              <input class="fi" id="fgh" placeholder="https://github.com/username" oninput="ud('header','github',this.value)">
-            </div>
-
-            <div class="fg">
-              <label>Portfolio URL</label>
-              <input class="fi" id="fpo" placeholder="https://yourportfolio.dev" oninput="ud('header','portfolio',this.value)">
-            </div>
-
-            <div class="fg">
-              <label>Other URL</label>
-              <input class="fi" id="fot" placeholder="https://blog.example.com" oninput="ud('header','other_url',this.value)">
-            </div>
-
-            <!-- Toggles -->
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;margin-top:4px;">
-              <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;cursor:pointer;">
-                <input type="checkbox" id="f-show-full-urls" onchange="ud('header','show_full_urls',this.checked)" style="margin-top:2px;">
-                <div>
-                  <strong style="color:#0f172a;">Show Full URLs</strong>
-                  <div style="font-size:11px;color:#64748b;">Display "linkedin.com/in/..." instead of "LinkedIn" in preview</div>
-                </div>
-              </label>
-              <label style="display:flex;align-items:flex-start;gap:8px;font-size:12px;cursor:pointer;">
-                <input type="checkbox" id="f-show-country-code" checked onchange="ud('header','show_country_code',this.checked)" style="margin-top:2px;">
-                <div>
-                  <strong style="color:#0f172a;">Show Phone Country Code</strong>
-                  <div style="font-size:11px;color:#64748b;">Display "+1 (215) 555-5555" instead of local number</div>
-                </div>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. Headline -->
-        <div class="section-card glass-panel-light" id="card-headline">
-          <div class="section-header" onclick="toggleSimplifyCard('card-headline')">
-            <span class="section-drag-handle">⋮⋮</span>
-            <div class="section-icon-box">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="15" y2="12"/><line x1="3" y1="18" x2="18" y2="18"/></svg>
-            </div>
-            <span class="section-title-text">Headline</span>
-            <span class="section-chevron">›</span>
-          </div>
-          <div class="section-body">
-            <div class="fg">
-              <label>Professional Headline</label>
-              <input class="fi" id="fhl" placeholder="e.g. Software Engineer | Distributed Systems" oninput="ud('header','headline',this.value)">
-              <span style="font-size:11px;color:#64748b;margin-top:2px;">1-line title displayed beneath your name in the live preview.</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. Professional Summary -->
-        <div class="section-card glass-panel-light" id="card-summary">
-          <div class="section-header" onclick="toggleSimplifyCard('card-summary')">
-            <span class="section-drag-handle">⋮⋮</span>
-            <div class="section-icon-box">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            </div>
-            <span class="section-title-text">Professional Summary</span>
-            <span class="section-chevron">›</span>
-          </div>
-          <div class="section-body">
-            <div class="fg">
-              <label>Summary Statement</label>
-              <textarea class="ft" id="fsu" rows="4" style="min-height:95px;" oninput="ud('summary','text',this.value)"></textarea>
-            </div>
-            <!-- AI Presets -->
-            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;margin-top:2px;">
-              <div style="font-size:11.5px;font-weight:700;color:#475569;margin-bottom:6px;">AI Style Synthesizer</div>
-              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
-                <button class="bto" style="padding:4px 10px;font-size:11.5px;" onclick="selectSummaryStyle('technical')">Technical</button>
-                <button class="bto" style="padding:4px 10px;font-size:11.5px;" onclick="selectSummaryStyle('fresher')">Fresher</button>
-                <button class="bto" style="padding:4px 10px;font-size:11.5px;" onclick="selectSummaryStyle('leadership')">Leadership</button>
-              </div>
-              <button class="btn-tracker-done" onclick="genSum()" style="padding:6px;font-size:12px;">Generate Summaries</button>
-              <div id="ai-summary-results" style="display:none;margin-top:8px;display:flex;flex-direction:column;gap:6px;"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 4. Education -->
-        <div class="section-card glass-panel-light" id="card-edu">
-          <div class="section-header" onclick="toggleSimplifyCard('card-edu')">
-            <span class="section-drag-handle">⋮⋮</span>
-            <div class="section-icon-box">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-            </div>
-            <span class="section-title-text">Education</span>
-            <span class="section-chevron">›</span>
-          </div>
-          <div class="section-body">
-            <div id="edc"></div>
-            <button class="btn-add-custom-sec" onclick="addEdu()" style="padding:8px;font-size:12.5px;">+ Add Education</button>
-          </div>
-        </div>
-
-        <!-- 5. Professional Experience -->
-        <div class="section-card glass-panel-light" id="card-exp">
-          <div class="section-header" onclick="toggleSimplifyCard('card-exp')">
-            <span class="section-drag-handle">⋮⋮</span>
-            <div class="section-icon-box">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-            </div>
-            <span class="section-title-text">Professional Experience</span>
-            <span class="section-chevron">›</span>
-          </div>
-          <div class="section-body">
-            <div id="ec"></div>
-            <button class="btn-add-custom-sec" onclick="addExp()" style="padding:8px;font-size:12.5px;">+ Add Work Experience</button>
-          </div>
-        </div>
-
-        <!-- 6. Projects & Outside Experience -->
-        <div class="section-card glass-panel-light" id="card-proj">
-          <div class="section-header" onclick="toggleSimplifyCard('card-proj')">
-            <span class="section-drag-handle">⋮⋮</span>
-            <div class="section-icon-box">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            </div>
-            <span class="section-title-text">Projects &amp; Outside Experience</span>
-            <span class="section-chevron">›</span>
-          </div>
-          <div class="section-body">
-            <div id="pc"></div>
-            <button class="btn-add-custom-sec" onclick="addProj()" style="padding:8px;font-size:12.5px;">+ Add Project</button>
-          </div>
-        </div>
-
-        <!-- 7. Skills -->
-        <div class="section-card glass-panel-light" id="card-skills">
-          <div class="section-header" onclick="toggleSimplifyCard('card-skills')">
-            <span class="section-drag-handle">⋮⋮</span>
-            <div class="section-icon-box">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-            </div>
-            <span class="section-title-text">Skills</span>
-            <span class="section-chevron">›</span>
-          </div>
-          <div class="section-body">
-            <div id="skills-categories-container" style="display:flex;flex-direction:column;gap:10px;"></div>
-            <button class="btn-add-custom-sec" onclick="addSkillCat()" style="padding:8px;font-size:12.5px;">+ Add Skill Category</button>
-          </div>
-        </div>
-
-        <!-- 8. Certifications -->
-        <div class="section-card glass-panel-light" id="card-certs">
-          <div class="section-header" onclick="toggleSimplifyCard('card-certs')">
-            <span class="section-drag-handle">⋮⋮</span>
-            <div class="section-icon-box">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
-            </div>
-            <span class="section-title-text">Certifications</span>
-            <span class="section-chevron">›</span>
-          </div>
-          <div class="section-body">
-            <div id="cc"></div>
-            <button class="btn-add-custom-sec" onclick="addCert()" style="padding:8px;font-size:12.5px;">+ Add Certification</button>
-          </div>
-        </div>
-
-        <!-- 9. Dynamic Custom Sections Container -->
-        <div id="custom-sections-accordion-container" style="display:flex;flex-direction:column;gap:8px;"></div>
-
-        <!-- + Add Custom Section -->
-        <button class="btn-add-custom-sec" onclick="addCustomSection()">
-          + Add Custom Section
-        </button>
-
-        <!-- Reset to Profile Button -->
-        <button class="btn-reset-profile" onclick="resyncFromProfile()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-          Reset to Profile
-        </button>
-        <div style="font-size:11px;color:#94a3b8;text-align:center;line-height:1.4;margin-top:4px;">
-          Replace the profile-backed sections with your saved profile data.
-        </div>
-      </div>
+      <div class="snl" style="margin-top:10px;">AI Optimization &amp; Analysis</div>
+      <div class="si" id="nav-ats" onclick="gS('ats')"><span class="sic">📊</span>9. ATS Compatibility Score</div>
+      <div class="si" id="nav-tailor" onclick="gS('tailor')"><span class="sic">🎯</span>10. Role &amp; Keyword Matcher</div>
     </aside>
 
-    <!-- 2. CENTER CANVAS: LIVE A4 PREVIEW -->
-    <div class="preview-canvas">
-      <div class="a4w">
-        <div id="rp"></div>
+    <!-- 2. FORM EDITOR COLUMN -->
+    <div class="ep">
+      <div class="eh">
+        <div>
+          <h2 id="ed-t">1. Contact &amp; Header Information</h2>
+          <p id="ed-s">Personal links, phone number, email &amp; professional portfolio</p>
+        </div>
+        <span
+          style="font-size:11px;font-weight:700;color:var(--txs);background:var(--bg);padding:3px 8px;border-radius:6px;"
+          id="asv">✓ Saved</span>
       </div>
 
-      <!-- Bottom Floating Pill Toolbar matching Simplify -->
-      <div class="floating-toolbar">
-        <button class="floating-tool-btn" onclick="scale()" title="Fit to Screen">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-          Fit to Page
-        </button>
-        <div class="floating-tool-sep"></div>
-        <button class="floating-tool-btn" onclick="aiPolishCL('concise')" title="Ask AI assistant">
-          Ask AI...
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-        </button>
-        <div class="floating-tool-sep"></div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#64748b;">
-          <button class="floating-tool-btn" style="padding:2px 4px;" onclick="zoom(-0.05)">-</button>
-          <span id="zoom-level-text">89%</span>
-          <button class="floating-tool-btn" style="padding:2px 4px;" onclick="zoom(0.05)">+</button>
+      <div class="eb">
+        <!-- 1. HEADER & INFO -->
+        <div class="pn active" id="panel-header">
+          <div class="fg"><label>Full Name</label><input class="fi" id="ffn" placeholder="e.g. Jane Doe"
+              oninput="ud('header','name',this.value)"></div>
+          <div class="fr2">
+            <div class="fg"><label>Phone Number</label><input class="fi" id="fph" placeholder="+91 98765 43210"
+                oninput="ud('header','phone',this.value)"></div>
+            <div class="fg"><label>Email Address</label><input class="fi" id="fem" type="email"
+                placeholder="you@example.com" oninput="ud('header','email',this.value)"></div>
+          </div>
+          <div class="fr2">
+            <div class="fg"><label>LinkedIn Handle / URL</label><input class="fi" id="fli"
+                placeholder="linkedin.com/in/yourhandle" oninput="ud('header','linkedin',this.value)"></div>
+            <div class="fg"><label>GitHub Handle / URL</label><input class="fi" id="fgh"
+                placeholder="github.com/yourhandle" oninput="ud('header','github',this.value)"></div>
+          </div>
+          <div class="fg"><label>Personal Portfolio / Website</label><input class="fi" id="fpo"
+              placeholder="yourportfolio.dev" oninput="ud('header','portfolio',this.value)"></div>
         </div>
-        <div class="floating-tool-sep"></div>
-        <button class="floating-tool-btn" style="padding:4px;" onclick="toggleFullscreen()" title="Fullscreen">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-        </button>
+
+        <!-- 2. SUMMARY -->
+        <div class="pn" id="panel-summary">
+          <div class="fg">
+            <label>Summary Statement</label>
+            <textarea class="ft" id="fsu" rows="4" style="min-height:95px;"
+              placeholder="Backend Applied AI Engineer building scalable, high-availability distributed systems..."
+              oninput="ud('summary','text',this.value)"></textarea>
+          </div>
+
+          <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-top:4px;">
+            <div style="font-size:12px;font-weight:700;color:var(--txm);margin-bottom:8px;">AI Tone &amp; Style Synthesizer:</div>
+            <div class="template-presets-bar" style="margin-bottom:10px;">
+              <button class="btn-template-preset active" id="sum-style-technical" onclick="selectSummaryStyle('technical')">🎯 Technical Specialist</button>
+              <button class="btn-template-preset" id="sum-style-fresher" onclick="selectSummaryStyle('fresher')">🎓 Fresher / Graduate</button>
+              <button class="btn-template-preset" id="sum-style-leadership" onclick="selectSummaryStyle('leadership')">🚀 Engineering Lead</button>
+              <button class="btn-template-preset" id="sum-style-general" onclick="selectSummaryStyle('general')">💼 General Professional</button>
+            </div>
+            <div class="fg" style="margin-bottom:10px;">
+              <label>Personalized AI Instructions &amp; Career Focus (Optional)</label>
+              <input class="fi" id="ai-summary-custom-prompt" placeholder="e.g. 'Transitioning into Applied AI', 'Emphasize startup leadership &amp; open-source', 'Focus on FinTech payments'..." style="background:#fff;">
+            </div>
+            <button class="btp" onclick="genSum()">✨ Synthesize Personalized Summaries</button>
+            <div id="ai-summary-results" style="display:none;margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+        </div>
+
+        <!-- 3. TECHNICAL SKILLS -->
+        <div class="pn" id="panel-skills">
+          <div style="background:linear-gradient(135deg, rgba(79,70,229,0.06), rgba(99,102,241,0.03));border:1px solid var(--prb);border-radius:10px;padding:12px;margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <div style="font-size:12.5px;font-weight:800;color:var(--pr);">✨ AI Industry Skills Recommender</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              <input class="fi" id="ai-skills-role-input" placeholder="Target Role (e.g. Full-Stack / Backend / DevOps / AI Engineer)" style="background:#fff;flex:1;min-width:200px;">
+              <input class="fi" id="ai-skills-focus-input" placeholder="Specific Focus (e.g. LLM Agents / Cloud)" style="background:#fff;flex:1;min-width:180px;">
+              <button class="btp" onclick="aiSuggestSkills()" style="white-space:nowrap;padding:7px 14px;">Suggest Skills</button>
+            </div>
+            <div id="ai-skills-results" style="display:none;margin-top:10px;"></div>
+          </div>
+
+          <div style="font-size:12.5px;color:var(--txm);line-height:1.45;margin-bottom:8px;">
+            Add custom skill groups matching your profile (e.g. <em>Languages</em>, <em>Frameworks</em>, <em>Design &amp; Prototyping</em>, <em>Core Engineering</em>).
+          </div>
+          <div id="skills-categories-container" style="display:flex;flex-direction:column;gap:10px;"></div>
+          <button class="bad" onclick="addSkillCat()">+ Add Skill Category</button>
+        </div>
+
+        <!-- 4. EXPERIENCE -->
+        <div class="pn" id="panel-exp">
+          <div id="ec"></div>
+          <button class="bad" onclick="addExp()">+ Add Work Experience</button>
+        </div>
+
+        <!-- 5. PROJECTS -->
+        <div class="pn" id="panel-proj">
+          <div id="pc"></div>
+          <button class="bad" onclick="addProj()">+ Add Project</button>
+        </div>
+
+        <!-- 6. ACHIEVEMENTS -->
+        <div class="pn" id="panel-achieve">
+          <div id="ac-cont"></div>
+          <button class="bad" onclick="addAchieve()">+ Add Achievement</button>
+        </div>
+
+        <!-- 7. CERTIFICATIONS -->
+        <div class="pn" id="panel-certs">
+          <div id="cc"></div>
+          <button class="bad" onclick="addCert()">+ Add Certification</button>
+        </div>
+
+        <!-- 8. EDUCATION -->
+        <div class="pn" id="panel-edu">
+          <div id="edc"></div>
+          <button class="bad" onclick="addEdu()">+ Add Education</button>
+        </div>
+
+        <!-- CL: TARGET ROLE & COMPANY -->
+        <div class="pn" id="panel-cl-target">
+          <div class="template-presets-bar">
+            <button class="btn-template-preset active" id="cl-preset-professional" onclick="applyCoverLetterPreset('professional')">💼 General Professional</button>
+            <button class="btn-template-preset" id="cl-preset-fresher" onclick="applyCoverLetterPreset('fresher')">🎓 Fresher / Graduate</button>
+            <button class="btn-template-preset" id="cl-preset-technical" onclick="applyCoverLetterPreset('technical')">🚀 High-Impact Technical</button>
+            <button class="btn-template-preset" id="cl-preset-referral" onclick="applyCoverLetterPreset('referral')">🤝 Referral Outreach</button>
+          </div>
+
+          <div class="fr2">
+            <div class="fg">
+              <label>Target Company</label>
+              <input class="fi" id="fcl-comp" placeholder="e.g. Razorpay / Microsoft / Swiggy" oninput="udCL('company',this.value)">
+            </div>
+            <div class="fg">
+              <label>Target Role Title</label>
+              <input class="fi" id="fcl-role" placeholder="e.g. Software Engineer / Frontend Developer" oninput="udCL('role',this.value)">
+            </div>
+          </div>
+
+          <div class="fr2">
+            <div class="fg">
+              <label>Hiring Manager / Team</label>
+              <input class="fi" id="fcl-mgr" placeholder="e.g. Hiring Team / Engineering Manager" oninput="udCL('manager',this.value)">
+            </div>
+            <div class="fg">
+              <label>Letter Date</label>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <select class="fi-sel" id="fcl-date-month" onchange="uCLDate('month', this.value)" style="flex:1;">
+                  <option value="">Month</option>
+                </select>
+                <select class="fi-sel" id="fcl-date-year" onchange="uCLDate('year', this.value)" style="flex:1;">
+                  <option value="">Year</option>
+                </select>
+                <button class="bto" type="button" onclick="setCLTodayDate()" style="padding:6px 10px;font-size:11.5px;white-space:nowrap;" title="Set to Today's Date">Today</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="fg">
+            <label>Personalized AI Instructions &amp; Talking Points (Optional)</label>
+            <textarea class="ft" id="fcl-custom-prompt" rows="2" style="min-height:55px;"
+              placeholder="e.g. 'Mention I was referred by Alex', 'Highlight my passion for developer tooling and APIs', 'Keep tone punchy &amp; direct'..."></textarea>
+          </div>
+
+          <div class="fg">
+            <label>Target Job Description (Optional for Deep Keyword Tailoring)</label>
+            <textarea class="ft" id="fcl-jd" rows="3" style="min-height:75px;"
+              placeholder="Paste job description snippets here to tailor letter keywords &amp; requirements..."
+              oninput="udCL('jd',this.value)"></textarea>
+          </div>
+
+          <div style="display:flex;gap:10px;align-items:center;margin-top:4px;">
+            <button class="btp" onclick="aiGenerateCoverLetter()">✨ Generate Personalized Cover Letter</button>
+            <button class="bto" onclick="gS('cl-body')">Edit Letter Content →</button>
+          </div>
+        </div>
+
+        <!-- CL: LETTER BODY CONTENT -->
+        <div class="pn" id="panel-cl-body">
+          <div class="template-presets-bar">
+            <button class="btn-template-preset" onclick="applyCoverLetterPreset('professional')">💼 Professional</button>
+            <button class="btn-template-preset" onclick="applyCoverLetterPreset('fresher')">🎓 Fresher</button>
+            <button class="btn-template-preset" onclick="applyCoverLetterPreset('technical')">🚀 Technical</button>
+            <button class="btn-template-preset" onclick="applyCoverLetterPreset('referral')">🤝 Referral</button>
+          </div>
+
+          <div class="fg">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <label>Cover Letter Body</label>
+              <span style="font-size:11.5px;color:var(--txs);" id="cl-word-count">0 words</span>
+            </div>
+            <textarea class="ft" id="fcl-text" rows="14" style="min-height:280px;font-size:13px;line-height:1.6;"
+              placeholder="Dear Hiring Team,&#10;&#10;I am writing to express my strong enthusiasm..."
+              oninput="handleCLTextInput(this.value)"></textarea>
+          </div>
+
+          <!-- AI Polish Toolbar -->
+          <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-top:6px;display:flex;flex-direction:column;gap:8px;">
+            <div style="font-size:11.5px;font-weight:700;color:var(--txm);">✨ Quick Tone Polish:</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button class="ai-quick-btn" onclick="aiPolishCL('concise')">✂️ Make Concise</button>
+              <button class="ai-quick-btn" onclick="aiPolishCL('technical')">📊 Emphasize Metrics</button>
+              <button class="ai-quick-btn" onclick="aiPolishCL('executive')">💎 Executive Tone</button>
+              <button class="ai-quick-btn" onclick="aiPolishCL('fix_grammar')">🔍 Fix Grammar &amp; Flow</button>
+            </div>
+            <div style="display:flex;gap:6px;margin-top:4px;">
+              <input class="fi" id="cl-custom-polish-input" placeholder="Personalized instruction (e.g. 'Emphasize my distributed database experience', 'Make conclusion bolder')..." style="background:#fff;">
+              <button class="btp" onclick="aiPolishCLCustom()" style="white-space:nowrap;padding:6px 14px;">✨ Polish with Prompt</button>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
+            <button class="btp" onclick="aiGenerateCoverLetter()">✨ Regenerate Full Letter</button>
+            <button class="bto" onclick="resetToCurrentPreset()">Reset to Preset</button>
+          </div>
+        </div>
+
+        <!-- AI: ATS CHECK -->
+        <div class="pn" id="panel-ats">
+          <div class="ac">
+            <div class="ach">
+              <div>
+                <div style="font-size:14px;font-weight:800;">ATS Parse &amp; Impact Score</div>
+                <div style="font-size:12px;color:var(--txm);margin-top:2px;">Real-time analysis of keywords, typography &amp; quantifiable metrics</div>
+              </div>
+              <div class="acn" id="ats-n">100%</div>
+            </div>
+            <div class="abb">
+              <div class="abf" id="ats-b" style="width:100%"></div>
+            </div>
+            <div class="ats-tips" id="ats-t"></div>
+          </div>
+        </div>
+
+        <!-- AI: JOB TAILOR -->
+        <div class="pn" id="panel-tailor">
+          <div class="fg">
+            <label>Target Job Description</label>
+            <textarea class="ft" id="fjd" rows="5" style="min-height:110px;"
+              placeholder="Paste the target job description to match keywords, calculate ATS match score, and generate tailored bullet points..."></textarea>
+          </div>
+          <div class="fg">
+            <label>Personalized AI Tailoring Instructions (Optional)</label>
+            <input class="fi" id="fjd-custom-prompt" placeholder="e.g. 'Prioritize my Kubernetes and Go experience', 'Tailor for an early-stage startup'...">
+          </div>
+          <button class="btp" onclick="tailorR()">✨ Run ATS Match &amp; Personalized Keyword Analysis</button>
+          <div id="tout" style="display:none;margin-top:14px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. LIVE PREVIEW COLUMN -->
+    <div class="pv">
+      <div class="pvl">
+        <span></span> <span id="doc-mode-label">1-Page ATS Resume</span> &mdash; Live A4 Preview
+      </div>
+      <div class="a4w">
+        <div id="rp"></div>
       </div>
     </div>
   </main>
 
-    <!-- AI BULLET OPTIMIZER MODAL -->
+  <!-- AI BULLET OPTIMIZER MODAL -->
   <div class="ai-modal-overlay" id="ai-bullet-modal">
     <div class="ai-modal-card">
       <div class="ai-modal-header">
-        <div class="ai-modal-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-          AI Bullet Optimizer
-        </div>
-        <button class="btn-secondary" onclick="closeAIBulletModal()" style="padding:6px 10px;font-size:12px;border-radius:6px;border:none;background:transparent;box-shadow:none;">✕ Close</button>
+        <div class="ai-modal-title">✨ AI Personalized Bullet Point Optimizer</div>
+        <button class="brm" onclick="closeAIBulletModal()" style="font-size:13px;padding:4px 8px;">✕ Close</button>
       </div>
       <div class="ai-modal-body">
-        <div style="font-size:13px;color:var(--text-muted);background:var(--background);padding:14px;border-radius:10px;border:1px solid var(--border);">
-          <strong style="color:var(--text-main);">Original:</strong> <span id="ai-modal-orig" style="color:var(--text-muted);line-height:1.5;"></span>
+        <div style="font-size:12.5px;color:var(--txm);background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--bd);">
+          <strong style="color:var(--tx);">Original:</strong> <span id="ai-modal-orig" style="color:var(--txs);"></span>
         </div>
 
-        <div style="display:flex;gap:8px;align-items:center;">
-          <input class="fi" id="ai-bullet-custom-prompt" placeholder="E.g. Make it more quantitative, focus on leadership..." style="font-size:13px;flex:1;">
-          <button class="btn-primary" onclick="enhBWithCustomPrompt()" style="padding:10px 16px;border-radius:8px;">Refine</button>
+        <!-- Personalized prompt input inside modal -->
+        <div style="display:flex;gap:6px;align-items:center;">
+          <input class="fi" id="ai-bullet-custom-prompt" placeholder="Personalized focus (e.g. 'Quantify with cost savings', 'Highlight Kafka &amp; scalability')..." style="font-size:12.5px;background:#fff;">
+          <button class="bad" onclick="enhBWithCustomPrompt()" style="padding:7px 12px;white-space:nowrap;margin:0;border-color:var(--pr);color:var(--pr);">✨ Refine</button>
         </div>
 
-        <div id="ai-modal-variations" style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+        <div id="ai-modal-variations" style="display:flex;flex-direction:column;gap:12px;">
           <!-- Injected via JS -->
         </div>
       </div>
     </div>
-  </div>
   </div>
 
   <div id="pw" style="display:none;"></div>
@@ -1426,71 +2137,6 @@
     /* ═════════════════════════════════════════════════════════════════
        MASTER DATA MODEL & DATE SELECTOR ENGINE
     ═════════════════════════════════════════════════════════════════ */
-    
-    // SIMPLIFY ACCORDION LOGIC
-    
-    function toggleSimplifyCard(cardId) {
-      const card = document.getElementById(cardId);
-      if (!card) return;
-      const wasActive = card.classList.contains('active');
-      
-      // Close all cards
-      document.querySelectorAll('.section-card').forEach(c => c.classList.remove('active'));
-      
-      // If was not active, open it
-      if (!wasActive) {
-        card.classList.add('active');
-        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
-
-    function setSimplifySidebarTab(tabName) {
-      document.querySelectorAll('.btn-sidebar-tab').forEach(b => b.classList.remove('active'));
-      const activeBtn = document.getElementById(`tab-${tabName}`);
-      if (activeBtn) activeBtn.classList.add('active');
-      if (tabName === 'editor') {
-        document.querySelector('.simplify-sections-list').style.display = 'flex';
-      } else {
-        toast(`Switched to ${tabName.charAt(0).toUpperCase() + tabName.slice(1)} mode`);
-      }
-    }
-
-    let currentZoom = 0.89;
-    function zoom(delta) {
-      currentZoom = Math.min(1.4, Math.max(0.5, currentZoom + delta));
-      const rp = document.getElementById('rp');
-      if (rp) {
-        rp.style.transform = `scale(${currentZoom})`;
-      }
-      const txt = document.getElementById('zoom-level-text');
-      if (txt) txt.textContent = `${Math.round(currentZoom * 100)}%`;
-    }
-
-    function toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      } else {
-        document.exitFullscreen().catch(() => {});
-      }
-    }
-
-    function toggleAccordion(panelId, headerEl) {
-      const panel = document.getElementById(panelId);
-      if (!panel) return;
-      const isAlreadyActive = panel.classList.contains('active');
-
-      // Close all panels
-      document.querySelectorAll('.ep .pn').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.ep .accordion-header').forEach(h => h.classList.remove('active'));
-      
-      // Toggle: open if it was not active
-      if (!isAlreadyActive) {
-        panel.classList.add('active');
-        if (headerEl) headerEl.classList.add('active');
-        headerEl.scrollIntoView({behavior: "smooth", block: "nearest"});
-      }
-    }
-
     let docMode = 'resume'; // 'resume' | 'cover_letter'
 
     const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -1503,20 +2149,12 @@
     let R = {
       header: {
         name: '',
-        suffix: '',
-        headline: '',
-        location: '',
-        country_code: '',
         phone: '',
         email: '',
         linkedin: '',
         github: '',
-        portfolio: '',
-        other_url: '',
-        show_full_urls: false,
-        show_country_code: true
+        portfolio: ''
       },
-      custom_sections: [],
       summary: {
         text: ''
       },
@@ -1684,129 +2322,47 @@
     async function loadDataFromProfile() {
       const profileRaw = localStorage.getItem('getarole_profile');
       const resumeSaved = localStorage.getItem('getarole_resume_v2');
-      const userRaw = localStorage.getItem('getarole_user');
-      const storedUsername = localStorage.getItem('getarole_username');
 
-      let prof = {};
-      let user = {};
-      try { prof = JSON.parse(profileRaw || '{}'); } catch (e) { }
-      try { user = JSON.parse(userRaw || '{}'); } catch (e) { }
-
-      // 1. Robust candidate name resolution
-      let candidateName = prof.name || prof.full_name || prof.displayName || user.displayName || user.name || storedUsername || '';
-      if (!candidateName && (prof.first || prof.first_name)) {
-        candidateName = [prof.first || prof.first_name, prof.last || prof.last_name].filter(Boolean).join(' ');
-      }
-      if (!candidateName) {
-        const navName = document.getElementById('nav-username');
-        if (navName && navName.textContent && navName.textContent.trim() !== 'User') {
-          candidateName = navName.textContent.trim();
-        }
-      }
-      if (!candidateName) {
-        // Derivation from email if all else fails
-        const emailStr = prof.email || user.email || '';
-        if (emailStr.includes('@')) {
-          const raw = emailStr.split('@')[0].replace(/\d+/g, '');
-          if (raw.toLowerCase().includes('hemasai')) candidateName = 'Hemasai Vattikuti';
-          else if (raw.length > 2) candidateName = raw.charAt(0).toUpperCase() + raw.slice(1);
-        }
-      }
-
-      if (!R.header.name || R.header.name.trim() === '' || R.header.name === 'Candidate' || R.header.name === 'Your Full Name') {
-        R.header.name = candidateName;
-      }
-
-      // Suffix & Headline
-      if (!R.header.suffix) R.header.suffix = prof.suffix || prof.suffix_name || '';
-      if (!R.header.headline) R.header.headline = prof.headline || prof.title || prof.role || '';
-
-      // Location
-      if (!R.header.location) {
-        if (prof.location) R.header.location = prof.location;
-        else if (prof.city) R.header.location = [prof.city, prof.state, prof.country].filter(Boolean).join(', ');
-        else if (Array.isArray(prof.locations) && prof.locations[0]) R.header.location = prof.locations[0];
-      }
-
-      // Phone & Country Code
-      if (!R.header.phone) {
-        let p = (prof.phone || prof.contact_phone || user.phone || '').trim();
-        if (p) {
-          if (p.startsWith('+')) {
-            const parts = p.split(' ');
-            if (parts.length > 1 && !R.header.country_code) {
-              R.header.country_code = parts[0];
-              p = parts.slice(1).join(' ');
-            }
-          }
-          R.header.phone = p;
-        }
-      }
-      if (!R.header.country_code && prof.country_code) R.header.country_code = prof.country_code;
-
-      // Contact & Links
-      if (!R.header.email) R.header.email = prof.email || user.email || '';
-      if (!R.header.linkedin) R.header.linkedin = prof.linkedin_url || prof.links?.linkedin || '';
-      if (!R.header.github) R.header.github = prof.github_url || prof.links?.github || '';
-      if (!R.header.portfolio) R.header.portfolio = prof.portfolio_url || prof.links?.portfolio || '';
-      if (!R.header.other_url) R.header.other_url = prof.other_url || prof.website || prof.links?.other || '';
-
-      // Skills
-      if (prof.skills && prof.skills.length > 0 && (!Array.isArray(R.skills) || R.skills.length === 0 || !R.skills[0].items)) {
-        if (Array.isArray(prof.skills) && prof.skills.length > 0 && typeof prof.skills[0] === 'object' && prof.skills[0].label) {
-          R.skills = prof.skills;
-        } else {
-          R.skills = [{ label: 'Technical Skills', items: Array.isArray(prof.skills) ? prof.skills.join(', ') : prof.skills }];
-        }
-      }
-
-      // Education & Experience & Projects
-      if (prof.education && Array.isArray(prof.education) && prof.education.length > 0 && (!R.education || R.education.length === 0 || (!R.education[0].school && !R.education[0].degree))) {
-        R.education = prof.education;
-      }
-      if (prof.experience && Array.isArray(prof.experience) && prof.experience.length > 0 && (!R.experience || R.experience.length === 0 || (!R.experience[0].company && !R.experience[0].title))) {
-        R.experience = prof.experience;
-      }
-      if (prof.projects && Array.isArray(prof.projects) && prof.projects.length > 0 && (!R.projects || R.projects.length === 0 || !R.projects[0].name)) {
-        R.projects = prof.projects;
-      }
-      if (prof.custom_sections && Array.isArray(prof.custom_sections) && (!R.custom_sections || R.custom_sections.length === 0)) {
-        R.custom_sections = prof.custom_sections;
-      }
-      if (prof.summary && !R.summary.text) R.summary.text = prof.summary;
-
-      // Overlay with saved resume data if available, but NEVER overwrite with empty name
-      if (resumeSaved) {
+      // Always try to hydrate from profile (name, email, phone, links)
+      if (profileRaw) {
         try {
-          const savedObj = JSON.parse(resumeSaved);
-          if (savedObj) {
-            if (savedObj.header) {
-              Object.keys(savedObj.header).forEach(k => {
-                const val = savedObj.header[k];
-                if (val && val.trim() !== '' && val !== 'Candidate' && val !== 'Your Full Name') {
-                  R.header[k] = val;
-                }
-              });
-            }
-            if (savedObj.summary?.text) R.summary = savedObj.summary;
-            if (Array.isArray(savedObj.skills) && savedObj.skills.length > 0) R.skills = savedObj.skills;
-            if (Array.isArray(savedObj.experience) && savedObj.experience.length > 0) R.experience = savedObj.experience;
-            if (Array.isArray(savedObj.education) && savedObj.education.length > 0) R.education = savedObj.education;
-            if (Array.isArray(savedObj.projects) && savedObj.projects.length > 0) R.projects = savedObj.projects;
-            if (Array.isArray(savedObj.achievements) && savedObj.achievements.length > 0) R.achievements = savedObj.achievements;
-            if (Array.isArray(savedObj.certifications) && savedObj.certifications.length > 0) R.certifications = savedObj.certifications;
-            if (Array.isArray(savedObj.custom_sections) && savedObj.custom_sections.length > 0) R.custom_sections = savedObj.custom_sections;
+          const prof = JSON.parse(profileRaw);
+          if (prof.name && !R.header.name) R.header.name = prof.name;
+          if (prof.phone && !R.header.phone) R.header.phone = prof.phone;
+          if (prof.email && !R.header.email) R.header.email = prof.email;
+          if (prof.links?.linkedin && !R.header.linkedin) R.header.linkedin = prof.links.linkedin;
+          if (prof.links?.github && !R.header.github) R.header.github = prof.links.github;
+          if (prof.links?.portfolio && !R.header.portfolio) R.header.portfolio = prof.links.portfolio;
+          if (prof.skills && prof.skills.length > 0 && (!Array.isArray(R.skills) || R.skills.length === 0)) {
+            R.skills = [{ label: 'Technical Skills', items: prof.skills.join(', ') }];
           }
         } catch (e) { }
       }
 
-      // Final check: if name is still empty, force candidateName
-      if ((!R.header.name || R.header.name.trim() === '') && candidateName) {
-        R.header.name = candidateName;
+      // Overlay with richer resume data if available
+      if (resumeSaved) {
+        try {
+          const savedObj = JSON.parse(resumeSaved);
+          if (savedObj.header && savedObj.header.name) {
+            R = { ...R, ...savedObj };
+          }
+        } catch (e) { }
       }
-      // Update UI immediately with local data before network fetch
-      populateFormFields();
-      rp();
+
+      // Convert legacy object skills if needed
+      if (R.skills && !Array.isArray(R.skills)) {
+        const old = R.skills;
+        R.skills = [
+          old.languages && { label: 'Languages', items: old.languages },
+          old.ai_llm && { label: 'AI & Data', items: old.ai_llm },
+          old.backend && { label: 'Frameworks & Backend', items: old.backend },
+          old.databases && { label: 'Databases', items: old.databases },
+          old.tools && { label: 'Tools & Platforms', items: old.tools }
+        ].filter(Boolean);
+        if (R.skills.length === 0) {
+          R.skills = [{ label: 'Skills & Competencies', items: '' }];
+        }
+      }
 
       // Cloud Fetch from Supabase
       const uid = getFirebaseUID();
@@ -1817,30 +2373,78 @@
           });
           if (res.ok) {
             const data = await res.json();
+            // API returns a flat resume dict (not wrapped in {resume: {...}})
             if (data && ((data.header && data.header.name) || data.name || (data.skills && data.skills.length > 0))) {
               if (data.header) {
-                Object.keys(data.header).forEach(k => {
-                  if (data.header[k]) R.header[k] = data.header[k];
-                });
+                R.header = { ...R.header, ...data.header };
               }
-              if (data.name && (!R.header.name || R.header.name === 'Candidate')) {
+              if (data.name && (!R.header.name || !R.header.first_name)) {
                 R.header.name = data.name;
+                const parts = data.name.split(' ');
+                R.header.first_name = parts[0];
+                if (parts.length > 1) R.header.last_name = parts.slice(1).join(' ');
               }
               if (data.email && !R.header.email) R.header.email = data.email;
               if (data.phone && !R.header.phone) R.header.phone = data.phone;
-              if (data.headline && !R.header.headline) R.header.headline = data.headline;
+              if (data.headline && !R.header.title) R.header.title = data.headline;
+              
               if (data.summary) {
                 R.summary = typeof data.summary === 'string' ? { text: data.summary } : { ...R.summary, ...data.summary };
               }
-              if (Array.isArray(data.experience) && data.experience.length > 0) R.experience = data.experience;
-              if (Array.isArray(data.education) && data.education.length > 0) R.education = data.education;
-              if (Array.isArray(data.projects) && data.projects.length > 0) R.projects = data.projects;
-              if (Array.isArray(data.skills) && data.skills.length > 0) {
-                R.skills = typeof data.skills[0] === 'object' ? data.skills : [{ label: 'Skills & Competencies', items: data.skills.join(', ') }];
+              if (Array.isArray(data.experience) && data.experience.length > 0) {
+                R.experience = data.experience;
+              }
+              if (Array.isArray(data.education) && data.education.length > 0) {
+                R.education = data.education;
+              }
+              if (Array.isArray(data.projects) && data.projects.length > 0) {
+                R.projects = data.projects;
+              }
+              if (data.skills) {
+                if (Array.isArray(data.skills) && data.skills.length > 0) {
+                  if (typeof data.skills[0] === 'object' && data.skills[0].label) {
+                    R.skills = data.skills;
+                  } else {
+                    R.skills = [{ label: 'Skills & Competencies', items: data.skills.join(', ') }];
+                  }
+                }
+              }
+              if (data.links && typeof data.links === 'object') {
+                if (data.links.linkedin && !R.header.linkedin) R.header.linkedin = data.links.linkedin;
+                if (data.links.github && !R.header.github) R.header.github = data.links.github;
+                if (data.links.portfolio && !R.header.portfolio) R.header.portfolio = data.links.portfolio;
               }
               localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
               populateFormFields();
               rp();
+            }
+          }
+
+          // Fallback to profile API if header is still missing name/email
+          if (!R.header.name || !R.header.email) {
+            const profRes = await fetch('/api/user/profile', { headers: { 'X-Firebase-UID': uid } });
+            if (profRes.ok) {
+              const prof = await profRes.json();
+              if (prof && Object.keys(prof).length > 0) {
+                if (prof.name && !R.header.name) R.header.name = prof.name;
+                if (prof.first && !R.header.first_name) R.header.first_name = prof.first;
+                if (prof.last && !R.header.last_name) R.header.last_name = prof.last;
+                if (prof.email && !R.header.email) R.header.email = prof.email;
+                if (prof.phone && !R.header.phone) R.header.phone = prof.phone;
+                if (prof.headline && !R.header.title) R.header.title = prof.headline;
+                if (prof.linkedin_url && !R.header.linkedin) R.header.linkedin = prof.linkedin_url;
+                if (prof.github_url && !R.header.github) R.header.github = prof.github_url;
+                if (prof.portfolio_url && !R.header.portfolio) R.header.portfolio = prof.portfolio_url;
+                if (prof.skills && (!R.skills || R.skills.length === 0 || !R.skills[0].items)) {
+                  R.skills = Array.isArray(prof.skills) && prof.skills.length > 0 && typeof prof.skills[0] === 'object' ? prof.skills : [{ label: 'Skills & Competencies', items: Array.isArray(prof.skills) ? prof.skills.join(', ') : prof.skills }];
+                }
+                if (prof.experience && prof.experience.length > 0) R.experience = prof.experience;
+                if (prof.education && prof.education.length > 0) R.education = prof.education;
+                if (prof.projects && prof.projects.length > 0) R.projects = prof.projects;
+                localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
+                populateFormFields();
+                rp();
+              }
             }
           }
         } catch (err) {
@@ -1867,10 +2471,10 @@
         card.className = 'skill-cat-card';
         card.innerHTML = `
           <div class="skill-cat-header">
-            <input class="skill-cat-label-input" value="${esc(s.label)}" oninput="uSkillCat(${i}, 'label', this.value)">
+            <input class="skill-cat-label-input" value="${esc(s.label)}" placeholder="Category Name (e.g. Languages / Design Tools)" oninput="uSkillCat(${i}, 'label', this.value)">
             <button class="brm" onclick="rmSkillCat(${i})" title="Remove this category">✕</button>
           </div>
-          <input class="fi" value="${esc(s.items)}" oninput="uSkillCat(${i}, 'items', this.value)">
+          <input class="fi" value="${esc(s.items)}" placeholder="e.g. Python, SQL, React, Figma, Docker..." oninput="uSkillCat(${i}, 'items', this.value)">
         `;
         cont.appendChild(card);
       });
@@ -1900,61 +2504,27 @@
     }
 
     function populateFormFields() {
-      const h = R.header || {};
-      // If header name is missing in state, try reading from user
-      if (!h.name || h.name.trim() === '') {
-        const uRaw = localStorage.getItem('getarole_user');
-        const pRaw = localStorage.getItem('getarole_profile');
-        try {
-          const u = JSON.parse(uRaw || '{}');
-          const p = JSON.parse(pRaw || '{}');
-          h.name = p.name || u.displayName || u.name || localStorage.getItem('getarole_username') || '';
-          if (h.name) R.header.name = h.name;
-        } catch(e) {}
-      }
+      const h = R.header;
       sv('ffn', h.name);
-      sv('fsuf', h.suffix);
-      sv('floc', h.location);
-      sv('fcc', h.country_code);
       sv('fph', h.phone);
       sv('fem', h.email);
       sv('fli', h.linkedin);
       sv('fgh', h.github);
       sv('fpo', h.portfolio);
-      sv('fot', h.other_url);
-      sv('fhl', h.headline);
-      sv('fsu', R.summary ? R.summary.text : '');
-
-      const fullUrlsCheck = document.getElementById('f-show-full-urls');
-      if (fullUrlsCheck) fullUrlsCheck.checked = !!h.show_full_urls;
-
-      const ccCheck = document.getElementById('f-show-country-code');
-      if (ccCheck) ccCheck.checked = h.show_country_code !== false;
-
-      renderCustomSections();
+      sv('fsu', R.summary.text);
 
       renderSkillsPanel();
 
-      if (document.getElementById('ec')) {
-        document.getElementById('ec').innerHTML = '';
-        (R.experience || []).forEach((_, i) => rExp(i));
-      }
-      if (document.getElementById('pc')) {
-        document.getElementById('pc').innerHTML = '';
-        (R.projects || []).forEach((_, i) => rProj(i));
-      }
-      if (document.getElementById('ac-cont')) {
-        document.getElementById('ac-cont').innerHTML = '';
-        (R.achievements || []).forEach((_, i) => rAchieve(i));
-      }
-      if (document.getElementById('cc')) {
-        document.getElementById('cc').innerHTML = '';
-        (R.certifications || []).forEach((_, i) => rCert(i));
-      }
-      if (document.getElementById('edc')) {
-        document.getElementById('edc').innerHTML = '';
-        (R.education || []).forEach((_, i) => rEdu(i));
-      }
+      document.getElementById('ec').innerHTML = '';
+      R.experience.forEach((_, i) => rExp(i));
+      document.getElementById('pc').innerHTML = '';
+      R.projects.forEach((_, i) => rProj(i));
+      document.getElementById('ac-cont').innerHTML = '';
+      R.achievements.forEach((_, i) => rAchieve(i));
+      document.getElementById('cc').innerHTML = '';
+      R.certifications.forEach((_, i) => rCert(i));
+      document.getElementById('edc').innerHTML = '';
+      R.education.forEach((_, i) => rEdu(i));
 
       // Cover Letter
       const cl = R.cover_letter || {};
@@ -1966,7 +2536,7 @@
       // Populate Month / Year dropdowns for Cover Letter
       const mEl = document.getElementById('fcl-date-month');
       const yEl = document.getElementById('fcl-date-year');
-      if (mEl && mEl.options && mEl.options.length <= 1) {
+      if (mEl && mEl.options.length <= 1) {
         MONTHS.forEach(m => {
           const opt = document.createElement('option');
           opt.value = m;
@@ -1974,7 +2544,7 @@
           mEl.appendChild(opt);
         });
       }
-      if (yEl && yEl.options && yEl.options.length <= 1) {
+      if (yEl && yEl.options.length <= 1) {
         YEARS.forEach(y => {
           const opt = document.createElement('option');
           opt.value = y;
@@ -2151,23 +2721,20 @@ ${r.header?.name || 'Candidate Name'}`
       document.querySelectorAll('.btn-mode').forEach(b => b.classList.remove('active'));
       const layout = document.getElementById('app-layout') || document.getElementById('main-content');
 
-      const clWrapper = document.getElementById('cl-sections-wrapper');
       if (mode === 'resume') {
         const btnR = document.getElementById('btn-mode-resume');
         if (btnR) btnR.classList.add('active');
         const lbl = document.getElementById('doc-mode-label');
         if (lbl) lbl.textContent = '1-Page ATS Resume';
         if (layout) layout.classList.remove('mode-cl-active');
-        if (clWrapper) clWrapper.style.display = 'none';
-        toggleAccordion('panel-header', document.querySelector('.accordion-header'));
+        gS('header');
       } else {
         const btnCL = document.getElementById('btn-mode-cl');
         if (btnCL) btnCL.classList.add('active');
         const lbl = document.getElementById('doc-mode-label');
         if (lbl) lbl.textContent = 'Tailored Cover Letter';
         if (layout) layout.classList.add('mode-cl-active');
-        if (clWrapper) clWrapper.style.display = 'block';
-        toggleAccordion('panel-cl-target', clWrapper.querySelector('.accordion-header'));
+        gS('cl-target');
       }
 
       rp();
@@ -2179,32 +2746,15 @@ ${r.header?.name || 'Candidate Name'}`
     ═════════════════════════════════════════════════════════════════ */
     function rp() {
       const container = document.getElementById('rp');
-      if (!container) return;
-      const h = R.header || {};
-      const showFullUrls = !!h.show_full_urls;
-      const showCountryCode = h.show_country_code !== false;
-
-      function cleanUrl(url) {
-        if (!url) return '';
-        return url.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '');
-      }
-
-      let phoneDisplay = h.phone ? h.phone.trim() : '';
-      if (phoneDisplay && h.country_code && showCountryCode && !phoneDisplay.startsWith('+')) {
-        phoneDisplay = `${h.country_code.trim()} ${phoneDisplay}`;
-      }
+      const h = R.header;
 
       const contacts = [
-        h.location && `<span>${esc(h.location)}</span>`,
-        phoneDisplay && `<span>${esc(phoneDisplay)}</span>`,
-        h.email && `<a href="mailto:${esc(h.email)}">${esc(h.email)}</a>`,
-        h.linkedin && `<a href="${esc(h.linkedin.startsWith('http') ? h.linkedin : 'https://' + h.linkedin)}" target="_blank">${showFullUrls ? esc(cleanUrl(h.linkedin)) : 'LinkedIn'}</a>`,
-        h.github && `<a href="${esc(h.github.startsWith('http') ? h.github : 'https://' + h.github)}" target="_blank">${showFullUrls ? esc(cleanUrl(h.github)) : 'GitHub'}</a>`,
-        h.portfolio && `<a href="${esc(h.portfolio.startsWith('http') ? h.portfolio : 'https://' + h.portfolio)}" target="_blank">${showFullUrls ? esc(cleanUrl(h.portfolio)) : 'Portfolio'}</a>`,
-        h.other_url && `<a href="${esc(h.other_url.startsWith('http') ? h.other_url : 'https://' + h.other_url)}" target="_blank">${showFullUrls ? esc(cleanUrl(h.other_url)) : (cleanUrl(h.other_url).split('/')[0] || 'Website')}</a>`
+        h.phone && `<span>${h.phone}</span>`,
+        h.email && `<a href="mailto:${h.email}">Email</a>`,
+        h.linkedin && `<a href="${h.linkedin.startsWith('http') ? h.linkedin : 'https://' + h.linkedin}" target="_blank">LinkedIn</a>`,
+        h.github && `<a href="${h.github.startsWith('http') ? h.github : 'https://' + h.github}" target="_blank">GitHub</a>`,
+        h.portfolio && `<a href="${h.portfolio.startsWith('http') ? h.portfolio : 'https://' + h.portfolio}" target="_blank">${h.portfolio.replace(/^https?:\/\//, '')}</a>`
       ].filter(Boolean);
-
-      const fullName = [h.name, h.suffix].filter(Boolean).join(', ');
 
       if (docMode === 'cover_letter') {
         const cl = R.cover_letter || {};
@@ -2214,21 +2764,20 @@ ${r.header?.name || 'Candidate Name'}`
       <div class="latex-doc">
         <!-- Letterhead -->
         <div class="cl-header-box">
-          <div class="lr-name" style="font-size:24pt;text-align:center;">${esc(fullName)}</div>
-          ${h.headline ? `<div class="lr-headline" style="font-size:10.5pt;font-style:italic;text-align:center;margin-top:2px;margin-bottom:4px;color:#222;">${esc(h.headline)}</div>` : ''}
-          <div class="lr-contacts" style="text-align:center;">${contacts.join(' &bull; ')}</div>
+          <div class="lr-name" style="font-size:24pt;text-align:center;">${h.name || 'Your Full Name'}</div>
+          <div class="lr-contacts" style="text-align:center;">${contacts.join(' | ') || '<span>Email · Phone · Location</span>'}</div>
         </div>
 
         <!-- Date & Addressee -->
         <div class="cl-meta-block">
           <div><strong>Date:</strong> ${cl.date || new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</div>
-          <div style="margin-top:6px;"><strong>To:</strong> ${esc(cl.manager || '')}</div>
-          <div><strong>Company:</strong> ${esc(cl.company || '')}</div>
-          <div><strong>Subject:</strong> Application for ${esc(cl.role || '')}</div>
+          <div style="margin-top:6px;"><strong>To:</strong> ${cl.manager || 'Hiring Team'}</div>
+          <div><strong>Company:</strong> ${cl.company || 'Target Organization'}</div>
+          <div><strong>Subject:</strong> Application for ${cl.role || 'Open Position'}</div>
         </div>
 
         <!-- Letter Body -->
-        <div class="cl-salutation">Dear ${esc(cl.manager || '')},</div>
+        <div class="cl-salutation">Dear ${cl.manager || 'Hiring Team'},</div>
 
         ${paragraphs.map(p => {
           if (p.startsWith('Dear ') || p.startsWith('Sincerely,') || p === h.name) return '';
@@ -2238,12 +2787,12 @@ ${r.header?.name || 'Candidate Name'}`
         <!-- Sign-off -->
         <div class="cl-signoff">
           <div>Sincerely,</div>
-          <div class="cl-signoff-name">${esc(fullName)}</div>
+          <div class="cl-signoff-name">${h.name || 'Candidate Name'}</div>
         </div>
       </div>
     `;
       } else {
-        // 1-PAGE ATS RESUME
+        // 1-PAGE ATS RESUME - Filter only populated sections for freshers & professionals alike
         const validExp = (R.experience || []).filter(e => (e.company && e.company.trim()) || (e.title && e.title.trim()));
         const expHtml = validExp.length > 0 ? `
           <div class="lr-sec">
@@ -2325,7 +2874,7 @@ ${r.header?.name || 'Candidate Name'}`
                   <span class="lr-date">${esc(getFormattedDate(e))}</span>
                 </div>
                 <div class="lr-subline">${esc(e.degree)}</div>
-                ${e.coursework ? `<div style="font-size:9.5pt;margin-top:2px;"><strong>Coursework:</strong> <em>${esc(e.coursework)}</em></div>` : ''}
+                ${e.coursework ? `<div style="font-size:9pt;margin-top:2px;"><strong>Coursework:</strong> <em>${esc(e.coursework)}</em></div>` : ''}
               </div>
             `).join('')}
           </div>
@@ -2339,65 +2888,44 @@ ${r.header?.name || 'Candidate Name'}`
           <div class="lr-sec">
             <div class="lr-sec-title">TECHNICAL SKILLS</div>
             <div class="lr-skills-table">
-              ${validSkills.map(s => {
-                const lbl = s.label.trim();
-                const displayLabel = (lbl.toLowerCase() === 'technical skills' || lbl.toLowerCase() === 'skills') ? 'Core Competencies' : lbl;
-                return `<div class="lr-skills-row"><span class="lr-skills-label">${esc(displayLabel)}:</span> ${esc(s.items)}</div>`;
-              }).join('')}
+              ${validSkills.map(s => `
+                <div class="lr-skills-row"><span class="lr-skills-label">${esc(s.label)}:</span> ${esc(s.items)}</div>
+              `).join('')}
             </div>
           </div>
         ` : '';
 
-        // Custom Sections rendering
-        const customSecHtml = (R.custom_sections || []).map(cs => {
-          if (!cs.title || !cs.title.trim()) return '';
-          const entries = (cs.entries || []).filter(en => (en.title && en.title.trim()) || (en.bullets && en.bullets.some(b => b && b.trim())));
-          if (entries.length === 0) return '';
-          return `
-            <div class="lr-sec">
-              <div class="lr-sec-title">${esc(cs.title.toUpperCase())}</div>
-              ${entries.map(en => `
-                <div class="lr-entry">
-                  ${(en.title || en.date) ? `
-                  <div class="lr-entry-header">
-                    <span class="lr-org">${esc(en.title)}</span>
-                    <span class="lr-date">${esc(en.date || '')}</span>
-                  </div>` : ''}
-                  ${en.subtitle ? `<div class="lr-subline">${esc(en.subtitle)}</div>` : ''}
-                  ${(en.bullets && en.bullets.filter(Boolean).length > 0) ? `
-                  <ul class="lr-bullets">
-                    ${en.bullets.filter(b => b && b.trim()).map(b => `<li>${formatBulletBold(esc(b))}</li>`).join('')}
-                  </ul>` : ''}
-                </div>
-              `).join('')}
-            </div>
-          `;
-        }).join('');
-
-        // Resolve active headline: explicit headline or short 1-line summary phrase
-        const isShortSummaryPhrase = R.summary && R.summary.text && R.summary.text.trim().length > 0 && R.summary.text.trim().length < 35;
-        const activeHeadline = h.headline || (isShortSummaryPhrase ? R.summary.text.trim() : '');
-        const hasFullSummary = R.summary && R.summary.text && R.summary.text.trim().length >= 35;
-
         container.innerHTML = `
       <div class="latex-doc">
-        <!-- Header -->
+        <!-- 1. Header -->
         <div class="lr-header">
-          <div class="lr-name">${esc(fullName)}</div>
-          ${activeHeadline ? `<div class="lr-headline" style="font-size:10.5pt;font-style:italic;margin-top:2px;margin-bottom:4px;color:#222;">${esc(activeHeadline)}</div>` : ''}
-          <div class="lr-contacts">${contacts.join(' &bull; ')}</div>
+          <div class="lr-name">${h.name || 'Your Full Name'}</div>
+          <div class="lr-contacts">${contacts.join(' | ') || '<span>Email · Phone · Location</span>'}</div>
         </div>
-        ${hasFullSummary ? `
+
+        <!-- 2. SUMMARY -->
+        ${R.summary && R.summary.text ? `
         <div class="lr-sec">
           <div class="lr-sec-title">SUMMARY</div>
-          <div class="lr-summary-text">${formatBulletBold(esc(R.summary.text))}</div>
+          <div class="lr-summary-text">${R.summary.text}</div>
         </div>` : ''}
+
+        <!-- 3. TECHNICAL SKILLS -->
         ${skillsHtml}
+
+        <!-- 4. EXPERIENCE -->
         ${expHtml}
+
+        <!-- 5. PROJECTS -->
         ${projHtml}
-        ${customSecHtml}
+
+        <!-- 6. ACHIEVEMENTS -->
         ${achieveHtml}
+
+        <!-- 7. CERTIFICATIONS -->
         ${certsHtml}
+
+        <!-- 8. EDUCATION -->
         ${eduHtml}
       </div>
     `;
@@ -2443,207 +2971,9 @@ ${r.header?.name || 'Candidate Name'}`
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { margin: 0; padding: 0; background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     #sh { width: 794px; min-height: 1123px; margin: 0 auto; background: white; }
-  
-    
-    /* ═══════ PDF EXPORT (PRINT) ═══════ */
-    @media print {
-      body { background: #fff !important; }
-      .simplify-topbar, .sidebar-left, .sidebar-right, .floating-toolbar,     .ai-modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(8px);
-      z-index: 9999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .ai-modal-overlay.active {
-      display: flex;
-    }
-    .ai-modal-card {
-      background: #ffffff;
-      border-radius: 16px;
-      max-width: 600px;
-      width: 100%;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    .ai-modal-header {
-      padding: 16px 24px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--primary-light);
-    }
-    .ai-modal-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .ai-modal-body {
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      background: #ffffff;
-    }
-    .ai-modal-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid #e2e8f0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #f8fafc;
-    }
-    .ai-modal-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: #0f172a;
-    }
-    .ai-modal-body {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      max-height: 70vh;
-      overflow-y: auto;
-    }
-    .brm {
-      background: none;
-      border: none;
-      color: #64748b;
-      font-size: 13px;
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 6px;
-      transition: all 0.15s;
-    }
-    .brm:hover {
-      background: #fee2e2;
-      color: #ef4444;
-    }
-    .fc {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-    .fch {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .fct {
-      font-size: 13px;
-      font-weight: 700;
-      color: #0f172a;
-    }
-    .bls {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .blr {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .blr input {
-      flex: 1;
-      padding: 7px 10px;
-      border-radius: 6px;
-      border: 1px solid #cbd5e1;
-      background: #ffffff;
-      font-size: 12.5px;
-      font-family: inherit;
-      outline: none;
-    }
-    .blr input:focus {
-      border-color: var(--primary);
-    }
-    .bai {
-      padding: 4px 8px;
-      border-radius: 5px;
-      border: 1px solid #bae6fd;
-      background: #f0f9ff;
-      color: var(--primary);
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .bri {
-      background: none;
-      border: none;
-      color: #64748b;
-      cursor: pointer;
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-    .bri:hover {
-      color: #ef4444;
-      background: #fee2e2;
-    }
-    .bads {
-      padding: 5px 10px;
-      border-radius: 6px;
-      border: 1.5px dashed #cbd5e1;
-      background: transparent;
-      font-size: 12px;
-      font-weight: 700;
-      color: #64748b;
-      cursor: pointer;
-      align-self: flex-start;
-      margin-top: 4px;
-    }
-    .bads:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-    #toast {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      background: #0f172a;
-      color: #ffffff;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(10px);
-      transition: all 0.2s ease;
-      z-index: 10000;
-    }
-    #toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-</style>
+  </style>
 </head>
 <body>
-  <!-- AMBIENT GLOW -->
-  <div class="ambient-glow-wrap">
-    <div class="ambient-orb orb-1"></div>
-    <div class="ambient-orb orb-2"></div>
-    <div class="ambient-orb orb-3"></div>
-  </div>
-
   <div id="sh">${html}</div>
   </body>
 </html>`);
@@ -2679,7 +3009,7 @@ ${r.header?.name || 'Candidate Name'}`
       document.getElementById('asv').textContent = '...';
       st = setTimeout(async () => {
         localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
-        document.getElementById('asv').textContent = 'Saved';
+        document.getElementById('asv').textContent = '✓ Saved';
         const uid = getFirebaseUID();
         if (uid) {
           try {
@@ -2723,181 +3053,6 @@ ${r.header?.name || 'Candidate Name'}`
 
     function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-    
-    /* ═════════════════════════════════════════════════════════════════
-       CUSTOM SECTIONS SYSTEM (Simplify Parity)
-    ═════════════════════════════════════════════════════════════════ */
-    function renderCustomSections() {
-      const container = document.getElementById('custom-sections-accordion-container');
-      if (!container) return;
-      container.innerHTML = '';
-      if (!Array.isArray(R.custom_sections)) R.custom_sections = [];
-
-      R.custom_sections.forEach((cs, sIdx) => {
-        const wrap = document.createElement('div');
-        wrap.className = 'section-card';
-        wrap.id = `card-custom-${sIdx}`;
-        wrap.innerHTML = `
-          <div class="section-header" onclick="toggleSimplifyCard('card-custom-${sIdx}')">
-            <span class="section-drag-handle">⋮⋮</span>
-            <div class="section-icon-box">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-            </div>
-            <span class="section-title-text">${esc(cs.title || 'Custom Section')}</span>
-            <button class="brm" style="padding:2px 8px;font-size:11px;margin-left:auto;margin-right:8px;" onclick="event.stopPropagation(); rmCustomSection(${sIdx})">Delete</button>
-            <span class="section-chevron">›</span>
-          </div>
-          <div class="section-body">
-            <div class="fg">
-              <label>Section Title</label>
-              <input class="fi" value="${esc(cs.title || '')}" placeholder="e.g. Leadership &amp; Activities, Publications, Awards" oninput="uCustomSectionTitle(${sIdx}, this.value)">
-            </div>
-            <div id="cs-entries-${sIdx}" style="display:flex;flex-direction:column;gap:12px;"></div>
-            <button class="btn-add-custom-sec" onclick="addCustomSectionEntry(${sIdx})" style="padding:8px;font-size:12.5px;margin-top:6px;">+ Add Item to ${esc(cs.title || 'Section')}</button>
-          </div>
-        `;
-        container.appendChild(wrap);
-        renderCustomSectionEntries(sIdx);
-      });
-    }
-
-    function renderCustomSectionEntries(sIdx) {
-      const el = document.getElementById(`cs-entries-${sIdx}`);
-      if (!el || !R.custom_sections[sIdx]) return;
-      el.innerHTML = '';
-      const entries = R.custom_sections[sIdx].entries || [];
-
-      entries.forEach((en, eIdx) => {
-        const card = document.createElement('div');
-        card.style.cssText = 'background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:12px;position:relative;display:flex;flex-direction:column;gap:8px;';
-        card.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:11.5px;font-weight:700;color:#64748b;">Entry #${eIdx + 1}</span>
-            <button class="brm" style="padding:2px 6px;font-size:11px;" onclick="rmCustomSectionEntry(${sIdx}, ${eIdx})">Remove</button>
-          </div>
-          <div class="fr2">
-            <div class="fg">
-              <label>Title / Role / Honor</label>
-              <input class="fi" value="${esc(en.title || '')}" placeholder="e.g. Lead Organizer / Winner" oninput="uCustomSectionEntry(${sIdx}, ${eIdx}, 'title', this.value)">
-            </div>
-            <div class="fg">
-              <label>Dates / Year</label>
-              <input class="fi" value="${esc(en.date || '')}" placeholder="e.g. 2025 – Present" oninput="uCustomSectionEntry(${sIdx}, ${eIdx}, 'date', this.value)">
-            </div>
-          </div>
-          <div class="fg">
-            <label>Organization / Subtitle (Optional)</label>
-            <input class="fi" value="${esc(en.subtitle || '')}" placeholder="e.g. Google Developer Student Clubs" oninput="uCustomSectionEntry(${sIdx}, ${eIdx}, 'subtitle', this.value)">
-          </div>
-          <div class="fg">
-            <label>Bullet Points / Description</label>
-            <div id="cs-bullets-${sIdx}-${eIdx}" style="display:flex;flex-direction:column;gap:6px;">
-              ${(en.bullets || ['']).map((b, bIdx) => `
-                <div style="display:flex;gap:6px;align-items:center;">
-                  <input class="fi" value="${esc(b)}" placeholder="Describe achievement, scope, or measurable impact..." oninput="uCustomSectionBullet(${sIdx}, ${eIdx}, ${bIdx}, this.value)" style="flex:1;">
-                  <button class="brm" style="padding:4px 8px;font-size:11px;" onclick="rmCustomSectionBullet(${sIdx}, ${eIdx}, ${bIdx})">✕</button>
-                </div>
-              `).join('')}
-            </div>
-            <button class="bads" onclick="addCustomSectionBullet(${sIdx}, ${eIdx})" style="font-size:11.5px;padding:4px 8px;margin-top:6px;align-self:flex-start;">+ Add Bullet</button>
-          </div>
-        `;
-        el.appendChild(card);
-      });
-    }
-
-    function addCustomSection() {
-      if (!Array.isArray(R.custom_sections)) R.custom_sections = [];
-      R.custom_sections.push({
-        id: 'cs_' + Date.now(),
-        title: 'Custom Section',
-        entries: [
-          { title: '', subtitle: '', date: '', bullets: [''] }
-        ]
-      });
-      renderCustomSections();
-      rp();
-      ss();
-      setTimeout(() => {
-        const newIdx = R.custom_sections.length - 1;
-        toggleSimplifyCard(`card-custom-${newIdx}`);
-      }, 50);
-    }
-
-    function rmCustomSection(sIdx) {
-      if (!Array.isArray(R.custom_sections)) return;
-      R.custom_sections.splice(sIdx, 1);
-      renderCustomSections();
-      rp();
-      ss();
-    }
-
-    function uCustomSectionTitle(sIdx, val) {
-      if (R.custom_sections && R.custom_sections[sIdx]) {
-        R.custom_sections[sIdx].title = val;
-        // Also update the accordion header label
-        const panel = document.getElementById(`panel-custom-${sIdx}`);
-        if (panel && panel.previousElementSibling) {
-          const span = panel.previousElementSibling.querySelector('span');
-          if (span) span.textContent = val || 'Custom Section';
-        }
-        rp();
-        ss();
-      }
-    }
-
-    function addCustomSectionEntry(sIdx) {
-      if (!R.custom_sections[sIdx]) return;
-      if (!Array.isArray(R.custom_sections[sIdx].entries)) R.custom_sections[sIdx].entries = [];
-      R.custom_sections[sIdx].entries.push({ title: '', subtitle: '', date: '', bullets: [''] });
-      renderCustomSectionEntries(sIdx);
-      rp();
-      ss();
-    }
-
-    function rmCustomSectionEntry(sIdx, eIdx) {
-      if (!R.custom_sections[sIdx] || !R.custom_sections[sIdx].entries) return;
-      R.custom_sections[sIdx].entries.splice(eIdx, 1);
-      renderCustomSectionEntries(sIdx);
-      rp();
-      ss();
-    }
-
-    function uCustomSectionEntry(sIdx, eIdx, key, val) {
-      if (R.custom_sections[sIdx]?.entries?.[eIdx]) {
-        R.custom_sections[sIdx].entries[eIdx][key] = val;
-        rp();
-        ss();
-      }
-    }
-
-    function addCustomSectionBullet(sIdx, eIdx) {
-      if (!R.custom_sections[sIdx]?.entries?.[eIdx]) return;
-      if (!Array.isArray(R.custom_sections[sIdx].entries[eIdx].bullets)) {
-        R.custom_sections[sIdx].entries[eIdx].bullets = [];
-      }
-      R.custom_sections[sIdx].entries[eIdx].bullets.push('');
-      renderCustomSectionEntries(sIdx);
-      rp();
-      ss();
-    }
-
-    function rmCustomSectionBullet(sIdx, eIdx, bIdx) {
-      if (!R.custom_sections[sIdx]?.entries?.[eIdx]?.bullets) return;
-      R.custom_sections[sIdx].entries[eIdx].bullets.splice(bIdx, 1);
-      renderCustomSectionEntries(sIdx);
-      rp();
-      ss();
-    }
-
-    function uCustomSectionBullet(sIdx, eIdx, bIdx, val) {
-      if (R.custom_sections[sIdx]?.entries?.[eIdx]?.bullets) {
-        R.custom_sections[sIdx].entries[eIdx].bullets[bIdx] = val;
-        rp();
-        ss();
-      }
-    }
-
     /* Form Dynamic Lists */
     function addExp() {
       R.experience.push({
@@ -2930,8 +3085,8 @@ ${r.header?.name || 'Candidate Name'}`
       document.getElementById(id).innerHTML = `
         <div class="fch"><div class="fct">Experience ${i + 1}</div><button class="brm" onclick="rmExp(${i})">✕ Remove</button></div>
         <div class="fr2">
-          <div class="fg"><label>Organization / Company</label><input class="fi" value="${esc(e.company)}" oninput="uad('experience',${i},'company',this.value)"></div>
-          <div class="fg"><label>Job Title & Location</label><input class="fi" value="${esc(e.title)}" oninput="uad('experience',${i},'title',this.value)"></div>
+          <div class="fg"><label>Organization / Company</label><input class="fi" value="${esc(e.company)}" placeholder="Company / Organization Name" oninput="uad('experience',${i},'company',this.value)"></div>
+          <div class="fg"><label>Job Title & Location</label><input class="fi" value="${esc(e.title)}" placeholder="Job Title · Department / Location" oninput="uad('experience',${i},'title',this.value)"></div>
         </div>
         <div class="fg">
           <label>Work Dates</label>
@@ -2941,7 +3096,7 @@ ${r.header?.name || 'Candidate Name'}`
           <label>Key Accomplishments & Responsibilities</label>
           <div class="bls">${(e.bullets || []).map((b, bi) => `
             <div class="blr">
-              <input value="${esc(b)}" oninput="ubl('experience',${i},${bi},this.value)">
+              <input value="${esc(b)}" placeholder="Action verb + Context + Measurable Result (e.g. Built API reducing latency by 40%)..." oninput="ubl('experience',${i},${bi},this.value)">
               <button class="bai" onclick="enhB('experience',${i},${bi})">AI</button>
               <button class="bri" onclick="rmBl('experience',${i},${bi})">✕</button>
             </div>`).join('')}
@@ -2984,12 +3139,12 @@ ${r.header?.name || 'Candidate Name'}`
       document.getElementById(id).innerHTML = `
         <div class="fch"><div class="fct">Project ${i + 1}</div><button class="brm" onclick="rmProj(${i})">✕</button></div>
         <div class="fr2">
-          <div class="fg"><label>Project Name</label><input class="fi" value="${esc(p.name)}" oninput="uad('projects',${i},'name',this.value)"></div>
-          <div class="fg"><label>Tech Stack Subline</label><input class="fi" value="${esc(p.stack)}" oninput="uad('projects',${i},'stack',this.value)"></div>
+          <div class="fg"><label>Project Name</label><input class="fi" value="${esc(p.name)}" placeholder="Project Name" oninput="uad('projects',${i},'name',this.value)"></div>
+          <div class="fg"><label>Tech Stack Subline</label><input class="fi" value="${esc(p.stack)}" placeholder="Technologies · Frameworks · Tools" oninput="uad('projects',${i},'stack',this.value)"></div>
         </div>
         <div class="fr2">
-          <div class="fg"><label>Live Demo URL (optional)</label><input class="fi" value="${esc(p.liveLink)}" oninput="uad('projects',${i},'liveLink',this.value)"></div>
-          <div class="fg"><label>GitHub / Source URL (optional)</label><input class="fi" value="${esc(p.githubLink)}" oninput="uad('projects',${i},'githubLink',this.value)"></div>
+          <div class="fg"><label>Live Demo URL (optional)</label><input class="fi" value="${esc(p.liveLink)}" placeholder="https://..." oninput="uad('projects',${i},'liveLink',this.value)"></div>
+          <div class="fg"><label>GitHub / Source URL (optional)</label><input class="fi" value="${esc(p.githubLink)}" placeholder="https://github.com/..." oninput="uad('projects',${i},'githubLink',this.value)"></div>
         </div>
         <div class="fg">
           <label>Project Timeline</label>
@@ -2999,7 +3154,7 @@ ${r.header?.name || 'Candidate Name'}`
           <label>Impact Bullet Points</label>
           <div class="bls">${(p.bullets || []).map((b, bi) => `
             <div class="blr">
-              <input value="${esc(b)}" oninput="ubl('projects',${i},${bi},this.value)">
+              <input value="${esc(b)}" placeholder="Built / Designed / Deployed..." oninput="ubl('projects',${i},${bi},this.value)">
               <button class="bai" onclick="enhB('projects',${i},${bi})">AI</button>
               <button class="bri" onclick="rmBl('projects',${i},${bi})">✕</button>
             </div>`).join('')}
@@ -3029,7 +3184,7 @@ ${r.header?.name || 'Candidate Name'}`
       document.getElementById(id).className = 'fc';
       document.getElementById(id).innerHTML = `
         <div class="fch"><div class="fct">Achievement ${i + 1}</div><button class="brm" onclick="rmAchieve(${i})">✕</button></div>
-        <div class="fg"><label>Achievement Description</label><input class="fi" value="${esc(a.text)}" oninput="uad('achievements',${i},'text',this.value)"></div>
+        <div class="fg"><label>Achievement Description</label><input class="fi" value="${esc(a.text)}" placeholder="Award / Competition / Honor" oninput="uad('achievements',${i},'text',this.value)"></div>
         <div class="fg">
           <label>Date / Year</label>
           ${renderSingleDateInput('achievements', i, a)}
@@ -3058,8 +3213,8 @@ ${r.header?.name || 'Candidate Name'}`
       document.getElementById(id).innerHTML = `
         <div class="fch"><div class="fct">Certification ${i + 1}</div><button class="brm" onclick="rmCert(${i})">✕</button></div>
         <div class="fr2">
-          <div class="fg"><label>Certification Name</label><input class="fi" value="${esc(ct.name)}" oninput="uad('certifications',${i},'name',this.value)"></div>
-          <div class="fg"><label>Issuer</label><input class="fi" value="${esc(ct.issuer)}" oninput="uad('certifications',${i},'issuer',this.value)"></div>
+          <div class="fg"><label>Certification Name</label><input class="fi" value="${esc(ct.name)}" placeholder="Credential / Certification Name" oninput="uad('certifications',${i},'name',this.value)"></div>
+          <div class="fg"><label>Issuer</label><input class="fi" value="${esc(ct.issuer)}" placeholder="Issuing Organization" oninput="uad('certifications',${i},'issuer',this.value)"></div>
         </div>
         <div class="fg">
           <label>Issue Date</label>
@@ -3099,14 +3254,14 @@ ${r.header?.name || 'Candidate Name'}`
       document.getElementById(id).innerHTML = `
         <div class="fch"><div class="fct">Education ${i + 1}</div><button class="brm" onclick="rmEdu(${i})">✕</button></div>
         <div class="fr2">
-          <div class="fg"><label>School / University</label><input class="fi" value="${esc(e.school)}" oninput="uad('education',${i},'school',this.value)"></div>
-          <div class="fg"><label>Degree & Major</label><input class="fi" value="${esc(e.degree)}" oninput="uad('education',${i},'degree',this.value)"></div>
+          <div class="fg"><label>School / University</label><input class="fi" value="${esc(e.school)}" placeholder="University / College Name" oninput="uad('education',${i},'school',this.value)"></div>
+          <div class="fg"><label>Degree & Major</label><input class="fi" value="${esc(e.degree)}" placeholder="Degree / Major · Location" oninput="uad('education',${i},'degree',this.value)"></div>
         </div>
         <div class="fg">
           <label>Graduation Timeline / Dates</label>
           ${renderDateRangeInput('education', i, e)}
         </div>
-        <div class="fg"><label>Coursework / Honors</label><input class="fi" value="${esc(e.coursework)}" oninput="uad('education',${i},'coursework',this.value)"></div>
+        <div class="fg"><label>Coursework / Honors</label><input class="fi" value="${esc(e.coursework)}" placeholder="Key Courses, Honors, GPA..." oninput="uad('education',${i},'coursework',this.value)"></div>
       `;
     }
 
@@ -3135,7 +3290,7 @@ ${r.header?.name || 'Candidate Name'}`
       origEl.textContent = cur;
       varContainer.innerHTML = `
         <div style="text-align:center;padding:24px;color:var(--pr);font-size:13px;font-weight:700;">
-          Generating STAR, Technical &amp; Executive variations${customPrompt ? ` (Focus: ${esc(customPrompt)})` : ''}...
+          ✨ Generating STAR, Technical &amp; Executive variations${customPrompt ? ` (Focus: ${esc(customPrompt)})` : ''}...
         </div>
       `;
       modal.classList.add('show');
@@ -3167,7 +3322,7 @@ ${r.header?.name || 'Candidate Name'}`
           <!-- Technical Architecture Option -->
           <div class="ai-variation-card">
             <div class="ai-var-header">
-              <span class="ai-var-tag ai-tag-tech">Technical Depth &amp; Scale</span>
+              <span class="ai-var-tag ai-tag-tech">🚀 Technical Depth &amp; Scale</span>
               <button class="ai-btn-apply" onclick="applyBulletVariation('${esc(data.technical || data.enhanced).replace(/'/g, "\\'")}')">Apply This</button>
             </div>
             <div class="ai-var-text">${esc(data.technical || data.enhanced)}</div>
@@ -3176,7 +3331,7 @@ ${r.header?.name || 'Candidate Name'}`
           <!-- Crisp ATS Executive Option -->
           <div class="ai-variation-card">
             <div class="ai-var-header">
-              <span class="ai-var-tag ai-tag-concise">Crisp ATS Executive</span>
+              <span class="ai-var-tag ai-tag-concise">🎯 Crisp ATS Executive</span>
               <button class="ai-btn-apply" onclick="applyBulletVariation('${esc(data.concise || data.enhanced).replace(/'/g, "\\'")}')">Apply This</button>
             </div>
             <div class="ai-var-text">${esc(data.concise || data.enhanced)}</div>
@@ -3239,7 +3394,7 @@ ${r.header?.name || 'Candidate Name'}`
       toast('Synthesizing executive summaries...');
       const resultsDiv = document.getElementById('ai-summary-results');
       resultsDiv.style.display = 'flex';
-      resultsDiv.innerHTML = '<div style="color:var(--pr);font-size:12.5px;font-weight:700;">Generating personalized summaries...</div>';
+      resultsDiv.innerHTML = '<div style="color:var(--pr);font-size:12.5px;font-weight:700;">✨ Generating personalized summaries...</div>';
 
       const expContext = (R.experience || []).filter(e => e.company || e.title).map(e => `${e.company} (${e.title})`).join(', ');
       const allSkills = Array.isArray(R.skills) ? R.skills.map(s => `${s.label}: ${s.items}`).filter(Boolean).join('; ') : '';
@@ -3290,7 +3445,7 @@ ${r.header?.name || 'Candidate Name'}`
       const resultsDiv = document.getElementById('ai-skills-results');
       
       resultsDiv.style.display = 'block';
-      resultsDiv.innerHTML = '<div style="color:var(--pr);font-size:12.5px;font-weight:700;">Analyzing industry skill standards for ' + esc(targetRole) + '...</div>';
+      resultsDiv.innerHTML = '<div style="color:var(--pr);font-size:12.5px;font-weight:700;">✨ Analyzing industry skill standards for ' + esc(targetRole) + '...</div>';
 
       const currentSkillsStr = Array.isArray(R.skills) ? R.skills.map(s => s.items).join(', ') : '';
 
@@ -3480,7 +3635,7 @@ ${r.header?.name || 'Candidate Name'}`
       const customPrompt = (document.getElementById('fjd-custom-prompt') || {}).value || '';
       const out = document.getElementById('tout');
       out.style.display = 'block';
-      out.innerHTML = '<div style="color:var(--pr);font-size:13px;font-weight:700;">Analyzing resume against target job description requirements...</div>';
+      out.innerHTML = '<div style="color:var(--pr);font-size:13px;font-weight:700;">✨ Analyzing resume against target job description requirements...</div>';
 
       try {
         const r = await fetch('/api/ai/tailor-resume', {
@@ -3513,7 +3668,7 @@ ${r.header?.name || 'Candidate Name'}`
             <div>
               <div style="font-size:11.5px;font-weight:800;color:var(--txm);">MATCHED KEYWORDS IN YOUR RESUME:</div>
               <div class="ai-chips-wrap">
-                ${matched.map(kw => `<span class="ai-chip ai-chip-green">${esc(kw)}</span>`).join('') || '<span style="font-size:12px;color:var(--txs);">None yet</span>'}
+                ${matched.map(kw => `<span class="ai-chip ai-chip-green">✓ ${esc(kw)}</span>`).join('') || '<span style="font-size:12px;color:var(--txs);">None yet</span>'}
               </div>
             </div>
 
@@ -3635,26 +3790,20 @@ ${r.header?.name || 'Candidate Name'}`
       score = Math.min(100, Math.max(20, Math.round(score)));
 
       const nEl = document.getElementById('ats-n');
+      const bEl = document.getElementById('ats-b');
       const tEl = document.getElementById('ats-t');
-      const circleEl = document.getElementById('score-radial-circle');
-      const countEl = document.getElementById('ats-issues-count');
 
       if (nEl) {
-        nEl.textContent = score;
-        nEl.style.color = score >= 80 ? 'var(--primary)' : (score >= 60 ? '#ea580c' : '#dc2626');
+        nEl.textContent = score + '%';
+        nEl.style.color = score >= 80 ? 'var(--pr)' : (score >= 60 ? '#ea580c' : '#dc2626');
       }
-      if (circleEl) {
-        // circumference = 2 * PI * 70 ≈ 440
-        const offset = 440 - (440 * (score / 100));
-        circleEl.style.strokeDashoffset = offset;
-        circleEl.style.stroke = score >= 80 ? 'var(--primary)' : (score >= 60 ? '#ea580c' : '#dc2626');
-      }
-      if (countEl) {
-        countEl.textContent = `${tips.length} issue${tips.length === 1 ? '' : 's'} found`;
+      if (bEl) {
+        bEl.style.width = score + '%';
+        bEl.style.background = score >= 80 ? 'var(--pr)' : (score >= 60 ? '#ea580c' : '#dc2626');
       }
       if (tEl) {
         if (tips.length === 0) {
-          tEl.innerHTML = '<div class="ats-tip" style="color:#16a34a;background:#dcfce7;border-color:#bbf7d0;">Outstanding! 100% ATS-Compliant with verified LaTeX typography, quantified STAR metrics, and complete structure.</div>';
+          tEl.innerHTML = '<div class="ats-tip" style="color:#16a34a;background:#dcfce7;border-color:#bbf7d0;">✓ Outstanding! 100% ATS-Compliant with verified LaTeX typography, quantified STAR metrics, and complete structure.</div>';
         } else {
           tEl.innerHTML = tips.map(t => `<div class="ats-tip">💡 ${esc(t)}</div>`).join('');
         }
@@ -3679,15 +3828,13 @@ ${r.header?.name || 'Candidate Name'}`
     }
 
     function scale() {
-      const pv = document.querySelector('.preview-canvas') || document.querySelector('.pv');
+      const pv = document.querySelector('.pv');
       const sh = document.getElementById('rp');
-      if (!pv || !sh) return;
       const av = pv.clientWidth - 48;
-      const sc = Math.min(1, Math.max(0.4, av / 794));
+      const sc = Math.min(1, av / 794);
       sh.style.transform = `scale(${sc})`;
       sh.style.transformOrigin = 'top center';
-      const a4w = document.querySelector('.a4w');
-      if (a4w) a4w.style.height = `${(sh.offsetHeight || 1123) * sc}px`;
+      document.querySelector('.a4w').style.height = `${sh.offsetHeight * sc}px`;
     }
 
     let tt;
@@ -3704,7 +3851,6 @@ ${r.header?.name || 'Candidate Name'}`
     loadDataFromProfile();
     populateFormFields();
     rp();
-    scale();
     uAts();
   </script>
 
@@ -3737,95 +3883,12 @@ ${r.header?.name || 'Candidate Name'}`
           gsap.from(card, {
             y: 30,
             opacity: 0,
-            duration: 0.8,
-            ease: "power4.out",
+            duration: 0.6,
+            ease: "back.out(1.2)",
             stagger: 0.1
           });
         });
       }
-    });
-  </script>
-  <script>
-    // TITAN 3D PAPER TILT LOGIC
-    document.addEventListener("DOMContentLoaded", () => {
-      const pv = document.querySelector('.pv');
-      const rp = document.getElementById('rp');
-      
-      if (pv && rp) {
-        // Set initial transform properties for smoother animations
-        rp.style.transition = 'transform 0.1s ease-out, box-shadow 0.1s ease-out';
-        
-        pv.addEventListener('mousemove', (e) => {
-          const rect = pv.getBoundingClientRect();
-          // Calculate mouse position relative to the center of the panel
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-          
-          // Calculate rotation based on distance from center (max 8 degrees)
-          const rotateX = ((y - centerY) / centerY) * -5;
-          const rotateY = ((x - centerX) / centerX) * 5;
-          
-          // Calculate dynamic shadow
-          const shadowX = ((x - centerX) / centerX) * -20;
-          const shadowY = ((y - centerY) / centerY) * -20;
-          
-          requestAnimationFrame(() => {
-            rp.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${window.innerWidth > 900 ? 1 : 0.8})`;
-            rp.style.boxShadow = `${shadowX}px ${shadowY + 15}px 40px -10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1)`;
-          });
-        });
-        
-        pv.addEventListener('mouseleave', () => {
-          rp.style.transition = 'transform 0.5s ease-out, box-shadow 0.5s ease-out';
-          requestAnimationFrame(() => {
-            rp.style.transform = `perspective(1200px) rotateX(0deg) rotateY(0deg) scale(${window.innerWidth > 900 ? 1 : 0.8})`;
-            rp.style.boxShadow = `0 12px 40px -10px rgba(0, 0, 0, .45), 0 0 0 1px rgba(255, 255, 255, .08)`;
-          });
-          
-          // Re-enable fast transition after reset
-          setTimeout(() => {
-            rp.style.transition = 'transform 0.1s ease-out, box-shadow 0.1s ease-out';
-          }, 500);
-        });
-      }
-
-      // TITAN FOCUS MODE & HAPTIC FEEDBACK & AI ORB
-      const ep = document.querySelector('.ep');
-      let orb = document.createElement('div');
-      orb.className = 'ai-orb';
-      orb.onclick = () => { toast('AI Rewrite processing...'); setTimeout(()=>toast('Rewrite complete ✨'), 1500); };
-      
-      document.body.addEventListener('focusin', (e) => {
-        if (e.target.matches('.fi, .ft, .skill-cat-label-input') && ep.contains(e.target)) {
-          ep.classList.add('focus-mode-active');
-          
-          // Inject AI Orb if it's a textarea or a longer input (like title/role)
-          if (e.target.matches('.ft') || e.target.placeholder?.includes('Title') || e.target.placeholder?.includes('Company')) {
-            const fg = e.target.closest('.fg') || e.target.parentElement;
-            if (fg && !fg.querySelector('.ai-orb')) {
-              fg.appendChild(orb);
-            }
-          }
-          
-          // Store old value for haptic check
-          e.target.dataset.oldValue = e.target.value;
-        }
-      });
-      
-      document.body.addEventListener('focusout', (e) => {
-        if (e.target.matches('.fi, .ft, .skill-cat-label-input')) {
-          ep.classList.remove('focus-mode-active');
-          
-          // Haptic Success check
-          if (e.target.value !== e.target.dataset.oldValue && e.target.value.trim() !== '') {
-            e.target.classList.add('haptic-success');
-            setTimeout(() => e.target.classList.remove('haptic-success'), 500);
-          }
-        }
-      });
     });
   </script>
   </body>
