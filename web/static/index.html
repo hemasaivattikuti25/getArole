@@ -112,12 +112,12 @@
       --color-mauve: #c87de8;
       --color-lime: #b6e580;
 
-      --primary: #c87de8;
-      --primary-hover: #ba6bdc;
+      --primary: #c6beee;
+      --primary-hover: #b5a4ea;
       --primary-accent: #d094ea;
       --primary-light: rgba(198, 190, 238, 0.25);
       --primary-border: #c6beee;
-      --primary-gradient: linear-gradient(135deg, #c87de8 0%, #d094ea 100%);
+      --primary-gradient: linear-gradient(135deg, #c6beee 0%, #b8abf2 100%);
       --accent: #d094ea;
       --accent-emerald: #b6e580;
 
@@ -1098,14 +1098,19 @@
       border-bottom: 1px solid rgba(198, 190, 238, 0.45) !important;
     }
 
-    .btn-primary, .kl-btn-primary, #btn-submit-auth, .btn-hero-action {
-      background: linear-gradient(135deg, #c87de8 0%, #d094ea 100%) !important;
-      color: #ffffff !important;
-      box-shadow: 0 4px 18px rgba(200, 125, 232, 0.35) !important;
-      border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    /* ═══════ BLUISH BUTTONS (#c6beee) ═══════ */
+    .btn-primary, .kl-btn-primary, #btn-submit-auth, .btn-hero-action, .btn-promo, button.btn-primary {
+      background: #c6beee !important;
+      background: linear-gradient(135deg, #c6beee 0%, #b8abf2 100%) !important;
+      color: #1e1b4b !important;
+      font-weight: 700 !important;
+      box-shadow: 0 4px 16px rgba(198, 190, 238, 0.5) !important;
+      border: 1px solid rgba(255, 255, 255, 0.9) !important;
     }
-    .btn-primary:hover, .kl-btn-primary:hover, #btn-submit-auth:hover {
-      box-shadow: 0 8px 26px rgba(200, 125, 232, 0.5) !important;
+    .btn-primary:hover, .kl-btn-primary:hover, #btn-submit-auth:hover, .btn-hero-action:hover, .btn-promo:hover, button.btn-primary:hover {
+      background: #b5a4ea !important;
+      color: #0f0b29 !important;
+      box-shadow: 0 8px 24px rgba(198, 190, 238, 0.7) !important;
       transform: translateY(-2px) !important;
     }
 
@@ -1730,24 +1735,6 @@
         </div>
         <div class="faq-answer">
           We strictly adhere to the Digital Personal Data Protection (DPDP) Act 2023 and GDPR guidelines. We do not sell user data to telemarketers or third-party recruiters. You can permanently delete your profile and resumes at any time.
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════ FINAL CTA SECTION ═══════ -->
-    <section class="cta-section reveal-on-scroll">
-      <div class="cta-card">
-        <h2 class="cta-title">Ready to find your next role?</h2>
-        <p class="cta-sub">
-          Upload your resume and start getting matched with verified opportunities.
-        </p>
-        <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
-          <button onclick="requireAuthAndProceed('/onboarding/')" class="btn btn-secondary btn-lg" style="background:#ffffff; color:var(--primary); font-weight:800;">
-            Upload Resume &amp; Get Matched →
-          </button>
-          <button onclick="requireAuthAndProceed('/explore')" class="btn btn-secondary btn-lg" style="background:rgba(255,255,255,0.18); color:#ffffff; border-color:rgba(255,255,255,0.4);">
-            Explore Live Jobs
-          </button>
         </div>
       </div>
     </section>
