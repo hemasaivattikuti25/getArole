@@ -22,7 +22,7 @@ export default function BackgroundAurora() {
           scale: [1, 1.08, 0.95, 1],
         }}
         transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-24 left-[8%] w-[580px] h-[480px] rounded-full bg-gradient-to-br from-sky-400/25 via-blue-500/20 to-transparent blur-[80px]"
+        className="absolute -top-24 left-[8%] w-[580px] h-[480px] rounded-full bg-gradient-to-br from-sky-500/35 via-blue-600/25 to-transparent blur-[80px]"
       />
 
       {/* 1B. Top-Right: Violet Purple Glow */}
@@ -33,7 +33,7 @@ export default function BackgroundAurora() {
           scale: [1, 1.1, 0.92, 1],
         }}
         transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-20 right-[6%] w-[600px] h-[500px] rounded-full bg-gradient-to-bl from-purple-500/20 via-indigo-400/15 to-transparent blur-[85px]"
+        className="absolute -top-20 right-[6%] w-[600px] h-[500px] rounded-full bg-gradient-to-bl from-purple-600/30 via-indigo-500/20 to-transparent blur-[85px]"
       />
 
       {/* ── ZONE 2: HOW IT WORKS SECTION (~22% DOWN) ── */}
@@ -56,7 +56,7 @@ export default function BackgroundAurora() {
           scale: [1, 1.05, 0.95, 1],
         }}
         transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute top-[24%] left-[6%] w-[500px] h-[420px] rounded-full bg-gradient-to-tr from-sky-400/20 via-cyan-300/12 to-transparent blur-[75px]"
+        className="absolute top-[24%] left-[6%] w-[500px] h-[420px] rounded-full bg-gradient-to-tr from-sky-500/30 via-cyan-400/20 to-transparent blur-[75px]"
       />
 
       {/* ── ZONE 3: TOOLS SECTION (~42% DOWN) ── */}
@@ -68,7 +68,7 @@ export default function BackgroundAurora() {
           scale: [0.98, 1.08, 0.96, 0.98],
         }}
         transition={{ duration: 17, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[38%] left-[12%] w-[560px] h-[480px] rounded-full bg-gradient-to-br from-purple-500/18 via-indigo-400/14 to-transparent blur-[80px]"
+        className="absolute top-[38%] left-[12%] w-[560px] h-[480px] rounded-full bg-gradient-to-br from-purple-600/25 via-indigo-500/20 to-transparent blur-[80px]"
       />
 
       {/* 3B. Right: Sky Blue Tint */}
@@ -79,7 +79,7 @@ export default function BackgroundAurora() {
           scale: [1, 1.06, 0.94, 1],
         }}
         transition={{ duration: 16, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute top-[42%] right-[8%] w-[520px] h-[440px] rounded-full bg-gradient-to-tl from-sky-400/20 via-blue-400/15 to-transparent blur-[75px]"
+        className="absolute top-[42%] right-[8%] w-[520px] h-[440px] rounded-full bg-gradient-to-tl from-sky-500/30 via-blue-500/20 to-transparent blur-[75px]"
       />
 
       {/* ── ZONE 4: CATEGORIES SECTION (~62% DOWN) ── */}
@@ -102,7 +102,7 @@ export default function BackgroundAurora() {
           scale: [0.96, 1.06, 0.96, 0.96],
         }}
         transition={{ duration: 17, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute top-[64%] right-[10%] w-[540px] h-[450px] rounded-full bg-gradient-to-bl from-purple-500/18 via-indigo-400/12 to-transparent blur-[80px]"
+        className="absolute top-[64%] right-[10%] w-[540px] h-[450px] rounded-full bg-gradient-to-bl from-purple-600/25 via-indigo-500/20 to-transparent blur-[80px]"
       />
 
       {/* ── ZONE 5: FAQ & CTA SECTION (~82% DOWN TO BOTTOM) ── */}
@@ -114,7 +114,7 @@ export default function BackgroundAurora() {
           scale: [1, 1.07, 0.95, 1],
         }}
         transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-[80%] left-[8%] w-[580px] h-[480px] rounded-full bg-gradient-to-br from-sky-400/22 via-blue-500/15 to-transparent blur-[80px]"
+        className="absolute top-[80%] left-[8%] w-[580px] h-[480px] rounded-full bg-gradient-to-br from-sky-500/30 via-blue-600/20 to-transparent blur-[80px]"
       />
 
       {/* 5B. Center-Right: Emerald Teal Glow */}
