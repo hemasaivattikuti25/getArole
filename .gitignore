@@ -18,6 +18,7 @@ venv.bak/
 
 # Scraped / Cache Data
 scraped_jobs.json
+data/
 *.log
 /tmp/
 
