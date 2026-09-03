@@ -32,17 +32,31 @@ for route in legacy_app.routes:
     if route.path.startswith("/api/"):
         app.routes.append(route)
 
-# Mount Static UI Dashboard
+# Mount Legacy Static UI Dashboard
 static_dir = os.path.join(settings.BASE_DIR, "web", "static")
 if os.path.exists(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
+# Mount Next.js Static Export Assets
+frontend_out_dir = os.path.join(settings.BASE_DIR, "frontend", "out")
+next_assets_dir = os.path.join(frontend_out_dir, "_next")
+if os.path.exists(next_assets_dir):
+    app.mount("/_next", StaticFiles(directory=next_assets_dir), name="next_assets")
+
 @app.get("/", response_class=HTMLResponse)
 async def index():
+    # 1. Try serving the new Next.js landing page first
+    next_index = os.path.join(frontend_out_dir, "index.html")
+    if os.path.exists(next_index):
+        with open(next_index, "r", encoding="utf-8") as f:
+            return f.read()
+            
+    # 2. Fallback to old legacy static landing page
     index_file = os.path.join(static_dir, "index.html")
     if os.path.exists(index_file):
         with open(index_file, "r", encoding="utf-8") as f:
             return f.read()
+            
     return f"<h1>{settings.PROJECT_NAME} v{settings.VERSION}</h1><p>Visit <a href='/docs'>/docs</a></p>"
 
 if __name__ == "__main__":
