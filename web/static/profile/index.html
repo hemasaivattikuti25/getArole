@@ -4,21 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Profile — getArole</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Inter+Tight:wght@500;600;700;800;900&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="apple-touch-icon" href="/logo.svg">
 
   <style>
-            :root {
+                        :root {
       --primary: #0071e3;
       --primary-hover: #0077ed;
-      --primary-accent: #0071e3;
-      --primary-light: #e8f0fe;
+      --primary-accent: #7c3aed;
+      --primary-light: #eff6ff;
       --primary-border: #bfdbfe;
-      --primary-gradient: linear-gradient(135deg, #0071e3 0%, #4facfe 100%);
-      --accent: #4f46e5;
+      --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #0071e3 100%);
+      --gradient-btn: linear-gradient(135deg, #7c3aed 0%, #0071e3 100%);
+      --accent: #7c3aed;
       --accent-emerald: #10b981;
       --surface: #ffffff;
       --bg: #F8F8FA;
@@ -26,36 +27,38 @@
       --bg-surface: #ffffff;
       --background: #F8F8FA;
       --border-subtle: rgba(0, 0, 0, 0.04);
-      --border: rgba(0, 0, 0, 0.06);
+      --border: rgba(226, 232, 240, 0.9);
       --border-strong: rgba(0, 0, 0, 0.12);
-      --border-glow: rgba(0, 113, 227, 0.25);
-      --text-main: #2C2C2E;
-      --text-muted: #6E6E73;
-      --text-subtle: #99999F;
+      --border-glow: rgba(124, 58, 237, 0.25);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-subtle: #94a3b8;
       --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
-      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
-      --shadow-glow: 0 0 35px rgba(0, 113, 227, 0.15);
+      --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.07), 0 2px 6px rgba(0, 0, 0, 0.04);
+      --shadow-glow: 0 0 35px rgba(124, 58, 237, 0.15);
       --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 18px;
-      --radius-xl: 24px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 26px;
       --nav-height: 64px;
+      --font-heading: 'Inter Tight', -apple-system, sans-serif;
+      --font-body: 'DM Sans', -apple-system, sans-serif;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-body);
       background: var(--bg-subtle);
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       -webkit-font-smoothing: antialiased;
-          overflow-x: hidden;
+      overflow-x: hidden;
     }
-    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
+    h1, h2, h3, h4 { font-family: var(--font-heading); letter-spacing: -0.02em; font-weight: 700; }
 
     /* ── HEADER ── */
     header {
