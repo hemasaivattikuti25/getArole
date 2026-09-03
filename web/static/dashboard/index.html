@@ -1099,26 +1099,25 @@
 
   
     
-    /* ── APPLE-STYLE AMBIENT AURORA BACKGROUND ── */
-    body::before {
-      content: ''; position: fixed; top: -10vw; left: -10vw; width: 60vw; height: 60vw;
-      z-index: -3; pointer-events: none; border-radius: 50%; filter: blur(100px); opacity: 0.5;
-      background: radial-gradient(circle, rgba(0, 113, 227, 0.15) 0%, transparent 70%);
-      animation: ambientPulse1 20s ease-in-out infinite alternate;
+    /* ── UNIFIED AURORA BACKGROUND ── */
+    .aurora-bg-container {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+      background: #f8faff; /* Slightly cleaner base color */
     }
-    body::after {
-      content: ''; position: fixed; bottom: -10vw; right: -10vw; width: 60vw; height: 60vw;
-      z-index: -4; pointer-events: none; border-radius: 50%; filter: blur(100px); opacity: 0.4;
-      background: radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, transparent 70%);
-      animation: ambientPulse2 24s ease-in-out infinite alternate;
+    .aurora-blob {
+      position: absolute; border-radius: 50%; filter: blur(85px);
     }
-    @keyframes ambientPulse1 {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(5vw, 5vw) scale(1.2); }
+    .aurora-1 { 
+      top: -10%; left: 8%; width: 580px; height: 480px; 
+      background: linear-gradient(135deg, rgba(14,165,233,0.35) 0%, rgba(37,99,235,0.25) 50%, transparent 100%);
     }
-    @keyframes ambientPulse2 {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(-5vw, -5vw) scale(1.1); }
+    .aurora-2 { 
+      top: 20%; right: 5%; width: 600px; height: 500px; 
+      background: linear-gradient(225deg, rgba(147,51,234,0.3) 0%, rgba(99,102,241,0.2) 50%, transparent 100%);
+    }
+    .aurora-3 { 
+      bottom: -10%; left: 15%; width: 540px; height: 460px; 
+      background: linear-gradient(225deg, rgba(52,211,153,0.2) 0%, rgba(45,212,191,0.15) 50%, transparent 100%);
     }
 
     @keyframes pulse {
@@ -1344,19 +1343,6 @@
     <script src="/static/js/mobile-nav.js?v=3"></script>
 </head>
 <body>
-  <!-- Static Aurora Background for Legacy Pages -->
-  <style>
-    .aurora-bg-container {
-      position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
-      background: linear-gradient(180deg, #f8faff 0%, #ffffff 50%, #f4f8ff 100%);
-    }
-    .aurora-blob {
-      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
-    }
-    .aurora-1 { top: -10%; left: 10%; width: 500px; height: 400px; background: #0ea5e9; }
-    .aurora-2 { top: 20%; right: 5%; width: 600px; height: 500px; background: #8b5cf6; opacity: 0.35; }
-    .aurora-3 { bottom: 10%; left: 20%; width: 550px; height: 450px; background: #10b981; opacity: 0.3; }
-  </style>
   <div class="aurora-bg-container">
     <div class="aurora-blob aurora-1"></div>
     <div class="aurora-blob aurora-2"></div>
@@ -1423,21 +1409,6 @@
             <h1 style="font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; margin-bottom: 4px;">Good <span id="greeting-time">day</span>, <span id="home-user-name" style="color: var(--primary);">Engineer</span></h1>
             <p style="font-size: 14px; color: var(--text-muted); font-weight: 500;">Your AI matching engine is running. New verified opportunities found since your last visit.</p>
           </div>
-          
-          <div style="display: flex; align-items: center; gap: 16px; background: #ffffff; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
-            <div style="position: relative; width: 48px; height: 48px;">
-              <svg width="48" height="48" viewBox="0 0 36 36" style="transform: rotate(-90deg);">
-                <circle cx="18" cy="18" r="16" fill="none" stroke="#f1f5f9" stroke-width="4"></circle>
-                <circle cx="18" cy="18" r="16" fill="none" stroke="#4f46e5" stroke-width="4" stroke-dasharray="100 100" stroke-dashoffset="25" stroke-linecap="round"></circle>
-              </svg>
-              <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: var(--text-main);">75%</div>
-            </div>
-            <div>
-              <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Search Health</div>
-              <div style="font-size: 13px; font-weight: 600; color: var(--text-main);">Profile needs attention</div>
-              <a href="/profile/" style="font-size: 12px; font-weight: 600; color: var(--primary); text-decoration: none; display: inline-flex; align-items: center; margin-top: 2px;">Update Preferences <span style="font-size: 14px; padding-left: 2px;">→</span></a>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -1454,19 +1425,8 @@
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: #0ea5e9;"></div>
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
               <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Verified Jobs Live</div>
-              <div style="background: #e0f2fe; color: #0284c7; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono', monospace;">+1.2%</div>
             </div>
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-total-jobs">2,840</div>
-          </div>
-
-          <!-- Metric 2: AI Match Score -->
-          <div style="background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
-            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: #8b5cf6;"></div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-              <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Avg Match Score</div>
-              <div style="background: #f3e8ff; color: #7e22ce; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono', monospace;">~88%</div>
-            </div>
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;">Excellent</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-total-jobs">...</div>
           </div>
 
           <!-- Metric 3: High-Fit Matches -->
@@ -1474,9 +1434,8 @@
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: #10b981;"></div>
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
               <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">High-Fit Matches</div>
-              <div style="background: #d1fae5; color: #047857; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono', monospace;">NEW +3</div>
             </div>
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-matches-count">16</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-matches-count">...</div>
           </div>
 
           <!-- Metric 4: Applications Sent -->
@@ -1484,9 +1443,8 @@
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: #3b82f6;"></div>
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
               <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Applications Sent</div>
-              <div style="background: #dbeafe; color: #1d4ed8; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono', monospace;">-</div>
             </div>
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-applied-count">0</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-applied-count">...</div>
           </div>
 
           <!-- Metric 5: Saved Opportunities -->
@@ -1494,9 +1452,8 @@
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: #f59e0b;"></div>
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
               <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Saved Opportunities</div>
-              <div style="background: #fef3c7; color: #b45309; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono', monospace;">Expiring</div>
             </div>
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-saved-count">0</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-saved-count">...</div>
           </div>
         </div>
       </div>
@@ -1550,8 +1507,8 @@
         </div>
       </div>
 
-      <!-- Main Layout Grid (2 Columns) -->
-      <div style="display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 32px; align-items: start;" id="desktop-grid-layout">
+      <!-- Main Layout Grid (1 Column) -->
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: start;" id="desktop-grid-layout">
         
         <!-- Left Column: Top AI Matches Preview (Ranked List) -->
         <div>
@@ -1566,82 +1523,6 @@
           </div>
         </div>
         
-        <!-- Right Column: Activity Intelligence & Job Market -->
-        <div style="display: flex; flex-direction: column; gap: 24px;">
-          
-          <!-- 3. Activity Intelligence Feed -->
-          <div>
-            <h2 style="font-size: 15px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">System Activity</h2>
-            <div style="background: rgba(255,255,255,0.6); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
-              
-              <!-- Timeline Item 1 -->
-              <div style="display: flex; gap: 12px; margin-bottom: 20px; position: relative;">
-                <div style="position: absolute; left: 15px; top: 32px; bottom: -20px; width: 2px; background: var(--border);"></div>
-                <div style="width: 32px; height: 32px; border-radius: 50%; background: #e0e7ff; color: #4338ca; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; z-index: 1;">⚡</div>
-                <div>
-                  <div style="font-size: 13px; font-weight: 600; color: var(--text-main);">Pipeline Initialized</div>
-                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Your profile parameters were successfully parsed and saved.</div>
-                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-subtle); margin-top: 4px;">Just now</div>
-                </div>
-              </div>
-              
-              <!-- Timeline Item 2 -->
-              <div style="display: flex; gap: 12px; position: relative;">
-                <div style="width: 32px; height: 32px; border-radius: 50%; background: #dcfce7; color: #15803d; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; z-index: 1;">🔍</div>
-                <div>
-                  <div style="font-size: 13px; font-weight: 600; color: var(--text-main);">Semantic Analysis Complete</div>
-                  <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">16 high-confidence matches found in the current market pool.</div>
-                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-subtle); margin-top: 4px;">2 mins ago</div>
-                </div>
-              </div>
-              
-            </div>
-          </div>
-          
-          <!-- 5. Job Market Intelligence Panel -->
-          <div>
-            <h2 style="font-size: 15px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">Market Intelligence</h2>
-            <div style="background: rgba(255,255,255,0.6); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Current Node: <strong style="color: var(--text-main);">India Tech Sector</strong></span>
-                <span style="font-size: 10px; font-weight: 700; background: #dbeafe; color: #1d4ed8; padding: 2px 6px; border-radius: 4px;">Live</span>
-              </div>
-              
-              <!-- Market Bars -->
-              <div style="display: flex; flex-direction: column; gap: 12px;">
-                <div>
-                  <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: var(--text-main); margin-bottom: 4px;">
-                    <span>Software Engineering</span>
-                    <span>High Demand</span>
-                  </div>
-                  <div style="width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;">
-                    <div style="width: 85%; height: 100%; background: #4f46e5;"></div>
-                  </div>
-                </div>
-                <div>
-                  <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: var(--text-main); margin-bottom: 4px;">
-                    <span>Data Science & AI</span>
-                    <span>Very High</span>
-                  </div>
-                  <div style="width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;">
-                    <div style="width: 92%; height: 100%; background: #10b981;"></div>
-                  </div>
-                </div>
-                <div>
-                  <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; color: var(--text-main); margin-bottom: 4px;">
-                    <span>DevOps & Cloud</span>
-                    <span>Medium Demand</span>
-                  </div>
-                  <div style="width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;">
-                    <div style="width: 60%; height: 100%; background: #f59e0b;"></div>
-                  </div>
-                </div>
-              </div>
-              
-            </div>
-          </div>
-          
-        </div>
       </div>
       
     </div>
