@@ -8,7 +8,7 @@ import { useAuth } from "@/providers/auth-provider";
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, openAuthModal } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -80,19 +80,21 @@ export default function Navbar() {
             </Link>
           ) : (
             <>
-              <Link
-                href="/onboarding"
-                className="text-sm font-semibold text-slate-700 hover:text-slate-900 px-3 py-2 transition-colors"
+              <button
+                type="button"
+                onClick={() => openAuthModal("signin")}
+                className="text-sm font-semibold text-slate-700 hover:text-slate-900 px-3 py-2 transition-colors cursor-pointer"
               >
                 Sign In
-              </Link>
-              <Link
-                href="/onboarding"
-                className="btn-sweep inline-flex items-center gap-2 bg-[#0062e3] text-white px-4.5 py-2 rounded-xl text-sm font-semibold shadow-xs hover:shadow-md transition-shadow"
+              </button>
+              <button
+                type="button"
+                onClick={() => openAuthModal("signup")}
+                className="btn-sweep inline-flex items-center gap-2 bg-[#0062e3] text-white px-4.5 py-2 rounded-xl text-sm font-semibold shadow-xs hover:shadow-md transition-shadow cursor-pointer"
               >
                 <span>Get Started</span>
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </button>
             </>
           )}
         </div>
@@ -155,20 +157,26 @@ export default function Navbar() {
               </Link>
             ) : (
               <>
-                <Link
-                  href="/onboarding"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 text-sm font-semibold text-slate-700 bg-slate-50 rounded-lg"
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openAuthModal("signin");
+                  }}
+                  className="w-full text-center py-2 text-sm font-semibold text-slate-700 bg-slate-50 rounded-lg cursor-pointer"
                 >
                   Sign In
-                </Link>
-                <Link
-                  href="/onboarding"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2 text-sm font-semibold text-white bg-[#0062e3] rounded-lg shadow-xs"
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openAuthModal("signup");
+                  }}
+                  className="w-full text-center py-2 text-sm font-semibold text-white bg-[#0062e3] rounded-lg shadow-xs cursor-pointer"
                 >
                   Get Started Free →
-                </Link>
+                </button>
               </>
             )}
           </div>

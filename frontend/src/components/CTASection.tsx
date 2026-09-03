@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useAuth } from "@/providers/auth-provider";
 
 export default function CTASection() {
+  const { user, openAuthModal } = useAuth();
+
   return (
     <section className="py-10 md:py-14">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -19,13 +22,24 @@ export default function CTASection() {
 
             {/* Action Buttons */}
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <Link
-                href="/onboarding"
-                className="btn-sweep inline-flex items-center gap-2 bg-[#0062e3] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow-md transition-all"
-              >
-                <span>Match Your Resume</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              {user ? (
+                <Link
+                  href="/dashboard"
+                  className="btn-sweep inline-flex items-center gap-2 bg-[#0062e3] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow-md transition-all"
+                >
+                  <span>Go to Dashboard</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => openAuthModal("signup")}
+                  className="btn-sweep inline-flex items-center gap-2 bg-[#0062e3] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow-md transition-all cursor-pointer"
+                >
+                  <span>Match Your Resume</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
 
               <Link
                 href="/explore"

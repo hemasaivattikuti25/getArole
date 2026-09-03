@@ -9,7 +9,7 @@ import { useAuth } from "@/providers/auth-provider";
 export default function Hero() {
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
-  const { user } = useAuth();
+  const { user, openAuthModal } = useAuth();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,13 +126,14 @@ export default function Hero() {
               <ArrowRight className="w-4 h-4" />
             </Link>
           ) : (
-            <Link
-              href="/onboarding"
-              className="btn-sweep inline-flex items-center gap-2 bg-[#0062e3] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-blue-600/20 hover:shadow-lg transition-all"
+            <button
+              type="button"
+              onClick={() => openAuthModal("signup")}
+              className="btn-sweep inline-flex items-center gap-2 bg-[#0062e3] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-md shadow-blue-600/20 hover:shadow-lg transition-all cursor-pointer"
             >
               <span>Match Your Resume</span>
               <ArrowRight className="w-4 h-4" />
-            </Link>
+            </button>
           )}
 
           <Link
