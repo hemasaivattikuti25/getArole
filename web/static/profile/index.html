@@ -38,10 +38,91 @@
 
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(180deg, #f8faff 0%, #ffffff 50%, #f4f8ff 100%) !important;
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      position: relative;
+    }
+
+    /* ── EXACT BLUEPRINT ARCHITECTURAL GRID FROM LANDING PAGE ── */
+    .landing-blueprint-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1200px;
+      pointer-events: none;
+      z-index: 0;
+      background-image:
+        linear-gradient(to right, rgba(0, 98, 227, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 98, 227, 0.07) 1px, transparent 1px);
+      background-size: 68px 68px;
+      mask-image: radial-gradient(ellipse 85% 70% at 50% 35%, #000 50%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 85% 70% at 50% 35%, #000 50%, transparent 100%);
+    }
+
+    /* ── EXACT AURORA MESH CONTAINER FROM LANDING PAGE ── */
+    .landing-aurora-wrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1400px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb-sky {
+      position: absolute;
+      top: -96px;
+      left: 8%;
+      width: 580px;
+      height: 480px;
+      border-radius: 50%;
+      filter: blur(80px);
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.40) 0%, rgba(37, 99, 235, 0.28) 50%, transparent 70%);
+      animation: floatSlow1 14s ease-in-out infinite alternate;
+    }
+    .orb-purple {
+      position: absolute;
+      top: -80px;
+      right: 6%;
+      width: 600px;
+      height: 500px;
+      border-radius: 50%;
+      filter: blur(85px);
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.35) 0%, rgba(99, 102, 241, 0.22) 50%, transparent 75%);
+      animation: floatSlow2 16s ease-in-out infinite alternate;
+      animation-delay: -2s;
+    }
+    .orb-emerald {
+      position: absolute;
+      top: 240px;
+      right: 10%;
+      width: 540px;
+      height: 460px;
+      border-radius: 50%;
+      filter: blur(80px);
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.26) 0%, rgba(20, 184, 166, 0.16) 50%, transparent 70%);
+      animation: floatSlow3 18s ease-in-out infinite alternate;
+      animation-delay: -4s;
+    }
+    @keyframes floatSlow1 {
+      0% { transform: translate(-15px, -10px) scale(1); }
+      50% { transform: translate(25px, 20px) scale(1.08); }
+      100% { transform: translate(-15px, -10px) scale(1); }
+    }
+    @keyframes floatSlow2 {
+      0% { transform: translate(15px, -10px) scale(1); }
+      50% { transform: translate(-25px, 25px) scale(1.1); }
+      100% { transform: translate(15px, -10px) scale(1); }
+    }
+    @keyframes floatSlow3 {
+      0% { transform: translate(-20px, 10px) scale(0.96); }
+      50% { transform: translate(20px, -20px) scale(1.06); }
+      100% { transform: translate(-20px, 10px) scale(0.96); }
     }
 
     /* ── UNIFORM TOP NAVBAR ── */
@@ -966,12 +1047,13 @@
 </head>
 <body>
 
-  <!-- Exact Landing Page Ambient Glow Orbs -->
-  <div class="ambient-glow-wrap" aria-hidden="true">
-    <div class="ambient-orb orb-1"></div>
-    <div class="ambient-orb orb-2"></div>
-    <div class="ambient-orb orb-3"></div>
+  <!-- Exact Landing Page Background (Aurora Mesh + Blueprint Grid) -->
+  <div class="landing-aurora-wrap" aria-hidden="true">
+    <div class="orb-sky"></div>
+    <div class="orb-purple"></div>
+    <div class="orb-emerald"></div>
   </div>
+  <div class="landing-blueprint-grid" aria-hidden="true"></div>
 
   <!-- ════════════════════ UNIFORM TOP NAVBAR ════════════════════ -->
   <header>

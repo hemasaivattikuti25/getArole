@@ -1,140 +1,22 @@
 /* ═════════════════════════════════════════════════════════════════════════════════════
    getArole — EXACT Landing Page Background System
-   Identical to web/static/index.html:
-     1. Base Canvas Background: #F8F8FA
-     2. Top-Left Fixed Corner Glow: rgba(0, 113, 227, 0.15) (ambientPulse1)
-     3. Bottom-Right Fixed Corner Glow: rgba(79, 70, 229, 0.12) (ambientPulse2)
-     4. Orb 1 (Center-Top): 550x550, top -100px, left 50%, rgba(79,70,229,0.18) -> rgba(124,58,237,0.08)
-     5. Orb 2 (Left): 420x420, top 250px, left 10%, rgba(37,99,235,0.12) -> rgba(79,70,229,0.05)
-     6. Orb 3 (Right): 480x480, top 320px, right 8%, rgba(16,185,129,0.10) -> rgba(79,70,229,0.06)
+   Identical to Live Landing Page (Hero.tsx + BackgroundAurora.tsx):
+     1. Base Canvas: linear-gradient(180deg, #f8faff 0%, #ffffff 50%, #f4f8ff 100%)
+     2. Blueprint Architectural Grid: 68px × 68px, rgba(0, 98, 227, 0.07)
+     3. Top-Left: Sky Blue Glow (-top-24, left 8%, 580x480, blur 80px)
+     4. Top-Right: Violet Purple Glow (-top-20, right 6%, 600x500, blur 85px)
+     5. Mid-Right: Emerald Teal Glow (top 240px, right 10%, 540x460, blur 80px)
    ═════════════════════════════════════════════════════════════════════════════════════ */
 
 html, body {
-  background-color: #F8F8FA !important;
-  color: #2C2C2E !important;
+  background: linear-gradient(180deg, #f8faff 0%, #ffffff 50%, #f4f8ff 100%) !important;
+  color: #0f172a !important;
   min-height: 100vh;
   position: relative !important;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── EXACT LANDING PAGE APPLE-STYLE AMBIENT AURORA BACKGROUND ── */
-body::before {
-  content: '' !important;
-  position: fixed !important;
-  top: -10vw !important;
-  left: -10vw !important;
-  width: 60vw !important;
-  height: 60vw !important;
-  z-index: 0 !important;
-  pointer-events: none !important;
-  border-radius: 50% !important;
-  filter: blur(100px) !important;
-  opacity: 0.5 !important;
-  background: radial-gradient(circle, rgba(0, 113, 227, 0.15) 0%, transparent 70%) !important;
-  animation: ambientPulse1 20s ease-in-out infinite alternate !important;
-}
-
-body::after {
-  content: '' !important;
-  position: fixed !important;
-  bottom: -10vw !important;
-  right: -10vw !important;
-  width: 60vw !important;
-  height: 60vw !important;
-  z-index: 0 !important;
-  pointer-events: none !important;
-  border-radius: 50% !important;
-  filter: blur(100px) !important;
-  opacity: 0.4 !important;
-  background: radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, transparent 70%) !important;
-  animation: ambientPulse2 24s ease-in-out infinite alternate !important;
-}
-
-@keyframes ambientPulse1 {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(5vw, 5vw) scale(1.2); }
-}
-
-@keyframes ambientPulse2 {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(-5vw, -5vw) scale(1.1); }
-}
-
-/* ── EXACT LANDING PAGE AMBIENT BACKGROUND GLOW ORBS CONTAINER ── */
-.ambient-glow-wrap,
-.global-aurora-canvas,
-.aurora-bg-container {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  height: 1000px !important;
-  overflow: hidden !important;
-  pointer-events: none !important;
-  z-index: 0 !important;
-}
-
-.ambient-orb,
-.aurora-orb {
-  position: absolute !important;
-  border-radius: 50% !important;
-  filter: blur(90px) !important;
-  opacity: 0.65 !important;
-  animation: floatSlow 18s ease-in-out infinite alternate !important;
-  pointer-events: none !important;
-}
-
-/* ── EXACT ORB 1: Center-Top Purple/Indigo ── */
-.orb-1,
-.orb-1-sky {
-  width: 550px !important;
-  height: 550px !important;
-  top: -100px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  background: radial-gradient(circle, rgba(79, 70, 229, 0.18) 0%, rgba(124, 58, 237, 0.08) 60%, transparent 100%) !important;
-}
-
-/* ── EXACT ORB 2: Left Sky Blue ── */
-.orb-2,
-.orb-2-purple {
-  width: 420px !important;
-  height: 420px !important;
-  top: 250px !important;
-  left: 10% !important;
-  background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, rgba(79, 70, 229, 0.05) 70%, transparent 100%) !important;
-  animation-delay: -4s !important;
-}
-
-/* ── EXACT ORB 3: Right Emerald Teal Green ── */
-.orb-3,
-.orb-3-emerald {
-  width: 480px !important;
-  height: 480px !important;
-  top: 320px !important;
-  right: 8% !important;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.10) 0%, rgba(79, 70, 229, 0.06) 70%, transparent 100%) !important;
-  animation-delay: -8s !important;
-}
-
-/* Hide extra orbs so it matches the exact 3-orb landing page setup */
-.orb-4-sky,
-.orb-5-purple,
-.orb-6-sky,
-.orb-7-emerald,
-.orb-8-purple,
-.orb-9-sky,
-.orb-10-emerald {
-  display: none !important;
-}
-
-@keyframes floatSlow {
-  0% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(25px, 35px) scale(1.06); }
-  100% { transform: translate(-20px, -15px) scale(0.95); }
-}
-
-/* ── Content Stacking ── */
+/* ── Content Sits Gracefully Above Background ── */
 header,
 main,
 footer,
@@ -149,4 +31,116 @@ nav,
 .matches-container {
   position: relative !important;
   z-index: 1 !important;
+}
+
+/* ── EXACT BLUEPRINT ARCHITECTURAL GRID FROM LANDING PAGE ── */
+.landing-blueprint-grid,
+.global-blueprint-grid {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 1200px !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  background-image:
+    linear-gradient(to right, rgba(0, 98, 227, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 98, 227, 0.07) 1px, transparent 1px) !important;
+  background-size: 68px 68px !important;
+  mask-image: radial-gradient(ellipse 85% 70% at 50% 35%, #000 50%, transparent 100%) !important;
+  -webkit-mask-image: radial-gradient(ellipse 85% 70% at 50% 35%, #000 50%, transparent 100%) !important;
+}
+
+/* ── EXACT AURORA MESH CONTAINER FROM LANDING PAGE ── */
+.landing-aurora-wrap,
+.ambient-glow-wrap,
+.global-aurora-canvas,
+.aurora-bg-container {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 1400px !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+/* ── EXACT TOP-LEFT SKY BLUE GLOW ── */
+.orb-sky,
+.orb-1,
+.orb-1-sky {
+  position: absolute !important;
+  top: -96px !important;
+  left: 8% !important;
+  width: 580px !important;
+  height: 480px !important;
+  border-radius: 50% !important;
+  filter: blur(80px) !important;
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.40) 0%, rgba(37, 99, 235, 0.28) 50%, transparent 70%) !important;
+  animation: floatSlow1 14s ease-in-out infinite alternate !important;
+  pointer-events: none !important;
+}
+
+/* ── EXACT TOP-RIGHT VIOLET PURPLE GLOW ── */
+.orb-purple,
+.orb-2,
+.orb-2-purple {
+  position: absolute !important;
+  top: -80px !important;
+  right: 6% !important;
+  width: 600px !important;
+  height: 500px !important;
+  border-radius: 50% !important;
+  filter: blur(85px) !important;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.35) 0%, rgba(99, 102, 241, 0.22) 50%, transparent 75%) !important;
+  animation: floatSlow2 16s ease-in-out infinite alternate !important;
+  animation-delay: -2s !important;
+  pointer-events: none !important;
+}
+
+/* ── EXACT MID-RIGHT EMERALD TEAL GLOW ── */
+.orb-emerald,
+.orb-3,
+.orb-3-emerald {
+  position: absolute !important;
+  top: 240px !important;
+  right: 10% !important;
+  width: 540px !important;
+  height: 460px !important;
+  border-radius: 50% !important;
+  filter: blur(80px) !important;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.26) 0%, rgba(20, 184, 166, 0.16) 50%, transparent 70%) !important;
+  animation: floatSlow3 18s ease-in-out infinite alternate !important;
+  animation-delay: -4s !important;
+  pointer-events: none !important;
+}
+
+/* Extra orbs hidden so only the 3 signature landing page colors display */
+.orb-4-sky,
+.orb-5-purple,
+.orb-6-sky,
+.orb-7-emerald,
+.orb-8-purple,
+.orb-9-sky,
+.orb-10-emerald {
+  display: none !important;
+}
+
+@keyframes floatSlow1 {
+  0% { transform: translate(-15px, -10px) scale(1); }
+  50% { transform: translate(25px, 20px) scale(1.08); }
+  100% { transform: translate(-15px, -10px) scale(1); }
+}
+
+@keyframes floatSlow2 {
+  0% { transform: translate(15px, -10px) scale(1); }
+  50% { transform: translate(-25px, 25px) scale(1.1); }
+  100% { transform: translate(15px, -10px) scale(1); }
+}
+
+@keyframes floatSlow3 {
+  0% { transform: translate(-20px, 10px) scale(0.96); }
+  50% { transform: translate(20px, -20px) scale(1.06); }
+  100% { transform: translate(-20px, 10px) scale(0.96); }
 }
