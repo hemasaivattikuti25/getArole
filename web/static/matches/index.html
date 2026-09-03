@@ -2594,14 +2594,7 @@
                     </div>
                     <span class="ref-item-arrow">↗</span>
                   </a>
-                  <a class="ref-item" onclick="copyReferralNote('${encodeURIComponent(job.company)}', '${encodeURIComponent(job.title)}')">
-                    <div class="ref-item-icon">📋</div>
-                    <div>
-                      <div class="ref-item-title">Copy Referral Note</div>
-                      <div class="ref-item-desc">Pre-written message ready to paste into LinkedIn</div>
-                    </div>
-                    <span class="ref-item-arrow">📋</span>
-                  </a>
+
                 </div>
               </div>
               <button class="btn-save-job ${isSaved ? 'saved' : ''}" onclick="toggleSave('${job.id}')" type="button">
@@ -3069,11 +3062,7 @@
         closeAllReferralDropdowns();
       }
     });
-
-    function copyReferralNote(compStr, titleStr) {
-      const comp = decodeURIComponent(compStr);
-      const title = decodeURIComponent(titleStr);
-      const user = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+');
       const myName = user.name || 'Candidate';
       const note = `Hi! I saw you are working at ${comp} and wanted to reach out. I am applying for the ${title} role on getArole and would love to ask for your advice or a warm referral if you are open to it! Here is my profile: https://linkedin.com - Thanks so much!`;
       
