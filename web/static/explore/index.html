@@ -2844,23 +2844,8 @@
         closeAllReferralDropdowns();
       }
     });
-');
-      const myName = user.name || 'Candidate';
-      const note = `Hi! I saw you are working at ${comp} and wanted to reach out. I am applying for the ${title} role on getArole and would love to ask for your advice or a warm referral if you are open to it! Here is my profile: https://linkedin.com - Thanks so much!`;
-      
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(note).then(() => {
-          if (typeof toast === 'function') toast('📋 Referral message copied! Paste into LinkedIn.');
-          else alert('📋 Referral message copied! Paste into LinkedIn.');
-          closeAllReferralDropdowns();
-        }).catch(() => {
-          prompt('Copy your referral note:', note);
-        });
-      } else {
-        prompt('Copy your referral note:', note);
-      }
-    }
-function openReferralSearch(companyStr, type) {
+
+    function openReferralSearch(companyStr, type) {
       const decodedComp = decodeURIComponent(companyStr).trim();
       let keywords = `"${decodedComp}"`;
       

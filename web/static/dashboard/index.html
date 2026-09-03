@@ -2477,7 +2477,8 @@
     }
 
     function renderHomeView() {
-      
+      const totalJobsEl = document.getElementById('home-total-jobs');
+      if (totalJobsEl) totalJobsEl.textContent = (allJobs.length || 1000).toLocaleString('en-IN');
       document.getElementById('home-matches-count').textContent = matchedJobs.length;
       renderTracker();
       updateGetStartedProgress();

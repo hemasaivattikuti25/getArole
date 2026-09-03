@@ -1596,10 +1596,6 @@
           body: JSON.stringify(profileData)
         });
       } catch(e) { console.warn('[Profile] Save warning', e); }
-    },
-          body: JSON.stringify(profileData)
-        });
-      } catch(e) { console.warn('[Profile] Save warning', e); }
     }
 
     async function apiSavePreferences(prefsData) {
@@ -2297,14 +2293,14 @@
 
       // Set Profile Left Card
       const userObj = JSON.parse(localStorage.getItem('getarole_user') || '{}');
-      const defaultName = state.profile.name || userObj.displayName || '';
-      document.getElementById('disp-name').textContent = defaultName || 'Your Name';
-      document.getElementById('disp-headline').textContent = state.profile.headline || 'Add your headline';
+      const defaultName = state.profile.name || userObj.displayName || userObj.name || localStorage.getItem('getarole_username') || '';
+      document.getElementById('disp-name').textContent = defaultName || 'Candidate';
+      document.getElementById('disp-headline').textContent = state.profile.headline || state.prefs.role || 'Software Engineer';
       document.getElementById('disp-status').textContent = state.prefs.status || 'Actively looking';
       
-      const initials = (defaultName ? defaultName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : '?');
-      document.getElementById('prof-avatar').textContent = initials || '?';
-      document.getElementById('nav-avatar').textContent = initials || '?';
+      const initials = (defaultName ? defaultName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase() : 'H');
+      document.getElementById('prof-avatar').textContent = initials || 'H';
+      document.getElementById('nav-avatar').textContent = initials || 'H';
       
       // Init Modal Inputs
       document.getElementById('salary-currency').value = state.prefs.salary_curr || 'USD';
