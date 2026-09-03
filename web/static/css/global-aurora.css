@@ -1,26 +1,140 @@
 /* ═════════════════════════════════════════════════════════════════════════════════════
-   getArole — Global Rhythmic 3-Color Ambient Aurora Background System
-   Palette:
-     1. Sky Blue: #0ea5e9 / #38bdf8 (rgba(14,165,233) / rgba(56,189,248))
-     2. Violet Purple: #8b5cf6 / #a855f7 (rgba(139,92,246) / rgba(168,85,247))
-     3. Emerald Teal Green: #10b981 / #14b8a6 (rgba(16,185,129) / rgba(20,184,166))
+   getArole — EXACT Landing Page Background System
+   Identical to web/static/index.html:
+     1. Base Canvas Background: #F8F8FA
+     2. Top-Left Fixed Corner Glow: rgba(0, 113, 227, 0.15) (ambientPulse1)
+     3. Bottom-Right Fixed Corner Glow: rgba(79, 70, 229, 0.12) (ambientPulse2)
+     4. Orb 1 (Center-Top): 550x550, top -100px, left 50%, rgba(79,70,229,0.18) -> rgba(124,58,237,0.08)
+     5. Orb 2 (Left): 420x420, top 250px, left 10%, rgba(37,99,235,0.12) -> rgba(79,70,229,0.05)
+     6. Orb 3 (Right): 480x480, top 320px, right 8%, rgba(16,185,129,0.10) -> rgba(79,70,229,0.06)
    ═════════════════════════════════════════════════════════════════════════════════════ */
 
-/* ── Global Document Canvas ── */
-html {
-  background-color: #f6f8fc !important;
-}
-
-body {
-  background-color: #f6f8fc !important;
-  color: #0f172a !important;
+html, body {
+  background-color: #F8F8FA !important;
+  color: #2C2C2E !important;
   min-height: 100vh;
   position: relative !important;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Content Stacking Safety (Above Canvas) ── */
+/* ── EXACT LANDING PAGE APPLE-STYLE AMBIENT AURORA BACKGROUND ── */
+body::before {
+  content: '' !important;
+  position: fixed !important;
+  top: -10vw !important;
+  left: -10vw !important;
+  width: 60vw !important;
+  height: 60vw !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  border-radius: 50% !important;
+  filter: blur(100px) !important;
+  opacity: 0.5 !important;
+  background: radial-gradient(circle, rgba(0, 113, 227, 0.15) 0%, transparent 70%) !important;
+  animation: ambientPulse1 20s ease-in-out infinite alternate !important;
+}
+
+body::after {
+  content: '' !important;
+  position: fixed !important;
+  bottom: -10vw !important;
+  right: -10vw !important;
+  width: 60vw !important;
+  height: 60vw !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  border-radius: 50% !important;
+  filter: blur(100px) !important;
+  opacity: 0.4 !important;
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, transparent 70%) !important;
+  animation: ambientPulse2 24s ease-in-out infinite alternate !important;
+}
+
+@keyframes ambientPulse1 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(5vw, 5vw) scale(1.2); }
+}
+
+@keyframes ambientPulse2 {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(-5vw, -5vw) scale(1.1); }
+}
+
+/* ── EXACT LANDING PAGE AMBIENT BACKGROUND GLOW ORBS CONTAINER ── */
+.ambient-glow-wrap,
+.global-aurora-canvas,
+.aurora-bg-container {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 1000px !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+.ambient-orb,
+.aurora-orb {
+  position: absolute !important;
+  border-radius: 50% !important;
+  filter: blur(90px) !important;
+  opacity: 0.65 !important;
+  animation: floatSlow 18s ease-in-out infinite alternate !important;
+  pointer-events: none !important;
+}
+
+/* ── EXACT ORB 1: Center-Top Purple/Indigo ── */
+.orb-1,
+.orb-1-sky {
+  width: 550px !important;
+  height: 550px !important;
+  top: -100px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: radial-gradient(circle, rgba(79, 70, 229, 0.18) 0%, rgba(124, 58, 237, 0.08) 60%, transparent 100%) !important;
+}
+
+/* ── EXACT ORB 2: Left Sky Blue ── */
+.orb-2,
+.orb-2-purple {
+  width: 420px !important;
+  height: 420px !important;
+  top: 250px !important;
+  left: 10% !important;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, rgba(79, 70, 229, 0.05) 70%, transparent 100%) !important;
+  animation-delay: -4s !important;
+}
+
+/* ── EXACT ORB 3: Right Emerald Teal Green ── */
+.orb-3,
+.orb-3-emerald {
+  width: 480px !important;
+  height: 480px !important;
+  top: 320px !important;
+  right: 8% !important;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.10) 0%, rgba(79, 70, 229, 0.06) 70%, transparent 100%) !important;
+  animation-delay: -8s !important;
+}
+
+/* Hide extra orbs so it matches the exact 3-orb landing page setup */
+.orb-4-sky,
+.orb-5-purple,
+.orb-6-sky,
+.orb-7-emerald,
+.orb-8-purple,
+.orb-9-sky,
+.orb-10-emerald {
+  display: none !important;
+}
+
+@keyframes floatSlow {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(25px, 35px) scale(1.06); }
+  100% { transform: translate(-20px, -15px) scale(0.95); }
+}
+
+/* ── Content Stacking ── */
 header,
 main,
 footer,
@@ -35,252 +149,4 @@ nav,
 .matches-container {
   position: relative !important;
   z-index: 1 !important;
-}
-
-/* ── Fixed Aurora Mesh Canvas ── */
-.global-aurora-canvas,
-.aurora-bg-container {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  overflow: hidden !important;
-  pointer-events: none !important;
-  z-index: 0 !important; /* In front of body background, behind content */
-}
-
-/* Fixed High-Vibrancy Corner Ambient Glows */
-.global-aurora-canvas::before {
-  content: '';
-  position: absolute;
-  top: -8vw;
-  left: -8vw;
-  width: 55vw;
-  height: 55vw;
-  max-width: 800px;
-  max-height: 800px;
-  border-radius: 50%;
-  filter: blur(80px);
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.42) 0%, rgba(56, 189, 248, 0.22) 40%, transparent 70%);
-  animation: globalPulse1 18s ease-in-out infinite alternate;
-  pointer-events: none;
-}
-
-.global-aurora-canvas::after {
-  content: '';
-  position: absolute;
-  bottom: -8vw;
-  right: -8vw;
-  width: 55vw;
-  height: 55vw;
-  max-width: 800px;
-  max-height: 800px;
-  border-radius: 50%;
-  filter: blur(80px);
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.40) 0%, rgba(129, 140, 248, 0.22) 45%, transparent 70%);
-  animation: globalPulse2 22s ease-in-out infinite alternate;
-  pointer-events: none;
-}
-
-@keyframes globalPulse1 {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(50px, 40px) scale(1.15); }
-}
-
-@keyframes globalPulse2 {
-  0% { transform: translate(0, 0) scale(1); }
-  100% { transform: translate(-40px, -50px) scale(1.12); }
-}
-
-/* ── Floating Aurora Orbs ── */
-.aurora-orb,
-.aurora-blob {
-  position: absolute !important;
-  border-radius: 50% !important;
-  pointer-events: none !important;
-  will-change: transform;
-}
-
-/* ═════════════════════════════════════════════════════════════════════════════
-   ZONE 1: TOP / HERO SECTION
-   ═════════════════════════════════════════════════════════════════════════════ */
-
-/* 1A. Top-Left: Sky Blue Sheen */
-.orb-1-sky,
-.aurora-1 {
-  top: -80px !important;
-  left: 6% !important;
-  width: 580px !important;
-  height: 480px !important;
-  filter: blur(75px) !important;
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.52) 0%, rgba(37, 99, 235, 0.32) 45%, transparent 70%) !important;
-  animation: floatMotion1 14s ease-in-out infinite alternate !important;
-}
-
-/* 1B. Top-Right: Violet Purple Glow */
-.orb-2-purple,
-.aurora-2 {
-  top: -60px !important;
-  right: 5% !important;
-  width: 600px !important;
-  height: 500px !important;
-  filter: blur(75px) !important;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.48) 0%, rgba(99, 102, 241, 0.30) 45%, transparent 75%) !important;
-  animation: floatMotion2 16s ease-in-out infinite alternate !important;
-  animation-delay: -2s !important;
-}
-
-/* ═════════════════════════════════════════════════════════════════════════════
-   ZONE 2: HOW IT WORKS / MID SECTION (~22% DOWN)
-   ═════════════════════════════════════════════════════════════════════════════ */
-
-/* 2A. Right: Emerald Teal Glow */
-.orb-3-emerald,
-.aurora-3 {
-  top: 22% !important;
-  right: 8% !important;
-  width: 550px !important;
-  height: 460px !important;
-  filter: blur(75px) !important;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.42) 0%, rgba(20, 184, 166, 0.25) 45%, transparent 70%) !important;
-  animation: floatMotion3 18s ease-in-out infinite alternate !important;
-  animation-delay: -4s !important;
-}
-
-/* 2B. Left: Soft Sky Blue Tint */
-.orb-4-sky {
-  top: 26% !important;
-  left: 4% !important;
-  width: 520px !important;
-  height: 440px !important;
-  filter: blur(70px) !important;
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.44) 0%, rgba(6, 182, 212, 0.26) 45%, transparent 70%) !important;
-  animation: floatMotion1 15s ease-in-out infinite alternate !important;
-  animation-delay: -1s !important;
-}
-
-/* ═════════════════════════════════════════════════════════════════════════════
-   ZONE 3: CENTER SECTION (~42% DOWN)
-   ═════════════════════════════════════════════════════════════════════════════ */
-
-/* 3A. Left: Violet Purple Tint */
-.orb-5-purple {
-  top: 42% !important;
-  left: 10% !important;
-  width: 560px !important;
-  height: 480px !important;
-  filter: blur(75px) !important;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.42) 0%, rgba(99, 102, 241, 0.26) 45%, transparent 75%) !important;
-  animation: floatMotion2 17s ease-in-out infinite alternate !important;
-  animation-delay: -5s !important;
-}
-
-/* 3B. Right: Sky Blue Tint */
-.orb-6-sky {
-  top: 46% !important;
-  right: 6% !important;
-  width: 520px !important;
-  height: 440px !important;
-  filter: blur(70px) !important;
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.42) 0%, rgba(59, 130, 246, 0.26) 45%, transparent 70%) !important;
-  animation: floatMotion3 16s ease-in-out infinite alternate !important;
-  animation-delay: -3s !important;
-}
-
-/* ═════════════════════════════════════════════════════════════════════════════
-   ZONE 4: LOWER SECTION (~62% DOWN)
-   ═════════════════════════════════════════════════════════════════════════════ */
-
-/* 4A. Center-Left: Emerald Teal Green */
-.orb-7-emerald {
-  top: 62% !important;
-  left: 8% !important;
-  width: 560px !important;
-  height: 460px !important;
-  filter: blur(75px) !important;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.40) 0%, rgba(20, 184, 166, 0.22) 45%, transparent 70%) !important;
-  animation: floatMotion1 19s ease-in-out infinite alternate !important;
-  animation-delay: -7s !important;
-}
-
-/* 4B. Right: Violet Purple Sheen */
-.orb-8-purple {
-  top: 66% !important;
-  right: 8% !important;
-  width: 540px !important;
-  height: 450px !important;
-  filter: blur(75px) !important;
-  background: radial-gradient(circle, rgba(168, 85, 247, 0.42) 0%, rgba(99, 102, 241, 0.24) 45%, transparent 75%) !important;
-  animation: floatMotion2 17s ease-in-out infinite alternate !important;
-  animation-delay: -6s !important;
-}
-
-/* ═════════════════════════════════════════════════════════════════════════════
-   ZONE 5: BOTTOM SECTION (~82% DOWN)
-   ═════════════════════════════════════════════════════════════════════════════ */
-
-/* 5A. Left: Sky Blue Sheen */
-.orb-9-sky {
-  bottom: 8% !important;
-  left: 6% !important;
-  width: 580px !important;
-  height: 480px !important;
-  filter: blur(75px) !important;
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.44) 0%, rgba(37, 99, 235, 0.26) 45%, transparent 70%) !important;
-  animation: floatMotion3 16s ease-in-out infinite alternate !important;
-  animation-delay: -8s !important;
-}
-
-/* 5B. Center-Right: Emerald Teal Glow */
-.orb-10-emerald {
-  bottom: 6% !important;
-  right: 10% !important;
-  width: 550px !important;
-  height: 460px !important;
-  filter: blur(75px) !important;
-  background: radial-gradient(circle, rgba(16, 185, 129, 0.38) 0%, rgba(20, 184, 166, 0.22) 45%, transparent 70%) !important;
-  animation: floatMotion1 20s ease-in-out infinite alternate !important;
-  animation-delay: -10s !important;
-}
-
-/* ── Smooth Organic Float Keyframes ── */
-@keyframes floatMotion1 {
-  0% { transform: translate(-20px, -15px) scale(1); }
-  50% { transform: translate(30px, 25px) scale(1.08); }
-  75% { transform: translate(-15px, -10px) scale(0.95); }
-  100% { transform: translate(-20px, -15px) scale(1); }
-}
-
-@keyframes floatMotion2 {
-  0% { transform: translate(20px, -10px) scale(1); }
-  50% { transform: translate(-35px, 30px) scale(1.1); }
-  75% { transform: translate(25px, -15px) scale(0.92); }
-  100% { transform: translate(20px, -10px) scale(1); }
-}
-
-@keyframes floatMotion3 {
-  0% { transform: translate(-25px, 15px) scale(0.95); }
-  50% { transform: translate(30px, -25px) scale(1.08); }
-  75% { transform: translate(-20px, 15px) scale(0.95); }
-  100% { transform: translate(-25px, 15px) scale(0.95); }
-}
-
-/* ── Standardized Translucent Glassmorphic Surfaces ── */
-/* Allows ambient aurora colors to shine through gracefully rather than looking stark white */
-.app-header,
-.top-navbar,
-.filter-bar,
-.feed-header,
-.dashboard-hero,
-.profile-card,
-.candidate-hero-card,
-.section-card,
-.sidebar-card,
-.glass-panel-light,
-.jobs-split-container {
-  background: rgba(255, 255, 255, 0.78) !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
-  border: 1px solid rgba(226, 232, 240, 0.85) !important;
 }
