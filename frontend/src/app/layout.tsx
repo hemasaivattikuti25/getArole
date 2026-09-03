@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { AuthProvider } from "@/providers/auth-provider";
 import "./globals.css";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -42,6 +43,7 @@ export const metadata: Metadata = {
   },
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -52,7 +54,7 @@ export default function RootLayout({
       <body
         className={`${plusJakartaSans.variable} ${jetbrainsMono.variable} font-sans bg-white text-slate-900 min-h-screen flex flex-col antialiased selection:bg-[#0062e3] selection:text-white`}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

@@ -37,8 +37,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     //   setLoading(false);
     // });
     // return unsubscribe;
+    // For the current mock/local setup, check localStorage to see if they've onboarded
+    const hasPrefs = localStorage.getItem('getarole_cloud_prefs');
+    const hasResume = localStorage.getItem('getarole_resume_v2');
     
-    // Placeholder logic
+    if (hasPrefs || hasResume) {
+      setUser({ uid: 'local-user', name: 'User' });
+    } else {
+      setUser(null);
+    }
+    
     setLoading(false);
   }, []);
 

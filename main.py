@@ -27,10 +27,13 @@ app.add_middleware(
 # Mount Clean V1 API
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
-# Mount Legacy Routes for Backward Compatibility with existing UI
+# Mount Legacy Routes (both API and full UI pages) for Full Compatibility
+existing_paths = {getattr(r, "path", None) for r in app.routes}
 for route in legacy_app.routes:
-    if route.path.startswith("/api/"):
+    r_path = getattr(route, "path", None)
+    if r_path and r_path not in existing_paths and r_path != "/":
         app.routes.append(route)
+        existing_paths.add(r_path)
 
 # Mount Legacy Static UI Dashboard
 static_dir = os.path.join(settings.BASE_DIR, "web", "static")

@@ -29,20 +29,33 @@ export function useJobs(options: UseJobsOptions = {}) {
         try {
           const res = await apiClient.get('/jobs');
           if (isMounted) {
-            // Apply simple client-side filtering for demonstration if API doesn't support it yet
-            let filtered = Array.isArray(res) ? res : (res.data || []);
+            // The API returns { total: 1000, jobs: [...] }
+            let allJobs: Job[] = Array.isArray(res) 
+              ? res 
+              : ((res as any)?.jobs || (res as any)?.data || []);
             
+            let filtered = allJobs;
+
             if (options.locations?.length) {
               filtered = filtered.filter(j => 
                 options.locations!.some(loc => 
-                  j.location?.toLowerCase().includes(loc.toLowerCase())
+                  (j.location || '').toLowerCase().includes(loc.toLowerCase()) ||
+                  (j.city || '').toLowerCase().includes(loc.toLowerCase())
+                )
+              );
+            }
+            if (options.roles?.length) {
+              filtered = filtered.filter(j => 
+                options.roles!.some(role => 
+                  (j.title || '').toLowerCase().includes(role.toLowerCase()) ||
+                  (j.skills || []).some(s => s.toLowerCase().includes(role.toLowerCase()))
                 )
               );
             }
             if (options.workplaceType?.length) {
               filtered = filtered.filter(j => 
                 options.workplaceType!.some(wp => 
-                  j.workplace_type?.toLowerCase().includes(wp.toLowerCase())
+                  (j.workplace_type || '').toLowerCase().includes(wp.toLowerCase())
                 )
               );
             }

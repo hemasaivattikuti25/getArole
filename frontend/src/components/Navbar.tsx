@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Menu, X } from "lucide-react";
+import { useAuth } from "@/providers/auth-provider";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,19 +70,31 @@ export default function Navbar() {
 
         {/* Action CTAs */}
         <div className="hidden md:flex items-center gap-3">
-          <Link
-            href="/onboarding"
-            className="text-sm font-semibold text-slate-700 hover:text-slate-900 px-3 py-2 transition-colors"
-          >
-            Sign In
-          </Link>
-          <Link
-            href="/onboarding"
-            className="btn-sweep inline-flex items-center gap-2 bg-[#0062e3] text-white px-4.5 py-2 rounded-xl text-sm font-semibold shadow-xs hover:shadow-md transition-shadow"
-          >
-            <span>Get Started</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+          {user ? (
+            <Link
+              href="/dashboard"
+              className="btn-sweep inline-flex items-center gap-2 bg-[#0062e3] text-white px-4.5 py-2 rounded-xl text-sm font-semibold shadow-xs hover:shadow-md transition-shadow"
+            >
+              <span>Go to Dashboard</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/onboarding"
+                className="text-sm font-semibold text-slate-700 hover:text-slate-900 px-3 py-2 transition-colors"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/onboarding"
+                className="btn-sweep inline-flex items-center gap-2 bg-[#0062e3] text-white px-4.5 py-2 rounded-xl text-sm font-semibold shadow-xs hover:shadow-md transition-shadow"
+              >
+                <span>Get Started</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Hamburger Toggle */}
@@ -131,20 +145,32 @@ export default function Navbar() {
             </Link>
           </div>
           <div className="pt-2.5 border-t border-slate-100 flex flex-col gap-2">
-            <Link
-              href="/onboarding"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full text-center py-2 text-sm font-semibold text-slate-700 bg-slate-50 rounded-lg"
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/onboarding"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full text-center py-2 text-sm font-semibold text-white bg-[#0062e3] rounded-lg shadow-xs"
-            >
-              Get Started Free →
-            </Link>
+            {user ? (
+              <Link
+                href="/dashboard"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full text-center py-2 text-sm font-semibold text-white bg-[#0062e3] rounded-lg shadow-xs"
+              >
+                Go to Dashboard →
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/onboarding"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full text-center py-2 text-sm font-semibold text-slate-700 bg-slate-50 rounded-lg"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/onboarding"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full text-center py-2 text-sm font-semibold text-white bg-[#0062e3] rounded-lg shadow-xs"
+                >
+                  Get Started Free →
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
