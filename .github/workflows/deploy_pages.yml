@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'web/static/**'
+      - 'frontend/**'
+      - '.github/workflows/deploy_pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -30,6 +32,13 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
         
+      - name: Merge Next.js with Legacy Static Files
+        run: |
+          # Copy the Next.js index (Landing Page) over the old landing page
+          cp -f frontend/out/index.html web/static/index.html
+          # Copy Next.js assets
+          cp -r frontend/out/_next web/static/
+          
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
