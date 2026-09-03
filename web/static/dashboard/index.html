@@ -44,10 +44,10 @@
       --accent: #4f46e5;
       --accent-emerald: #10b981;
       --surface: #ffffff;
-      --bg: #ffffff;
-      --bg-subtle: #F1F1F4;
+      --bg: #f8faff;
+      --bg-subtle: #f4f8ff;
       --bg-surface: #ffffff;
-      --background: #ffffff;
+      --background: linear-gradient(180deg, #f8faff 0%, #ffffff 50%, #f4f8ff 100%);
       --border-subtle: rgba(0, 0, 0, 0.04);
       --border: rgba(0, 0, 0, 0.06);
       --border-strong: rgba(0, 0, 0, 0.12);
@@ -78,12 +78,6 @@
       overflow-y: auto;
       -webkit-font-smoothing: antialiased;
     }
-    
-    /* Aurora Background Animations */
-    @keyframes float1 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(30px, 20px) scale(1.05); } }
-    @keyframes float2 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-25px, 30px) scale(0.95); } }
-    @keyframes float3 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(20px, -20px) scale(1.02); } }
-
     h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -0.02em; }
 
     /* Scrollbars */
@@ -1338,22 +1332,31 @@
     <script src="/static/js/mobile-nav.js?v=3"></script>
 </head>
 <body>
-  <!-- Aurora Background -->
-  <div style="position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;">
-    <!-- Sky Blue -->
-    <div style="position: absolute; top: -10%; left: 5%; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(14,165,233,0.08) 0%, transparent 70%); filter: blur(60px); animation: float1 15s ease-in-out infinite;"></div>
-    <!-- Purple -->
-    <div style="position: absolute; top: 15%; right: 5%; width: 650px; height: 650px; border-radius: 50%; background: radial-gradient(circle, rgba(168,85,247,0.08) 0%, transparent 70%); filter: blur(70px); animation: float2 18s ease-in-out infinite;"></div>
-    <!-- Emerald -->
-    <div style="position: absolute; bottom: -5%; left: 15%; width: 550px; height: 550px; border-radius: 50%; background: radial-gradient(circle, rgba(16,185,129,0.06) 0%, transparent 70%); filter: blur(60px); animation: float3 20s ease-in-out infinite;"></div>
+  <!-- Static Aurora Background for Legacy Pages -->
+  <style>
+    .aurora-bg-container {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+      background: linear-gradient(180deg, #f8faff 0%, #ffffff 50%, #f4f8ff 100%);
+    }
+    .aurora-blob {
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
+    }
+    .aurora-1 { top: -10%; left: 10%; width: 500px; height: 400px; background: #0ea5e9; }
+    .aurora-2 { top: 20%; right: 5%; width: 600px; height: 500px; background: #8b5cf6; opacity: 0.35; }
+    .aurora-3 { bottom: 10%; left: 20%; width: 550px; height: 450px; background: #10b981; opacity: 0.3; }
+  </style>
+  <div class="aurora-bg-container">
+    <div class="aurora-blob aurora-1"></div>
+    <div class="aurora-blob aurora-2"></div>
+    <div class="aurora-blob aurora-3"></div>
   </div>
-
+  
   <!-- WCAG 2.4.1 Bypass Blocks -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- ════════════════════ HEADER (SIMPLIFY NAVIGATION) ════════════════════ -->
   <!-- ════════════════════ UNIFORM HEADER ════════════════════ -->
-  <header style="background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255, 255, 255, 0.8);">
+  <header>
     <div class="header-inner">
       <div class="brand-group">
         <a href="/dashboard/" class="brand-logo">
