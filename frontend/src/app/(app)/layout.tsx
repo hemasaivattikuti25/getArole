@@ -6,108 +6,124 @@ import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Search, 
-  UserSquare2, 
-  Settings, 
   Sparkles,
+  User,
   LogOut,
+  RefreshCw,
   Menu
 } from 'lucide-react';
 import BackgroundAurora from '@/components/BackgroundAurora';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const navigation = [
   { name: 'Explore Jobs', href: '/explore', icon: Search },
   { name: 'Matches', href: '/matches', icon: Sparkles },
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Profile', href: '/profile', icon: UserSquare2 },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [userMenuOpen, setUserMenuOpen] = React.useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 relative selection:bg-sky-500/30">
+    <div className="min-h-screen bg-slate-50 text-slate-900 relative selection:bg-sky-500/30 overflow-x-hidden flex flex-col">
       <BackgroundAurora />
       
-      {/* Mobile Topbar */}
-      <div className="lg:hidden flex items-center justify-between p-4 border-b border-slate-200/50 bg-white/50 backdrop-blur-md relative z-40">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-purple-600 flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-bold text-lg tracking-tight">getArole</span>
-        </div>
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-slate-500 hover:text-slate-900">
-          <Menu className="w-6 h-6" />
-        </button>
-      </div>
-
-      <div className="flex">
-        {/* Sidebar Desktop */}
-        <aside className={`
-          fixed lg:sticky top-0 h-screen w-64 border-r border-slate-200/50 
-          bg-white/40 backdrop-blur-xl z-40 transition-transform duration-300
-          ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          flex flex-col
-        `}>
-          <div className="p-6 hidden lg:flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-purple-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-bold text-xl tracking-tight text-slate-900">getArole</span>
-          </div>
-
-          <nav className="flex-1 px-4 py-6 lg:py-0 space-y-1">
-            {navigation.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`
-                    group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                    ${isActive 
-                      ? 'bg-sky-500/10 text-sky-700' 
-                      : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'}
-                  `}
-                >
-                  <item.icon className={`w-5 h-5 transition-colors ${isActive ? 'text-sky-600' : 'text-slate-400 group-hover:text-slate-600'}`} />
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
-
-          <div className="p-4 border-t border-slate-200/50 space-y-1">
-            <Link
-              href="/preferences"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 transition-colors"
-            >
-              <Settings className="w-5 h-5 text-slate-400" />
-              Settings
+      {/* ── TOP NAVIGATION BAR ── */}
+      <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-slate-200 shadow-sm transition-all duration-300">
+        <div className="max-w-[1500px] w-full mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+          
+          <div className="flex items-center gap-8">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-600 to-indigo-500 flex items-center justify-center text-white font-bold font-outfit shadow-lg shadow-indigo-500/25 group-hover:scale-105 transition-transform">
+                A
+              </div>
+              <span className="font-outfit font-extrabold text-lg text-slate-900 tracking-tight">
+                get<span className="text-indigo-600">Arole</span>
+              </span>
             </Link>
-            <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors">
-              <LogOut className="w-5 h-5 text-slate-400" />
-              Sign Out
+
+            {/* Desktop Nav Tabs */}
+            <nav className="hidden md:flex items-center gap-1">
+              {navigation.map((item) => {
+                const isActive = pathname === item.href || (pathname === '/' && item.href === '/dashboard');
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`
+                      flex items-center gap-2 px-3.5 py-2 rounded-lg text-[13.5px] font-semibold transition-all duration-200
+                      ${isActive 
+                        ? 'bg-indigo-50 text-indigo-600' 
+                        : 'text-slate-500 hover:bg-slate-100 hover:text-slate-900'}
+                    `}
+                  >
+                    <item.icon className={`w-4 h-4 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`} />
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Right Actions */}
+          <div className="flex items-center gap-3">
+            <button className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-2 border-slate-200 bg-white text-[13px] font-bold text-slate-700 hover:border-indigo-600 hover:text-indigo-600 transition-colors">
+              <RefreshCw className="w-4 h-4" />
+              Sync Data
+            </button>
+
+            {/* User Profile Button */}
+            <div className="relative">
+              <button 
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-full border-2 border-slate-200 bg-white hover:border-indigo-600 transition-colors"
+              >
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-600 to-indigo-500 text-white font-bold text-xs flex items-center justify-center">
+                  H
+                </div>
+                <span className="text-[13px] font-bold text-slate-700 hidden sm:block">Hemasa..</span>
+              </button>
+
+              <AnimatePresence>
+                {userMenuOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 top-[calc(100%+8px)] w-48 bg-white border border-slate-200 rounded-xl shadow-xl p-2 flex flex-col gap-1 z-50"
+                  >
+                    <Link href="/profile" className="flex items-center gap-2 px-3 py-2 rounded-md text-[13px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors">
+                      <User className="w-4 h-4 text-slate-400" /> My Profile
+                    </Link>
+                    <button className="flex items-center gap-2 px-3 py-2 rounded-md text-[13px] font-semibold text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors text-left">
+                      <LogOut className="w-4 h-4 text-slate-400" /> Sign Out
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Mobile Hamburger */}
+            <button 
+              className="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              <Menu className="w-5 h-5" />
             </button>
           </div>
-        </aside>
+        </div>
+      </header>
 
-        {/* Main Content */}
-        <main className="flex-1 min-h-screen relative z-10 w-full overflow-x-hidden">
-          {children}
-        </main>
-        
-        {/* Mobile Backdrop */}
-        {mobileMenuOpen && (
-          <div 
-            className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-30 lg:hidden"
-            onClick={() => setMobileMenuOpen(false)}
-          />
-        )}
-      </div>
+      {/* Main Content Area */}
+      <main className="flex-1 w-full flex flex-col relative z-10 mx-auto max-w-[1500px]">
+        {children}
+      </main>
+      
+      {/* Mobile Navigation Backdrop (Optional full-screen menu can go here) */}
     </div>
   );
 }
