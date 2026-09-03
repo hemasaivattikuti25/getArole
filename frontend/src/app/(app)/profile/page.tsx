@@ -218,23 +218,19 @@ export default function ProfilePage() {
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-sky-500 via-purple-500 to-emerald-500" />
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-          <div className="flex items-center gap-5">
-            <div className="relative">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-600 text-white font-extrabold text-2xl flex items-center justify-center font-outfit shadow-md border-2 border-white">
-                {profile.name ? profile.name.split(" ").map((n: string) => n[0]).join("").substring(0, 2).toUpperCase() : "HV"}
-              </div>
-              <div className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white" />
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="bg-blue-100 text-blue-700 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                ✓ Verified Candidate
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                Active Search
+              </span>
             </div>
-
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-outfit">
-                  {profile.name}
-                </h1>
-                <span className="bg-blue-100 text-blue-700 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                  ✓ Verified
-                </span>
-              </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-outfit">
+              {profile.name}
+            </h1>
               <p className="text-sm font-semibold text-slate-500 mt-1">
                 {profile.headline}
               </p>
@@ -253,7 +249,6 @@ export default function ProfilePage() {
                 </span>
               </div>
             </div>
-          </div>
 
           <div className="flex flex-col items-end gap-3 w-full sm:w-auto">
             <select
