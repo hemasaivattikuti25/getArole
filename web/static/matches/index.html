@@ -44,10 +44,10 @@
       --accent: #4f46e5;
       --accent-emerald: #10b981;
       --surface: #ffffff;
-      --bg: #F8F8FA;
-      --bg-subtle: #F1F1F4;
+      --bg: #f8faff;
+      --bg-subtle: #f4f8ff;
       --bg-surface: #ffffff;
-      --background: #F8F8FA;
+      --background: linear-gradient(180deg, #f8faff 0%, #ffffff 50%, #f4f8ff 100%);
       --border-subtle: rgba(0, 0, 0, 0.04);
       --border: rgba(0, 0, 0, 0.06);
       --border-strong: rgba(0, 0, 0, 0.12);
@@ -1585,6 +1585,24 @@
     <script src="/static/js/mobile-nav.js?v=3"></script>
 </head>
 <body>
+  <!-- Static Aurora Background for Legacy Pages -->
+  <style>
+    .aurora-bg-container {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+      background: linear-gradient(180deg, #f8faff 0%, #ffffff 50%, #f4f8ff 100%);
+    }
+    .aurora-blob {
+      position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5;
+    }
+    .aurora-1 { top: -10%; left: 10%; width: 500px; height: 400px; background: #0ea5e9; }
+    .aurora-2 { top: 20%; right: 5%; width: 600px; height: 500px; background: #8b5cf6; opacity: 0.35; }
+    .aurora-3 { bottom: 10%; left: 20%; width: 550px; height: 450px; background: #10b981; opacity: 0.3; }
+  </style>
+  <div class="aurora-bg-container">
+    <div class="aurora-blob aurora-1"></div>
+    <div class="aurora-blob aurora-2"></div>
+    <div class="aurora-blob aurora-3"></div>
+  </div>
 
   <!-- WCAG 2.4.1 Bypass Blocks -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
