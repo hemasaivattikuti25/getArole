@@ -34,10 +34,28 @@ export default function DashboardPage() {
 
   return (
     <div className="p-6 h-screen flex flex-col max-w-[1600px] mx-auto w-full">
-      <div className="mb-6 flex justify-between items-end">
-        <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 font-outfit tracking-tight">Your Dashboard</h1>
-          <p className="text-slate-500 font-medium mt-1 text-sm">Manage your saved roles and applications.</p>
+      {/* Welcome Hero Card */}
+      <div className="mb-8 relative overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-600 via-blue-600 to-sky-500 p-8 text-white shadow-xl shadow-blue-900/10 border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        {/* Abstract Background Glow */}
+        <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-900/20 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10">
+          <h1 className="text-3xl font-extrabold font-outfit tracking-tight mb-2">
+            Welcome back, <span className="text-sky-200">Hemasai Vattikuti</span>
+          </h1>
+          <p className="text-blue-100 font-medium max-w-2xl leading-relaxed text-sm">
+            Your personalized AI job matcher and application pipeline across India and global remote tech hubs.
+          </p>
+        </div>
+        
+        <div className="relative z-10 shrink-0">
+          <a 
+            href="/profile" 
+            className="inline-flex items-center gap-2 bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+          >
+            My Profile & Preferences <span>&rarr;</span>
+          </a>
         </div>
       </div>
 
