@@ -2318,26 +2318,10 @@
       ss();
     }
 
-    // ── Auto-Sync from candidate profile & Supabase Cloud ──
+            // ── Auto-Sync from candidate profile & Supabase Cloud ──
     async function loadDataFromProfile() {
       const profileRaw = localStorage.getItem('getarole_profile');
       const resumeSaved = localStorage.getItem('getarole_resume_v2');
-
-      // Always try to hydrate from profile (name, email, phone, links)
-      if (profileRaw) {
-        try {
-          const prof = JSON.parse(profileRaw);
-          if (prof.name && !R.header.name) R.header.name = prof.name;
-          if (prof.phone && !R.header.phone) R.header.phone = prof.phone;
-          if (prof.email && !R.header.email) R.header.email = prof.email;
-          if (prof.links?.linkedin && !R.header.linkedin) R.header.linkedin = prof.links.linkedin;
-          if (prof.links?.github && !R.header.github) R.header.github = prof.links.github;
-          if (prof.links?.portfolio && !R.header.portfolio) R.header.portfolio = prof.links.portfolio;
-          if (prof.skills && prof.skills.length > 0 && (!Array.isArray(R.skills) || R.skills.length === 0)) {
-            R.skills = [{ label: 'Technical Skills', items: prof.skills.join(', ') }];
-          }
-        } catch (e) { }
-      }
 
       // Overlay with richer resume data if available
       if (resumeSaved) {
@@ -2345,6 +2329,38 @@
           const savedObj = JSON.parse(resumeSaved);
           if (savedObj.header && savedObj.header.name) {
             R = { ...R, ...savedObj };
+          }
+        } catch (e) { }
+      }
+
+      // Always hydrate or backfill from profile
+      if (profileRaw) {
+        try {
+          const prof = JSON.parse(profileRaw);
+          if (prof.name && (!R.header.name || R.header.name === 'Alex Developer')) R.header.name = prof.name;
+          if (prof.first && !R.header.first_name) R.header.first_name = prof.first;
+          if (prof.last && !R.header.last_name) R.header.last_name = prof.last;
+          if (prof.phone && !R.header.phone) R.header.phone = prof.phone;
+          if (prof.email && !R.header.email) R.header.email = prof.email;
+          if (prof.headline && !R.header.title) R.header.title = prof.headline;
+          if (prof.loc && !R.header.location) R.header.location = prof.loc;
+          
+          if (!R.header) R.header = {};
+          if (prof.links?.linkedin && !R.header.linkedin) R.header.linkedin = prof.links.linkedin;
+          if (prof.links?.github && !R.header.github) R.header.github = prof.links.github;
+          if (prof.links?.portfolio && !R.header.portfolio) R.header.portfolio = prof.links.portfolio;
+
+          if (Array.isArray(prof.experience) && prof.experience.length > 0 && (!R.experience || R.experience.length === 0)) {
+            R.experience = prof.experience;
+          }
+          if (Array.isArray(prof.education) && prof.education.length > 0 && (!R.education || R.education.length === 0)) {
+            R.education = prof.education;
+          }
+          if (Array.isArray(prof.projects) && prof.projects.length > 0 && (!R.projects || R.projects.length === 0)) {
+            R.projects = prof.projects;
+          }
+          if (prof.skills && prof.skills.length > 0 && (!Array.isArray(R.skills) || R.skills.length === 0 || !R.skills[0].items)) {
+            R.skills = [{ label: 'Technical Skills', items: Array.isArray(prof.skills) ? prof.skills.join(', ') : prof.skills }];
           }
         } catch (e) { }
       }
@@ -3008,19 +3024,67 @@ ${r.header?.name || 'Candidate Name'}`
       clearTimeout(st);
       document.getElementById('asv').textContent = '...';
       st = setTimeout(async () => {
+        // 1. Save Resume
         localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
-        document.getElementById('asv').textContent = '✓ Saved';
-        const uid = getFirebaseUID();
-        if (uid) {
-          try {
-            await fetch('/api/user/resume', {
+        document.getElementById('asv').textContent = '✓ Synced with Profile';
+
+        // 2. 🔄 AUTO-SYNC TO PROFILE (getarole_profile)
+        try {
+          const prof = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+          if (R.header) {
+            if (R.header.name) prof.name = R.header.name;
+            if (R.header.first_name) prof.first = R.header.first_name;
+            if (R.header.last_name) prof.last = R.header.last_name;
+            if (R.header.email) prof.email = R.header.email;
+            if (R.header.phone) prof.phone = R.header.phone;
+            if (R.header.title) prof.headline = R.header.title;
+            if (R.header.location) prof.loc = R.header.location;
+            
+            if (!prof.links) prof.links = {};
+            if (R.header.linkedin) prof.links.linkedin = R.header.linkedin;
+            if (R.header.github) prof.links.github = R.header.github;
+            if (R.header.portfolio) prof.links.portfolio = R.header.portfolio;
+          }
+          if (Array.isArray(R.experience) && R.experience.length > 0) {
+            prof.experience = R.experience;
+          }
+          if (Array.isArray(R.education) && R.education.length > 0) {
+            prof.education = R.education;
+          }
+          if (Array.isArray(R.projects) && R.projects.length > 0) {
+            prof.projects = R.projects;
+          }
+          // Flatten skills into array of strings for profile
+          if (Array.isArray(R.skills)) {
+            const skillList = [];
+            R.skills.forEach(g => {
+              if (typeof g === 'object' && g.items) {
+                g.items.split(',').map(s => s.trim()).filter(Boolean).forEach(s => {
+                  if (!skillList.includes(s)) skillList.push(s);
+                });
+              }
+            });
+            if (skillList.length > 0) prof.skills = skillList;
+          }
+          localStorage.setItem('getarole_profile', JSON.stringify(prof));
+
+          // 3. Cloud Sync to both /api/user/resume and /api/user/profile
+          const uid = getFirebaseUID();
+          if (uid) {
+            fetch('/api/user/resume', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
               body: JSON.stringify({ resume: R })
-            });
-          } catch (err) {
-            console.warn('Resume cloud save notice:', err);
+            }).catch(e => console.warn('Resume cloud save notice:', e));
+
+            fetch('/api/user/profile', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+              body: JSON.stringify(prof)
+            }).catch(e => console.warn('Profile cloud sync notice:', e));
           }
+        } catch (e) {
+          console.warn('[Resume->Profile Sync Notice]', e);
         }
       }, 700);
     }

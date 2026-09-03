@@ -11,34 +11,36 @@
   <link rel="apple-touch-icon" href="/logo.svg">
 
   <style>
-    :root {
-      --primary: #4f46e5; /* getArole Electric Indigo */
-      --primary-hover: #4338ca;
-      --primary-light: #eef2ff;
-      --primary-border: #c7d2fe;
-      
-      --danger: #ef4444;
-      --danger-light: #fef2f2;
-      --danger-border: #fecaca;
-      
-      --bg: #ffffff;
-      --bg-subtle: #f8fafc;
-      --bg-mute: #f1f5f9;
-      
-      --text-main: #0f172a;
-      --text-muted: #475569;
-      --text-subtle: #94a3b8;
-      
-      --border: #e2e8f0;
-      --border-strong: #cbd5e1;
-      
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.05);
-      --shadow-lg: 0 10px 40px rgba(0,0,0,0.1);
-      
+            :root {
+      --primary: #0071e3;
+      --primary-hover: #0077ed;
+      --primary-accent: #0071e3;
+      --primary-light: #e8f0fe;
+      --primary-border: #bfdbfe;
+      --primary-gradient: linear-gradient(135deg, #0071e3 0%, #4facfe 100%);
+      --accent: #4f46e5;
+      --accent-emerald: #10b981;
+      --surface: #ffffff;
+      --bg: #F8F8FA;
+      --bg-subtle: #F1F1F4;
+      --bg-surface: #ffffff;
+      --background: #F8F8FA;
+      --border-subtle: rgba(0, 0, 0, 0.04);
+      --border: rgba(0, 0, 0, 0.06);
+      --border-strong: rgba(0, 0, 0, 0.12);
+      --border-glow: rgba(0, 113, 227, 0.25);
+      --text-main: #2C2C2E;
+      --text-muted: #6E6E73;
+      --text-subtle: #99999F;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+      --shadow-glow: 0 0 35px rgba(0, 113, 227, 0.15);
       --radius-sm: 8px;
       --radius-md: 12px;
-      --radius-lg: 16px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --nav-height: 64px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1003,7 +1005,32 @@
       }
     }
 
-  </style>
+  
+    
+    /* ── APPLE-STYLE AMBIENT AURORA BACKGROUND ── */
+    body::before {
+      content: ''; position: fixed; top: -10vw; left: -10vw; width: 60vw; height: 60vw;
+      z-index: -3; pointer-events: none; border-radius: 50%; filter: blur(100px); opacity: 0.5;
+      background: radial-gradient(circle, rgba(0, 113, 227, 0.15) 0%, transparent 70%);
+      animation: ambientPulse1 20s ease-in-out infinite alternate;
+    }
+    body::after {
+      content: ''; position: fixed; bottom: -10vw; right: -10vw; width: 60vw; height: 60vw;
+      z-index: -4; pointer-events: none; border-radius: 50%; filter: blur(100px); opacity: 0.4;
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, transparent 70%);
+      animation: ambientPulse2 24s ease-in-out infinite alternate;
+    }
+    @keyframes ambientPulse1 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(5vw, 5vw) scale(1.2); }
+    }
+    @keyframes ambientPulse2 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-5vw, -5vw) scale(1.1); }
+    }
+</style>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="/static/js/mobile-nav.js?v=3"></script>
@@ -1134,7 +1161,7 @@
           <span style="font-family:'Outfit', sans-serif; font-size:18px; font-weight:800; color:#0f172a; letter-spacing:-0.02em;">get<span style="color:#4f46e5">A</span>role</span>
         </a>
         <p style="font-size:12px; color:#64748b; line-height:1.5; max-width:280px; margin-bottom:10px;">
-          India's #1 AI Job Discovery Engine. Autonomous multi-platform job aggregation across Greenhouse, Lever, Ashby, LinkedIn &amp; Internshala.
+          AI-powered job search platform. Verified listings from top career portals.
         </p>
 
         <!-- Team / Founder Spotlight -->
@@ -1145,7 +1172,7 @@
         <br>
         <div style="display:inline-flex; align-items:center; gap:6px; background:#f0fdf4; border:1px solid #bbf7d0; padding:3px 10px; border-radius:99px; font-size:11px; font-weight:700; color:#15803d;">
           <span style="width:6px; height:6px; background:#22c55e; border-radius:50%;"></span>
-          1,000+ Verified Jobs • Live
+          Verified Jobs • Live
         </div>
       </div>
 
@@ -1512,13 +1539,64 @@
       return localId;
     }
 
-    async function apiSaveProfile(profileData) {
+        async function apiSaveProfile(profileData) {
       localStorage.setItem('getarole_profile', JSON.stringify(profileData));
+      
+      // 🔄 SEAMLESS BI-DIRECTIONAL SYNC TO RESUME BUILDER (getarole_resume_v2)
+      try {
+        const resume = JSON.parse(localStorage.getItem('getarole_resume_v2') || '{}');
+        if (!resume.header) resume.header = {};
+        
+        if (profileData.name) {
+          resume.header.name = profileData.name;
+          const parts = profileData.name.split(' ');
+          resume.header.first_name = parts[0] || '';
+          resume.header.last_name = parts.slice(1).join(' ') || '';
+        }
+        if (profileData.first) resume.header.first_name = profileData.first;
+        if (profileData.last) resume.header.last_name = profileData.last;
+        if (profileData.email) resume.header.email = profileData.email;
+        if (profileData.phone) resume.header.phone = profileData.phone;
+        if (profileData.headline) resume.header.title = profileData.headline;
+        if (profileData.loc || profileData.location) resume.header.location = profileData.loc || profileData.location;
+        
+        if (profileData.links) {
+          if (!resume.header) resume.header = {};
+          if (profileData.links.linkedin) resume.header.linkedin = profileData.links.linkedin;
+          if (profileData.links.github) resume.header.github = profileData.links.github;
+          if (profileData.links.portfolio) resume.header.portfolio = profileData.links.portfolio;
+          resume.links = { ...(resume.links || {}), ...profileData.links };
+        }
+        
+        if (Array.isArray(profileData.experience) && profileData.experience.length > 0) {
+          resume.experience = profileData.experience;
+        }
+        if (Array.isArray(profileData.education) && profileData.education.length > 0) {
+          resume.education = profileData.education;
+        }
+        if (Array.isArray(profileData.projects) && profileData.projects.length > 0) {
+          resume.projects = profileData.projects;
+        }
+        if (Array.isArray(profileData.skills) && profileData.skills.length > 0) {
+          if (!resume.skills || resume.skills.length === 0 || (Array.isArray(resume.skills) && resume.skills.length === 1 && !resume.skills[0].items)) {
+            resume.skills = [{ label: 'Technical Skills', items: profileData.skills.join(', ') }];
+          }
+        }
+        
+        localStorage.setItem('getarole_resume_v2', JSON.stringify(resume));
+      } catch(err) {
+        console.warn('[Profile->Resume Sync Notice]', err);
+      }
+
       const uid = getFirebaseUID();
       try {
         await fetch('/api/user/profile', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+          body: JSON.stringify(profileData)
+        });
+      } catch(e) { console.warn('[Profile] Save warning', e); }
+    },
           body: JSON.stringify(profileData)
         });
       } catch(e) { console.warn('[Profile] Save warning', e); }
@@ -1937,12 +2015,15 @@
                 <span style="font-size:12px; color:var(--primary); font-weight:700;">✓ Active Resume · ${skillCount} Skills Detected</span>
               </div>
             </div>
-            <div style="display:flex; gap:8px;">
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <a href="/resume-builder/" class="btn-refresh" style="padding:7px 16px; font-size:12.5px; background:var(--primary); color:#ffffff; border:1px solid transparent; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 8px rgba(79,70,229,0.25);">
+                ✏️ Edit in Builder &rarr;
+              </a>
               <button class="btn-refresh" onclick="openResumePreviewModal()" style="padding:6px 14px; font-size:12.5px; background:var(--primary-light); color:var(--primary); border:1px solid var(--primary-border);">
-                👁️ Preview Resume
+                👁️ Preview
               </button>
               <button class="btn-refresh" onclick="document.getElementById('file-resume').click()" style="padding:6px 14px; font-size:12.5px;">
-                🔄 Replace
+                🔄 Upload New
               </button>
             </div>
           </div>
@@ -2038,6 +2119,7 @@
         <div class="summary-card" id="section-experience">
           <div class="summary-card-header">
             <h3 class="summary-card-title">Work Experience</h3>
+            <a href="/resume-builder/" style="font-size:12.5px; font-weight:700; color:var(--primary); text-decoration:none;">✏️ Edit in Builder &rarr;</a>
           </div>
           ${expContent}
         </div>
@@ -2061,6 +2143,7 @@
         <div class="summary-card">
           <div class="summary-card-header">
             <h3 class="summary-card-title">Education</h3>
+            <a href="/resume-builder/" style="font-size:12.5px; font-weight:700; color:var(--primary); text-decoration:none;">✏️ Edit in Builder &rarr;</a>
           </div>
           ${eduContent}
         </div>
@@ -2083,6 +2166,7 @@
         <div class="summary-card">
           <div class="summary-card-header">
             <h3 class="summary-card-title">Projects & Outside Experience</h3>
+            <a href="/resume-builder/" style="font-size:12.5px; font-weight:700; color:var(--primary); text-decoration:none;">✏️ Edit in Builder &rarr;</a>
           </div>
           ${projContent}
         </div>
@@ -2140,37 +2224,74 @@
         state.profile = { ...state.profile, ...savedProfile };
       }
 
-      // CRITICAL: Restore rich resume data from localStorage
-      // Supabase user_profiles table does NOT store experience/education/projects/links arrays.
-      // These live in localStorage getarole_profile and getarole_resume_v2.
+            // CRITICAL: Perfect two-way merge from getarole_resume_v2 and getarole_profile
       const localProfile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
       const resumeV2 = JSON.parse(localStorage.getItem('getarole_resume_v2') || '{}');
 
-      // Experience: prefer localStorage profile > resumeV2 > empty
-      if (!state.profile.experience || state.profile.experience.length === 0) {
-        state.profile.experience = localProfile.experience || resumeV2.experience || [];
+      // Contact & identity sync from resumeV2 if missing in profile
+      if (resumeV2 && resumeV2.header) {
+        if (resumeV2.header.name && (!state.profile.name || state.profile.name === 'Your Name')) {
+          state.profile.name = resumeV2.header.name;
+        }
+        if (resumeV2.header.first_name && !state.profile.first) state.profile.first = resumeV2.header.first_name;
+        if (resumeV2.header.last_name && !state.profile.last) state.profile.last = resumeV2.header.last_name;
+        if (resumeV2.header.email && !state.profile.email) state.profile.email = resumeV2.header.email;
+        if (resumeV2.header.phone && !state.profile.phone) state.profile.phone = resumeV2.header.phone;
+        if (resumeV2.header.title && (!state.profile.headline || state.profile.headline === 'Add your headline')) {
+          state.profile.headline = resumeV2.header.title;
+        }
+        if (resumeV2.header.location && !state.profile.loc) state.profile.loc = resumeV2.header.location;
       }
-      // Education
-      if (!state.profile.education || state.profile.education.length === 0) {
-        state.profile.education = localProfile.education || resumeV2.education || [];
+
+      // Experience: prioritize the richest dataset
+      const resExp = (resumeV2 && Array.isArray(resumeV2.experience)) ? resumeV2.experience : [];
+      const locExp = (localProfile && Array.isArray(localProfile.experience)) ? localProfile.experience : [];
+      const stateExp = (state.profile && Array.isArray(state.profile.experience)) ? state.profile.experience : [];
+      if (resExp.length >= stateExp.length && resExp.length > 0) {
+        state.profile.experience = resExp;
+      } else if (locExp.length >= stateExp.length && locExp.length > 0) {
+        state.profile.experience = locExp;
       }
-      // Projects
-      if (!state.profile.projects || state.profile.projects.length === 0) {
-        state.profile.projects = localProfile.projects || resumeV2.projects || [];
+
+      // Education: prioritize richest dataset
+      const resEdu = (resumeV2 && Array.isArray(resumeV2.education)) ? resumeV2.education : [];
+      const locEdu = (localProfile && Array.isArray(localProfile.education)) ? localProfile.education : [];
+      const stateEdu = (state.profile && Array.isArray(state.profile.education)) ? state.profile.education : [];
+      if (resEdu.length >= stateEdu.length && resEdu.length > 0) {
+        state.profile.education = resEdu;
+      } else if (locEdu.length >= stateEdu.length && locEdu.length > 0) {
+        state.profile.education = locEdu;
       }
+
+      // Projects: prioritize richest dataset
+      const resProj = (resumeV2 && Array.isArray(resumeV2.projects)) ? resumeV2.projects : [];
+      const locProj = (localProfile && Array.isArray(localProfile.projects)) ? localProfile.projects : [];
+      const stateProj = (state.profile && Array.isArray(state.profile.projects)) ? state.profile.projects : [];
+      if (resProj.length >= stateProj.length && resProj.length > 0) {
+        state.profile.projects = resProj;
+      } else if (locProj.length >= stateProj.length && locProj.length > 0) {
+        state.profile.projects = locProj;
+      }
+
       // Links
-      if (!state.profile.links || (!state.profile.links.linkedin && !state.profile.links.github && !state.profile.links.portfolio)) {
-        state.profile.links = localProfile.links || resumeV2.links || {};
-      }
-      // Also set linkedin_url/github_url/portfolio_url for Supabase columns
-      if (state.profile.links) {
-        if (state.profile.links.linkedin && !state.profile.linkedin_url) state.profile.linkedin_url = state.profile.links.linkedin;
-        if (state.profile.links.github && !state.profile.github_url) state.profile.github_url = state.profile.links.github;
-        if (state.profile.links.portfolio && !state.profile.portfolio_url) state.profile.portfolio_url = state.profile.links.portfolio;
-      }
-      // Skills
-      if ((!state.profile.skills || state.profile.skills.length === 0) && localProfile.skills && localProfile.skills.length > 0) {
-        state.profile.skills = localProfile.skills;
+      if (!state.profile.links) state.profile.links = {};
+      const resLinks = (resumeV2 && resumeV2.links) || {};
+      const resHdr = (resumeV2 && resumeV2.header) || {};
+      if (!state.profile.links.linkedin) state.profile.links.linkedin = resLinks.linkedin || resHdr.linkedin || localProfile.links?.linkedin || '';
+      if (!state.profile.links.github) state.profile.links.github = resLinks.github || resHdr.github || localProfile.links?.github || '';
+      if (!state.profile.links.portfolio) state.profile.links.portfolio = resLinks.portfolio || resHdr.portfolio || localProfile.links?.portfolio || '';
+
+      // Skills: extract from resumeV2 if missing in profile
+      if ((!state.profile.skills || state.profile.skills.length === 0) && resumeV2.skills && Array.isArray(resumeV2.skills)) {
+        const extracted = [];
+        resumeV2.skills.forEach(g => {
+          if (typeof g === 'object' && g.items) {
+            g.items.split(',').map(s => s.trim()).filter(Boolean).forEach(s => {
+              if (!extracted.includes(s)) extracted.push(s);
+            });
+          }
+        });
+        if (extracted.length > 0) state.profile.skills = extracted;
       }
 
 
@@ -2579,8 +2700,8 @@
           gsap.from(card, {
             y: 30,
             opacity: 0,
-            duration: 0.6,
-            ease: "back.out(1.2)",
+            duration: 0.8,
+            ease: "power4.out",
             stagger: 0.1
           });
         });

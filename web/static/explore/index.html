@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- SEO -->
-  <title>Dashboard — getArole | AI Job Discovery & Matcher for Engineers</title>
-  <meta name="description" content="Your personalized AI job dashboard. Browse 1,000+ live tech jobs from top companies, get AI-powered resume match scores, and track applications — all in one place.">
+  <title>Explore Jobs — getArole | Your AI Job Search Partner</title>
+  <meta name="description" content="Stop searching job boards. getArole automatically matches your resume with verified jobs.">
   <meta name="robots" content="noindex, nofollow">
-  <link rel="canonical" href="https://getarole.in/index.html">
+  <link rel="canonical" href="https://getarole.in/explore/">
   
   <!-- Open Graph -->
-  <meta property="og:title" content="getArole Dashboard — AI Job Discovery Engine">
-  <meta property="og:description" content="Browse 1,000+ live tech jobs, get AI match scores, and track your applications.">
-  <meta property="og:url" content="https://getarole.in/index.html">
+  <meta property="og:title" content="getArole — Your AI Job Search Partner">
+  <meta property="og:description" content="Stop searching job boards. getArole automatically matches your resume with verified jobs.">
+  <meta property="og:url" content="https://getarole.in/explore/">
   <meta property="og:image" content="https://getarole.in/og-image.png">
   <meta property="og:type" content="website">
 
@@ -34,20 +34,35 @@
   </script>
 
   <style>
-    :root {
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --primary-accent: #6366f1;
-      --primary-light: #eef2ff;
-      --primary-border: #c7d2fe;
+            :root {
+      --primary: #0071e3;
+      --primary-hover: #0077ed;
+      --primary-accent: #0071e3;
+      --primary-light: #e8f0fe;
+      --primary-border: #bfdbfe;
+      --primary-gradient: linear-gradient(135deg, #0071e3 0%, #4facfe 100%);
+      --accent: #4f46e5;
+      --accent-emerald: #10b981;
       --surface: #ffffff;
-      --background: #f8fafc;
-      --border-subtle: #f1f5f9;
-      --border: #e2e8f0;
-      --border-strong: #cbd5e1;
-      --text-main: #0f172a;
-      --text-muted: #475569;
-      --text-subtle: #94a3b8;
+      --bg: #F8F8FA;
+      --bg-subtle: #F1F1F4;
+      --bg-surface: #ffffff;
+      --background: #F8F8FA;
+      --border-subtle: rgba(0, 0, 0, 0.04);
+      --border: rgba(0, 0, 0, 0.06);
+      --border-strong: rgba(0, 0, 0, 0.12);
+      --border-glow: rgba(0, 113, 227, 0.25);
+      --text-main: #2C2C2E;
+      --text-muted: #6E6E73;
+      --text-subtle: #99999F;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+      --shadow-glow: 0 0 35px rgba(0, 113, 227, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
       --nav-height: 64px;
     }
 
@@ -176,21 +191,25 @@
 
     .filter-dropdown {
       padding: 7px 14px; border-radius: 99px; font-size: 12.5px; font-weight: 600;
-      border: 1.5px solid var(--border, #e2e8f0); background: var(--surface, #ffffff);
-      color: var(--text-muted, #475569); cursor: pointer; outline: none;
+      border: 1px solid var(--border, #e2e8f0); background: var(--surface, #ffffff);
+      color: var(--text-main); cursor: pointer; outline: none; box-shadow: var(--shadow-sm);
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); appearance: auto;
     }
-    .filter-dropdown:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
-    .filter-dropdown:focus { border-color: var(--primary, #4f46e5); background: var(--primary-light, #e0e7ff); box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+    .filter-dropdown:hover { background: var(--background); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .filter-dropdown:focus { border-color: var(--primary, #4f46e5); box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15); }
 
     .btn-filter-pill {
-      padding: 7px 14px; border-radius: 99px; font-size: 12px; font-weight: 700;
-      border: 1.5px solid var(--border, #e2e8f0); background: var(--surface, #ffffff);
-      color: var(--text-muted, #475569); cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 7px 16px; border-radius: 99px; font-size: 13px; font-weight: 600;
+      border: 1px solid transparent; background: transparent;
+      color: var(--text-muted); cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .btn-filter-pill:hover { border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); transform: translateY(-1px); }
-    .btn-filter-pill.active { background: var(--primary-light, #e0e7ff); border-color: var(--primary, #4f46e5); color: var(--primary, #4f46e5); }
-    .btn-filter-pill:active { transform: scale(0.97); }
+    .btn-filter-pill:hover { color: var(--text-main); background: rgba(0,0,0,0.03); }
+    .btn-filter-pill.active {
+      background: #ffffff; color: var(--text-main); font-weight: 700;
+      border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    }
+    .btn-filter-pill:active { transform: scale(0.96); }
 
     .btn-filter-action {
       padding: 8px 16px; border-radius: 99px; font-size: 12.5px; font-weight: 700;
@@ -247,19 +266,20 @@
     .feed-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
 
     .job-card {
-      background: var(--surface, #ffffff); border: 1.5px solid var(--border, #e2e8f0);
+      background: #ffffff; border: 1px solid rgba(0,0,0,0.06);
       border-radius: 12px; padding: 16px; cursor: pointer;
-      position: relative; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
     }
     .job-card:hover {
-      border-color: var(--primary-border, #c7d2fe);
-      background: #fafbfc;
-      transform: translateY(-1.5px);
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+      border-color: rgba(0,0,0,0.08);
+      background: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
     .job-card.selected {
-      border-color: var(--primary, #4f46e5); background: var(--primary-light, #eef2ff);
-      box-shadow: 0 4px 16px rgba(79,70,229,0.1);
+      border-color: var(--primary, #0071e3); background: var(--bg-subtle);
+      box-shadow: 0 4px 16px rgba(0,113,227,0.1);
     }
 
     .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
@@ -295,13 +315,13 @@
       position: sticky;
       top: 0;
       z-index: 60;
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(24px) saturate(150%);
+      -webkit-backdrop-filter: blur(24px) saturate(150%);
       margin: 0 -36px 20px -36px;
       padding: 16px 36px 14px 36px;
-      border-bottom: 1px solid var(--border, #e2e8f0);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
     }
 
     .jd-top-bar {
@@ -1165,7 +1185,236 @@
       }
     }
 
+  
+    
+    /* ── APPLE-STYLE AMBIENT AURORA BACKGROUND ── */
+    body::before {
+      content: ''; position: fixed; top: -10vw; left: -10vw; width: 60vw; height: 60vw;
+      z-index: -3; pointer-events: none; border-radius: 50%; filter: blur(100px); opacity: 0.5;
+      background: radial-gradient(circle, rgba(0, 113, 227, 0.15) 0%, transparent 70%);
+      animation: ambientPulse1 20s ease-in-out infinite alternate;
+    }
+    body::after {
+      content: ''; position: fixed; bottom: -10vw; right: -10vw; width: 60vw; height: 60vw;
+      z-index: -4; pointer-events: none; border-radius: 50%; filter: blur(100px); opacity: 0.4;
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, transparent 70%);
+      animation: ambientPulse2 24s ease-in-out infinite alternate;
+    }
+    @keyframes ambientPulse1 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(5vw, 5vw) scale(1.2); }
+    }
+    @keyframes ambientPulse2 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-5vw, -5vw) scale(1.1); }
+    }
+
+    /* ══════ ⚡ PREMIUM APPLY & SPECIAL REFERRAL BUTTONS ══════ */
+    .btn-apply-primary {
+      padding: 10px 22px;
+      border-radius: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: linear-gradient(135deg, #0071e3 0%, #0077ed 100%);
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff !important;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      text-decoration: none !important;
+      box-shadow: 0 4px 14px rgba(0, 113, 227, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+      letter-spacing: -0.01em;
+    }
+    .btn-apply-primary:hover {
+      background: linear-gradient(135deg, #0077ed 0%, #0060c0 100%);
+      transform: translateY(-1.5px);
+      box-shadow: 0 6px 20px rgba(0, 113, 227, 0.45);
+      color: #ffffff !important;
+    }
+    .btn-apply-primary:active { transform: scale(0.97); }
+    .btn-apply-primary .btn-arrow { transition: transform 0.2s ease; font-weight: 800; }
+    .btn-apply-primary:hover .btn-arrow { transform: translateX(3px); }
+
+    .btn-apply-linkedin {
+      background: linear-gradient(135deg, #0a66c2 0%, #004182 100%) !important;
+      box-shadow: 0 4px 14px rgba(10, 102, 194, 0.35) !important;
+    }
+    .btn-apply-linkedin:hover {
+      background: linear-gradient(135deg, #004182 0%, #00274f 100%) !important;
+      box-shadow: 0 6px 20px rgba(10, 102, 194, 0.5) !important;
+    }
+
+    /* ── Special Referral Button ── */
+    .btn-referral {
+      padding: 10px 16px;
+      border-radius: 11px;
+      border: 1.5px solid rgba(0, 113, 227, 0.3);
+      background: linear-gradient(135deg, #f0f7ff 0%, #e0e7ff 100%);
+      font-size: 13px;
+      font-weight: 700;
+      color: #0071e3 !important;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0, 113, 227, 0.08);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+    .btn-referral:hover {
+      background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+      border-color: #0071e3;
+      color: #005bb5 !important;
+      transform: translateY(-1.5px);
+      box-shadow: 0 4px 14px rgba(0, 113, 227, 0.22);
+    }
+    .btn-referral:active { transform: scale(0.97); }
+    .btn-referral .ref-icon { font-size: 14px; line-height: 1; }
+
+    /* ── Referral Dropdown & Mobile Bottom Sheet ── */
+    .referral-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 320px;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px) saturate(160%);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      border: 1.5px solid #bfdbfe;
+      border-radius: 14px;
+      box-shadow: 0 14px 40px rgba(0, 113, 227, 0.16), 0 2px 8px rgba(0, 0, 0, 0.04);
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 9999;
+      text-align: left;
+      transform-origin: top right;
+      animation: refFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .referral-dropdown.show { display: flex !important; }
+    @keyframes refFadeIn {
+      from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .referral-dropdown-header {
+      padding: 4px 8px 10px 8px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      margin-bottom: 4px;
+    }
+    .ref-close-btn {
+      display: none;
+      background: #f1f5f9;
+      border: none;
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-muted, #64748b);
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+    }
+    .ref-item {
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: transparent;
+      text-decoration: none !important;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.15s ease;
+    }
+    .ref-item:hover {
+      background: #f0f7ff;
+      transform: translateX(2px);
+    }
+    .ref-item:active { transform: scale(0.98); }
+    .ref-item-icon {
+      font-size: 18px;
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: #e0f2fe;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .ref-item-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main, #2C2C2E);
+      line-height: 1.3;
+    }
+    .ref-item-desc {
+      font-size: 11px;
+      color: var(--text-muted, #6E6E73);
+      line-height: 1.3;
+      margin-top: 2px;
+    }
+    .ref-item-arrow {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--primary, #0071e3);
+      margin-left: auto;
+    }
+
+    /* ── Mobile View (< 768px): Native Bottom Sheet ── */
+    @media (max-width: 768px) {
+      .btn-apply-primary {
+        padding: 11px 18px !important;
+        font-size: 13.5px !important;
+      }
+      .btn-referral {
+        padding: 11px 14px !important;
+        font-size: 12.5px !important;
+      }
+      .referral-dropdown {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: auto !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+        border-radius: 22px 22px 0 0 !important;
+        background: #ffffff !important;
+        border: 1.5px solid #bfdbfe !important;
+        border-bottom: none !important;
+        box-shadow: 0 -12px 48px rgba(0, 0, 0, 0.28) !important;
+        padding: 20px 18px calc(24px + env(safe-area-inset-bottom, 0px)) 18px !important;
+        z-index: 999999 !important;
+        animation: refSlideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      }
+      @keyframes refSlideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+      }
+      .ref-close-btn { display: inline-flex !important; }
+      .ref-item {
+        padding: 12px 14px !important;
+        background: #f8fafc !important;
+        border: 1px solid rgba(0, 0, 0, 0.06) !important;
+        margin-bottom: 8px !important;
+      }
+      .ref-item:hover, .ref-item:active {
+        background: #eef2ff !important;
+        border-color: #c7d2fe !important;
+      }
+    }
+
   </style>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="/static/js/mobile-nav.js?v=3"></script>
@@ -1361,7 +1610,7 @@
           <span style="font-family:'Outfit', sans-serif; font-size:18px; font-weight:800; color:#0f172a; letter-spacing:-0.02em;">get<span style="color:#4f46e5">A</span>role</span>
         </a>
         <p style="font-size:12px; color:#64748b; line-height:1.5; max-width:280px; margin-bottom:10px;">
-          India's #1 AI Job Discovery Engine. Autonomous multi-platform job aggregation across Greenhouse, Lever, Ashby, LinkedIn &amp; Internshala.
+          AI-powered job search platform. Verified listings from top career portals.
         </p>
 
         <!-- Team / Founder Spotlight -->
@@ -1372,7 +1621,7 @@
         <br>
         <div style="display:inline-flex; align-items:center; gap:6px; background:#f0fdf4; border:1px solid #bbf7d0; padding:3px 10px; border-radius:99px; font-size:11px; font-weight:700; color:#15803d;">
           <span style="width:6px; height:6px; background:#22c55e; border-radius:50%;"></span>
-          1,000+ Verified Jobs • Live
+          Verified Jobs • Live
         </div>
       </div>
 
@@ -2415,21 +2664,55 @@
               ${isApplied ? '✓ Applied' : 'Already Applied?'}
             </button>
             <div class="top-action-group">
-              <div style="position:relative;">
-                <button class="btn-referral" onclick="toggleReferralDropdown('${job.id}')" type="button">
-                  <span>👥</span> <span class="btn-ref-text">Referrals</span>
+              <div class="referral-menu-wrap" style="position:relative;">
+                <button class="btn-referral" onclick="toggleReferralDropdown('${job.id}', event)" type="button" title="Connect with company insiders on LinkedIn">
+                  <span class="ref-icon">🤝</span> <span class="btn-ref-text">Referrals</span>
+                  <span style="font-size:9px; opacity:0.8; margin-left:1px;">▼</span>
                 </button>
-                <div class="referral-dropdown" id="ref-dropdown-${job.id}">
-                  <a onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'hr')">🎯 Find HR / Recruiters</a>
-                  <a onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'eng')">👥 Find Engineering Peers</a>
+                <div class="referral-dropdown" id="ref-dropdown-${job.id}" onclick="event.stopPropagation()">
+                  <div class="referral-dropdown-header">
+                    <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+                      <div style="font-size:12px; font-weight:800; color:var(--primary); text-transform:uppercase; letter-spacing:0.04em;">
+                        🤝 ${escapeHTML(job.company)} Referrals
+                      </div>
+                      <button class="ref-close-btn" onclick="closeAllReferralDropdowns(event)" type="button" aria-label="Close">✕</button>
+                    </div>
+                    <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">
+                      Direct outreach gives 4x higher interview callbacks:
+                    </div>
+                  </div>
+                  <a class="ref-item" onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'hr')">
+                    <div class="ref-item-icon">🎯</div>
+                    <div>
+                      <div class="ref-item-title">Find HR &amp; Recruiters</div>
+                      <div class="ref-item-desc">Message hiring managers at ${escapeHTML(job.company)}</div>
+                    </div>
+                    <span class="ref-item-arrow">↗</span>
+                  </a>
+                  <a class="ref-item" onclick="openReferralSearch('${encodeURIComponent(job.company)}', 'eng')">
+                    <div class="ref-item-icon">👥</div>
+                    <div>
+                      <div class="ref-item-title">Find Engineering Peers</div>
+                      <div class="ref-item-desc">Ask engineers at ${escapeHTML(job.company)} for warm referrals</div>
+                    </div>
+                    <span class="ref-item-arrow">↗</span>
+                  </a>
+                  <a class="ref-item" onclick="copyReferralNote('${encodeURIComponent(job.company)}', '${encodeURIComponent(job.title)}')">
+                    <div class="ref-item-icon">📋</div>
+                    <div>
+                      <div class="ref-item-title">Copy Referral Note</div>
+                      <div class="ref-item-desc">Pre-written message ready to paste into LinkedIn</div>
+                    </div>
+                    <span class="ref-item-arrow">📋</span>
+                  </a>
                 </div>
               </div>
               <button class="btn-save-job ${isSaved ? 'saved' : ''}" onclick="toggleSave('${job.id}')" type="button">
                 ${isSaved ? '★ Saved' : '☆ Save'}
               </button>
-              <a href="${job.url}" target="_blank" class="btn-apply-primary ${isLinkedIn ? 'btn-apply-linkedin' : ''}">
-                ${isLinkedIn ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24z"/></svg>' : '<span>⚡</span>'}
-                <span>Apply</span><span class="apply-suffix"> on ${platformName} →</span>
+              <a href="${job.url}" target="_blank" class="btn-apply-primary ${isLinkedIn ? 'btn-apply-linkedin' : ''}" title="Apply directly on career portal">
+                ${isLinkedIn ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="white" style="flex-shrink:0;"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24z"/></svg> <span>Apply on LinkedIn</span>' : '<span>⚡</span> <span>Apply Now</span>'}
+                <span class="btn-arrow">→</span>
               </a>
             </div>
           </div>
@@ -2499,23 +2782,76 @@
       }[tag] || tag));
     }
 
-    function toggleReferralDropdown(jobId) {
-      // Close all others first
-      document.querySelectorAll('.referral-dropdown').forEach(el => {
-        if(el.id !== `ref-dropdown-${jobId}`) el.classList.remove('show');
-      });
-      const dropdown = document.getElementById(`ref-dropdown-${jobId}`);
-      if (dropdown) dropdown.classList.toggle('show');
+    
+    // ── Referral System & Mobile Bottom Sheet ──
+    function toggleReferralDropdown(jobId, event) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      const targetDropdown = document.getElementById(`ref-dropdown-${jobId}`);
+      const wasOpen = targetDropdown && targetDropdown.classList.contains('show');
+      
+      closeAllReferralDropdowns();
+      
+      if (!wasOpen && targetDropdown) {
+        targetDropdown.classList.add('show');
+        showReferralBackdrop();
+      }
     }
 
-    // Close referral dropdowns when clicking outside
+    function closeAllReferralDropdowns(event) {
+      if (event) event.stopPropagation();
+      document.querySelectorAll('.referral-dropdown').forEach(el => el.classList.remove('show'));
+      hideReferralBackdrop();
+    }
+
+    function showReferralBackdrop() {
+      let bd = document.getElementById('ref-mobile-backdrop');
+      if (!bd) {
+        bd = document.createElement('div');
+        bd.id = 'ref-mobile-backdrop';
+        bd.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.45);backdrop-filter:blur(3px);z-index:999998;opacity:0;transition:opacity 0.2s;pointer-events:auto;';
+        bd.onclick = closeAllReferralDropdowns;
+        document.body.appendChild(bd);
+      }
+      setTimeout(() => { if (bd) bd.style.opacity = '1'; }, 10);
+    }
+
+    function hideReferralBackdrop() {
+      const bd = document.getElementById('ref-mobile-backdrop');
+      if (bd) {
+        bd.style.opacity = '0';
+        setTimeout(() => { if (bd && bd.parentNode) bd.parentNode.removeChild(bd); }, 200);
+      }
+    }
+
     window.addEventListener('click', (e) => {
-      if (!e.target.closest('.btn-referral')) {
-        document.querySelectorAll('.referral-dropdown').forEach(el => el.classList.remove('show'));
+      if (!e.target.closest('.btn-referral') && !e.target.closest('.referral-dropdown')) {
+        closeAllReferralDropdowns();
       }
     });
 
-    function openReferralSearch(companyStr, type) {
+    function copyReferralNote(compStr, titleStr) {
+      const comp = decodeURIComponent(compStr);
+      const title = decodeURIComponent(titleStr);
+      const user = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+      const myName = user.name || 'Candidate';
+      const note = `Hi! I saw you are working at ${comp} and wanted to reach out. I am applying for the ${title} role on getArole and would love to ask for your advice or a warm referral if you are open to it! Here is my profile: https://linkedin.com - Thanks so much!`;
+      
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(note).then(() => {
+          if (typeof toast === 'function') toast('📋 Referral message copied! Paste into LinkedIn.');
+          else alert('📋 Referral message copied! Paste into LinkedIn.');
+          closeAllReferralDropdowns();
+        }).catch(() => {
+          prompt('Copy your referral note:', note);
+        });
+      } else {
+        prompt('Copy your referral note:', note);
+      }
+    }
+function openReferralSearch(companyStr, type) {
       const decodedComp = decodeURIComponent(companyStr).trim();
       let keywords = `"${decodedComp}"`;
       
@@ -2608,8 +2944,8 @@
           gsap.from(card, {
             y: 30,
             opacity: 0,
-            duration: 0.6,
-            ease: "back.out(1.2)",
+            duration: 0.8,
+            ease: "power4.out",
             stagger: 0.1
           });
         });

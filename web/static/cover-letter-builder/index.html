@@ -4,10 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Overleaf LaTeX Cover Letter Builder — getArole</title>
+  <title>LaTeX Cover Letter Builder — getArole | Your AI Job Search Partner</title>
   <script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();</script>
   <meta name="description"
-    content="Build, tailor, and export high-impact, professional Overleaf LaTeX cover letters with personalized AI generation on getArole.">
+    content="Build, tailor, and export high-impact, professional LaTeX cover letters with personalized AI generation on getArole.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
@@ -15,23 +15,36 @@
   <link rel="icon" type="image/png" href="/favicon.png">
 
   <style>
-    :root {
-      --bg: #f8fafc;
-      --sf: #ffffff;
-      --bd: #e2e8f0;
-      --tx: #0f172a;
-      --txm: #475569;
-      --txs: #94a3b8;
-      --pr: #4f46e5;
-      --prl: #eef2ff;
-      --prb: #c7d2fe;
-      --sc: #4f46e5;
-      --scl: #eef2ff;
-      --scb: #c7d2fe;
-      --wn: #d97706;
-      --dg: #dc2626;
-      --dgl: #fef2f2;
-      --dgb: #fecaca;
+            :root {
+      --primary: #0071e3;
+      --primary-hover: #0077ed;
+      --primary-accent: #0071e3;
+      --primary-light: #e8f0fe;
+      --primary-border: #bfdbfe;
+      --primary-gradient: linear-gradient(135deg, #0071e3 0%, #4facfe 100%);
+      --accent: #4f46e5;
+      --accent-emerald: #10b981;
+      --surface: #ffffff;
+      --bg: #F8F8FA;
+      --bg-subtle: #F1F1F4;
+      --bg-surface: #ffffff;
+      --background: #F8F8FA;
+      --border-subtle: rgba(0, 0, 0, 0.04);
+      --border: rgba(0, 0, 0, 0.06);
+      --border-strong: rgba(0, 0, 0, 0.12);
+      --border-glow: rgba(0, 113, 227, 0.25);
+      --text-main: #2C2C2E;
+      --text-muted: #6E6E73;
+      --text-subtle: #99999F;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+      --shadow-glow: 0 0 35px rgba(0, 113, 227, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --nav-height: 64px;
     }
 
     * {
@@ -361,8 +374,8 @@
     .ft:focus,
     .fi-sel:focus {
       outline: none;
-      border-color: var(--pr);
-      box-shadow: 0 0 0 3.5px rgba(79, 70, 229, 0.12);
+      border-color: var(--pr, #0071e3);
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
     }
 
     .ft {
@@ -1200,7 +1213,32 @@
       }
     }
 
-  </style>
+  
+    
+    /* ── APPLE-STYLE AMBIENT AURORA BACKGROUND ── */
+    body::before {
+      content: ''; position: fixed; top: -10vw; left: -10vw; width: 60vw; height: 60vw;
+      z-index: -3; pointer-events: none; border-radius: 50%; filter: blur(100px); opacity: 0.5;
+      background: radial-gradient(circle, rgba(0, 113, 227, 0.15) 0%, transparent 70%);
+      animation: ambientPulse1 20s ease-in-out infinite alternate;
+    }
+    body::after {
+      content: ''; position: fixed; bottom: -10vw; right: -10vw; width: 60vw; height: 60vw;
+      z-index: -4; pointer-events: none; border-radius: 50%; filter: blur(100px); opacity: 0.4;
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, transparent 70%);
+      animation: ambientPulse2 24s ease-in-out infinite alternate;
+    }
+    @keyframes ambientPulse1 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(5vw, 5vw) scale(1.2); }
+    }
+    @keyframes ambientPulse2 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-5vw, -5vw) scale(1.1); }
+    }
+</style>
+
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
@@ -1377,7 +1415,7 @@
     <!-- 3. LIVE PREVIEW COLUMN -->
     <div class="pv">
       <div class="pvl">
-        <span>✉️</span> <span>Overleaf LaTeX Cover Letter</span> &mdash; Live A4 Preview
+        <span>✉️</span> <span>LaTeX Cover Letter</span> &mdash; Live A4 Preview
       </div>
       <div class="a4w">
         <div id="rp"></div>
@@ -1880,8 +1918,8 @@ Sincerely,
           gsap.from(card, {
             y: 30,
             opacity: 0,
-            duration: 0.6,
-            ease: "back.out(1.2)",
+            duration: 0.8,
+            ease: "power4.out",
             stagger: 0.1
           });
         });

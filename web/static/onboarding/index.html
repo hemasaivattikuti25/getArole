@@ -11,17 +11,36 @@
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap"
     rel="stylesheet">
   <style>
-    :root {
-      --primary: #7e79de;
-      --primary-hover: #4338ca;
-      --primary-light: #eef2ff;
-      --primary-border: #c7d2fe;
-      --bg: #f8fafc;
+            :root {
+      --primary: #0071e3;
+      --primary-hover: #0077ed;
+      --primary-accent: #0071e3;
+      --primary-light: #e8f0fe;
+      --primary-border: #bfdbfe;
+      --primary-gradient: linear-gradient(135deg, #0071e3 0%, #4facfe 100%);
+      --accent: #4f46e5;
+      --accent-emerald: #10b981;
       --surface: #ffffff;
-      --text-main: #0f172a;
-      --text-muted: #475569;
-      --border: #e2e8f0;
-      --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06);
+      --bg: #F8F8FA;
+      --bg-subtle: #F1F1F4;
+      --bg-surface: #ffffff;
+      --background: #F8F8FA;
+      --border-subtle: rgba(0, 0, 0, 0.04);
+      --border: rgba(0, 0, 0, 0.06);
+      --border-strong: rgba(0, 0, 0, 0.12);
+      --border-glow: rgba(0, 113, 227, 0.25);
+      --text-main: #2C2C2E;
+      --text-muted: #6E6E73;
+      --text-subtle: #99999F;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
+      --shadow-glow: 0 0 35px rgba(0, 113, 227, 0.15);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --nav-height: 64px;
     }
 
     * {
@@ -439,7 +458,32 @@
       .sidebar { width: 100% !important; border-right: none !important; border-bottom: 1px solid var(--border); }
     }
 
+
+    
+    /* ── APPLE-STYLE AMBIENT AURORA BACKGROUND ── */
+    body::before {
+      content: ''; position: fixed; top: -10vw; left: -10vw; width: 60vw; height: 60vw;
+      z-index: -3; pointer-events: none; border-radius: 50%; filter: blur(100px); opacity: 0.5;
+      background: radial-gradient(circle, rgba(0, 113, 227, 0.15) 0%, transparent 70%);
+      animation: ambientPulse1 20s ease-in-out infinite alternate;
+    }
+    body::after {
+      content: ''; position: fixed; bottom: -10vw; right: -10vw; width: 60vw; height: 60vw;
+      z-index: -4; pointer-events: none; border-radius: 50%; filter: blur(100px); opacity: 0.4;
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, transparent 70%);
+      animation: ambientPulse2 24s ease-in-out infinite alternate;
+    }
+    @keyframes ambientPulse1 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(5vw, 5vw) scale(1.2); }
+    }
+    @keyframes ambientPulse2 {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(-5vw, -5vw) scale(1.1); }
+    }
 </style>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   </head>
@@ -725,7 +769,7 @@
           <span style="font-family:'Outfit', sans-serif; font-size:18px; font-weight:800; color:#0f172a; letter-spacing:-0.02em;">get<span style="color:#4f46e5">A</span>role</span>
         </a>
         <p style="font-size:12px; color:#64748b; line-height:1.5; max-width:280px; margin-bottom:10px;">
-          India's #1 AI Job Discovery Engine. Autonomous multi-platform job aggregation across Greenhouse, Lever, Ashby, LinkedIn &amp; Internshala.
+          AI-powered job search platform. Verified listings from top career portals.
         </p>
 
         <!-- Team / Founder Spotlight -->
@@ -736,7 +780,7 @@
         <br>
         <div style="display:inline-flex; align-items:center; gap:6px; background:#f0fdf4; border:1px solid #bbf7d0; padding:3px 10px; border-radius:99px; font-size:11px; font-weight:700; color:#15803d;">
           <span style="width:6px; height:6px; background:#22c55e; border-radius:50%;"></span>
-          1,000+ Verified Jobs • Live
+          Verified Jobs • Live
         </div>
       </div>
 
@@ -1167,8 +1211,8 @@
           gsap.from(card, {
             y: 30,
             opacity: 0,
-            duration: 0.6,
-            ease: "back.out(1.2)",
+            duration: 0.8,
+            ease: "power4.out",
             stagger: 0.1
           });
         });
