@@ -96,8 +96,12 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.02);
     }
     .header-inner {
-      max-width: 1500px; width: 100%; margin: 0 auto; padding: 0 24px;
+      max-width: 100%; width: 100%; margin: 0; padding: 0 32px;
       display: flex; align-items: center; justify-content: space-between;
+      box-sizing: border-box;
+    }
+    @media (min-width: 1600px) {
+      .header-inner { padding: 0 44px; }
     }
     .brand-group { display: flex; align-items: center; gap: 32px; }
     .brand-logo {
@@ -206,9 +210,50 @@
     .btn-clear-filters:hover { color: var(--text-main); }
 
     /* ════════════════════ MAIN CONTAINER & PAGES ════════════════════ */
-    main { flex: 1 0 auto; max-width: 1500px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; }
+    main { flex: 1 0 auto; max-width: 100%; width: 100%; margin: 0; box-sizing: border-box; display: flex; flex-direction: column; }
     .page-view { display: none; flex: 1 0 auto; flex-direction: column; }
     .page-view.active { display: flex; }
+
+    /* Overview Full Screen Layout Styles */
+    .home-view {
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      padding: 24px 32px !important;
+    }
+    @media (min-width: 1600px) {
+      .home-view {
+        padding: 28px 44px !important;
+      }
+    }
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      gap: 16px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .deployment-stepper-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      gap: 14px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    #desktop-grid-layout {
+      display: grid;
+      grid-template-columns: 1.65fr 1fr;
+      gap: 24px;
+      align-items: start;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    @media (max-width: 1100px) {
+      #desktop-grid-layout {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
 
     /* ════════════════════ SPLIT-PANE LAYOUT ════════════════════ */
     .jobs-split-container {
@@ -578,8 +623,12 @@
       display: flex; align-items: center;
     }
     .header-inner {
-      max-width: 1500px; width: 100%; margin: 0 auto; padding: 0 24px;
+      max-width: 100%; width: 100%; margin: 0; padding: 0 32px;
       display: flex; align-items: center; justify-content: space-between;
+      box-sizing: border-box;
+    }
+    @media (min-width: 1600px) {
+      .header-inner { padding: 0 44px; }
     }
     .brand-group { display: flex; align-items: center; gap: 32px; }
     .brand-logo {
@@ -1474,18 +1523,22 @@
   <!-- ════════════════════ MAIN CONTENT ════════════════════ -->
   <main id="main-content">
     <!-- 0. HOME VIEW -->
-    <div id="view-home" class="page-view home-view active" style="padding: 20px 20px; max-width: 1200px; margin: 0 auto;">
+    <div id="view-home" class="page-view home-view active">
       
       <!-- 1. Personalized Welcome Command Center -->
-      <div class="home-welcome-card" style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+      <div class="home-welcome-card" style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
           <div>
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
               <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; font-size: 11px; font-weight: 700; color: #059669; letter-spacing: 0.5px; text-transform: uppercase;"><div style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; animation: pulse 2s infinite;"></div> Active Search</span>
               <span id="current-datetime" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: var(--text-subtle);"></span>
             </div>
             <h1 style="font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; margin-bottom: 4px;">Good <span id="greeting-time">day</span>, <span id="home-user-name" style="color: var(--primary);">Engineer</span></h1>
-            <p style="font-size: 13.5px; color: var(--text-muted); font-weight: 500;">Your AI matching engine is running. New verified opportunities found since your last visit.</p>
+            <p style="font-size: 13.5px; color: var(--text-muted); font-weight: 500; margin: 0;">Your AI matching engine is running. New verified opportunities found since your last visit.</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <a href="/matches/" class="btn btn-primary" style="padding: 9px 18px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 14px rgba(79,70,229,0.25);"><span>View Matches</span> <span id="welcome-match-count-badge" style="background: rgba(255,255,255,0.25); padding: 2px 7px; border-radius: 99px; font-size: 11px;">0</span> →</a>
+            <button onclick="openPreferencesModal()" class="btn" style="padding: 9px 16px; font-size: 13px; font-weight: 600; border-radius: 8px; background: rgba(255,255,255,0.9); border: 1px solid var(--border); color: var(--text-main); cursor: pointer;">Edit Targets ⚙️</button>
           </div>
         </div>
       </div>
@@ -1496,7 +1549,7 @@
           <h2 style="font-size: 14px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">System Telemetry</h2>
           <span style="font-size: 11.5px; font-weight: 600; color: var(--text-subtle);">Updated just now</span>
         </div>
-        <div class="telemetry-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+        <div class="telemetry-grid">
           
           <!-- Metric 1: Verified Jobs -->
           <div class="telemetry-card" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; position: relative; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
@@ -1546,7 +1599,7 @@
           <div id="get-started-progress" style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 700; background: #e0e7ff; color: #4338ca; padding: 3px 10px; border-radius: 6px;">...</div>
         </div>
         
-        <div class="deployment-stepper-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
+        <div class="deployment-stepper-row">
           <!-- Step 1 -->
           <div class="deployment-step-item" id="step-card-1" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--surface); cursor: pointer; transition: all 0.2s;" onclick="window.location.href='/profile/'">
             <div id="step-badge-1" style="width: 22px; height: 22px; border-radius: 50%; background: #4f46e5; color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0;">1</div>
@@ -1585,20 +1638,106 @@
         </div>
       </div>
 
-      <!-- Main Layout Grid (1 Column) -->
-      <div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start;" id="desktop-grid-layout">
+      <!-- Main Layout Grid (2 Columns on Desktop) -->
+      <div id="desktop-grid-layout">
         
         <!-- Left Column: Top AI Matches Preview (Ranked List) -->
-        <div>
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-            <h2 style="font-size: 15px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">Top AI Matches Preview</h2>
-            <a href="/matches/" style="font-size: 12px; font-weight: 600; color: var(--primary); text-decoration: none;">View All Matches →</a>
+        <div style="min-width: 0;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 16px;">✨</span>
+              <h2 style="font-size: 14px; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Top AI Matches Preview</h2>
+            </div>
+            <a href="/matches/" style="font-size: 12.5px; font-weight: 700; color: var(--primary); text-decoration: none;">View All Matches →</a>
           </div>
           
-          <div id="home-matches-preview-grid" style="display: flex; flex-direction: column; gap: 8px; background: rgba(255,255,255,0.6); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 12px;">
-            <!-- Matches will be injected here via JS. We need to update the JS logic to render in the new premium list format. -->
+          <div id="home-matches-preview-grid" style="display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.6); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 14px; padding: 14px;">
             <div style="padding: 32px; text-align: center; color: var(--text-muted); font-size: 13px;">Loading semantic matches...</div>
           </div>
+        </div>
+
+        <!-- Right Column: Target Criteria Snapshot & Career Tool Launchpad -->
+        <div style="min-width: 0; display: flex; flex-direction: column; gap: 20px;">
+          
+          <!-- Card 1: Active Target Search Parameters -->
+          <div style="background: rgba(255,255,255,0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(0,0,0,0.02);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 16px;">🎯</span>
+                <h3 style="font-size: 13.5px; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Target Match Setup</h3>
+              </div>
+              <button onclick="openPreferencesModal()" style="font-size: 11.5px; font-weight: 700; color: var(--primary); background: rgba(79,70,229,0.08); border: 1px solid rgba(79,70,229,0.2); padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: all 0.15s;">Edit ✏️</button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 9px 12px; border-radius: 8px; background: rgba(248,250,252,0.8); border: 1px solid var(--border-subtle);">
+                <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Target Role:</span>
+                <span id="home-target-role-val" style="font-size: 12.5px; font-weight: 700; color: var(--text-main); text-align: right; word-break: break-word;">Software Engineering</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 9px 12px; border-radius: 8px; background: rgba(248,250,252,0.8); border: 1px solid var(--border-subtle);">
+                <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Locations:</span>
+                <span id="home-target-loc-val" style="font-size: 12.5px; font-weight: 700; color: var(--text-main); text-align: right; word-break: break-word;">Pan-India / Remote</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; background: rgba(248,250,252,0.8); border: 1px solid var(--border-subtle);">
+                <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Compensation:</span>
+                <span id="home-target-comp-val" style="font-size: 12.5px; font-weight: 700; color: #059669;">Market Standard</span>
+              </div>
+
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; background: rgba(248,250,252,0.8); border: 1px solid var(--border-subtle);">
+                <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Resume Sync:</span>
+                <span id="home-target-resume-val" style="font-size: 12px; font-weight: 700; color: var(--text-main);">Checking...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Career Tool Suite & Launchpad -->
+          <div style="background: rgba(255,255,255,0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(0,0,0,0.02);">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px;">
+              <span style="font-size: 16px;">⚡</span>
+              <h3 style="font-size: 13.5px; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Career Launchpad</h3>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <!-- Item 1: ATS Resume -->
+              <a href="/ats-resume/" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 10px; background: #ffffff; border: 1px solid var(--border); text-decoration: none; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.borderColor='var(--border)'; this.style.transform='none';">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 36px; height: 36px; border-radius: 8px; background: #eef2ff; color: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 18px;">📄</div>
+                  <div>
+                    <div style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">ATS Resume Architect</div>
+                    <div style="font-size: 11.5px; color: var(--text-muted);">Real-time score &amp; LaTeX export</div>
+                  </div>
+                </div>
+                <span style="font-size: 13px; font-weight: 700; color: var(--primary);">Open →</span>
+              </a>
+
+              <!-- Item 2: Cover Letter -->
+              <a href="/cover-letter/" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 10px; background: #ffffff; border: 1px solid var(--border); text-decoration: none; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.borderColor='var(--border)'; this.style.transform='none';">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 36px; height: 36px; border-radius: 8px; background: #ecfdf5; color: #059669; display: flex; align-items: center; justify-content: center; font-size: 18px;">✉️</div>
+                  <div>
+                    <div style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">AI Cover Letter Generator</div>
+                    <div style="font-size: 11.5px; color: var(--text-muted);">Role-tailored application letters</div>
+                  </div>
+                </div>
+                <span style="font-size: 13px; font-weight: 700; color: var(--primary);">Generate →</span>
+              </a>
+
+              <!-- Item 3: Explore -->
+              <a href="/explore/" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 10px; background: #ffffff; border: 1px solid var(--border); text-decoration: none; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.borderColor='var(--border)'; this.style.transform='none';">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 36px; height: 36px; border-radius: 8px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 18px;">🧭</div>
+                  <div>
+                    <div style="font-size: 13.5px; font-weight: 700; color: var(--text-main);">Explore All Live Roles</div>
+                    <div style="font-size: 11.5px; color: var(--text-muted);">1,000+ verified listings catalog</div>
+                  </div>
+                </div>
+                <span style="font-size: 13px; font-weight: 700; color: var(--primary);">Browse →</span>
+              </a>
+            </div>
+          </div>
+
         </div>
         
       </div>
@@ -1622,7 +1761,7 @@
       }
     </style>
 
-    <div style="max-width:1240px; margin:0 auto;">
+    <div style="max-width: 100%; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 0 16px;">
       
       <!-- Top Grid: Brand & Founder Spotlight + Navigation Pillars -->
       <div class="footer-top-grid">
@@ -2921,46 +3060,84 @@
       } catch (e) {}
     }
 
+    function updateHomeCriteriaSnapshot() {
+      try {
+        const prefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
+        const profile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+        const resume = localStorage.getItem('getarole_resume_v2');
+
+        const roleEl = document.getElementById('home-target-role-val');
+        const locEl = document.getElementById('home-target-loc-val');
+        const compEl = document.getElementById('home-target-comp-val');
+        const resumeEl = document.getElementById('home-target-resume-val');
+
+        const targetRole = (prefs.target_role || (profile.target_roles && profile.target_roles.length ? profile.target_roles.join(', ') : profile.title) || 'Software Engineering / Full Stack');
+        if (roleEl) roleEl.textContent = targetRole;
+
+        const locations = (prefs.preferred_locations && prefs.preferred_locations.length > 0)
+          ? prefs.preferred_locations.join(', ')
+          : 'Pan-India / Remote Friendly';
+        if (locEl) locEl.textContent = locations;
+
+        const ctc = prefs.min_base_salary ? `₹${prefs.min_base_salary} LPA Floor` : 'Market Standard / Negotiable';
+        if (compEl) compEl.textContent = ctc;
+
+        if (resumeEl) {
+          if (resume) {
+            resumeEl.innerHTML = `<span style="color: #10b981; font-weight: 700;">● ATS Resume Synced</span>`;
+          } else {
+            resumeEl.innerHTML = `<a href="/ats-resume/" style="color: var(--primary); font-weight: 600; text-decoration: underline;">Upload to optimize match %</a>`;
+          }
+        }
+      } catch (e) {
+        console.warn('Error updating home criteria snapshot:', e);
+      }
+    }
+
     function renderHomeView() {
       const totalJobsEl = document.getElementById('home-total-jobs');
       if (totalJobsEl) totalJobsEl.textContent = allJobs.length > 0 ? allJobs.length.toLocaleString('en-IN') : '0';
       const matchesEl = document.getElementById('home-matches-count');
       if (matchesEl) matchesEl.textContent = matchedJobs.length.toLocaleString('en-IN');
+      const welcomeMatchEl = document.getElementById('welcome-match-count-badge');
+      if (welcomeMatchEl) welcomeMatchEl.textContent = matchedJobs.length.toLocaleString('en-IN');
       renderTracker();
       updateGetStartedProgress();
+      updateHomeCriteriaSnapshot();
 
       const grid = document.getElementById('home-matches-preview-grid');
       if (!grid) return;
       if (matchedJobs.length === 0) {
         grid.innerHTML = `
-          <div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 13px;">
+          <div style="padding: 28px; text-align: center; color: var(--text-muted); font-size: 13px;">
             No matching opportunities found for your current criteria.<br>
-            <a href="javascript:void(0)" onclick="openPreferencesModal()" style="color: var(--primary); font-weight: 700; text-decoration: none; margin-top: 6px; display: inline-block;">Update Target Preferences →</a>
+            <a href="javascript:void(0)" onclick="openPreferencesModal()" style="color: var(--primary); font-weight: 700; text-decoration: none; margin-top: 8px; display: inline-block;">Update Target Preferences →</a>
           </div>
         `;
         return;
       }
-      grid.innerHTML = matchedJobs.slice(0, 5).map((j, idx) => {
+      grid.innerHTML = matchedJobs.slice(0, 8).map((j, idx) => {
         const compInitial = j.company ? j.company[0].toUpperCase() : 'G';
         const fitScore = Math.round(j.fit_score || 0);
         const hasProf = localStorage.getItem('getarole_resume_v2');
         return `
-        <div style="display: flex; gap: 16px; padding: 12px 16px; border-radius: 12px; background: rgba(255,255,255,0.7); cursor: pointer; transition: all 0.2s; border: 1px solid transparent;" onmouseover="this.style.background='#ffffff'; this.style.borderColor='var(--border)';" onmouseout="this.style.background='rgba(255,255,255,0.7)'; this.style.borderColor='transparent';" onclick="window.location.href='/matches/'">
-          <div style="width: 48px; height: 48px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), #8b5cf6); color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; flex-shrink: 0; box-shadow: 0 4px 10px rgba(79,70,229,0.2);">
+        <div style="display: flex; gap: 16px; padding: 14px 18px; border-radius: 12px; background: rgba(255,255,255,0.75); cursor: pointer; transition: all 0.2s; border: 1px solid var(--border-subtle); align-items: center;" onmouseover="this.style.background='#ffffff'; this.style.borderColor='var(--border)';" onmouseout="this.style.background='rgba(255,255,255,0.75)'; this.style.borderColor='var(--border-subtle)';" onclick="window.location.href='/matches/'">
+          <div style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), #8b5cf6); color: white; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; flex-shrink: 0; box-shadow: 0 4px 10px rgba(79,70,229,0.2);">
             ${compInitial}
           </div>
           <div style="flex: 1; min-width: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px;">
-              <div style="font-size: 15px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px;">${j.title}</div>
-              ${hasProf ? `<div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: #10b981; background: #d1fae5; padding: 2px 6px; border-radius: 4px; flex-shrink: 0;">${fitScore}% Match</div>` : ''}
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; gap: 8px;">
+              <div style="font-size: 14.5px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${j.title}</div>
+              ${hasProf ? `<div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: #10b981; background: #d1fae5; padding: 2px 7px; border-radius: 4px; flex-shrink: 0;">${fitScore}% Match</div>` : ''}
             </div>
-            <div style="font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${j.company} <span style="color:var(--text-subtle);">·</span> ${j.location || 'India'}</div>
+            <div style="font-size: 12.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${j.company} <span style="color:var(--text-subtle);">·</span> ${j.location || 'India'}</div>
             <div style="display: flex; flex-wrap: wrap; gap: 6px;">
               ${(j.skills || []).slice(0, 3).map(s => `<span style="font-size: 10px; font-weight: 700; color: var(--text-subtle); background: var(--bg-subtle); padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">${s}</span>`).join('')}
               ${j.workplace_type === 'Remote' || (j.location||'').toLowerCase().includes('remote') ? `<span style="font-size: 10px; font-weight: 700; color: #8b5cf6; background: #f3e8ff; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">Remote</span>` : ''}
               ${j.stipend_or_salary ? `<span style="font-size: 10px; font-weight: 700; color: #f59e0b; background: #fef3c7; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">${j.stipend_or_salary}</span>` : ''}
             </div>
           </div>
+          <div style="color: var(--primary); font-size: 18px; font-weight: 700; padding-left: 8px; flex-shrink: 0;">→</div>
         </div>
       `}).join('');
     }
