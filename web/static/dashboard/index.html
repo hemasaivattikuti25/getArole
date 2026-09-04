@@ -1527,7 +1527,6 @@
           </div>
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
             <a href="/matches/" class="btn btn-primary" style="padding: 9px 18px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 14px rgba(79,70,229,0.25);"><span>View Matches</span> <span id="welcome-match-count-badge" style="background: rgba(255,255,255,0.25); padding: 2px 7px; border-radius: 99px; font-size: 11px;">0</span> →</a>
-            <button onclick="openPreferencesModal()" class="btn" style="padding: 9px 16px; font-size: 13px; font-weight: 600; border-radius: 8px; background: rgba(255,255,255,0.9); border: 1px solid var(--border); color: var(--text-main); cursor: pointer;">Edit Targets ⚙️</button>
           </div>
         </div>
       </div>
@@ -1639,38 +1638,6 @@
         <!-- Right Column: Target Criteria Snapshot & Career Tool Launchpad -->
         <div style="min-width: 0; display: flex; flex-direction: column; gap: 20px;">
           
-          <!-- Card 1: Active Target Search Parameters -->
-          <div style="background: rgba(255,255,255,0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(0,0,0,0.02);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 16px;">🎯</span>
-                <h3 style="font-size: 13.5px; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Target Match Setup</h3>
-              </div>
-              <button onclick="openPreferencesModal()" style="font-size: 11.5px; font-weight: 700; color: var(--primary); background: rgba(79,70,229,0.08); border: 1px solid rgba(79,70,229,0.2); padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: all 0.15s;">Edit ✏️</button>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 9px 12px; border-radius: 8px; background: rgba(248,250,252,0.8); border: 1px solid var(--border-subtle);">
-                <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Target Role:</span>
-                <span id="home-target-role-val" style="font-size: 12.5px; font-weight: 700; color: var(--text-main); text-align: right; word-break: break-word;">Software Engineering</span>
-              </div>
-
-              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 9px 12px; border-radius: 8px; background: rgba(248,250,252,0.8); border: 1px solid var(--border-subtle);">
-                <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Locations:</span>
-                <span id="home-target-loc-val" style="font-size: 12.5px; font-weight: 700; color: var(--text-main); text-align: right; word-break: break-word;">Pan-India / Remote</span>
-              </div>
-
-              <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; background: rgba(248,250,252,0.8); border: 1px solid var(--border-subtle);">
-                <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Compensation:</span>
-                <span id="home-target-comp-val" style="font-size: 12.5px; font-weight: 700; color: #059669;">Market Standard</span>
-              </div>
-
-              <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; background: rgba(248,250,252,0.8); border: 1px solid var(--border-subtle);">
-                <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Resume Sync:</span>
-                <span id="home-target-resume-val" style="font-size: 12px; font-weight: 700; color: var(--text-main);">Checking...</span>
-              </div>
-            </div>
-          </div>
 
           <!-- Card 2: Career Tool Suite & Launchpad -->
           <div style="background: rgba(255,255,255,0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(0,0,0,0.02);">
@@ -3040,50 +3007,13 @@
       } catch (e) {}
     }
 
-    function updateHomeCriteriaSnapshot() {
-      try {
-        const prefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
-        const profile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
-        const resume = localStorage.getItem('getarole_resume_v2');
-
-        const roleEl = document.getElementById('home-target-role-val');
-        const locEl = document.getElementById('home-target-loc-val');
-        const compEl = document.getElementById('home-target-comp-val');
-        const resumeEl = document.getElementById('home-target-resume-val');
-
-        const targetRole = (prefs.target_role || (profile.target_roles && profile.target_roles.length ? profile.target_roles.join(', ') : profile.title) || 'Software Engineering / Full Stack');
-        if (roleEl) roleEl.textContent = targetRole;
-
-        const locations = (prefs.preferred_locations && prefs.preferred_locations.length > 0)
-          ? prefs.preferred_locations.join(', ')
-          : 'Pan-India / Remote Friendly';
-        if (locEl) locEl.textContent = locations;
-
-        const ctc = prefs.min_base_salary ? `₹${prefs.min_base_salary} LPA Floor` : 'Market Standard / Negotiable';
-        if (compEl) compEl.textContent = ctc;
-
-        if (resumeEl) {
-          if (resume) {
-            resumeEl.innerHTML = `<span style="color: #10b981; font-weight: 700;">● ATS Resume Synced</span>`;
-          } else {
-            resumeEl.innerHTML = `<a href="/ats-resume/" style="color: var(--primary); font-weight: 600; text-decoration: underline;">Upload to optimize match %</a>`;
-          }
-        }
-      } catch (e) {
-        console.warn('Error updating home criteria snapshot:', e);
-      }
-    }
-
     function renderHomeView() {
-      const totalJobsEl = document.getElementById('home-total-jobs');
-      if (totalJobsEl) totalJobsEl.textContent = allJobs.length > 0 ? allJobs.length.toLocaleString('en-IN') : '0';
       const matchesEl = document.getElementById('home-matches-count');
       if (matchesEl) matchesEl.textContent = matchedJobs.length.toLocaleString('en-IN');
       const welcomeMatchEl = document.getElementById('welcome-match-count-badge');
       if (welcomeMatchEl) welcomeMatchEl.textContent = matchedJobs.length.toLocaleString('en-IN');
       renderTracker();
       updateGetStartedProgress();
-      updateHomeCriteriaSnapshot();
 
       const grid = document.getElementById('home-matches-preview-grid');
       if (!grid) return;
@@ -3091,12 +3021,12 @@
         grid.innerHTML = `
           <div style="padding: 28px; text-align: center; color: var(--text-muted); font-size: 13px;">
             No matching opportunities found for your current criteria.<br>
-            <a href="javascript:void(0)" onclick="openPreferencesModal()" style="color: var(--primary); font-weight: 700; text-decoration: none; margin-top: 8px; display: inline-block;">Update Target Preferences →</a>
+            <a href="/matches/" style="color: var(--primary); font-weight: 700; text-decoration: none; margin-top: 8px; display: inline-block;">View All Matches →</a>
           </div>
         `;
         return;
       }
-      grid.innerHTML = matchedJobs.slice(0, 8).map((j, idx) => {
+      grid.innerHTML = matchedJobs.slice(0, 5).map((j, idx) => {
         const compInitial = j.company ? j.company[0].toUpperCase() : 'G';
         const fitScore = Math.round(j.fit_score || 0);
         const hasProf = localStorage.getItem('getarole_resume_v2');

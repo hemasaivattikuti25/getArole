@@ -1,9 +1,9 @@
 /**
  * getArole Service Worker (Production PWA Caching Strategy)
- * Version: 2.5.2 - Force network refresh for full screen overview update
+ * Version: 2.5.3 - Top 5 matches and streamlined overview
  */
 
-const CACHE_VERSION = 'getarole-v2.5.2';
+const CACHE_VERSION = 'getarole-v2.5.3';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const API_CACHE = `${CACHE_VERSION}-api`;
 
