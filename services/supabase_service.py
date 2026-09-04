@@ -27,7 +27,7 @@ def _get_cache_fetch_lock() -> asyncio.Lock:
 class SupabaseService:
     def __init__(self):
         self.url = os.getenv("SUPABASE_URL", "")
-        self.key = os.getenv("SUPABASE_KEY", "")
+        self.key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_KEY", "")
         self.client: Optional[Any] = None
         
     async def _get_client(self):
@@ -254,7 +254,7 @@ class SupabaseService:
             print(f"[Supabase] Fetch candidate error: {e}")
             return None
 
-    async def save_user_profile(self, firebase_uid: str, profile: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def save_user_profile(self, firebase_uid: str, profile: Dict[str, Any], sync_resume: bool = True) -> Optional[Dict[str, Any]]:
         """Upsert a user's profile into user_profiles table, keyed by firebase_uid."""
         client = await self._get_client()
         if not client or not firebase_uid or firebase_uid == "guest_user":
@@ -297,9 +297,9 @@ class SupabaseService:
             res = await client.table("user_profiles").upsert(record, on_conflict="firebase_uid").execute()
             
             # If skills or experience or education passed in profile, also update/sync user_resumes
-            if flat_profile.get("skills") or flat_profile.get("experience") or flat_profile.get("education") or flat_profile.get("projects"):
+            if sync_resume and (flat_profile.get("skills") or flat_profile.get("experience") or flat_profile.get("education") or flat_profile.get("projects")):
                 try:
-                    await self.save_user_resume(firebase_uid, flat_profile)
+                    await self.save_user_resume(firebase_uid, flat_profile, sync_profile=False)
                 except Exception as r_sync_err:
                     print(f"[Supabase] Profile to resume sync notice: {r_sync_err}")
 
@@ -308,7 +308,7 @@ class SupabaseService:
             print(f"[Supabase] save_user_profile error: {e}")
             return None
 
-    async def load_user_profile(self, firebase_uid: str) -> Optional[Dict[str, Any]]:
+    async def load_user_profile(self, firebase_uid: str, augment_resume: bool = True) -> Optional[Dict[str, Any]]:
         """Fetch a user's profile from user_profiles table with resume metadata augmentation."""
         client = await self._get_client()
         if not client or not firebase_uid or firebase_uid == "guest_user":
@@ -340,38 +340,39 @@ class SupabaseService:
                 }
 
             # Augment profile with rich arrays (skills, experience, education, projects) from user_resumes
-            try:
-                resume = await self.load_user_resume(firebase_uid)
-                if resume:
-                    if not data:
-                        data = {"firebase_uid": firebase_uid}
-                    if not data.get("name") and resume.get("name"):
-                        data["name"] = resume.get("name")
-                    if not data.get("email") and resume.get("email"):
-                        data["email"] = resume.get("email")
-                    if not data.get("phone") and resume.get("phone"):
-                        data["phone"] = resume.get("phone")
-                    if not data.get("headline") and resume.get("headline"):
-                        data["headline"] = resume.get("headline")
-                    
-                    parsed_skills = []
-                    for s in (resume.get("skills") or []):
-                        if isinstance(s, str) and s.startswith("{"):
-                            try:
-                                parsed_skills.append(json.loads(s))
-                            except:
+            if augment_resume:
+                try:
+                    resume = await self.load_user_resume(firebase_uid, hydrate_header=False)
+                    if resume:
+                        if not data:
+                            data = {"firebase_uid": firebase_uid}
+                        if not data.get("name") and resume.get("name"):
+                            data["name"] = resume.get("name")
+                        if not data.get("email") and resume.get("email"):
+                            data["email"] = resume.get("email")
+                        if not data.get("phone") and resume.get("phone"):
+                            data["phone"] = resume.get("phone")
+                        if not data.get("headline") and resume.get("headline"):
+                            data["headline"] = resume.get("headline")
+                        
+                        parsed_skills = []
+                        for s in (resume.get("skills") or []):
+                            if isinstance(s, str) and s.startswith("{"):
+                                try:
+                                    parsed_skills.append(json.loads(s))
+                                except:
+                                    parsed_skills.append(s)
+                            else:
                                 parsed_skills.append(s)
-                        else:
-                            parsed_skills.append(s)
-                    data["skills"] = parsed_skills
-                    data["experience"] = resume.get("experience") or []
-                    data["education"] = resume.get("education") or []
-                    data["projects"] = resume.get("projects") or []
-                    data["summary"] = resume.get("summary") or ""
-                    if resume.get("links") and isinstance(resume.get("links"), dict):
-                        data["links"] = {**(data.get("links") or {}), **resume.get("links")}
-            except Exception as res_err:
-                print(f"[Supabase] Profile augmentation note: {res_err}")
+                        data["skills"] = parsed_skills
+                        data["experience"] = resume.get("experience") or []
+                        data["education"] = resume.get("education") or []
+                        data["projects"] = resume.get("projects") or []
+                        data["summary"] = resume.get("summary") or ""
+                        if resume.get("links") and isinstance(resume.get("links"), dict):
+                            data["links"] = {**(data.get("links") or {}), **resume.get("links")}
+                except Exception as res_err:
+                    print(f"[Supabase] Profile augmentation note: {res_err}")
 
             return data if data else None
         except Exception as e:
@@ -446,7 +447,7 @@ class SupabaseService:
             print(f"[Supabase] load_user_preferences error: {e}")
             return None
 
-    async def save_user_resume(self, firebase_uid: str, resume_data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def save_user_resume(self, firebase_uid: str, resume_data: Dict[str, Any], sync_profile: bool = True) -> Optional[Dict[str, Any]]:
         """Save a user's uploaded and parsed resume into user_resumes table with upsert."""
         client = await self._get_client()
         if not client or not firebase_uid or firebase_uid == "guest_user":
@@ -490,7 +491,7 @@ class SupabaseService:
             res = await client.table("user_resumes").insert(clean_record).execute()
 
             # If personal identity fields exist in resume, dual-sync to user_profiles
-            if name or email or phone or headline or (links and any(links.values())):
+            if sync_profile and (name or email or phone or headline or (links and any(links.values()))):
                 try:
                     profile_patch = {
                         "firebase_uid": firebase_uid,
@@ -502,7 +503,7 @@ class SupabaseService:
                     }
                     clean_prof = {k: v for k, v in profile_patch.items() if v}
                     clean_prof["firebase_uid"] = firebase_uid
-                    await self.save_user_profile(firebase_uid, clean_prof)
+                    await self.save_user_profile(firebase_uid, clean_prof, sync_resume=False)
                 except Exception as p_err:
                     print(f"[Supabase] save_user_resume profile sync notice: {p_err}")
 
@@ -520,7 +521,7 @@ class SupabaseService:
                 print(f"[Supabase] save_user_resume error: {e} | fallback: {e2}")
                 return None
 
-    async def load_user_resume(self, firebase_uid: str) -> Optional[Dict[str, Any]]:
+    async def load_user_resume(self, firebase_uid: str, hydrate_header: bool = True) -> Optional[Dict[str, Any]]:
         """Fetch a user's active resume from user_resumes table using explicit column projection."""
         client = await self._get_client()
         if not client or not firebase_uid or firebase_uid == "guest_user":
@@ -543,10 +544,10 @@ class SupabaseService:
                 if "skills" not in data or not data["skills"]:
                     data["skills"] = []
 
-                if not data.get("header"):
+                if hydrate_header and not data.get("header"):
                     # Hydrate contact/header info from user_profiles
                     try:
-                        prof = await self.load_user_profile(firebase_uid) or {}
+                        prof = await self.load_user_profile(firebase_uid, augment_resume=False) or {}
                     except Exception:
                         prof = {}
                     data["header"] = {

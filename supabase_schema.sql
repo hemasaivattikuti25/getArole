@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS public.user_profiles (
 -- ─────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS public.user_preferences (
     id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    firebase_uid    TEXT UNIQUE NOT NULL REFERENCES public.user_profiles(firebase_uid) ON DELETE CASCADE,
+    firebase_uid    TEXT UNIQUE NOT NULL,
     values          TEXT[],
     roles           TEXT[],
     locations       TEXT[],
@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS public.user_preferences (
 
 CREATE TABLE IF NOT EXISTS public.user_resumes (
     id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    firebase_uid    TEXT NOT NULL REFERENCES public.user_profiles(firebase_uid) ON DELETE CASCADE,
+    firebase_uid    TEXT NOT NULL,
     is_default      BOOLEAN DEFAULT true,
     filename        TEXT,
     file_url        TEXT,

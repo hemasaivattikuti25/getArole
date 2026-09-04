@@ -45,7 +45,7 @@ app.add_middleware(ObservabilityMiddleware)
 # Attach GZip compression for all responses > 500 bytes (LCP/PageSpeed optimization)
 app.add_middleware(GZipMiddleware, minimum_size=500)
 
-allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000,https://getarole.in,https://getarole.com")
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000,http://localhost:3000,http://127.0.0.1:3000,https://getarole.in,https://getarole.com")
 allowed_origins = [o.strip() for o in allowed_origins_env.split(",") if o.strip()]
 
 app.add_middleware(
