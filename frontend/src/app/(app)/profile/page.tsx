@@ -24,10 +24,10 @@ import { apiClient } from "@/lib/api-client";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<any>({
-    name: "Hemasai Vattikuti",
+    name: "",
     headline: "Full Stack Engineer • 2+ Years Experience",
-    email: "hemasai@getarole.in",
-    phone: "+91 98765 43210",
+    email: "",
+    phone: "",
     city: "Bengaluru",
     location: "Bengaluru, India",
     summary: "Passionate software engineer focused on building robust, scalable applications. Experienced with modern frontend and backend architectures, microservices, and AI workflow integration.",
@@ -53,7 +53,7 @@ export default function ProfilePage() {
         desc: "• Intelligent career acceleration engine featuring automated ATS LaTeX resume generation and live job pipeline\n• Built bidirectional synchronization across client storage and cloud Supabase database with sub-second reactivity",
         tags: ["Next.js", "FastAPI", "Supabase", "TypeScript", "TailwindCSS"],
         demo: "https://getarole.in",
-        github: "https://github.com/hemasaivattikuti25/getArole"
+        github: "https://github.com"
       }
     ],
     education: [
@@ -82,9 +82,9 @@ export default function ProfilePage() {
       }
     ],
     links: {
-      github: "https://github.com/hemasaivattikuti25",
-      linkedin: "https://linkedin.com/in/hemasai",
-      portfolio: "https://getarole.in"
+      github: "",
+      linkedin: "",
+      portfolio: ""
     }
   });
 

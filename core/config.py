@@ -1,6 +1,6 @@
 import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import List
+from typing import List, Optional
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "getArole — Enterprise AI Screening & Job Discovery Platform"
@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     BASE_DIR: str = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
     DATA_DIR: str = os.path.join(BASE_DIR, "data")
     SAVED_JOBS_FILE: str = os.path.join(DATA_DIR, "jobs.json")
-    DEFAULT_RESUME_PATH: str = os.path.join(BASE_DIR, "sairesume.pdf")
+    DEFAULT_RESUME_PATH: Optional[str] = os.getenv("DEFAULT_RESUME_PATH", None)
     
     # Model configuration
     EMBEDDING_MODEL_NAME: str = "BAAI/bge-small-en-v1.5"

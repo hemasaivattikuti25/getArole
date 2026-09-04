@@ -269,69 +269,126 @@
     <p>For questions regarding these Terms of Service, contact our team at <a href="mailto:hemasaivattikuti2727@gmail.com" style="color:var(--primary)">hemasaivattikuti2727@gmail.com</a>.</p>
   </main>
 
-    <!-- ════════════════════ GLOBAL ENTERPRISE FOOTER (COMPACT) ════════════════════ -->
-  <footer class="global-footer" style="background:#ffffff; border-top:1px solid #e2e8f0; padding:28px 24px 20px; margin-top:auto; font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;">
-    <div class="footer-inner" style="max-width:1240px; margin:0 auto; display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap:24px; margin-bottom:20px; min-width:0;">
-      <div>
-        <a href="/" class="brand-group" style="display:inline-flex; align-items:center; gap:8px; text-decoration:none; margin-bottom:8px;">
-          <img src="/logo.svg" alt="getArole Logo" style="width:28px; height:28px; border-radius:7px; box-shadow:0 2px 8px rgba(79,70,229,0.2);">
-          <span style="font-family:'Outfit', sans-serif; font-size:18px; font-weight:800; color:#0f172a; letter-spacing:-0.02em;">get<span style="color:#4f46e5">A</span>role</span>
-        </a>
-        <p style="font-size:12px; color:#64748b; line-height:1.5; max-width:280px; margin-bottom:10px;">
-          AI-powered job search platform. Verified listings from top career portals.
-        </p>
+                <!-- ════════════════════ GLOBAL ENTERPRISE FOOTER ════════════════════ -->
+  <footer class="global-footer" style="background:#ffffff; border-top:1px solid #e2e8f0; padding:48px 24px 24px; margin-top:auto; font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; position:relative;">
+    <style>
+      .global-footer a.footer-nav-link { color: #64748b; text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.15s ease, transform 0.15s ease; display: inline-block; }
+      .global-footer a.footer-nav-link:hover { color: #4f46e5 !important; transform: translateX(2px); }
+      .footer-top-grid { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1.2fr; gap: 36px; margin-bottom: 36px; min-width: 0; }
+      @media (max-width: 960px) {
+        .footer-top-grid { grid-template-columns: 1fr 1fr !important; gap: 28px !important; }
+      }
+      @media (max-width: 600px) {
+        .footer-top-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+        .footer-bottom-bar { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
+      }
+    </style>
 
-        <!-- Team / Founder Spotlight -->
-        <div style="display:inline-flex; align-items:center; gap:8px; background:#f8fafc; border:1px solid #e2e8f0; padding:4px 10px; border-radius:20px; margin-bottom:8px;">
-          <img src="/founder.png" alt="getArole Team" style="width:22px; height:22px; border-radius:50%; object-fit:cover; border:1.5px solid #4f46e5; flex-shrink:0;">
-          <span style="font-size:11px; font-weight:700; color:#0f172a;">Built by getArole Team <span style="color:#4f46e5;">✓</span></span>
+    <div style="max-width:1240px; margin:0 auto;">
+      
+      <!-- Top Grid: Brand & Founder Spotlight + Navigation Pillars -->
+      <div class="footer-top-grid">
+        
+        <!-- Col 1: Brand & Founder Identity -->
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <a href="/" class="brand-group" style="display:inline-flex; align-items:center; gap:10px; text-decoration:none;">
+            <img src="/logo.svg" alt="getArole Logo" style="width:34px; height:34px; border-radius:9px; box-shadow:0 3px 10px rgba(79,70,229,0.2); flex-shrink:0;">
+            <span style="font-family:'Outfit', sans-serif; font-size:22px; font-weight:800; color:#0f172a; letter-spacing:-0.03em;">get<span style="color:#4f46e5;">A</span>role</span>
+          </a>
+
+          <p style="font-size:13px; color:#475569; line-height:1.6; max-width:340px; margin:0;">
+            Job discovery and application management platform indexing verified opportunities directly from official company career portals.
+          </p>
+
+          <!-- Founder Spotlight Card (Factual & Enterprise) -->
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px 16px; max-width:390px; box-shadow:0 2px 6px rgba(0,0,0,0.02); display:flex; align-items:flex-start; gap:14px;">
+            <div style="position:relative; flex-shrink:0;">
+              <img src="/founder.png" alt="Hemasai Vattikuti" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid #4f46e5; box-shadow:0 2px 6px rgba(79,70,229,0.2);">
+              <span style="position:absolute; bottom:0; right:0; width:12px; height:12px; background:#22c55e; border:2px solid #ffffff; border-radius:50%;" title="Active Founder"></span>
+            </div>
+            <div style="min-width:0; flex:1;">
+              <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <span style="font-size:13.5px; font-weight:800; color:#0f172a;">Hemasai Vattikuti</span>
+                <span style="font-size:10.5px; font-weight:700; background:#e0e7ff; color:#4338ca; padding:1px 7px; border-radius:4px;">Founder</span>
+              </div>
+              <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Lead Developer &amp; Architect, getArole</div>
+              <p style="font-size:11.5px; color:#475569; margin:6px 0 0; line-height:1.45;">
+                Building intelligent tools to accelerate job discovery, optimize ATS resumes, and streamline application tracking for engineers across India.
+              </p>
+              <div style="display:flex; align-items:center; gap:12px; margin-top:9px; flex-wrap:wrap;">
+                <a href="mailto:hemasaivattikuti2727@gmail.com" style="font-size:11.5px; font-weight:700; color:#4f46e5; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+                  <span>✉️ hemasaivattikuti2727@gmail.com</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
         </div>
-        <br>
-        <div style="display:inline-flex; align-items:center; gap:6px; background:#f0fdf4; border:1px solid #bbf7d0; padding:3px 10px; border-radius:99px; font-size:11px; font-weight:700; color:#15803d;">
-          <span style="width:6px; height:6px; background:#22c55e; border-radius:50%;"></span>
-          Verified Jobs • Live
+
+        <!-- Col 2: Platform & Real Tools -->
+        <div>
+          <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#0f172a; margin-bottom:14px;">Platform Tools</div>
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
+            <li><a href="/dashboard/" class="footer-nav-link">Application Tracker</a></li>
+            <li><a href="/explore/" class="footer-nav-link">Job Discovery &amp; Search</a></li>
+            <li><a href="/matches/" class="footer-nav-link">AI Resume Matcher</a></li>
+            <li><a href="/resume-builder/" class="footer-nav-link">LaTeX Resume Builder</a></li>
+            <li><a href="/cover-letter-builder/" class="footer-nav-link">Cover Letter Builder</a></li>
+            <li><a href="/profile/" class="footer-nav-link">Candidate Profile</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Real Job Categories & Search Hubs -->
+        <div>
+          <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#0f172a; margin-bottom:14px;">Active Hubs</div>
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
+            <li><a href="/explore?q=Bengaluru" class="footer-nav-link">Bengaluru Tech Hub</a></li>
+            <li><a href="/explore?q=Hyderabad" class="footer-nav-link">Hyderabad Openings</a></li>
+            <li><a href="/explore?q=Pune" class="footer-nav-link">Pune &amp; Mumbai</a></li>
+            <li><a href="/explore?q=Gurgaon" class="footer-nav-link">Delhi NCR / Gurgaon</a></li>
+            <li><a href="/explore?q=Remote" class="footer-nav-link">Remote in India</a></li>
+            <li><a href="/explore?q=Fresher" class="footer-nav-link">Freshers &amp; Early Career</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Contact, Grievance & Governance -->
+        <div>
+          <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#0f172a; margin-bottom:14px;">Contact &amp; Legal</div>
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
+            <li>
+              <a href="mailto:hemasaivattikuti2727@gmail.com" class="footer-nav-link" style="color:#4f46e5; font-weight:700; word-break:break-all;">
+                hemasaivattikuti2727@gmail.com
+              </a>
+            </li>
+            <li><a href="/privacy/" class="footer-nav-link">Privacy Policy</a></li>
+            <li><a href="/terms/" class="footer-nav-link">Terms of Service</a></li>
+            <li><a href="/preferences/" class="footer-nav-link">Target Preferences</a></li>
+            <li><a href="mailto:hemasaivattikuti2727@gmail.com?subject=Grievance%20Redressal" class="footer-nav-link">Grievance Redressal</a></li>
+            <li style="margin-top:4px; font-size:11.5px; color:#64748b; line-height:1.45;">
+              DPDP Act 2023 Compliant • Direct employer links
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar: Factual & Clean Enterprise Attribution -->
+      <div class="footer-bottom-bar" style="border-top:1px solid #e2e8f0; padding-top:20px; display:flex; align-items:center; justify-content:space-between; font-size:12px; color:#64748b; flex-wrap:wrap; gap:14px;">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span>© <span class="global-footer-year">2026</span> <strong>getArole.in</strong></span>
+          <span>•</span>
+          <span>Founded by Hemasai Vattikuti</span>
+          <span>•</span>
+          <span>Bengaluru, Karnataka, India</span>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:14px; font-size:11.5px; color:#64748b; flex-wrap:wrap;">
+          <span>Verified Opportunities • Direct Application Links</span>
+          <span>•</span>
+          <a href="mailto:hemasaivattikuti2727@gmail.com" style="color:#4f46e5; text-decoration:none; font-weight:600;">Contact Founder</a>
         </div>
       </div>
 
-      <div>
-        <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:10px;">Explore Jobs</div>
-        <ul style="list-style:none; display:flex; flex-direction:column; gap:6px; padding:0; margin:0;">
-          <li><a href="/explore/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">All Opportunities</a></li>
-          <li><a href="/explore?q=Bengaluru" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Bengaluru Hub</a></li>
-          <li><a href="/explore?q=Hyderabad" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Hyderabad Roles</a></li>
-          <li><a href="/explore?q=Remote" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Global Remote</a></li>
-          <li><a href="/explore?q=Fresher" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Freshers &amp; 2026</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:10px;">AI Platform</div>
-        <ul style="list-style:none; display:flex; flex-direction:column; gap:6px; padding:0; margin:0;">
-          <li><a href="/onboarding/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">AI Resume Matcher</a></li>
-          <li><a href="/resume-builder/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">LaTeX Resume Builder</a></li>
-          <li><a href="/cover-letter-builder/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Cover Letter AI</a></li>
-          <li><a href="/matches/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Semantic Matches</a></li>
-          <li><a href="/dashboard/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Kanban Pipeline</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:10px;">Legal &amp; Support</div>
-        <ul style="list-style:none; display:flex; flex-direction:column; gap:6px; padding:0; margin:0;">
-          <li><a href="/privacy/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Privacy Policy</a></li>
-          <li><a href="/terms/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Terms of Service</a></li>
-          <li><a href="mailto:hemasaivattikuti2727@gmail.com" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Grievance Redressal</a></li>
-          <li><a href="mailto:hemasaivattikuti2727@gmail.com" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Contact Support</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div style="max-width:1240px; margin:0 auto; border-top:1px solid #e2e8f0; padding-top:14px; display:flex; align-items:center; justify-content:space-between; font-size:11.5px; color:#94a3b8; flex-wrap:wrap; gap:12px;">
-      <div>© <span class="global-footer-year">2026</span> <strong>getArole.in</strong>. All rights reserved.</div>
-      <div style="font-size:11px; color:#94a3b8; display:flex; align-items:center; gap:12px;">
-        <span>🔒 🔒 DPDP Act 2023 &amp; GDPR Compliant</span>
-        <span>🛡️ 256-Bit SSL</span>
-      </div>
     </div>
   </footer>
 

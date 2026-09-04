@@ -39,6 +39,11 @@
         font-size: 18px !important;
       }
 
+      html, body {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+      }
+
       body {
         padding-bottom: 74px !important;
       }

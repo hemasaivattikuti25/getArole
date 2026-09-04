@@ -11,7 +11,8 @@ async def main():
     print("🚀 JOB FINDER ENGINE — MULTI-PLATFORM AGGREGATOR & MATCHER")
     print("=" * 70)
     
-    resume_path = "/Users/sai2005/Downloads/gitprojects/job_finder/sairesume.pdf"
+    default_pdf = os.path.join(os.path.dirname(os.path.abspath(__file__)), "resume.pdf")
+    resume_path = os.getenv("RESUME_PATH", default_pdf)
     if len(sys.argv) > 1:
         resume_path = sys.argv[1]
         

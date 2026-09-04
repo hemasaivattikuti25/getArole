@@ -1458,7 +1458,7 @@
 
         <div class="user-profile-btn" onclick="toggleUserDropdown()">
           <span style="font-size: 14px;">👤</span>
-          <span class="user-name-text" id="nav-username">Hemasai Vattikuti</span>
+          <span class="user-name-text" id="nav-username">Candidate</span>
           <span style="font-size: 10px; color: var(--text-subtle);">▼</span>
 
           <div class="user-dropdown" id="user-dropdown">
@@ -1488,14 +1488,14 @@
               </span>
             </div>
             <h1>
-              <span id="hero-candidate-name">Hemasai Vattikuti</span>
+              <span id="hero-candidate-name">Your Name</span>
             </h1>
             <p class="hero-headline" id="hero-candidate-headline">Full Stack Engineer • 2+ Years Experience</p>
             
             <div class="hero-chips-row">
               <span class="hero-chip" id="chip-location">📍 Bengaluru, India</span>
               <span class="hero-chip" id="chip-email">✉️ Loading...</span>
-              <span class="hero-chip" id="chip-phone">📱 +91 98765 43210</span>
+              <span class="hero-chip" id="chip-phone">📱 Add Phone</span>
             </div>
           </div>
         </div>
@@ -1965,7 +1965,7 @@
       <div class="modal-body">
         <div class="form-group">
           <label>Full Name (Resume Header)</label>
-          <input type="text" id="inp-name" class="form-control" placeholder="Hemasai Vattikuti">
+          <input type="text" id="inp-name" class="form-control" placeholder="e.g. Arjun Mehta">
         </div>
         <div class="form-group">
           <label>Professional Headline / Target Title</label>
@@ -2351,7 +2351,7 @@
           img.style.cssText = "width:100%;height:100%;border-radius:50%;object-fit:cover;";
           if (avatarEl) { avatarEl.textContent = ''; avatarEl.appendChild(img); }
         } else {
-          if (avatarEl) avatarEl.textContent = (uName[0] || 'H').toUpperCase();
+          if (avatarEl) avatarEl.textContent = (uName[0] || 'U').toUpperCase();
         }
 
         const adminEmails = ['hemasaivattikuti2727@gmail.com', 'lakshmisatyasrisri@gmail.com', 'hemasai@getarole.in'];
@@ -2444,11 +2444,11 @@
                              userObj.name || 
                              localStorage.getItem('getarole_username') || 
                              (resumeV2.header && resumeV2.header.name) || 
-                             'Hemasai Vattikuti';
+                             '';
 
         state.profile.name = resolvedName;
-        state.profile.email = state.profile.email || userObj.email || 'hemasai@getarole.in';
-        state.profile.phone = state.profile.phone || (resumeV2.header && resumeV2.header.phone) || '+91 98765 43210';
+        state.profile.email = state.profile.email || userObj.email || (resumeV2.header && resumeV2.header.email) || '';
+        state.profile.phone = state.profile.phone || (resumeV2.header && resumeV2.header.phone) || '';
         state.profile.headline = state.profile.headline || (resumeV2.header && resumeV2.header.title) || 'Full Stack Engineer • 2+ Years Experience';
         state.profile.loc = state.profile.loc || state.profile.city || 'Bengaluru, India';
         state.profile.summary = state.profile.summary || (resumeV2.summary && resumeV2.summary.text) || 'Passionate software engineer focused on building robust, scalable applications. Experienced with modern frontend and backend architectures, microservices, and AI workflow integration.';
@@ -2519,7 +2519,7 @@
                 desc: '• Intelligent career acceleration engine featuring automated ATS LaTeX resume generation and live job pipeline\n• Built bidirectional synchronization across client storage and cloud Supabase database with sub-second reactivity',
                 tags: ['Next.js', 'FastAPI', 'Supabase', 'TypeScript', 'TailwindCSS'],
                 demo: 'https://getarole.in',
-                github: 'https://github.com/hemasaivattikuti25/getArole'
+                github: 'https://github.com'
               }
             ];
           }
@@ -2575,11 +2575,11 @@
         // Links
         if (!state.profile.links || Object.keys(state.profile.links).length === 0) {
           state.profile.links = {
-            linkedin: (resumeV2.header && resumeV2.header.linkedin) || 'https://linkedin.com/in/hemasai',
-            github: (resumeV2.header && resumeV2.header.github) || 'https://github.com/hemasaivattikuti25',
-            portfolio: (resumeV2.header && resumeV2.header.portfolio) || 'https://getarole.in',
-            leetcode: 'https://leetcode.com',
-            twitter: 'https://twitter.com'
+            linkedin: (resumeV2.header && resumeV2.header.linkedin) || '',
+            github: (resumeV2.header && resumeV2.header.github) || '',
+            portfolio: (resumeV2.header && resumeV2.header.portfolio) || '',
+            leetcode: '',
+            twitter: ''
           };
         }
 
@@ -2600,7 +2600,7 @@
       loadStateFromStorage();
 
       // 1. Hero Identity
-      const name = state.profile.name || 'Hemasai Vattikuti';
+      const name = state.profile.name || 'Your Name';
       const headline = state.profile.headline || 'Software Engineer';
       const loc = state.profile.loc || 'Bengaluru, India';
       const email = state.profile.email || '';
@@ -2613,18 +2613,20 @@
       const locEl = document.getElementById('chip-location');
       if (locEl) locEl.textContent = `📍 ${loc}`;
       const mailEl = document.getElementById('chip-email');
-      if (mailEl) mailEl.textContent = `✉️ ${email}`;
+      if (mailEl) mailEl.textContent = email ? `✉️ ${email}` : '✉️ Add Email';
       const phEl = document.getElementById('chip-phone');
-      if (phEl) phEl.textContent = `📱 ${phone}`;
+      if (phEl) phEl.textContent = phone ? `📱 ${phone}` : '📱 Add Phone';
 
       // Initials Avatar
-      const initials = name.split(/\s+/).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'HV';
+      const initials = (name && name !== 'Your Name')
+        ? name.split(/\s+/).filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase()
+        : 'U';
       const heroAv = document.getElementById('hero-avatar-text');
       if (heroAv) heroAv.textContent = initials;
       const navAv = document.getElementById('nav-avatar');
-      if (navAv) navAv.textContent = initials[0] || 'H';
+      if (navAv) navAv.textContent = initials[0] || 'U';
       const navUser = document.getElementById('nav-username');
-      if (navUser) navUser.textContent = name;
+      if (navUser) navUser.textContent = name !== 'Your Name' ? name : 'Candidate';
 
       // Status
       const statusSelect = document.getElementById('select-job-status');
@@ -3312,7 +3314,7 @@
         if (!R.summary) R.summary = {};
 
         // 1. Header mapping
-        const fullName = state.profile.name || 'Hemasai Vattikuti';
+        const fullName = state.profile.name || 'Candidate Name';
         R.header.name = fullName;
         const nameParts = fullName.split(' ');
         R.header.first_name = nameParts[0] || '';
