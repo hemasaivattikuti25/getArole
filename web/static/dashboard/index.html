@@ -1525,17 +1525,14 @@
             <h1 style="font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; margin-bottom: 4px;">Good <span id="greeting-time">day</span>, <span id="home-user-name" style="color: var(--primary);">Engineer</span></h1>
             <p style="font-size: 13.5px; color: var(--text-muted); font-weight: 500; margin: 0;">Your AI matching engine is running. New verified opportunities found since your last visit.</p>
           </div>
-          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-            <a href="/matches/" class="btn btn-primary" style="padding: 9px 18px; font-size: 13px; font-weight: 700; border-radius: 8px; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 14px rgba(79,70,229,0.25);"><span>View Matches</span> <span id="welcome-match-count-badge" style="background: rgba(255,255,255,0.25); padding: 2px 7px; border-radius: 99px; font-size: 11px;">0</span> →</a>
-          </div>
+
         </div>
       </div>
 
       <!-- 2. KPI Metrics Strip -->
       <div style="margin-bottom: 16px;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-          <h2 style="font-size: 13.5px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">System Telemetry</h2>
-          <span style="font-size: 11.5px; font-weight: 600; color: var(--text-subtle);">Updated just now</span>
+          <h2 style="font-size: 13.5px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">Overview Stats</h2>
         </div>
         <div class="telemetry-grid">
           
@@ -1625,7 +1622,7 @@
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span style="font-size: 16px;">✨</span>
-              <h2 style="font-size: 14px; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Top AI Matches Preview</h2>
+              <h2 style="font-size: 14px; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Top 5 AI Recommendations</h2>
             </div>
             <a href="/matches/" style="font-size: 12.5px; font-weight: 700; color: var(--primary); text-decoration: none;">View All Matches →</a>
           </div>
@@ -1638,6 +1635,19 @@
         <!-- Right Column: Target Criteria Snapshot & Career Tool Launchpad -->
         <div style="min-width: 0; display: flex; flex-direction: column; gap: 20px;">
           
+          <!-- Card 1: Target Criteria Snapshot -->
+          <div style="background: rgba(255,255,255,0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(0,0,0,0.02);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 16px;">🎯</span>
+                <h3 style="font-size: 13.5px; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Target Criteria</h3>
+              </div>
+              <button onclick="openPreferencesModal()" style="background: none; border: none; font-size: 12px; font-weight: 700; color: var(--primary); cursor: pointer; padding: 0;">Edit ⚙️</button>
+            </div>
+            <div id="target-criteria-content" style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="font-size: 12.5px; color: var(--text-muted);">Loading criteria...</div>
+            </div>
+          </div>
 
           <!-- Card 2: Career Tool Suite & Launchpad -->
           <div style="background: rgba(255,255,255,0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(0,0,0,0.02);">
@@ -1648,7 +1658,7 @@
 
             <div style="display: flex; flex-direction: column; gap: 10px;">
               <!-- Item 1: ATS Resume -->
-              <a href="/ats-resume/" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 10px; background: #ffffff; border: 1px solid var(--border); text-decoration: none; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.borderColor='var(--border)'; this.style.transform='none';">
+              <a href="/resume-builder/" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 10px; background: #ffffff; border: 1px solid var(--border); text-decoration: none; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.borderColor='var(--border)'; this.style.transform='none';">
                 <div style="display: flex; align-items: center; gap: 12px;">
                   <div style="width: 36px; height: 36px; border-radius: 8px; background: #eef2ff; color: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 18px;">📄</div>
                   <div>
@@ -1660,7 +1670,7 @@
               </a>
 
               <!-- Item 2: Cover Letter -->
-              <a href="/cover-letter/" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 10px; background: #ffffff; border: 1px solid var(--border); text-decoration: none; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.borderColor='var(--border)'; this.style.transform='none';">
+              <a href="/cover-letter-builder/" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 10px; background: #ffffff; border: 1px solid var(--border); text-decoration: none; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.borderColor='var(--border)'; this.style.transform='none';">
                 <div style="display: flex; align-items: center; gap: 12px;">
                   <div style="width: 36px; height: 36px; border-radius: 8px; background: #ecfdf5; color: #059669; display: flex; align-items: center; justify-content: center; font-size: 18px;">✉️</div>
                   <div>
@@ -2471,6 +2481,11 @@
         if (homeName) homeName.textContent = name;
       }
 
+      // Refresh UI instantly
+      if (typeof calculateFitScores === 'function') calculateFitScores();
+      if (typeof renderHomeView === 'function') renderHomeView();
+      if (typeof renderMatchesSplitView === 'function') renderMatchesSplitView();
+
       const uid = getFirebaseUID();
 
       if (window.getAroleSync) {
@@ -2905,7 +2920,7 @@
             <div style="font-size:32px; margin-bottom:12px;">🔒</div>
             <h3 style="font-size:16px; font-weight:800; color:var(--text-main); margin-bottom:8px;">Complete your setup</h3>
             <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:24px; line-height:1.5;">You need to tell us your preferences and upload a resume to unlock personalized AI matches.</p>
-            <button onclick="window.location.href='/onboarding/'" style="background:var(--primary); color:white; padding:10px 20px; border-radius:8px; border:none; font-weight:700; cursor:pointer; width:100%; margin-bottom:12px; font-size:14px;">Set Preferences</button>
+            <button onclick="openPreferencesModal()" style="background:var(--primary); color:white; padding:10px 20px; border-radius:8px; border:none; font-weight:700; cursor:pointer; width:100%; margin-bottom:12px; font-size:14px;">Set Preferences</button>
             <button onclick="window.location.href='/resume-builder/'" style="background:var(--bg-subtle); color:var(--text-main); border:1.5px solid var(--border); padding:10px 20px; border-radius:8px; font-weight:700; cursor:pointer; width:100%; font-size:14px;">I don't have a resume</button>
           </div>
         `;
@@ -2987,7 +3002,7 @@
           if (c3) { c3.style.background = '#f0fdf4'; c3.style.borderColor = '#bbf7d0'; }
         }
 
-        if (hasSaved || allJobs.length > 0) {
+        if (hasSaved || hasApplied) {
           completed++;
           const b4 = document.getElementById('step-badge-4');
           if (b4) { b4.textContent = '✓'; b4.style.background = '#10b981'; }
@@ -3006,6 +3021,46 @@
         }
       } catch (e) {}
     }
+    function renderTargetCriteriaSnapshot() {
+      const tcContainer = document.getElementById('target-criteria-content');
+      if (!tcContainer) return;
+
+      const profStr = localStorage.getItem('getarole_profile');
+      let prof = null;
+      try { if (profStr) prof = JSON.parse(profStr); } catch (e) {}
+
+      let role = 'Not set';
+      let location = 'Remote / Anywhere';
+      let salary = 'Not set';
+      let hasRes = !!localStorage.getItem('getarole_resume_v2') ? '<span style="color:#10b981;">✓ Linked</span>' : '<span style="color:#ef4444;">✗ Missing</span>';
+
+      if (prof && prof.preferences) {
+        if (prof.preferences.target_roles && prof.preferences.target_roles.length > 0) role = prof.preferences.target_roles.join(', ');
+        if (prof.preferences.locations && prof.preferences.locations.length > 0) location = prof.preferences.locations.join(', ');
+        if (prof.preferences.salary_min) salary = '₹' + prof.preferences.salary_min.toLocaleString('en-IN') + (prof.preferences.salary_max ? ' - ₹' + prof.preferences.salary_max.toLocaleString('en-IN') : '+');
+      }
+
+      tcContainer.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; font-size: 13px;">
+            <span style="color: var(--text-muted); font-weight: 500;">Role:</span>
+            <span style="font-weight: 600; color: var(--text-main); text-align: right; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${role}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 13px;">
+            <span style="color: var(--text-muted); font-weight: 500;">Location:</span>
+            <span style="font-weight: 600; color: var(--text-main); text-align: right; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${location}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 13px;">
+            <span style="color: var(--text-muted); font-weight: 500;">Salary:</span>
+            <span style="font-weight: 600; color: var(--text-main); text-align: right; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${salary}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 13px;">
+            <span style="color: var(--text-muted); font-weight: 500;">Resume:</span>
+            <span style="font-weight: 600; color: var(--text-main); text-align: right;">${hasRes}</span>
+          </div>
+        </div>
+      `;
+    }
 
     function renderHomeView() {
       const matchesEl = document.getElementById('home-matches-count');
@@ -3014,6 +3069,7 @@
       if (welcomeMatchEl) welcomeMatchEl.textContent = matchedJobs.length.toLocaleString('en-IN');
       renderTracker();
       updateGetStartedProgress();
+      if (typeof renderTargetCriteriaSnapshot === 'function') renderTargetCriteriaSnapshot();
 
       const grid = document.getElementById('home-matches-preview-grid');
       if (!grid) return;
@@ -3031,7 +3087,7 @@
         const fitScore = Math.round(j.fit_score || 0);
         const hasProf = localStorage.getItem('getarole_resume_v2');
         return `
-        <div style="display: flex; gap: 16px; padding: 14px 18px; border-radius: 12px; background: rgba(255,255,255,0.75); cursor: pointer; transition: all 0.2s; border: 1px solid var(--border-subtle); align-items: center;" onmouseover="this.style.background='#ffffff'; this.style.borderColor='var(--border)';" onmouseout="this.style.background='rgba(255,255,255,0.75)'; this.style.borderColor='var(--border-subtle)';" onclick="window.location.href='/matches/'">
+        <div style="display: flex; gap: 16px; padding: 14px 18px; border-radius: 12px; background: rgba(255,255,255,0.75); cursor: pointer; transition: all 0.2s; border: 1px solid var(--border-subtle); align-items: center;" onmouseover="this.style.background='#ffffff'; this.style.borderColor='var(--border)';" onmouseout="this.style.background='rgba(255,255,255,0.75)'; this.style.borderColor='var(--border-subtle)';" onclick="window.location.href='/matches/?id=${j.id}'">
           <div style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), #8b5cf6); color: white; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; flex-shrink: 0; box-shadow: 0 4px 10px rgba(79,70,229,0.2);">
             ${compInitial}
           </div>
@@ -3119,7 +3175,7 @@
                 </div>
                 <div style="font-size:12px; color:var(--text-muted);">${job.company}</div>
               </div>
-              <button onclick="window.location.href='/explore/'" style="background:var(--primary-light); color:var(--primary); border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11px; font-weight:700; margin-left:12px;">View</button>
+              <button onclick="window.location.href='/explore/?id=${job.id}'" style="background:var(--primary-light); color:var(--primary); border:none; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11px; font-weight:700; margin-left:12px;">View</button>
             </div>
           `;
         }).join('');

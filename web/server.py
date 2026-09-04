@@ -840,7 +840,30 @@ async def generate_cover_letter_api(req: CoverLetterRequest, request: Request):
 
 if os.path.exists(STATIC_DIR):
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+    js_dir = os.path.join(STATIC_DIR, "js")
+    if os.path.exists(js_dir):
+        app.mount("/js", StaticFiles(directory=js_dir), name="js")
+    css_dir = os.path.join(STATIC_DIR, "css")
+    if os.path.exists(css_dir):
+        app.mount("/css", StaticFiles(directory=css_dir), name="css")
 
+def create_root_handler(filename):
+    @app.get(f"/{filename}")
+    async def _serve_file():
+        fpath = os.path.join(STATIC_DIR, filename)
+        if os.path.exists(fpath):
+            media_type = "application/javascript" if filename.endswith(".js") else \
+                         "image/svg+xml" if filename.endswith(".svg") else \
+                         "image/png" if filename.endswith(".png") else \
+                         "image/x-icon" if filename.endswith(".ico") else \
+                         "text/plain" if filename.endswith(".txt") else \
+                         "application/xml" if filename.endswith(".xml") else None
+            with open(fpath, "rb") as f:
+                return Response(content=f.read(), media_type=media_type)
+        raise HTTPException(status_code=404, detail="Not found")
+
+for file in ["firebase-auth.js", "logo.svg", "founder.png", "favicon.png", "favicon.ico", "apple-touch-icon.png", "og-image.png", "robots.txt", "sitemap.xml", "llms.txt"]:
+    create_root_handler(file)
 @app.get("/sw.js")
 async def serve_service_worker():
     sw_path = os.path.join(STATIC_DIR, "sw.js")
