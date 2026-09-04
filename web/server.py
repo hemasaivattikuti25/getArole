@@ -858,6 +858,7 @@ async def serve_landing():
     return "<h1>getArole — Starting Up</h1>"
 
 @app.get("/candidate", response_class=HTMLResponse)
+@app.get("/candidate/", response_class=HTMLResponse)
 async def serve_candidate():
     cand_file = os.path.join(STATIC_DIR, "candidate", "index.html")
     if os.path.exists(cand_file):
@@ -866,6 +867,7 @@ async def serve_candidate():
     return "<h1>Candidate Not Found</h1>"
 
 @app.get("/onboarding", response_class=HTMLResponse)
+@app.get("/onboarding/", response_class=HTMLResponse)
 async def serve_onboarding():
     ob_file = os.path.join(STATIC_DIR, "onboarding", "index.html")
     if os.path.exists(ob_file):

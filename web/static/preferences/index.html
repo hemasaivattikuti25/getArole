@@ -3,12 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Profile — getArole</title>
+  <title>Job Preferences — getArole</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="apple-touch-icon" href="/logo.svg">
+  <script src="/js/storage-sync.js"></script>
+  <script>
+    // Strict Authentication Guard
+    (function checkAuth() {
+      const user = localStorage.getItem('getarole_user');
+      if (!user) {
+        window.location.replace('/?auth=1');
+      }
+    })();
+  </script>
 
   <style>
             :root {
@@ -940,6 +950,7 @@
   <link rel="stylesheet" href="/css/global-aurora.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="/js/storage-sync.js"></script>
   <script src="/static/js/mobile-nav.js?v=3"></script>
 </head>
 <body>
@@ -948,8 +959,8 @@
     <div class="ambient-orb orb-1"></div>
     <div class="ambient-orb orb-2"></div>
     <div class="ambient-orb orb-3"></div>
-  </div
-  <div class="landing-blueprint-grid" aria-hidden="true"></div>>
+  </div>
+  <div class="landing-blueprint-grid" aria-hidden="true"></div>
 
   <!-- WCAG 2.4.1 Bypass Blocks -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -986,8 +997,9 @@
 
           <div class="user-dropdown" id="user-dropdown">
             <a href="/profile/" class="dropdown-item">⚙️ Profile & Preferences</a>
+            <a href="/crm/" id="nav-admin-crm-link" class="dropdown-item" style="display:none; color:#4f46e5; font-weight:700;">👑 Master CRM Sheet</a>
             <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
-            <a href="#" onclick="typeof handleLogout === 'function' ? handleLogout() : (localStorage.clear(), window.location.href='/')" class="dropdown-item" style="color:#ef4444">Sign Out</a>
+            <a href="#" onclick="typeof safeSignOut === 'function' ? safeSignOut() : (typeof handleLogout === 'function' ? handleLogout() : (localStorage.removeItem('getarole_user'), localStorage.removeItem('firebase_uid'), sessionStorage.clear(), window.location.href='/'))" class="dropdown-item" style="color:#ef4444">Sign Out</a>
           </div>
         </div>
       </div>
@@ -1109,8 +1121,8 @@
       <div>
         <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:10px;">Legal &amp; Support</div>
         <ul style="list-style:none; display:flex; flex-direction:column; gap:6px; padding:0; margin:0;">
-          <li><a href="/privacy" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Privacy Policy</a></li>
-          <li><a href="/terms" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Terms of Service</a></li>
+          <li><a href="/privacy/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Privacy Policy</a></li>
+          <li><a href="/terms/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Terms of Service</a></li>
           <li><a href="mailto:hemasaivattikuti2727@gmail.com" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Grievance Redressal</a></li>
           <li><a href="mailto:hemasaivattikuti2727@gmail.com" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Contact Support</a></li>
         </ul>
@@ -1433,6 +1445,9 @@
     }
 
     async function apiSaveProfile(profileData) {
+      if (window.getAroleSync) {
+        return await window.getAroleSync.syncUserProfile(profileData);
+      }
       localStorage.setItem('getarole_profile', JSON.stringify(profileData));
       const uid = getFirebaseUID();
       try {
@@ -1445,6 +1460,9 @@
     }
 
     async function apiSavePreferences(prefsData) {
+      if (window.getAroleSync) {
+        return await window.getAroleSync.syncUserPreferences(prefsData);
+      }
       const dashPrefs = {
         role: (prefsData.roles && prefsData.roles[0]) || prefsData.role || '',
         specializations: prefsData.roles || prefsData.specializations || [],
@@ -1468,6 +1486,9 @@
     }
 
     async function apiLoadProfile() {
+      if (window.getAroleSync) {
+        return await window.getAroleSync.loadUserProfile();
+      }
       const uid = getFirebaseUID();
       const local = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
       try {
@@ -1494,6 +1515,9 @@
     }
 
     async function apiLoadPreferences() {
+      if (window.getAroleSync) {
+        return await window.getAroleSync.loadUserPreferences();
+      }
       const uid = getFirebaseUID();
       const local = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
       try {
@@ -1626,22 +1650,23 @@
 
         await apiSaveProfile(profileData);
 
-        const uid = getFirebaseUID();
-        if (uid && resumeText) {
-          try {
-            await fetch('/api/user/resume', {
+        const resumeObj = {
+          header: { name: profileData.name || parsedProf.name || 'Candidate' },
+          summary: { text: resumeText.slice(0, 500) },
+          skills: [{ label: 'Skills & Competencies', items: (parsedProf.skills || []).slice(0, 15).join(', ') }],
+          raw_text: resumeText
+        };
+        if (window.getAroleSync) {
+          window.getAroleSync.syncUserResume(resumeObj);
+        } else {
+          const uid = getFirebaseUID();
+          if (uid && resumeText) {
+            fetch('/api/user/resume', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-              body: JSON.stringify({
-                resume: {
-                  header: { name: profileData.name || parsedProf.name || 'Candidate' },
-                  summary: { text: resumeText.slice(0, 500) },
-                  skills: { languages: (parsedProf.skills || []).slice(0, 10).join(', ') },
-                  raw_text: resumeText
-                }
-              })
-            });
-          } catch(e) {}
+              body: JSON.stringify({ resume: resumeObj })
+            }).catch(() => {});
+          }
         }
 
         renderStaticCards();
@@ -2107,6 +2132,12 @@
         if (nameEl && name) nameEl.textContent = name;
         const avatarEl = document.getElementById('nav-avatar');
         if (avatarEl && name) avatarEl.textContent = name[0].toUpperCase();
+
+        const adminEmails = ['hemasaivattikuti2727@gmail.com', 'lakshmisatyasrisri@gmail.com', 'hemasai@getarole.in'];
+        if (userObj.email && adminEmails.includes(userObj.email.toLowerCase().trim())) {
+          const crmLink = document.getElementById('nav-admin-crm-link');
+          if (crmLink) crmLink.style.display = 'block';
+        }
       } catch(e) {}
     }
     if (document.readyState === 'loading') {

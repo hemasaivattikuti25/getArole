@@ -10,6 +10,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/global-aurora.css">
+  <script src="/js/storage-sync.js"></script>
+  <script>
+    // Strict Authentication Guard
+    (function checkAuth() {
+      const user = localStorage.getItem('getarole_user');
+      if (!user) {
+        window.location.replace('/?auth=1');
+      }
+    })();
+  </script>
   
   <style>
     :root {
@@ -35,6 +45,15 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
 
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -286,7 +305,7 @@
 
     /* ── MAIN CONTAINER & DOSSIER HERO ── */
     .profile-main-wrapper {
-      max-width: 1360px;
+      max-width: 1440px;
       margin: 0 auto;
       padding: 32px 24px 64px;
       width: 100%;
@@ -511,15 +530,373 @@
       border: 1px solid #bbf7d0;
     }
 
-    /* ── TWO-COLUMN DOSSIER LAYOUT ── */
+    /* ── THREE-COLUMN DOSSIER LAYOUT ── */
     .dossier-grid {
       display: grid;
-      grid-template-columns: 320px 1fr;
+      grid-template-columns: 280px minmax(0, 1fr) 370px;
       gap: 24px;
       align-items: start;
     }
-    @media (max-width: 1024px) {
-      .dossier-grid { grid-template-columns: 1fr; }
+    @media (max-width: 1280px) {
+      .dossier-grid {
+        grid-template-columns: 260px minmax(0, 1fr);
+      }
+      .preferences-column {
+        grid-column: 1 / -1;
+      }
+    }
+    @media (max-width: 900px) {
+      .dossier-grid {
+        grid-template-columns: 1fr;
+      }
+      .dossier-sidebar, .preferences-column {
+        position: static !important;
+        max-height: none !important;
+      }
+    }
+
+    /* ── DEDICATED PERSONAL PREFERENCES COLUMN ── */
+    .preferences-column {
+      position: sticky;
+      top: 84px;
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(203, 213, 225, 0.6) transparent;
+    }
+    .preferences-column::-webkit-scrollbar {
+      width: 5px;
+    }
+    .preferences-column::-webkit-scrollbar-thumb {
+      background: rgba(203, 213, 225, 0.6);
+      border-radius: 99px;
+    }
+    .pref-panel-card {
+      background: var(--surface-glass);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .pref-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sync-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 99px;
+      background: #ecfdf5;
+      color: #059669;
+      border: 1px solid #a7f3d0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .pref-group {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .pref-group-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+    .pref-tags-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-height: 28px;
+    }
+    .pref-tag-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: white;
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-main);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .pref-tag-item .pref-tag-del {
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1;
+      transition: color 0.15s ease;
+    }
+    .pref-tag-item .pref-tag-del:hover {
+      color: #ef4444;
+    }
+    .pref-add-row {
+      display: flex;
+      gap: 6px;
+    }
+    .pref-mini-input {
+      flex: 1;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-family: inherit;
+      background: white;
+      color: var(--text-main);
+      transition: border-color 0.15s ease;
+    }
+    .pref-mini-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .pref-mini-btn {
+      padding: 6px 11px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .pref-mini-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+    .pref-presets-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 1px;
+    }
+    .pref-preset-pill {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 99px;
+      background: rgba(241, 245, 249, 0.85);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .pref-preset-pill:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    .pref-pills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .pref-choice-pill {
+      padding: 5px 10px;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .pref-choice-pill:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .pref-choice-pill.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 2px 6px rgba(0, 113, 227, 0.25);
+    }
+    .pref-segmented {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+      background: rgba(241, 245, 249, 0.8);
+      padding: 3px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+    .pref-segment-btn {
+      padding: 5px 3px;
+      border-radius: 5px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+    .pref-segment-btn:hover {
+      color: var(--text-main);
+    }
+    .pref-segment-btn.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .pref-chips-multi {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .pref-toggle-chip {
+      padding: 4px 9px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .pref-toggle-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .pref-toggle-chip.active {
+      background: #eff6ff;
+      border-color: #93c5fd;
+      color: #1d4ed8;
+      font-weight: 700;
+    }
+    .currency-toggle-pill {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+      background: white;
+    }
+    .curr-btn {
+      border: none;
+      background: transparent;
+      padding: 2px 7px;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .curr-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    .pref-range-slider {
+      width: 100%;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .pref-status-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .status-card-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: white;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .status-card-label:hover {
+      border-color: var(--primary);
+    }
+    .status-card-label.active {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+    .status-card-label input[type="radio"] {
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+    .status-card-content {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+    }
+    .status-card-content strong {
+      display: block;
+      color: var(--text-main);
+      font-size: 11.5px;
+    }
+    .status-card-content span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 10.5px;
+    }
+    .btn-primary-action {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: linear-gradient(135deg, #0071e3, #6366f1);
+      color: white;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-primary-action:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 113, 227, 0.35);
+    }
+    .btn-primary-action:active {
+      transform: translateY(0);
+    }
+    .btn-matches-jump {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      background: rgba(238, 242, 255, 0.7);
+      border: 1px solid #c7d2fe;
+      color: #4338ca;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .btn-matches-jump:hover {
+      background: #e0e7ff;
+      border-color: #818cf8;
+      transform: translateX(2px);
     }
 
     /* Sidebar Navigation / Hub */
@@ -1088,7 +1465,7 @@
             <a href="/profile/" class="dropdown-item">⚙️ Profile & Preferences</a>
             <a href="/crm/" id="nav-admin-crm-link" class="dropdown-item" style="display:none; color:#4f46e5; font-weight:700;">👑 Master CRM Sheet</a>
             <div style="height:1px; background:var(--border); margin:4px 0;"></div>
-            <a href="#" onclick="handleLogoutUser()" class="dropdown-item" style="color:#ef4444">Sign Out</a>
+            <a href="#" onclick="typeof safeSignOut === 'function' ? safeSignOut() : handleLogoutUser()" class="dropdown-item" style="color:#ef4444">Sign Out</a>
           </div>
         </div>
       </div>
@@ -1183,15 +1560,15 @@
       <!-- LEFT SIDEBAR: QUICK NAVIGATION & DEVELOPER LINKS -->
       <aside class="dossier-sidebar">
         
-        <!-- Quick Section Jumper -->
+        <!-- Unified (Profile) Card -->
         <div class="sidebar-card">
           <div class="sidebar-title">
-            <span>Career Hub</span>
-            <span style="font-size:12px; color:var(--primary);">Fast Jump</span>
+            <span>(Profile)</span>
+            <span style="font-size:12px; color:var(--primary); font-weight:700;">Fast Jump</span>
           </div>
           <nav class="nav-hub-list">
             <a href="#section-personal" class="hub-link">
-              <div class="hub-link-left"><span>👤</span><span>Personal & Summary</span></div>
+              <div class="hub-link-left"><span>👤</span><span>Personal &amp; Summary</span></div>
               <span>→</span>
             </a>
             <a href="#section-skills" class="hub-link">
@@ -1207,32 +1584,32 @@
               <span>→</span>
             </a>
             <a href="#section-education" class="hub-link">
-              <div class="hub-link-left"><span>🎓</span><span>Education & Coursework</span></div>
+              <div class="hub-link-left"><span>🎓</span><span>Education &amp; Coursework</span></div>
               <span>→</span>
             </a>
             <a href="#section-certifications" class="hub-link">
-              <div class="hub-link-left"><span>📜</span><span>Certifications & Licenses</span></div>
+              <div class="hub-link-left"><span>📜</span><span>Certifications &amp; Licenses</span></div>
               <span>→</span>
             </a>
             <a href="#section-achievements" class="hub-link">
-              <div class="hub-link-left"><span>🏆</span><span>Honors & Achievements</span></div>
+              <div class="hub-link-left"><span>🏆</span><span>Honors &amp; Achievements</span></div>
               <span>→</span>
             </a>
-            <a href="#section-preferences" class="hub-link">
-              <div class="hub-link-left"><span>🎯</span><span>Target Roles & Salary</span></div>
+            <a href="#section-preferences-panel" class="hub-link">
+              <div class="hub-link-left"><span>🎯</span><span>Personal Preferences</span></div>
               <span>→</span>
             </a>
           </nav>
-        </div>
 
-        <!-- Developer Profiles & Links Card -->
-        <div class="sidebar-card">
-          <div class="sidebar-title">
-            <span>Resume Header Links</span>
-            <button class="btn-edit-section" style="padding:2px 8px; font-size:11px;" onclick="openSocialModal()">Edit</button>
-          </div>
-          <div class="social-links-list" id="social-links-container">
-            <!-- Injected via JS -->
+          <!-- Developer Profiles & Links Embedded Inside (Profile) -->
+          <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-family:'Outfit', sans-serif; font-size:11.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted);">Resume Header Links</span>
+              <button class="btn-edit-section" style="padding:2px 8px; font-size:11px;" onclick="openSocialModal()">Edit</button>
+            </div>
+            <div class="social-links-list" id="social-links-container">
+              <!-- Injected via JS -->
+            </div>
           </div>
         </div>
 
@@ -1412,6 +1789,166 @@
         </section>
 
       </div>
+
+      <!-- RIGHT COLUMN: DEDICATED PERSONAL PREFERENCES COLUMN -->
+      <aside class="preferences-column" id="section-preferences-panel">
+        <div class="pref-panel-card">
+          <div class="pref-panel-header">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div class="section-icon" style="background:#e0f2fe; color:#0284c7;">🎯</div>
+              <div>
+                <h2 style="font-family:'Outfit', sans-serif; font-size:15px; font-weight:800; color:var(--text-main); margin:0;">Personal Preferences</h2>
+                <div style="font-size:11.5px; color:var(--text-muted);">Powers /matches/ 5D Fit Engine</div>
+              </div>
+            </div>
+            <span class="sync-badge" id="pref-sync-indicator" title="Synchronized with Supabase Cloud">● Cloud Synced</span>
+          </div>
+
+          <!-- 1. Target Roles / Specialization -->
+          <div class="pref-group">
+            <div class="pref-group-title">
+              <span>Target Roles (35% Fit)</span>
+              <span style="font-size:10.5px; font-weight:600; color:var(--primary);" id="col-roles-count">0 roles</span>
+            </div>
+            <div class="pref-tags-wrap" id="col-roles-tags"></div>
+            <div class="pref-add-row">
+              <input type="text" id="col-role-input" class="pref-mini-input" placeholder="Add custom role..." onkeydown="if(event.key==='Enter'){event.preventDefault();addColRole();}">
+              <button type="button" class="pref-mini-btn" onclick="addColRole()">+ Add</button>
+            </div>
+            <div class="pref-presets-row">
+              <span class="pref-preset-pill" onclick="quickAddRole('Full Stack Developer')">+ Full Stack</span>
+              <span class="pref-preset-pill" onclick="quickAddRole('Backend Engineer')">+ Backend</span>
+              <span class="pref-preset-pill" onclick="quickAddRole('Frontend Engineer')">+ Frontend</span>
+              <span class="pref-preset-pill" onclick="quickAddRole('AI / ML Engineer')">+ AI/ML</span>
+              <span class="pref-preset-pill" onclick="quickAddRole('DevOps Engineer')">+ DevOps</span>
+            </div>
+          </div>
+
+          <!-- 2. Seniority Level -->
+          <div class="pref-group">
+            <div class="pref-group-title">
+              <span>Seniority Level (10% Fit)</span>
+            </div>
+            <div class="pref-pills-row" id="col-seniority-pills">
+              <button type="button" class="pref-choice-pill" data-seniority="fresher" onclick="setColSeniority('fresher')">Fresher (0-1y)</button>
+              <button type="button" class="pref-choice-pill" data-seniority="junior" onclick="setColSeniority('junior')">Junior (1-3y)</button>
+              <button type="button" class="pref-choice-pill active" data-seniority="mid" onclick="setColSeniority('mid')">Mid (3-5y)</button>
+              <button type="button" class="pref-choice-pill" data-seniority="senior" onclick="setColSeniority('senior')">Senior (5-8y)</button>
+              <button type="button" class="pref-choice-pill" data-seniority="lead" onclick="setColSeniority('lead')">Lead / Staff (8y+)</button>
+            </div>
+          </div>
+
+          <!-- 3. Workplace Mode -->
+          <div class="pref-group">
+            <div class="pref-group-title">
+              <span>Workplace Mode (15% Fit)</span>
+            </div>
+            <div class="pref-segmented" id="col-workplace-segmented">
+              <button type="button" class="pref-segment-btn" data-wp="Remote" onclick="setColWorkplace('Remote')">🌐 Remote</button>
+              <button type="button" class="pref-segment-btn active" data-wp="Hybrid" onclick="setColWorkplace('Hybrid')">🏢 Hybrid</button>
+              <button type="button" class="pref-segment-btn" data-wp="On-Site" onclick="setColWorkplace('On-Site')">📍 On-Site</button>
+              <button type="button" class="pref-segment-btn" data-wp="Any" onclick="setColWorkplace('Any')">✨ Any</button>
+            </div>
+          </div>
+
+          <!-- 4. Target Locations -->
+          <div class="pref-group">
+            <div class="pref-group-title">
+              <span>Target Locations</span>
+            </div>
+            <div class="pref-chips-multi" id="col-locations-chips"></div>
+            <div class="pref-add-row" style="margin-top:4px;">
+              <input type="text" id="col-loc-input" class="pref-mini-input" placeholder="Add other city..." onkeydown="if(event.key==='Enter'){event.preventDefault();addColLocation();}">
+              <button type="button" class="pref-mini-btn" onclick="addColLocation()">+ Add</button>
+            </div>
+          </div>
+
+          <!-- 5. Minimum Expected Compensation -->
+          <div class="pref-group">
+            <div class="pref-group-title" style="display:flex; justify-content:space-between; align-items:center;">
+              <span>Minimum Expected CTC (5% Fit)</span>
+              <div class="currency-toggle-pill">
+                <button type="button" class="curr-btn active" id="col-curr-inr" onclick="setColCurrency('INR')">INR (₹)</button>
+                <button type="button" class="curr-btn" id="col-curr-usd" onclick="setColCurrency('USD')">USD ($)</button>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin:6px 0 2px;">
+              <span style="font-size:11.5px; color:var(--text-muted);">Floor:</span>
+              <span class="salary-highlight" id="col-salary-val" style="font-size:18px;">₹18 LPA+</span>
+            </div>
+            <input type="range" id="col-salary-slider" class="pref-range-slider" min="300000" max="6000000" step="100000" value="1800000" oninput="onColSalaryChange(this.value)">
+            <div class="pref-presets-row" id="col-salary-presets"></div>
+          </div>
+
+          <!-- 6. Employment Types -->
+          <div class="pref-group">
+            <div class="pref-group-title">Employment Type</div>
+            <div class="pref-pills-row" id="col-emptype-pills">
+              <button type="button" class="pref-choice-pill active" data-emp="Full-Time" onclick="toggleColEmpType('Full-Time')">Full-Time</button>
+              <button type="button" class="pref-choice-pill" data-emp="Internship" onclick="toggleColEmpType('Internship')">Internship</button>
+              <button type="button" class="pref-choice-pill" data-emp="Contract" onclick="toggleColEmpType('Contract')">Contract</button>
+            </div>
+          </div>
+
+          <!-- 7. Target Industries (Max 3) -->
+          <div class="pref-group">
+            <div class="pref-group-title">Target Industries (Max 3)</div>
+            <div class="pref-chips-multi" id="col-industries-chips"></div>
+          </div>
+
+          <!-- 8. Company Size -->
+          <div class="pref-group">
+            <div class="pref-group-title">Preferred Company Size</div>
+            <div class="pref-pills-row" id="col-companysize-pills">
+              <button type="button" class="pref-choice-pill" data-size="1-10" onclick="setColCompanySize('1-10')">1-10</button>
+              <button type="button" class="pref-choice-pill" data-size="11-50" onclick="setColCompanySize('11-50')">11-50</button>
+              <button type="button" class="pref-choice-pill active" data-size="51-200" onclick="setColCompanySize('51-200')">51-200</button>
+              <button type="button" class="pref-choice-pill" data-size="200-1000" onclick="setColCompanySize('200-1000')">200-1000</button>
+              <button type="button" class="pref-choice-pill" data-size="10000+" onclick="setColCompanySize('10000+')">10000+</button>
+              <button type="button" class="pref-choice-pill" data-size="Any" onclick="setColCompanySize('Any')">Any</button>
+            </div>
+          </div>
+
+          <!-- 9. Search Urgency -->
+          <div class="pref-group">
+            <div class="pref-group-title">Job Search Urgency</div>
+            <div class="pref-status-cards">
+              <div class="status-card-label active" id="col-status-card-act" onclick="setColStatus('actively_looking')">
+                <input type="radio" name="col_status_radio" value="actively_looking" id="col-status-act" checked>
+                <div class="status-card-content">
+                  <span style="font-size:16px;">🚀</span>
+                  <div>
+                    <strong>Actively Interviewing</strong>
+                    <span>Immediate availability</span>
+                  </div>
+                </div>
+              </div>
+              <div class="status-card-label" id="col-status-card-cas" onclick="setColStatus('casually_browsing')">
+                <input type="radio" name="col_status_radio" value="casually_browsing" id="col-status-cas">
+                <div class="status-card-content">
+                  <span style="font-size:16px;">👀</span>
+                  <div>
+                    <strong>Casually Browsing</strong>
+                    <span>Open to great offers</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ACTION BUTTONS -->
+          <div style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
+            <button type="button" class="btn-primary-action" id="btn-save-col-prefs" onclick="savePersonalPreferencesColumn()">
+              ⚡ Save Preferences &amp; Re-Calculate Matches
+            </button>
+            <a href="/matches/" class="btn-matches-jump" id="btn-jump-matches">
+              <span>View Live 90%+ Matches Feed</span>
+              <span>→</span>
+            </a>
+          </div>
+
+        </div>
+      </aside>
     </div>
 
   </main>
@@ -1793,7 +2330,10 @@
 
     window.logoutFirebase = async function() {
       await logoutUser();
-      localStorage.clear();
+      localStorage.removeItem('getarole_user');
+      localStorage.removeItem('firebase_uid');
+      sessionStorage.removeItem('firebase_uid');
+      sessionStorage.clear();
       window.location.href = "/";
     };
 
@@ -1814,24 +2354,24 @@
           if (avatarEl) avatarEl.textContent = (uName[0] || 'H').toUpperCase();
         }
 
-        // Hydrate from server
+        const adminEmails = ['hemasaivattikuti2727@gmail.com', 'lakshmisatyasrisri@gmail.com', 'hemasai@getarole.in'];
+        if (user.email && adminEmails.includes(user.email.toLowerCase().trim())) {
+          const crmLink = document.getElementById('nav-admin-crm-link');
+          if (crmLink) crmLink.style.display = 'block';
+        }
+
+        // Dual-Write Hydration: Supabase Cloud + LocalStorage
         try {
-          const [profRes, prefRes] = await Promise.all([
-            fetch('/api/user/profile', { headers: { 'X-Firebase-UID': user.uid } }),
-            fetch('/api/user/preferences', { headers: { 'X-Firebase-UID': user.uid } })
-          ]);
-          if (profRes.ok) {
-            const cloudProf = await profRes.json();
+          if (window.getAroleSync) {
+            const [cloudProf, cloudPrefs] = await Promise.all([
+              window.getAroleSync.loadUserProfile(),
+              window.getAroleSync.loadUserPreferences()
+            ]);
             if (cloudProf && Object.keys(cloudProf).length > 0) {
-              const localProf = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
-              localStorage.setItem('getarole_profile', JSON.stringify({ ...cloudProf, ...localProf }));
+              state.profile = { ...state.profile, ...cloudProf };
             }
-          }
-          if (prefRes.ok) {
-            const cloudPrefs = await prefRes.json();
             if (cloudPrefs && Object.keys(cloudPrefs).length > 0) {
-              const localPrefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
-              localStorage.setItem('getarole_prefs', JSON.stringify({ ...cloudPrefs, ...localPrefs }));
+              state.prefs = { ...state.prefs, ...cloudPrefs };
             }
           }
         } catch(err) {
@@ -2325,7 +2865,418 @@
       }
 
       computeProfileCompletion();
+      renderPersonalPreferencesColumn();
     }
+
+    // ── INTERACTIVE PERSONAL PREFERENCES COLUMN CONTROLLER ──
+    const colPrefsData = {
+      roles: [],
+      seniority: 'mid',
+      workplaceType: 'Hybrid',
+      locations: [],
+      salary_amt: 1800000,
+      salary_curr: 'INR',
+      employmentTypes: ['Full-Time'],
+      industries: [],
+      companySize: '51-200',
+      status: 'actively_looking'
+    };
+
+    const ALL_CURATED_LOCATIONS = [
+      'Bengaluru', 'Hyderabad', 'Pune', 'Delhi NCR', 'Mumbai', 'Chennai', 'Remote in India', 'Global Remote'
+    ];
+
+    const ALL_CURATED_INDUSTRIES = [
+      'Fintech', 'SaaS', 'AI / Machine Learning', 'E-Commerce', 'EdTech', 'HealthTech', 'Cloud Infra', 'Gaming'
+    ];
+
+    function renderPersonalPreferencesColumn() {
+      // 1. Hydrate colPrefsData from state.prefs
+      const p = state.prefs || {};
+      
+      // Roles
+      if (Array.isArray(p.roles) && p.roles.length > 0) {
+        colPrefsData.roles = [...p.roles];
+      } else if (Array.isArray(p.specializations) && p.specializations.length > 0) {
+        colPrefsData.roles = [...p.specializations];
+      } else if (p.role) {
+        colPrefsData.roles = [p.role];
+      } else {
+        colPrefsData.roles = ['Full Stack Developer', 'Backend Engineer'];
+      }
+
+      // Seniority
+      colPrefsData.seniority = (p.seniority || 'mid').toLowerCase();
+
+      // Workplace Mode
+      colPrefsData.workplaceType = p.workplaceType || (p.remoteOnly ? 'Remote' : 'Hybrid');
+
+      // Locations
+      if (Array.isArray(p.locations) && p.locations.length > 0) {
+        colPrefsData.locations = [...p.locations];
+      } else if (p.city) {
+        colPrefsData.locations = [p.city];
+      } else {
+        colPrefsData.locations = ['Bengaluru', 'Remote in India'];
+      }
+
+      // Salary
+      colPrefsData.salary_curr = p.salary_curr || 'INR';
+      colPrefsData.salary_amt = p.salary_amt || (colPrefsData.salary_curr === 'INR' ? 1800000 : 100000);
+
+      // Employment Types
+      if (Array.isArray(p.employmentType) && p.employmentType.length > 0) {
+        colPrefsData.employmentTypes = [...p.employmentType];
+      } else if (typeof p.employmentType === 'string' && p.employmentType) {
+        colPrefsData.employmentTypes = [p.employmentType];
+      } else {
+        colPrefsData.employmentTypes = ['Full-Time'];
+      }
+
+      // Industries
+      if (Array.isArray(p.industries)) {
+        colPrefsData.industries = [...p.industries];
+      } else {
+        colPrefsData.industries = ['Fintech', 'SaaS', 'AI / Machine Learning'];
+      }
+
+      // Company Size
+      colPrefsData.companySize = p.companySize || '51-200';
+
+      // Status
+      colPrefsData.status = p.status || 'actively_looking';
+
+      // 2. Render UI Elements
+      updateColRolesUI();
+      updateColSeniorityUI();
+      updateColWorkplaceUI();
+      updateColLocationsUI();
+      updateColSalaryUI();
+      updateColEmpTypeUI();
+      updateColIndustriesUI();
+      updateColCompanySizeUI();
+      updateColStatusUI();
+    }
+
+    function updateColRolesUI() {
+      const wrap = document.getElementById('col-roles-tags');
+      const countEl = document.getElementById('col-roles-count');
+      if (countEl) countEl.textContent = `${colPrefsData.roles.length} role${colPrefsData.roles.length === 1 ? '' : 's'}`;
+      if (!wrap) return;
+      if (colPrefsData.roles.length === 0) {
+        wrap.innerHTML = '<span style="font-size:12px; color:var(--text-muted);">No roles added yet. Pick presets below.</span>';
+        return;
+      }
+      wrap.innerHTML = colPrefsData.roles.map((r, i) => `
+        <span class="pref-tag-item">
+          <span>💼 ${escapeHTML(r)}</span>
+          <span class="pref-tag-del" onclick="removeColRole(${i})" title="Remove">×</span>
+        </span>
+      `).join('');
+    }
+
+    window.addColRole = function() {
+      const inp = document.getElementById('col-role-input');
+      if (!inp) return;
+      const val = inp.value.trim();
+      if (val && !colPrefsData.roles.some(r => r.toLowerCase() === val.toLowerCase())) {
+        colPrefsData.roles.push(val);
+        updateColRolesUI();
+      }
+      inp.value = '';
+    };
+
+    window.removeColRole = function(idx) {
+      colPrefsData.roles.splice(idx, 1);
+      updateColRolesUI();
+    };
+
+    window.quickAddRole = function(role) {
+      if (!colPrefsData.roles.some(r => r.toLowerCase() === role.toLowerCase())) {
+        colPrefsData.roles.push(role);
+        updateColRolesUI();
+      }
+    };
+
+    function updateColSeniorityUI() {
+      document.querySelectorAll('#col-seniority-pills .pref-choice-pill').forEach(btn => {
+        const s = btn.getAttribute('data-seniority');
+        if (s === colPrefsData.seniority) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+    }
+
+    window.setColSeniority = function(s) {
+      colPrefsData.seniority = s;
+      updateColSeniorityUI();
+    };
+
+    function updateColWorkplaceUI() {
+      document.querySelectorAll('#col-workplace-segmented .pref-segment-btn').forEach(btn => {
+        const wp = btn.getAttribute('data-wp');
+        if (wp === colPrefsData.workplaceType) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+    }
+
+    window.setColWorkplace = function(wp) {
+      colPrefsData.workplaceType = wp;
+      updateColWorkplaceUI();
+    };
+
+    function updateColLocationsUI() {
+      const wrap = document.getElementById('col-locations-chips');
+      if (!wrap) return;
+      const allLocs = Array.from(new Set([...ALL_CURATED_LOCATIONS, ...colPrefsData.locations]));
+      wrap.innerHTML = allLocs.map(loc => {
+        const isActive = colPrefsData.locations.includes(loc);
+        return `
+          <button type="button" class="pref-toggle-chip ${isActive ? 'active' : ''}" onclick="toggleColLocation('${escapeHTML(loc)}')">
+            ${isActive ? '✓ ' : '+ '}${escapeHTML(loc)}
+          </button>
+        `;
+      }).join('');
+    }
+
+    window.toggleColLocation = function(loc) {
+      const idx = colPrefsData.locations.indexOf(loc);
+      if (idx >= 0) {
+        if (colPrefsData.locations.length > 1) {
+          colPrefsData.locations.splice(idx, 1);
+        } else {
+          toast('Select at least one preferred location.');
+          return;
+        }
+      } else {
+        colPrefsData.locations.push(loc);
+      }
+      updateColLocationsUI();
+    };
+
+    window.addColLocation = function() {
+      const inp = document.getElementById('col-loc-input');
+      if (!inp) return;
+      const val = inp.value.trim();
+      if (val && !colPrefsData.locations.includes(val)) {
+        colPrefsData.locations.push(val);
+        updateColLocationsUI();
+      }
+      inp.value = '';
+    };
+
+    function updateColSalaryUI() {
+      const curr = colPrefsData.salary_curr || 'INR';
+      const inrBtn = document.getElementById('col-curr-inr');
+      const usdBtn = document.getElementById('col-curr-usd');
+      const slider = document.getElementById('col-salary-slider');
+      const txt = document.getElementById('col-salary-val');
+      const presetsWrap = document.getElementById('col-salary-presets');
+
+      if (inrBtn) inrBtn.className = `curr-btn ${curr === 'INR' ? 'active' : ''}`;
+      if (usdBtn) usdBtn.className = `curr-btn ${curr === 'USD' ? 'active' : ''}`;
+
+      if (slider) {
+        if (curr === 'INR') {
+          slider.min = 300000;
+          slider.max = 6000000;
+          slider.step = 100000;
+          slider.value = colPrefsData.salary_amt;
+          if (txt) txt.textContent = `₹${(colPrefsData.salary_amt / 100000).toFixed(0)} LPA+`;
+          if (presetsWrap) {
+            presetsWrap.innerHTML = [600000, 1200000, 1800000, 2500000, 3500000].map(amt => `
+              <span class="pref-preset-pill" onclick="quickSetSalary(${amt})">₹${amt/100000}L</span>
+            `).join('');
+          }
+        } else {
+          slider.min = 20000;
+          slider.max = 250000;
+          slider.step = 5000;
+          slider.value = colPrefsData.salary_amt;
+          if (txt) txt.textContent = `$${(colPrefsData.salary_amt / 1000).toFixed(0)}k/yr+`;
+          if (presetsWrap) {
+            presetsWrap.innerHTML = [50000, 80000, 110000, 140000, 180000].map(amt => `
+              <span class="pref-preset-pill" onclick="quickSetSalary(${amt})">$${amt/1000}k</span>
+            `).join('');
+          }
+        }
+      }
+    }
+
+    window.setColCurrency = function(curr) {
+      if (colPrefsData.salary_curr === curr) return;
+      colPrefsData.salary_curr = curr;
+      if (curr === 'USD') {
+        colPrefsData.salary_amt = Math.min(250000, Math.max(20000, Math.round(colPrefsData.salary_amt / 15)));
+      } else {
+        colPrefsData.salary_amt = Math.min(6000000, Math.max(300000, Math.round(colPrefsData.salary_amt * 15)));
+      }
+      updateColSalaryUI();
+    };
+
+    window.onColSalaryChange = function(val) {
+      colPrefsData.salary_amt = parseInt(val, 10);
+      const curr = colPrefsData.salary_curr || 'INR';
+      const txt = document.getElementById('col-salary-val');
+      if (txt) {
+        if (curr === 'INR') {
+          txt.textContent = `₹${(colPrefsData.salary_amt / 100000).toFixed(0)} LPA+`;
+        } else {
+          txt.textContent = `$${(colPrefsData.salary_amt / 1000).toFixed(0)}k/yr+`;
+        }
+      }
+    };
+
+    window.quickSetSalary = function(amt) {
+      colPrefsData.salary_amt = amt;
+      updateColSalaryUI();
+    };
+
+    function updateColEmpTypeUI() {
+      document.querySelectorAll('#col-emptype-pills .pref-choice-pill').forEach(btn => {
+        const emp = btn.getAttribute('data-emp');
+        if (colPrefsData.employmentTypes.includes(emp)) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+    }
+
+    window.toggleColEmpType = function(emp) {
+      const idx = colPrefsData.employmentTypes.indexOf(emp);
+      if (idx >= 0) {
+        if (colPrefsData.employmentTypes.length > 1) {
+          colPrefsData.employmentTypes.splice(idx, 1);
+        }
+      } else {
+        colPrefsData.employmentTypes.push(emp);
+      }
+      updateColEmpTypeUI();
+    };
+
+    function updateColIndustriesUI() {
+      const wrap = document.getElementById('col-industries-chips');
+      if (!wrap) return;
+      wrap.innerHTML = ALL_CURATED_INDUSTRIES.map(ind => {
+        const isActive = colPrefsData.industries.includes(ind);
+        return `
+          <button type="button" class="pref-toggle-chip ${isActive ? 'active' : ''}" onclick="toggleColIndustry('${escapeHTML(ind)}')">
+            ${isActive ? '✓ ' : '+ '}${escapeHTML(ind)}
+          </button>
+        `;
+      }).join('');
+    }
+
+    window.toggleColIndustry = function(ind) {
+      const idx = colPrefsData.industries.indexOf(ind);
+      if (idx >= 0) {
+        colPrefsData.industries.splice(idx, 1);
+      } else {
+        if (colPrefsData.industries.length >= 3) {
+          toast('Maximum 3 target industries.');
+          return;
+        }
+        colPrefsData.industries.push(ind);
+      }
+      updateColIndustriesUI();
+    };
+
+    function updateColCompanySizeUI() {
+      document.querySelectorAll('#col-companysize-pills .pref-choice-pill').forEach(btn => {
+        const size = btn.getAttribute('data-size');
+        if (size === colPrefsData.companySize) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+    }
+
+    window.setColCompanySize = function(size) {
+      colPrefsData.companySize = size;
+      updateColCompanySizeUI();
+    };
+
+    function updateColStatusUI() {
+      const actCard = document.getElementById('col-status-card-act');
+      const casCard = document.getElementById('col-status-card-cas');
+      const actRadio = document.getElementById('col-status-act');
+      const casRadio = document.getElementById('col-status-cas');
+
+      const isAct = colPrefsData.status === 'actively_looking' || colPrefsData.status === 'Actively looking';
+      if (actCard) actCard.className = `status-card-label ${isAct ? 'active' : ''}`;
+      if (casCard) casCard.className = `status-card-label ${!isAct ? 'active' : ''}`;
+      if (actRadio) actRadio.checked = isAct;
+      if (casRadio) casRadio.checked = !isAct;
+    }
+
+    window.setColStatus = function(status) {
+      colPrefsData.status = status;
+      updateColStatusUI();
+    };
+
+    window.savePersonalPreferencesColumn = async function() {
+      const btn = document.getElementById('btn-save-col-prefs');
+      const originalHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.innerHTML = '⏳ Saving &amp; Re-Calculating...';
+        btn.disabled = true;
+      }
+
+      try {
+        state.prefs = {
+          ...state.prefs,
+          roles: colPrefsData.roles,
+          role: colPrefsData.roles[0] || state.profile.headline || 'Software Engineer',
+          specializations: [...colPrefsData.roles],
+          target_role: colPrefsData.roles[0] || state.profile.headline || 'Software Engineer',
+          seniority: colPrefsData.seniority,
+          workplaceType: colPrefsData.workplaceType,
+          remoteOnly: colPrefsData.workplaceType === 'Remote',
+          locations: colPrefsData.locations,
+          city: colPrefsData.locations[0] || 'Bengaluru',
+          salary_amt: colPrefsData.salary_amt,
+          salary_curr: colPrefsData.salary_curr,
+          employmentType: colPrefsData.employmentTypes,
+          industries: colPrefsData.industries,
+          companySize: colPrefsData.companySize,
+          status: colPrefsData.status,
+          updated_at: new Date().toISOString()
+        };
+
+        // 1. Dual-Write to LocalStorage & Supabase Cloud
+        localStorage.setItem('getarole_prefs', JSON.stringify(state.prefs));
+        if (window.getAroleSync) {
+          await window.getAroleSync.syncUserPreferences(state.prefs);
+        }
+
+        // 2. Also update center column display if present
+        const centerRoles = document.getElementById('pref-roles-wrap');
+        if (centerRoles) centerRoles.innerHTML = state.prefs.roles.map(r => `<span class="pref-val-pill">💼 ${escapeHTML(r)}</span>`).join('');
+        const centerLocs = document.getElementById('pref-locations-wrap');
+        if (centerLocs) centerLocs.innerHTML = state.prefs.locations.map(l => `<span class="pref-val-pill">📍 ${escapeHTML(l)}</span>`).join('');
+        const centerWp = document.getElementById('pref-workplace-wrap');
+        if (centerWp) centerWp.innerHTML = `<span class="pref-val-pill" style="background:#ecfdf5; color:#059669; border-color:#a7f3d0;">🏢 ${escapeHTML(state.prefs.workplaceType)}</span>`;
+        const centerSal = document.getElementById('pref-salary-display');
+        if (centerSal) {
+          if (state.prefs.salary_curr === 'INR') centerSal.textContent = `₹${(state.prefs.salary_amt / 100000).toFixed(0)} LPA+`;
+          else centerSal.textContent = `$${(state.prefs.salary_amt / 1000).toFixed(0)}k/yr+`;
+        }
+
+        // 3. Update Cloud Synced Indicator
+        const ind = document.getElementById('pref-sync-indicator');
+        if (ind) {
+          ind.innerHTML = '✓ Cloud Synced';
+          ind.style.background = '#ecfdf5';
+          ind.style.borderColor = '#a7f3d0';
+          ind.style.color = '#059669';
+        }
+
+        toast('✓ Personal preferences saved & synced to Supabase! Matches re-calculated.');
+      } catch (err) {
+        console.error('Error saving personal preferences:', err);
+        toast('Preferences saved locally.');
+      } finally {
+        if (btn) {
+          btn.innerHTML = originalHtml;
+          btn.disabled = false;
+        }
+      }
+    };
 
     function computeProfileCompletion() {
       let score = 20; // Base identity
@@ -2430,49 +3381,47 @@
         // Save compiled Harvard resume JSON
         localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
 
-        // Background push to resume API
-        const uid = (typeof getFirebaseUID === 'function') ? getFirebaseUID() : (localStorage.getItem('firebase_uid') || 'guest_user');
-        fetch('/api/user/resume', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-          body: JSON.stringify(R)
-        }).catch(() => {});
+        // Background push to Supabase Cloud & resume API
+        if (window.getAroleSync) {
+          window.getAroleSync.syncUserResume(R);
+        } else {
+          const uid = (typeof getFirebaseUID === 'function') ? getFirebaseUID() : (localStorage.getItem('firebase_uid') || 'guest_user');
+          fetch('/api/user/resume', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+            body: JSON.stringify(R)
+          }).catch(() => {});
+        }
 
       } catch(syncErr) {
         console.warn('[Resume Bridge] Sync notice:', syncErr);
       }
     }
 
-    // ── ATOMIC STORAGE & BACKEND SYNC ──
+    // ── ATOMIC DUAL-WRITE STORAGE & SUPABASE CLOUD SYNC ──
     async function persistProfileData() {
-      // 1. Write profile & preferences to localStorage
-      localStorage.setItem('getarole_profile', JSON.stringify(state.profile));
-      localStorage.setItem('getarole_prefs', JSON.stringify(state.prefs));
+      // 1. Dual-Write to LocalStorage & Supabase Cloud
+      try {
+        if (window.getAroleSync) {
+          await Promise.allSettled([
+            window.getAroleSync.syncUserProfile(state.profile),
+            window.getAroleSync.syncUserPreferences(state.prefs)
+          ]);
+        } else {
+          localStorage.setItem('getarole_profile', JSON.stringify(state.profile));
+          localStorage.setItem('getarole_prefs', JSON.stringify(state.prefs));
+        }
+      } catch (syncErr) {
+        console.warn('[Profile] Dual-write notice:', syncErr);
+        localStorage.setItem('getarole_profile', JSON.stringify(state.profile));
+        localStorage.setItem('getarole_prefs', JSON.stringify(state.prefs));
+      }
 
       // 2. Compile and sync full Harvard resume data
       syncProfileToResumeV2();
 
-      // 3. API & Cloud Sync
-      try {
-        const uid = (typeof getFirebaseUID === 'function') ? getFirebaseUID() : (localStorage.getItem('firebase_uid') || 'guest_user');
-        await Promise.all([
-          fetch('/api/user/profile', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-            body: JSON.stringify(state.profile)
-          }),
-          fetch('/api/user/preferences', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-            body: JSON.stringify(state.prefs)
-          })
-        ]);
-      } catch(apiErr) {
-        console.warn('[Profile] Local sync completed; cloud notice:', apiErr);
-      }
-
       renderFullProfile();
-      toast('✓ Candidate dossier & resume architect synchronized!');
+      toast('✓ Candidate dossier & resume architect synchronized to Cloud!');
     }
 
     // ── MODAL SAVE HANDLERS ──
@@ -2929,7 +3878,10 @@
       if (typeof logoutFirebase === 'function') {
         logoutFirebase();
       } else {
-        localStorage.clear();
+        localStorage.removeItem('getarole_user');
+        localStorage.removeItem('firebase_uid');
+        sessionStorage.removeItem('firebase_uid');
+        sessionStorage.clear();
         window.location.href = '/';
       }
     };
@@ -2939,5 +3891,6 @@
       renderFullProfile();
     });
   </script>
+  <script src="/static/js/mobile-nav.js?v=3"></script>
 </body>
 </html>

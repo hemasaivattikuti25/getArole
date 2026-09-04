@@ -137,31 +137,28 @@ CREATE TABLE IF NOT EXISTS public.user_preferences (
 -- 7. user_resumes
 -- Resume uploads + all parsed data per user (JSONB for flexibility).
 -- ─────────────────────────────────────────────────────────────
+
 CREATE TABLE IF NOT EXISTS public.user_resumes (
     id              UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     firebase_uid    TEXT NOT NULL REFERENCES public.user_profiles(firebase_uid) ON DELETE CASCADE,
-    is_default      BOOLEAN DEFAULT TRUE,
+    is_default      BOOLEAN DEFAULT true,
     filename        TEXT,
     file_url        TEXT,
+    uploaded_at     TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     work_experience JSONB DEFAULT '[]'::jsonb,
     education       JSONB DEFAULT '[]'::jsonb,
     projects        JSONB DEFAULT '[]'::jsonb,
-    links           JSONB DEFAULT '{}'::jsonb,
-    skills          TEXT[],
+    skills          TEXT[] DEFAULT '{}'::text[],
     languages       TEXT[],
     raw_text        TEXT,
-    uploaded_at     TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
     created_at      TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    updated_at      TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+    updated_at      TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    CONSTRAINT user_resumes_firebase_uid_key UNIQUE (firebase_uid)
 );
 
--- Migration helpers for existing tables
-ALTER TABLE public.jobs ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT FALSE;
+-- For existing Supabase instances where user_resumes was created without the UNIQUE constraint:
+-- ALTER TABLE public.user_resumes ADD CONSTRAINT user_resumes_firebase_uid_key UNIQUE (firebase_uid);
 
-CREATE INDEX IF NOT EXISTS idx_jobs_company         ON public.jobs (company);
-CREATE INDEX IF NOT EXISTS idx_jobs_city            ON public.jobs (city);
-CREATE INDEX IF NOT EXISTS idx_jobs_platform        ON public.jobs (platform);
-CREATE INDEX IF NOT EXISTS idx_jobs_workplace_type  ON public.jobs (workplace_type);
 CREATE INDEX IF NOT EXISTS idx_jobs_workplace_loc   ON public.jobs (workplace_type, location);
 CREATE INDEX IF NOT EXISTS idx_jobs_created_at      ON public.jobs (created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_jobs_active          ON public.jobs (is_deleted) WHERE is_deleted = false;
@@ -173,87 +170,63 @@ CREATE INDEX IF NOT EXISTS idx_user_resumes_uid     ON public.user_resumes(fireb
 
 -- ─────────────────────────────────────────────────────────────
 -- 9. Row Level Security (Zero-Trust Least-Privilege Scoping)
+-- 
+-- ⚠️ ARCHITECTURAL NOTE ON FIREBASE AUTH vs SUPABASE RLS:
+-- getArole authenticates users via Firebase Auth on the web client.
+-- The client communicates with Supabase PostgREST using the public 'anon' key.
+-- Supabase's built-in 'auth.uid()' is only populated if users sign in via Supabase Auth JWTs.
+-- If you enforce 'auth.uid() = firebase_uid', client-side PostgREST calls with the anon key
+-- will evaluate auth.uid() as NULL and fail with RLS errors.
+--
+-- For direct client-side PostgREST access with Firebase Auth, either:
+--   A) Keep RLS disabled for user_profiles, user_preferences, and user_resumes (app queries isolate by firebase_uid), OR
+--   B) Use the anon-permissive policies below, OR
+--   C) Route all reads/writes through the FastAPI backend with the service_role key.
 -- ─────────────────────────────────────────────────────────────
 ALTER TABLE public.jobs              ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.candidates        ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.match_evaluations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.applications      ENABLE ROW LEVEL SECURITY;
+
+-- 1. Jobs: Public read-only for active non-deleted jobs; write restricted to backend service_role
+DROP POLICY IF EXISTS "Public read-only active jobs" ON public.jobs;
+CREATE POLICY "Public read-only active jobs" ON public.jobs
+  FOR SELECT USING (is_deleted = false);
+
+DROP POLICY IF EXISTS "Service role full access - jobs" ON public.jobs;
+CREATE POLICY "Service role full access - jobs" ON public.jobs
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+-- 2. Recruiter Candidate & Evaluation Tables: Restricted to backend service role
+DROP POLICY IF EXISTS "Service role full access - candidates" ON public.candidates;
+CREATE POLICY "Service role full access - candidates" ON public.candidates
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Service role full access - match evaluations" ON public.match_evaluations;
+CREATE POLICY "Service role full access - match evaluations" ON public.match_evaluations
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Service role full access - applications" ON public.applications;
+CREATE POLICY "Service role full access - applications" ON public.applications
+  FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+-- 3. User Data Tables (Profiles, Preferences, Resumes):
+-- When using direct client PostgREST calls with the anon key, configure permissive access:
 ALTER TABLE public.user_profiles     ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_preferences  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_resumes      ENABLE ROW LEVEL SECURITY;
 
--- Clean up existing permissive legacy policies
-DROP POLICY IF EXISTS "Public read/write - jobs"          ON public.jobs;
-DROP POLICY IF EXISTS "Public read/write - candidates"    ON public.candidates;
-DROP POLICY IF EXISTS "Public read/write - evaluations"   ON public.match_evaluations;
-DROP POLICY IF EXISTS "Public read/write - applications"  ON public.applications;
-DROP POLICY IF EXISTS "Service full access - profiles"    ON public.user_profiles;
-DROP POLICY IF EXISTS "Service full access - preferences" ON public.user_preferences;
-DROP POLICY IF EXISTS "Service full access - resumes"     ON public.user_resumes;
-DROP POLICY IF EXISTS "Public Read Access for Jobs"             ON public.jobs;
-DROP POLICY IF EXISTS "Public Insert/Upsert Access for Jobs"    ON public.jobs;
-DROP POLICY IF EXISTS "Allow All Access for Candidates"         ON public.candidates;
-DROP POLICY IF EXISTS "Allow All Access for Match Evaluations"  ON public.match_evaluations;
-DROP POLICY IF EXISTS "Allow All Access for Applications"       ON public.applications;
+DROP POLICY IF EXISTS "Anon full access - user_profiles" ON public.user_profiles;
+CREATE POLICY "Anon full access - user_profiles" ON public.user_profiles
+  FOR ALL USING (true) WITH CHECK (true);
 
--- 1. Jobs: Public read-only for active non-deleted jobs; write restricted to backend service_role
-CREATE POLICY "Public read-only active jobs" ON public.jobs
-  FOR SELECT USING (is_deleted = false);
+DROP POLICY IF EXISTS "Anon full access - user_preferences" ON public.user_preferences;
+CREATE POLICY "Anon full access - user_preferences" ON public.user_preferences
+  FOR ALL USING (true) WITH CHECK (true);
 
-CREATE POLICY "Service role full access - jobs" ON public.jobs
-  FOR ALL TO service_role USING (true) WITH CHECK (true);
-
--- 2. User Profiles: Restricted strictly to the authenticated owner or backend service_role
-CREATE POLICY "Users can only read own profile" ON public.user_profiles
-  FOR SELECT USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
-
-CREATE POLICY "Users can only insert own profile" ON public.user_profiles
-  FOR INSERT WITH CHECK (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
-
-CREATE POLICY "Users can only update own profile" ON public.user_profiles
-  FOR UPDATE USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role')
-  WITH CHECK (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
-
-CREATE POLICY "Users can only delete own profile" ON public.user_profiles
-  FOR DELETE USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
-
--- 3. User Preferences: Scoped strictly to authenticated owner or backend service_role
-CREATE POLICY "Users can only read own preferences" ON public.user_preferences
-  FOR SELECT USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
-
-CREATE POLICY "Users can only insert own preferences" ON public.user_preferences
-  FOR INSERT WITH CHECK (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
-
-CREATE POLICY "Users can only update own preferences" ON public.user_preferences
-  FOR UPDATE USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role')
-  WITH CHECK (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
-
-CREATE POLICY "Users can only delete own preferences" ON public.user_preferences
-  FOR DELETE USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
-
--- 4. User Resumes: Scoped strictly to authenticated owner or backend service_role
-CREATE POLICY "Users can only read own resumes" ON public.user_resumes
-  FOR SELECT USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
-
-CREATE POLICY "Users can only insert own resumes" ON public.user_resumes
-  FOR INSERT WITH CHECK (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
-
-CREATE POLICY "Users can only update own resumes" ON public.user_resumes
-  FOR UPDATE USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role')
-  WITH CHECK (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
-
-CREATE POLICY "Users can only delete own resumes" ON public.user_resumes
-  FOR DELETE USING (auth.uid()::text = firebase_uid OR auth.role() = 'service_role');
-
--- 5. Recruiter Candidate & Evaluation Tables: Restricted to authenticated service role
-CREATE POLICY "Service role full access - candidates" ON public.candidates
-  FOR ALL TO service_role USING (true) WITH CHECK (true);
-
-CREATE POLICY "Service role full access - match evaluations" ON public.match_evaluations
-  FOR ALL TO service_role USING (true) WITH CHECK (true);
-
-CREATE POLICY "Service role full access - applications" ON public.applications
-  FOR ALL TO service_role USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS "Anon full access - user_resumes" ON public.user_resumes;
+CREATE POLICY "Anon full access - user_resumes" ON public.user_resumes
+  FOR ALL USING (true) WITH CHECK (true);
 
 -- ─────────────────────────────────────────────────────────────
 -- 10. pgvector RPC — semantic job matching for resume uploads

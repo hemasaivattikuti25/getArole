@@ -246,8 +246,8 @@
       <div>
         <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:10px;">Legal &amp; Support</div>
         <ul style="list-style:none; display:flex; flex-direction:column; gap:6px; padding:0; margin:0;">
-          <li><a href="/privacy" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Privacy Policy</a></li>
-          <li><a href="/terms" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Terms of Service</a></li>
+          <li><a href="/privacy/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Privacy Policy</a></li>
+          <li><a href="/terms/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Terms of Service</a></li>
           <li><a href="mailto:hemasaivattikuti2727@gmail.com" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Grievance Redressal</a></li>
           <li><a href="mailto:hemasaivattikuti2727@gmail.com" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Contact Support</a></li>
         </ul>
@@ -274,6 +274,9 @@
         .replace(/'/g, '&#39;');
     }
 
+    const SUPABASE_REST_URL = "https://tgmhtlqcjgcjedlnthfk.supabase.co/rest/v1";
+    const SUPABASE_ANON_KEY = "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn";
+
     async function loadCandidate() {
       const urlParams = new URLSearchParams(window.location.search);
       const candId = urlParams.get('id');
@@ -285,6 +288,9 @@
         return;
       }
       
+      let cand = null;
+
+      // 1. Try local FastAPI backend endpoint
       try {
         const headers = {};
         const rawUser = localStorage.getItem('getarole_user');
@@ -297,31 +303,99 @@
 
         const apiUrl = `/api/candidate/${encodeURIComponent(candId)}` + (key ? `?key=${encodeURIComponent(key)}` : '');
         const res = await fetch(apiUrl, { headers });
-        if (!res.ok) throw new Error('Candidate not found');
-        const data = await res.json();
-        const cand = data.candidate || {};
-        
-        let skillsHtml = '<p style="color:var(--text-muted);font-size:14px;">No specific skills extracted.</p>';
-        if (cand.skills && Array.isArray(cand.skills) && cand.skills.length > 0) {
-            skillsHtml = '<div class="skills-grid">' + cand.skills.map(s => `<span class="skill-chip">${esc(s)}</span>`).join('') + '</div>';
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.candidate) cand = data.candidate;
         }
-        
-        container.innerHTML = `
-          <div class="header">
-            <h1>${esc(cand.name || 'Anonymous Candidate')}</h1>
-            <p>${cand.email ? 'Contact: ' + esc(cand.email) : 'Contact hidden for privacy'}</p>
-          </div>
-          <div class="content">
-            <div class="section-title">Verified Skills</div>
-            ${skillsHtml}
-            
-            <div class="section-title">Resume Summary</div>
-            <div class="resume-box">${esc(cand.raw_resume_text || 'No resume text provided.')}</div>
-          </div>
-        `;
-      } catch(e) {
-        container.innerHTML = '<div class="error">Could not load candidate profile. It may have been removed or the link is invalid.</div>';
+      } catch(_) {}
+
+      // 2. Try Supabase PostgREST user_profiles & user_resumes
+      if (!cand) {
+        try {
+          const profRes = await fetch(`${SUPABASE_REST_URL}/user_profiles?or=(firebase_uid.eq.${encodeURIComponent(candId)},email.eq.${encodeURIComponent(candId)})&select=*`, {
+            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+          });
+          if (profRes.ok) {
+            const rows = await profRes.json();
+            if (rows && rows.length > 0) {
+              const r = rows[0];
+              cand = {
+                name: r.name || `${r.first || ''} ${r.last || ''}`.trim() || (r.email ? r.email.split('@')[0] : 'Anonymous Candidate'),
+                email: r.email || '',
+                phone: r.phone || '',
+                headline: r.headline || '',
+                loc: r.loc || '',
+                skills: [],
+                raw_resume_text: ''
+              };
+            }
+          }
+        } catch(_) {}
+
+        // Fetch user_resumes for skills & text
+        try {
+          const resumeRes = await fetch(`${SUPABASE_REST_URL}/user_resumes?firebase_uid=eq.${encodeURIComponent(candId)}&order=updated_at.desc&limit=1`, {
+            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+          });
+          if (resumeRes.ok) {
+            const rRows = await resumeRes.json();
+            if (rRows && rRows.length > 0) {
+              const row = rRows[0];
+              if (!cand) cand = { name: 'Verified Candidate', email: '', skills: [] };
+              if (Array.isArray(row.skills) && row.skills.length > 0) cand.skills = row.skills;
+              if (row.raw_text) cand.raw_resume_text = row.raw_text;
+            }
+          }
+        } catch(_) {}
       }
+
+      // 3. Check current user's local profile if candId matches
+      if (!cand) {
+        const localUid = sessionStorage.getItem('firebase_uid') || localStorage.getItem('firebase_uid');
+        if (candId === 'me' || candId === localUid) {
+          const localProf = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+          if (localProf && (localProf.name || localProf.headline || localProf.skills)) {
+            cand = {
+              name: localProf.name || 'Candidate',
+              email: localProf.email || '',
+              phone: localProf.phone || '',
+              headline: localProf.headline || '',
+              loc: localProf.loc || localProf.city || '',
+              skills: localProf.skills || [],
+              raw_resume_text: localProf.summary || 'Profile sourced from active local session.'
+            };
+          }
+        }
+      }
+
+      if (!cand) {
+        container.innerHTML = '<div class="error">Could not load candidate profile. It may have been removed or the link is invalid.</div>';
+        return;
+      }
+      
+      let skillsHtml = '<p style="color:var(--text-muted);font-size:14px;">No specific skills extracted.</p>';
+      if (cand.skills && Array.isArray(cand.skills) && cand.skills.length > 0) {
+        skillsHtml = '<div class="skills-grid">' + cand.skills.map(s => `<span class="skill-chip">${esc(s)}</span>`).join('') + '</div>';
+      }
+      
+      container.innerHTML = `
+        <div class="header">
+          <h1>${esc(cand.name || 'Anonymous Candidate')}</h1>
+          <p>
+            ${cand.headline ? '<strong>' + esc(cand.headline) + '</strong> • ' : ''}
+            ${cand.loc ? esc(cand.loc) + ' • ' : ''}
+            ${cand.email ? '✉️ ' + esc(cand.email) : 'Contact hidden for privacy'}
+            ${cand.phone ? ' • 📞 ' + esc(cand.phone) : ''}
+          </p>
+        </div>
+        <div class="content">
+          <div class="section-title">Verified Skills</div>
+          ${skillsHtml}
+          
+          <div class="section-title">Resume Summary</div>
+          <div class="resume-box">${esc(cand.raw_resume_text || 'No resume text provided.')}</div>
+        </div>
+      `;
     }
     
     loadCandidate();

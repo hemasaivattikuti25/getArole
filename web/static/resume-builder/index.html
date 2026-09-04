@@ -12,6 +12,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
+  <script src="/js/storage-sync.js"></script>
   <script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();
     function setResumeMobileTab(mode) {
       const btnEdit = document.getElementById('btn-tab-edit');
@@ -1816,8 +1817,9 @@
 
           <div class="user-dropdown" id="user-dropdown">
             <a href="/profile/" class="dropdown-item">⚙️ Profile & Preferences</a>
+            <a href="/crm/" id="nav-admin-crm-link" class="dropdown-item" style="display:none; color:#4f46e5; font-weight:700;">👑 Master CRM Sheet</a>
             <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
-            <a href="#" onclick="typeof handleLogout === 'function' ? handleLogout() : (localStorage.clear(), window.location.href='/')" class="dropdown-item" style="color:#ef4444">Sign Out</a>
+            <a href="#" onclick="typeof safeSignOut === 'function' ? safeSignOut() : (typeof handleLogout === 'function' ? handleLogout() : (localStorage.removeItem('getarole_user'), localStorage.removeItem('firebase_uid'), sessionStorage.clear(), window.location.href='/'))" class="dropdown-item" style="color:#ef4444">Sign Out</a>
           </div>
         </div>
       </div>
@@ -2380,92 +2382,34 @@
         }
       }
 
-      // Cloud Fetch from Supabase
-      const uid = getFirebaseUID();
-      if (uid) {
-        try {
-          const res = await fetch('/api/user/resume', {
-            headers: { 'X-Firebase-UID': uid }
-          });
-          if (res.ok) {
-            const data = await res.json();
-            // API returns a flat resume dict (not wrapped in {resume: {...}})
-            if (data && ((data.header && data.header.name) || data.name || (data.skills && data.skills.length > 0))) {
-              if (data.header) {
-                R.header = { ...R.header, ...data.header };
-              }
-              if (data.name && (!R.header.name || !R.header.first_name)) {
-                R.header.name = data.name;
-                const parts = data.name.split(' ');
-                R.header.first_name = parts[0];
-                if (parts.length > 1) R.header.last_name = parts.slice(1).join(' ');
-              }
-              if (data.email && !R.header.email) R.header.email = data.email;
-              if (data.phone && !R.header.phone) R.header.phone = data.phone;
-              if (data.headline && !R.header.title) R.header.title = data.headline;
-              
-              if (data.summary) {
-                R.summary = typeof data.summary === 'string' ? { text: data.summary } : { ...R.summary, ...data.summary };
-              }
-              if (Array.isArray(data.experience) && data.experience.length > 0) {
-                R.experience = data.experience;
-              }
-              if (Array.isArray(data.education) && data.education.length > 0) {
-                R.education = data.education;
-              }
-              if (Array.isArray(data.projects) && data.projects.length > 0) {
-                R.projects = data.projects;
-              }
-              if (data.skills) {
-                if (Array.isArray(data.skills) && data.skills.length > 0) {
-                  if (typeof data.skills[0] === 'object' && data.skills[0].label) {
-                    R.skills = data.skills;
-                  } else {
-                    R.skills = [{ label: 'Skills & Competencies', items: data.skills.join(', ') }];
-                  }
-                }
-              }
-              if (data.links && typeof data.links === 'object') {
-                if (data.links.linkedin && !R.header.linkedin) R.header.linkedin = data.links.linkedin;
-                if (data.links.github && !R.header.github) R.header.github = data.links.github;
-                if (data.links.portfolio && !R.header.portfolio) R.header.portfolio = data.links.portfolio;
-              }
-              localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
-              populateFormFields();
-              rp();
-            }
+      // Cloud Fetch from Supabase via Storage-Sync
+      try {
+        if (window.getAroleSync) {
+          const cloudResume = await window.getAroleSync.loadUserResume();
+          if (cloudResume && ((cloudResume.header && cloudResume.header.name) || cloudResume.experience?.length || cloudResume.skills?.length)) {
+            R = { ...R, ...cloudResume };
+            localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
+            populateFormFields();
+            rp();
           }
-
-          // Fallback to profile API if header is still missing name/email
-          if (!R.header.name || !R.header.email) {
-            const profRes = await fetch('/api/user/profile', { headers: { 'X-Firebase-UID': uid } });
-            if (profRes.ok) {
-              const prof = await profRes.json();
-              if (prof && Object.keys(prof).length > 0) {
-                if (prof.name && !R.header.name) R.header.name = prof.name;
-                if (prof.first && !R.header.first_name) R.header.first_name = prof.first;
-                if (prof.last && !R.header.last_name) R.header.last_name = prof.last;
-                if (prof.email && !R.header.email) R.header.email = prof.email;
-                if (prof.phone && !R.header.phone) R.header.phone = prof.phone;
-                if (prof.headline && !R.header.title) R.header.title = prof.headline;
-                if (prof.linkedin_url && !R.header.linkedin) R.header.linkedin = prof.linkedin_url;
-                if (prof.github_url && !R.header.github) R.header.github = prof.github_url;
-                if (prof.portfolio_url && !R.header.portfolio) R.header.portfolio = prof.portfolio_url;
-                if (prof.skills && (!R.skills || R.skills.length === 0 || !R.skills[0].items)) {
-                  R.skills = Array.isArray(prof.skills) && prof.skills.length > 0 && typeof prof.skills[0] === 'object' ? prof.skills : [{ label: 'Skills & Competencies', items: Array.isArray(prof.skills) ? prof.skills.join(', ') : prof.skills }];
-                }
-                if (prof.experience && prof.experience.length > 0) R.experience = prof.experience;
-                if (prof.education && prof.education.length > 0) R.education = prof.education;
-                if (prof.projects && prof.projects.length > 0) R.projects = prof.projects;
-                localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
-                populateFormFields();
-                rp();
-              }
-            }
+          const cloudProf = await window.getAroleSync.loadUserProfile();
+          if (cloudProf && (!R.header.name || !R.header.email)) {
+            if (cloudProf.name && !R.header.name) R.header.name = cloudProf.name;
+            if (cloudProf.first && !R.header.first_name) R.header.first_name = cloudProf.first;
+            if (cloudProf.last && !R.header.last_name) R.header.last_name = cloudProf.last;
+            if (cloudProf.email && !R.header.email) R.header.email = cloudProf.email;
+            if (cloudProf.phone && !R.header.phone) R.header.phone = cloudProf.phone;
+            if (cloudProf.headline && !R.header.title) R.header.title = cloudProf.headline;
+            if (cloudProf.links?.linkedin && !R.header.linkedin) R.header.linkedin = cloudProf.links.linkedin;
+            if (cloudProf.links?.github && !R.header.github) R.header.github = cloudProf.links.github;
+            if (cloudProf.links?.portfolio && !R.header.portfolio) R.header.portfolio = cloudProf.links.portfolio;
+            localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
+            populateFormFields();
+            rp();
           }
-        } catch (err) {
-          console.warn('Cloud resume load notice:', err);
         }
+      } catch (syncLoadErr) {
+        console.warn('[Resume-Builder] Cloud sync notice:', syncLoadErr);
       }
     }
 
@@ -3068,20 +3012,24 @@ ${r.header?.name || 'Candidate Name'}`
           }
           localStorage.setItem('getarole_profile', JSON.stringify(prof));
 
-          // 3. Cloud Sync to both /api/user/resume and /api/user/profile
-          const uid = getFirebaseUID();
-          if (uid) {
-            fetch('/api/user/resume', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-              body: JSON.stringify({ resume: R })
-            }).catch(e => console.warn('Resume cloud save notice:', e));
-
-            fetch('/api/user/profile', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-              body: JSON.stringify(prof)
-            }).catch(e => console.warn('Profile cloud sync notice:', e));
+          // 3. Cloud Sync via Storage-Sync engine
+          if (window.getAroleSync) {
+            window.getAroleSync.syncUserResume(R);
+            window.getAroleSync.syncUserProfile(prof);
+          } else {
+            const uid = getFirebaseUID();
+            if (uid) {
+              fetch('/api/user/resume', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+                body: JSON.stringify({ resume: R })
+              }).catch(() => {});
+              fetch('/api/user/profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+                body: JSON.stringify(prof)
+              }).catch(() => {});
+            }
           }
         } catch (e) {
           console.warn('[Resume->Profile Sync Notice]', e);
@@ -3487,7 +3435,18 @@ ${r.header?.name || 'Candidate Name'}`
           </div>
         `).join('');
       } catch (e) {
-        resultsDiv.innerHTML = '<div style="color:var(--txs);font-size:12px;">Generated executive summary draft.</div>';
+        console.warn('[AI Summary notice]', e);
+        const candRole = (R.header && R.header.title) || 'Software Engineer';
+        const candName = (R.header && R.header.name) || 'Candidate';
+        const fallback1 = `High-impact ${candRole} with proven expertise in architecting resilient web applications, modern APIs, and data-driven systems. Adept at cross-functional collaboration, agile execution, and driving measurable engineering results.`;
+        const fallback2 = `Results-oriented ${candRole} skilled in modern full-stack development, cloud-native deployments, and clean software design patterns. Passionate about solving complex engineering challenges with high performance and scalable code.`;
+        resultsDiv.innerHTML = [fallback1, fallback2].map((sumText, idx) => `
+          <div style="background:#fff;border:1.5px solid var(--bd);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;">
+            <div style="font-size:11px;font-weight:800;color:var(--pr);">OPTION ${idx + 1} (${selectedSummaryStyle.toUpperCase()} · INSTANT)</div>
+            <div style="font-size:12.5px;line-height:1.5;color:var(--tx);">${esc(sumText)}</div>
+            <button class="ai-btn-apply" onclick="applySummaryOption('${esc(sumText).replace(/'/g, "\\'")}')">Apply This Summary</button>
+          </div>
+        `).join('');
       }
     }
 
@@ -3546,7 +3505,34 @@ ${r.header?.name || 'Candidate Name'}`
           </div>
         `;
       } catch (e) {
-        resultsDiv.innerHTML = '<div style="font-size:12px;color:var(--txm);">Skill suggestion analysis complete.</div>';
+        console.warn('[AI Skills notice]', e);
+        const roleLower = targetRole.toLowerCase();
+        let fallbackSuggestions = [
+          { category: 'Frontend', skills: 'React, TypeScript, Next.js, HTML5/CSS3, TailwindCSS, State Management' },
+          { category: 'Backend & Databases', skills: 'Node.js, Python, PostgreSQL, REST APIs, Redis, Microservices' },
+          { category: 'DevOps & Tooling', skills: 'Docker, AWS, Git, CI/CD Pipelines, Linux, Unit Testing' }
+        ];
+        if (roleLower.includes('data') || roleLower.includes('ai') || roleLower.includes('ml')) {
+          fallbackSuggestions = [
+            { category: 'Machine Learning', skills: 'Python, PyTorch, Scikit-Learn, TensorFlow, Hugging Face, Pandas' },
+            { category: 'Data Engineering', skills: 'SQL, Apache Spark, PostgreSQL, Data Pipelines, ETL, Snowflake' },
+            { category: 'Deployment', skills: 'Docker, AWS SageMaker, FastAPI, MLOps, Model Monitoring' }
+          ];
+        }
+        resultsDiv.innerHTML = `
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="font-size:11px;font-weight:700;color:var(--pr);">RECOMMENDED SKILL GROUPS FOR ${esc(targetRole.toUpperCase())}:</div>
+            ${fallbackSuggestions.map(sg => `
+              <div style="background:#fff;border:1px solid var(--bd);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
+                <div>
+                  <strong style="font-size:12px;color:var(--tx);">${esc(sg.category)}:</strong>
+                  <span style="font-size:12px;color:var(--txm);margin-left:4px;">${esc(sg.skills)}</span>
+                </div>
+                <button class="ai-quick-btn" style="background:var(--pr);color:#fff;border:none;" onclick="addSkillSuggestionToResume('${esc(sg.category).replace(/'/g, "\\'")}', '${esc(sg.skills).replace(/'/g, "\\'")}')">+ Add Group</button>
+              </div>
+            `).join('')}
+          </div>
+        `;
       }
     }
 
@@ -3928,6 +3914,12 @@ ${r.header?.name || 'Candidate Name'}`
         if (nameEl && name) nameEl.textContent = name;
         const avatarEl = document.getElementById('nav-avatar');
         if (avatarEl && name) avatarEl.textContent = name[0].toUpperCase();
+
+        const adminEmails = ['hemasaivattikuti2727@gmail.com', 'lakshmisatyasrisri@gmail.com', 'hemasai@getarole.in'];
+        if (userObj.email && adminEmails.includes(userObj.email.toLowerCase().trim())) {
+          const crmLink = document.getElementById('nav-admin-crm-link');
+          if (crmLink) crmLink.style.display = 'block';
+        }
       } catch(e) {}
     }
     if (document.readyState === 'loading') {

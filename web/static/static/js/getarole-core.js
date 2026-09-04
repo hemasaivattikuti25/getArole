@@ -55,6 +55,10 @@ async function apiSaveProfile(profileData) {
     console.warn('[apiSaveProfile] Resume V2 header sync notice:', syncErr);
   }
 
+  if (window.getAroleSync) {
+    window.getAroleSync.syncUserProfile(profileData).catch(() => {});
+  }
+
   try {
     const response = await fetch('/api/user/profile', {
       method: 'POST',
@@ -87,6 +91,12 @@ async function apiLoadProfile() {
   } catch (err) {
     console.warn('[apiLoadProfile] Fetch error:', err);
   }
+  if (window.getAroleSync) {
+    try {
+      const cloud = await window.getAroleSync.loadUserProfile();
+      if (cloud && Object.keys(cloud).length > 0) return cloud;
+    } catch (_) {}
+  }
   return null;
 }
 
@@ -97,6 +107,10 @@ async function apiLoadProfile() {
  */
 async function apiSavePreferences(prefsData) {
   const uid = getFirebaseUID();
+  if (window.getAroleSync) {
+    window.getAroleSync.syncUserPreferences(prefsData).catch(() => {});
+  }
+
   try {
     const response = await fetch('/api/user/preferences', {
       method: 'POST',
@@ -127,6 +141,12 @@ async function apiLoadPreferences() {
     }
   } catch (err) {
     console.warn('[apiLoadPreferences] Fetch error:', err);
+  }
+  if (window.getAroleSync) {
+    try {
+      const cloud = await window.getAroleSync.loadUserPreferences();
+      if (cloud && Object.keys(cloud).length > 0) return cloud;
+    } catch (_) {}
   }
   return null;
 }
@@ -186,6 +206,10 @@ async function handleModalResumeUpload(event, onComplete) {
         resumeV2.links = parsedProf.links || resumeV2.links || {};
         localStorage.setItem('getarole_resume_v2', JSON.stringify(resumeV2));
         
+        if (window.getAroleSync) {
+          window.getAroleSync.syncUserResume(resumeV2).catch(rErr => console.warn('[Resume Supabase Sync]', rErr));
+        }
+
         const uid = getFirebaseUID();
         if (uid && uid !== 'guest_user') {
           fetch('/api/user/resume', {

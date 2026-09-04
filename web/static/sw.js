@@ -9,15 +9,18 @@ const API_CACHE = `${CACHE_VERSION}-api`;
 
 const PRECACHE_ASSETS = [
   '/',
-  '/dashboard',
-  '/explore',
-  '/matches',
-  '/profile',
-  '/preferences',
-  '/onboarding',
+  '/dashboard/',
+  '/explore/',
+  '/matches/',
+  '/profile/',
+  '/preferences/',
+  '/onboarding/',
+  '/resume-builder/',
+  '/cover-letter-builder/',
   '/logo.svg',
   '/js/getarole-core.js',
-  '/js/mobile-nav.js'
+  '/js/mobile-nav.js',
+  '/js/storage-sync.js'
 ];
 
 // Install: Pre-cache shell assets & skip waiting

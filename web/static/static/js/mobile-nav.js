@@ -394,28 +394,28 @@
 
     // B. Bottom Navigation Bar
     const path = window.location.pathname;
-    const isHome = path === '/' || path === '/dashboard' || path.startsWith('/dashboard');
-    const isMatches = path.startsWith('/matches');
-    const isExplore = path.startsWith('/explore');
-    const isProfile = path.startsWith('/profile') || path.startsWith('/preferences');
+    const isHome = path === '/' || path === '/dashboard/' || path.startsWith('/dashboard/');
+    const isMatches = path.startsWith('/matches/');
+    const isExplore = path.startsWith('/explore/');
+    const isProfile = path.startsWith('/profile/') || path.startsWith('/preferences/');
 
     if (!document.querySelector('.mobile-bottom-nav')) {
       const nav = document.createElement('nav');
       nav.className = 'mobile-bottom-nav';
       nav.innerHTML = `
-        <a href="/dashboard" class="mobile-bottom-nav-link ${isHome ? 'active' : ''}">
+        <a href="/dashboard/" class="mobile-bottom-nav-link ${isHome ? 'active' : ''}">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
           <span>Home</span>
         </a>
-        <a href="/matches" class="mobile-bottom-nav-link ${isMatches ? 'active' : ''}">
+        <a href="/matches/" class="mobile-bottom-nav-link ${isMatches ? 'active' : ''}">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
           <span>Matches</span>
         </a>
-        <a href="/explore" class="mobile-bottom-nav-link ${isExplore ? 'active' : ''}">
+        <a href="/explore/" class="mobile-bottom-nav-link ${isExplore ? 'active' : ''}">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
           <span>Jobs</span>
         </a>
-        <a href="/profile" class="mobile-bottom-nav-link ${isProfile ? 'active' : ''}">
+        <a href="/profile/" class="mobile-bottom-nav-link ${isProfile ? 'active' : ''}">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
           <span>Profile</span>
         </a>
@@ -433,7 +433,7 @@
       drawer.className = 'mobile-nav-drawer';
       drawer.innerHTML = `
         <div class="mobile-nav-header">
-          <a href="/dashboard" class="mobile-nav-brand">
+          <a href="/dashboard/" class="mobile-nav-brand">
             <img src="/logo.svg" onerror="this.src='/favicon.png'" alt="getArole">
             <span style="font-family:'Outfit', sans-serif; font-size:19px; font-weight:800; color:#0f172a;">get<span style="color:#4f46e5;">A</span>role</span>
           </a>
@@ -443,29 +443,48 @@
         </div>
         <nav class="mobile-nav-list">
           <div style="padding: 10px 20px 4px; font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">AI Career Tools</div>
-          <a href="/resume-builder" class="mobile-nav-link ${path.startsWith('/resume-builder') ? 'active' : ''}">
+          <a href="/resume-builder/" class="mobile-nav-link ${path.startsWith('/resume-builder/') ? 'active' : ''}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             ATS Resume Builder
           </a>
-          <a href="/cover-letter-builder" class="mobile-nav-link ${path.startsWith('/cover-letter-builder') ? 'active' : ''}">
+          <a href="/cover-letter-builder/" class="mobile-nav-link ${path.startsWith('/cover-letter-builder/') ? 'active' : ''}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
             Cover Letter Generator
           </a>
           <div style="height: 1px; background: #e2e8f0; margin: 8px 0;"></div>
           <div style="padding: 10px 20px 4px; font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Account</div>
-          <a href="/profile" class="mobile-nav-link ${path === '/profile' ? 'active' : ''}">
+          <a href="/profile/" class="mobile-nav-link ${path === '/profile/' ? 'active' : ''}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             Candidate Profile
           </a>
-          <a href="/preferences" class="mobile-nav-link ${path === '/preferences' ? 'active' : ''}">
+          <a href="/preferences/" class="mobile-nav-link ${path === '/preferences/' ? 'active' : ''}">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
             Job Preferences
+          </a>
+          <a href="/crm/" id="mobile-drawer-crm-link" class="mobile-nav-link" style="display:none; color:#4f46e5; font-weight:700;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+            👑 Master CRM Sheet
+          </a>
+          <div style="height: 1px; background: #e2e8f0; margin: 8px 0;"></div>
+          <a href="#" onclick="typeof safeSignOut === 'function' ? safeSignOut() : (typeof handleLogout === 'function' ? handleLogout() : (localStorage.removeItem('getarole_user'), localStorage.removeItem('firebase_uid'), sessionStorage.clear(), window.location.href='/'))" class="mobile-nav-link" style="color:#ef4444; font-weight:600;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Sign Out
           </a>
         </nav>
       `;
 
       document.body.appendChild(backdrop);
       document.body.appendChild(drawer);
+
+      try {
+        const u = JSON.parse(localStorage.getItem('getarole_user') || '{}');
+        const adminEmails = ['hemasaivattikuti2727@gmail.com', 'lakshmisatyasrisri@gmail.com', 'hemasai@getarole.in'];
+        if (u.email && adminEmails.includes(u.email.toLowerCase().trim())) {
+          const mCrm = drawer.querySelector('#mobile-drawer-crm-link');
+          if (mCrm) mCrm.style.display = 'flex';
+        }
+      } catch (_) {}
+
       drawer.querySelector('.mobile-nav-close-btn').addEventListener('click', toggleDrawer);
     }
 

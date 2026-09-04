@@ -21,8 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="apple-touch-icon" href="/logo.svg">
-  
+  <script src="/js/storage-sync.js"></script>
   <script>
     // Strict Authentication Guard
     (function checkAuth() {
@@ -1349,8 +1348,8 @@
     <div class="ambient-orb orb-1"></div>
     <div class="ambient-orb orb-2"></div>
     <div class="ambient-orb orb-3"></div>
-  </div
-  <div class="landing-blueprint-grid" aria-hidden="true"></div>>
+  </div>
+  <div class="landing-blueprint-grid" aria-hidden="true"></div>
   
   <!-- WCAG 2.4.1 Bypass Blocks -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -1389,7 +1388,7 @@
             <a href="/profile/" class="dropdown-item">⚙️ Profile & Preferences</a>
             <a href="/crm/" id="nav-admin-crm-link" class="dropdown-item" style="display:none; color:#4f46e5; font-weight:700;">👑 Master CRM Sheet</a>
             <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
-            <a href="#" onclick="typeof handleLogout === 'function' ? handleLogout() : (localStorage.clear(), window.location.href='/')" class="dropdown-item" style="color:#ef4444">Sign Out</a>
+            <a href="#" onclick="typeof safeSignOut === 'function' ? safeSignOut() : (typeof handleLogout === 'function' ? handleLogout() : (localStorage.removeItem('getarole_user'), localStorage.removeItem('firebase_uid'), sessionStorage.clear(), window.location.href='/'))" class="dropdown-item" style="color:#ef4444">Sign Out</a>
           </div>
         </div>
       </div>
@@ -1581,8 +1580,8 @@
       <div>
         <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:10px;">Legal &amp; Support</div>
         <ul style="list-style:none; display:flex; flex-direction:column; gap:6px; padding:0; margin:0;">
-          <li><a href="/privacy" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Privacy Policy</a></li>
-          <li><a href="/terms" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Terms of Service</a></li>
+          <li><a href="/privacy/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Privacy Policy</a></li>
+          <li><a href="/terms/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Terms of Service</a></li>
           <li><a href="mailto:hemasaivattikuti2727@gmail.com" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Grievance Redressal</a></li>
           <li><a href="mailto:hemasaivattikuti2727@gmail.com" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Contact Support</a></li>
         </ul>
@@ -1733,53 +1732,55 @@
           avatar.textContent = (user.displayName || user.email)[0].toUpperCase();
         }
 
-        const adminEmails = ['hemasaivattikuti2727@gmail.com', 'lakshmisatyasrisri@gmail.com'];
+        const adminEmails = ['hemasaivattikuti2727@gmail.com', 'lakshmisatyasrisri@gmail.com', 'hemasai@getarole.in'];
         if (user.email && adminEmails.includes(user.email.toLowerCase().trim())) {
           const crmLink = document.getElementById('nav-admin-crm-link');
           if (crmLink) crmLink.style.display = 'block';
         }
 
-        // Hydrate data from backend
+        // Hydrate data from backend or Supabase Cloud
         try {
           const [profRes, prefRes, resRes] = await Promise.all([
-            fetch('/api/user/profile', { headers: { 'X-Firebase-UID': user.uid } }),
-            fetch('/api/user/preferences', { headers: { 'X-Firebase-UID': user.uid } }),
-            fetch('/api/user/resume', { headers: { 'X-Firebase-UID': user.uid } })
+            fetch('/api/user/profile', { headers: { 'X-Firebase-UID': user.uid } }).catch(() => null),
+            fetch('/api/user/preferences', { headers: { 'X-Firebase-UID': user.uid } }).catch(() => null),
+            fetch('/api/user/resume', { headers: { 'X-Firebase-UID': user.uid } }).catch(() => null)
           ]);
           
-          if (profRes.ok) {
-            const cloudProf = await profRes.json();
-            if (Object.keys(cloudProf).length > 0) {
-              // Merge cloud scalars INTO local profile — do NOT overwrite rich local arrays
-              // (experience, education, projects, links only exist in localStorage / resume parse)
-              const localProf = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
-              const merged = { ...cloudProf, ...localProf };
-              // Prefer cloud scalars if local is empty
-              ['name','first','last','email','phone','headline','loc','summary'].forEach(k => {
-                if (cloudProf[k] && !localProf[k]) merged[k] = cloudProf[k];
-              });
-              // Preserve richer array data from either source
-              ['experience','education','projects','skills'].forEach(k => {
-                const cloudArr = cloudProf[k]; const localArr = localProf[k];
-                merged[k] = (Array.isArray(localArr) && localArr.length > 0) ? localArr
-                          : (Array.isArray(cloudArr) && cloudArr.length > 0) ? cloudArr : (merged[k] || []);
-              });
-              if (!merged.links && cloudProf.links) merged.links = cloudProf.links;
-              localStorage.setItem('getarole_profile', JSON.stringify(merged));
-            }
+          let cloudProf = (profRes && profRes.ok) ? await profRes.json().catch(() => null) : null;
+          if (!cloudProf && window.getAroleSync) {
+            cloudProf = await window.getAroleSync.loadUserProfile().catch(() => null);
           }
-          if (prefRes.ok) {
-            const cloudPrefs = await prefRes.json();
-            if (Object.keys(cloudPrefs).length > 0) {
-              // Merge cloud prefs INTO local prefs preserving chip-selection keys (roles, values, etc.)
-              const localPrefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
-              const mergedPrefs = { ...cloudPrefs, ...localPrefs };
-              localStorage.setItem('getarole_prefs', JSON.stringify(mergedPrefs));
-            }
+          if (cloudProf && Object.keys(cloudProf).length > 0) {
+            const localProf = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+            const merged = { ...cloudProf, ...localProf };
+            ['name','first','last','email','phone','headline','loc','summary'].forEach(k => {
+              if (cloudProf[k] && !localProf[k]) merged[k] = cloudProf[k];
+            });
+            ['experience','education','projects','skills'].forEach(k => {
+              const cloudArr = cloudProf[k]; const localArr = localProf[k];
+              merged[k] = (Array.isArray(localArr) && localArr.length > 0) ? localArr
+                        : (Array.isArray(cloudArr) && cloudArr.length > 0) ? cloudArr : (merged[k] || []);
+            });
+            if (!merged.links && cloudProf.links) merged.links = cloudProf.links;
+            localStorage.setItem('getarole_profile', JSON.stringify(merged));
           }
-          if (resRes.ok) {
-            const data = await resRes.json();
-            if (Object.keys(data).length > 0) localStorage.setItem('getarole_resume_v2', JSON.stringify(data));
+
+          let cloudPrefs = (prefRes && prefRes.ok) ? await prefRes.json().catch(() => null) : null;
+          if (!cloudPrefs && window.getAroleSync) {
+            cloudPrefs = await window.getAroleSync.loadUserPreferences().catch(() => null);
+          }
+          if (cloudPrefs && Object.keys(cloudPrefs).length > 0) {
+            const localPrefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
+            const mergedPrefs = { ...cloudPrefs, ...localPrefs };
+            localStorage.setItem('getarole_prefs', JSON.stringify(mergedPrefs));
+          }
+
+          let cloudResume = (resRes && resRes.ok) ? await resRes.json().catch(() => null) : null;
+          if (!cloudResume && window.getAroleSync) {
+            cloudResume = await window.getAroleSync.loadUserResume().catch(() => null);
+          }
+          if (cloudResume && Object.keys(cloudResume).length > 0) {
+            localStorage.setItem('getarole_resume_v2', JSON.stringify(cloudResume));
           }
           
           if (typeof loadJobs === 'function') loadJobs();
@@ -2030,6 +2031,11 @@
 
       const uid = getFirebaseUID();
 
+      if (window.getAroleSync) {
+        window.getAroleSync.syncUserProfile(profile).catch(e => console.warn('[Profile Supabase sync]', e));
+        window.getAroleSync.syncUserPreferences(modalPrefs).catch(e => console.warn('[Prefs Supabase sync]', e));
+      }
+
       Promise.all([
         fetch('/api/user/profile', {
           method: 'POST',
@@ -2138,16 +2144,25 @@
 
         allJobs = loadedList || [];
         
-        // 3. Real Dynamic Fit Score Calculation based on user preferences & profile
+        // 3. Real Dynamic 5-Dimension Fit Score Calculation based on user preferences & profile
         const userProf = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
         const userPrefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
         
         function computeJobFitScore(job, profile, prefs) {
-          let score = 0;
           const userSkills = (profile.skills || []).map(s => s.toLowerCase());
-          const targetRoles = [prefs.role, profile.headline, prefs.target_role].filter(Boolean).map(r => r.toLowerCase());
-          const preferredCities = (prefs.locations || [prefs.city, profile.city]).filter(Boolean).map(c => c.toLowerCase());
+          const targetRoles = [
+            ...(prefs.roles || []),
+            ...(prefs.specializations || []),
+            prefs.role,
+            prefs.target_role,
+            profile.headline
+          ].filter(Boolean).map(r => r.toLowerCase().trim());
+
+          const preferredCities = (prefs.locations || [prefs.city, profile.city])
+            .filter(Boolean)
+            .map(c => c.toLowerCase().trim());
           const remotePref = prefs.remoteOnly || prefs.workplaceType === 'Remote';
+          const hybridPref = prefs.workplaceType === 'Hybrid';
 
           const jobTitle = (job.title || '').toLowerCase();
           const jobDesc = (job.description || '').toLowerCase();
@@ -2155,35 +2170,106 @@
           const jobSkills = (job.skills || []).map(s => s.toLowerCase());
           const isRemote = (job.workplace_type || '').toLowerCase() === 'remote' || jobLoc.includes('remote');
 
-          // Strict checking: Must match role/title somewhat
-          let roleMatch = false;
-          if (targetRoles.length === 0) roleMatch = true; // no preferences set
-          else if (targetRoles.some(r => jobTitle.includes(r) || r.includes(jobTitle))) roleMatch = true;
-          else if (targetRoles.some(r => jobDesc.includes(r))) roleMatch = true;
-
-          if (!roleMatch) return 0; // Filter out if completely irrelevant to role preferences
-
-          score += 65; // Base score for matching role
-
-          // Location Match
-          if (remotePref && isRemote) {
-            score += 15;
-          } else if (preferredCities.length > 0 && preferredCities.some(c => jobLoc.includes(c) || (job.city && job.city.toLowerCase().includes(c)))) {
-            score += 15;
-          } else if (preferredCities.length > 0) {
-            score -= 10; // Penalty for wrong location
-          }
-
-          // Skills Match
-          if (userSkills.length > 0) {
-            let hits = 0;
-            for (const skill of userSkills) {
-              if (jobSkills.includes(skill) || jobDesc.includes(skill) || jobTitle.includes(skill)) hits++;
+          // ── DIMENSION 1: ROLE & SENIORITY (35 PTS) ──
+          let roleScore = 0;
+          if (targetRoles.length === 0) {
+            roleScore = 25;
+          } else {
+            const exactMatch = targetRoles.some(r => jobTitle.includes(r) || r.includes(jobTitle));
+            if (exactMatch) {
+              roleScore = 35;
+            } else {
+              const tokens = new Set();
+              targetRoles.forEach(r => r.split(/[\s,/-]+/).forEach(t => { if (t.length > 2) tokens.add(t); }));
+              let tokenHits = 0;
+              tokens.forEach(t => { if (jobTitle.includes(t)) tokenHits++; });
+              if (tokenHits > 0) {
+                roleScore = Math.min(32, 22 + (tokenHits * 4));
+              } else if (targetRoles.some(r => jobDesc.includes(r))) {
+                roleScore = 20;
+              } else {
+                return 0; // Irrelevant role domain
+              }
             }
-            score += Math.min(20, Math.round((hits / Math.max(1, userSkills.length)) * 20));
           }
 
-          return Math.min(99, Math.max(0, score));
+          // ── DIMENSION 2: TECH STACK OVERLAP (35 PTS) ──
+          let techScore = 0;
+          if (userSkills.length > 0) {
+            let matchedHits = 0;
+            const targetJobTech = jobSkills.length > 0 
+              ? jobSkills 
+              : ['python', 'javascript', 'typescript', 'react', 'node', 'java', 'sql', 'aws', 'docker', 'go', 'c++'].filter(t => jobDesc.includes(t) || jobTitle.includes(t));
+            
+            const effectiveTargetCount = Math.max(1, Math.min(targetJobTech.length, 7));
+            for (const skill of userSkills) {
+              if (targetJobTech.includes(skill) || jobDesc.includes(skill) || jobTitle.includes(skill)) {
+                matchedHits++;
+              }
+            }
+            techScore = Math.min(35, Math.round((matchedHits / effectiveTargetCount) * 35));
+            if (userSkills.some(s => jobTitle.includes(s))) {
+              techScore = Math.min(35, techScore + 4);
+            }
+          } else {
+            techScore = 18;
+          }
+
+          // ── DIMENSION 3: WORKPLACE & LOCATION (15 PTS) ──
+          let locScore = 0;
+          if (remotePref && isRemote) {
+            locScore = 15;
+          } else if (preferredCities.length > 0) {
+            const hasCityMatch = preferredCities.some(c => 
+              (c.includes('remote') && isRemote) ||
+              jobLoc.includes(c) || 
+              (job.city && job.city.toLowerCase().includes(c))
+            );
+            if (hasCityMatch) {
+              locScore = 15;
+            } else if (isRemote) {
+              locScore = 14;
+            } else if (hybridPref) {
+              locScore = 10;
+            } else {
+              locScore = 2;
+            }
+          } else {
+            locScore = isRemote ? 15 : 12;
+          }
+
+          // ── DIMENSION 4: SENIORITY / EXPERIENCE WINDOW (10 PTS) ──
+          let expScore = 10;
+          const userSeniority = (prefs.seniority || 'mid').toLowerCase();
+          const isFresherJob = jobTitle.includes('fresher') || jobTitle.includes('intern') || jobTitle.includes('graduate');
+          const isSeniorJob = jobTitle.includes('senior') || jobTitle.includes('sr.') || jobTitle.includes('lead') || jobTitle.includes('staff') || jobTitle.includes('principal');
+          
+          if (userSeniority === 'fresher') {
+            if (isSeniorJob) expScore = 0;
+            else if (isFresherJob) expScore = 10;
+            else expScore = 6;
+          } else if (userSeniority === 'senior' || userSeniority === 'lead') {
+            if (isSeniorJob) expScore = 10;
+            else if (isFresherJob) expScore = 2;
+            else expScore = 8;
+          } else {
+            if (isSeniorJob) expScore = 8;
+            else if (isFresherJob) expScore = 5;
+            else expScore = 10;
+          }
+
+          // ── DIMENSION 5: COMPENSATION & EMPLOYMENT TYPE (5 PTS) ──
+          let compScore = 3;
+          if (prefs.salary_amt && job.salary_min) {
+            if (job.salary_min >= prefs.salary_amt) compScore = 5;
+            else if (job.salary_max && job.salary_max >= prefs.salary_amt) compScore = 4;
+            else compScore = 1;
+          } else {
+            compScore = 4;
+          }
+
+          const totalScore = roleScore + techScore + locScore + expScore + compScore;
+          return Math.min(99, Math.max(0, Math.round(totalScore)));
         }
 
         allJobs = allJobs.map(j => ({
@@ -2257,7 +2343,7 @@
       const isApplied = tracker.applied.includes(job.id);
       const compInitial = job.company ? job.company[0].toUpperCase() : 'G';
       
-      const matchScore = Math.min(98, Math.max(74, 86 + (job.title.length % 12)));
+      const matchScore = job.fit_score ? Math.round(job.fit_score) : Math.min(98, Math.max(74, 86 + (job.title.length % 12)));
       const strokeOffset = 188 - (188 * matchScore / 100);
 
       pane.innerHTML = `
@@ -2297,7 +2383,7 @@
           </div>
         </div>
 
-                ${localStorage.getItem('getarole_resume_v2') ? `
+                ${(localStorage.getItem('getarole_prefs') || localStorage.getItem('getarole_resume_v2') || localStorage.getItem('getarole_profile')) ? `
         <!-- AI Match Ring Card -->
         <div class="ai-match-card">
           <div class="match-ring-wrap">
@@ -2623,13 +2709,42 @@
       listWrap.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-subtle);font-size:13px;">Fetching candidate records...</div>';
 
       try {
-        const res = await fetch('/api/candidates');
-        const data = await res.json();
-        candidatesList = data.candidates || [];
+        let loaded = [];
+        try {
+          const res = await fetch('/api/candidates');
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.candidates) loaded = data.candidates;
+          }
+        } catch (_) {}
+
+        if (loaded.length === 0) {
+          try {
+            const sRes = await fetch("https://tgmhtlqcjgcjedlnthfk.supabase.co/rest/v1/user_profiles?select=*&limit=50", {
+              headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+            });
+            if (sRes.ok) {
+              const rows = await sRes.json();
+              loaded = (rows || []).map(r => ({
+                id: r.firebase_uid || r.id,
+                name: `${r.first || ''} ${r.last || ''}`.trim() || r.name || 'Verified Candidate',
+                email: r.email,
+                phone: r.phone,
+                headline: r.headline || 'Full Stack Engineer',
+                skills: [],
+                city: r.loc || 'Bengaluru, India',
+                location: r.loc || 'Bengaluru, India'
+              }));
+            }
+          } catch (_) {}
+        }
+        candidatesList = loaded;
         
         const localProf = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
         if (localProf.name || localProf.firstName) {
           if (!candidatesList.some(c => c.email === localProf.email)) {
+            if (!localProf.city && localProf.loc) localProf.city = localProf.loc;
+            if (!localProf.id) localProf.id = getFirebaseUID();
             candidatesList.unshift(localProf);
           }
         }
@@ -2804,7 +2919,7 @@
     }
 
     function copyShareLink(candId) {
-      const shareUrl = `${window.location.origin}/candidate?id=${candId}`;
+      const shareUrl = `${window.location.origin}/candidate/?id=${encodeURIComponent(candId)}`;
       navigator.clipboard.writeText(shareUrl).then(() => {
         toast("Public link copied to clipboard!");
       }).catch(() => {

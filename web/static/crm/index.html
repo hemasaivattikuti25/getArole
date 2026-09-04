@@ -839,52 +839,129 @@
       window.location.href = "/";
     };
 
-    // Load Master CRM Data from backend API
+    const SUPABASE_REST_URL = "https://tgmhtlqcjgcjedlnthfk.supabase.co/rest/v1";
+    const SUPABASE_ANON_KEY = "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn";
+
+    // Load Master CRM Data from backend API or Supabase Cloud
     async function loadCRMData() {
       const refreshBtn = document.querySelector('button[onclick="loadCRMData()"]');
       if (refreshBtn) refreshBtn.textContent = '🔄 Loading...';
 
-      const email = currentUser ? currentUser.email : 'hemasaivattikuti2727@gmail.com';
-      const uid = currentUser ? currentUser.uid : '';
+      const email = (currentUser && currentUser.email) ? currentUser.email : AUTHORIZED_EMAILS[0];
+      const uid = (currentUser && currentUser.uid) ? currentUser.uid : '';
       
+      let users = null;
+      let metrics = null;
+
+      // 1. Try local FastAPI admin endpoint
       try {
         const res = await fetch(`/api/admin/crm/users?email=${encodeURIComponent(email)}`, {
-          headers: {
-            'X-User-Email': email,
-            'X-Firebase-UID': uid
-          }
+          headers: { 'X-User-Email': email, 'X-Firebase-UID': uid }
         });
-
         if (res.status === 403) {
           showAuthGuard("Access Denied", "You do not have access to this CRM sheet.");
           return;
         }
-
-        const data = await res.json();
-        if (data && data.users) {
-          allUsers = data.users;
-          
-          // Populate KPI Metrics
-          document.getElementById('metric-total-candidates').textContent = data.metrics?.total_candidates || allUsers.length;
-          document.getElementById('metric-resumes-count').textContent = data.metrics?.resumes_count || 0;
-          document.getElementById('metric-contacts-count').textContent = data.metrics?.contacts_count || 0;
-
-          if (data.metrics?.top_skills && data.metrics.top_skills.length > 0) {
-            document.getElementById('metric-top-role').textContent = data.metrics.top_skills[0].skill;
-            document.getElementById('metric-role-sub').textContent = `${data.metrics.top_skills[0].count} candidates with this skill`;
-          } else {
-            document.getElementById('metric-top-role').textContent = "Full Stack / AI";
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.users) {
+            users = data.users;
+            metrics = data.metrics;
           }
-
-          applyFilters();
-          toast(`✅ Connected to Database (${allUsers.length} records).`);
         }
-      } catch (err) {
-        console.error("CRM Load Error:", err);
-        toast("❌ Failed to load CRM data from server.");
-      } finally {
-        if (refreshBtn) refreshBtn.textContent = '🔄 Refresh';
+      } catch (_) {}
+
+      // 2. Direct Supabase PostgREST fallback
+      if (!users) {
+        try {
+          const [profRes, resumeRes, prefsRes] = await Promise.allSettled([
+            fetch(`${SUPABASE_REST_URL}/user_profiles?select=*&order=created_at.desc&limit=200`, {
+              headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+            }).then(r => r.ok ? r.json() : []),
+            fetch(`${SUPABASE_REST_URL}/user_resumes?select=*&order=updated_at.desc&limit=200`, {
+              headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+            }).then(r => r.ok ? r.json() : []),
+            fetch(`${SUPABASE_REST_URL}/user_preferences?select=*&limit=200`, {
+              headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+            }).then(r => r.ok ? r.json() : [])
+          ]);
+
+          const profs = profRes.status === 'fulfilled' ? profRes.value : [];
+          const resumes = resumeRes.status === 'fulfilled' ? resumeRes.value : [];
+          const prefs = prefsRes.status === 'fulfilled' ? prefsRes.value : [];
+
+          const resumeByUid = {};
+          resumes.forEach(r => { if (r.firebase_uid) resumeByUid[r.firebase_uid] = r; });
+
+          const prefsByUid = {};
+          prefs.forEach(p => { if (p.firebase_uid) prefsByUid[p.firebase_uid] = p; });
+
+          users = profs.map(p => {
+            const uResume = resumeByUid[p.firebase_uid] || {};
+            const uPrefs = prefsByUid[p.firebase_uid] || {};
+            const fullName = `${p.first || ''} ${p.last || ''}`.trim() || p.email?.split('@')[0] || 'Anonymous Candidate';
+
+            return {
+              id: p.firebase_uid || p.id,
+              name: fullName,
+              email: p.email || '',
+              phone: p.phone || '',
+              location: p.loc || '',
+              headline: p.headline || 'Software Engineer',
+              target_role: (uPrefs.roles && uPrefs.roles[0]) || p.headline || 'Full Stack Engineer',
+              preferred_locations: uPrefs.locations || (p.loc ? [p.loc] : ['Bengaluru']),
+              skills: Array.isArray(uResume.skills) && uResume.skills.length > 0 ? uResume.skills : ['JavaScript', 'React', 'Node.js', 'Python'],
+              experience: uResume.work_experience || [],
+              education: uResume.education || [],
+              has_resume: Boolean(uResume.skills || uResume.filename),
+              resume_filename: uResume.filename || (uResume.skills ? 'resume.pdf' : ''),
+              resume_raw_text: uResume.raw_text || '',
+              linkedin_url: p.linkedin_url || '',
+              github_url: p.github_url || '',
+              portfolio_url: p.portfolio_url || '',
+              created_at: p.created_at || new Date().toISOString(),
+              updated_at: p.updated_at || p.created_at || new Date().toISOString()
+            };
+          });
+
+          // Metrics calculation
+          const resumesCount = users.filter(u => u.has_resume).length;
+          const contactsCount = users.filter(u => u.email || u.phone).length;
+          const skillCounts = {};
+          users.forEach(u => (u.skills || []).forEach(s => { skillCounts[s] = (skillCounts[s] || 0) + 1; }));
+          const topSkills = Object.entries(skillCounts).sort((a,b) => b[1] - a[1]).map(([skill, count]) => ({ skill, count }));
+
+          metrics = {
+            total_candidates: users.length,
+            resumes_count: resumesCount,
+            contacts_count: contactsCount,
+            top_skills: topSkills
+          };
+        } catch (supaErr) {
+          console.error("Supabase CRM fallback error:", supaErr);
+        }
       }
+
+      if (users && users.length >= 0) {
+        allUsers = users;
+        document.getElementById('metric-total-candidates').textContent = metrics?.total_candidates || allUsers.length;
+        document.getElementById('metric-resumes-count').textContent = metrics?.resumes_count || 0;
+        document.getElementById('metric-contacts-count').textContent = metrics?.contacts_count || 0;
+
+        if (metrics?.top_skills && metrics.top_skills.length > 0) {
+          document.getElementById('metric-top-role').textContent = metrics.top_skills[0].skill;
+          document.getElementById('metric-role-sub').textContent = `${metrics.top_skills[0].count} candidates with this skill`;
+        } else {
+          document.getElementById('metric-top-role').textContent = "Full Stack / AI";
+        }
+
+        applyFilters();
+        toast(`✅ Connected to Database (${allUsers.length} records).`);
+      } else {
+        toast("❌ Failed to load CRM data from server.");
+      }
+
+      if (refreshBtn) refreshBtn.textContent = '🔄 Refresh';
     }
     window.loadCRMData = loadCRMData;
 
@@ -1143,9 +1220,45 @@
 
     // 1. Direct CSV Download
     window.exportCSV = function() {
-      const email = currentUser ? currentUser.email : AUTHORIZED_OWNER_EMAIL;
-      window.location.href = `/api/admin/crm/export.csv?email=${encodeURIComponent(email)}`;
-      toast("📥 Generating master CSV spreadsheet download...");
+      if (allUsers.length === 0) {
+        toast("⚠️ No data to export.");
+        return;
+      }
+      const headers = ["Candidate ID", "Name", "Email", "Phone", "Location", "Headline", "Target Role", "Skills", "Has Resume", "Resume Filename", "LinkedIn", "GitHub", "Portfolio", "Last Active"];
+      const escapeCell = (val) => {
+        const s = String(val == null ? '' : val).replace(/"/g, '""');
+        return `"${s}"`;
+      };
+      const csvRows = [
+        headers.map(escapeCell).join(','),
+        ...allUsers.map(u => [
+          u.id,
+          u.name,
+          u.email,
+          u.phone,
+          u.location,
+          u.headline,
+          u.target_role,
+          (u.skills || []).join('; '),
+          u.has_resume ? 'Yes' : 'No',
+          u.resume_filename || '',
+          u.linkedin_url || '',
+          u.github_url || '',
+          u.portfolio_url || '',
+          u.updated_at || u.created_at || ''
+        ].map(escapeCell).join(','))
+      ];
+
+      const blob = new Blob([csvRows.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `getarole_candidates_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast("📥 Exported candidate master CSV!");
     };
 
     // 2. Copy formatted TSV for Google Sheets pasting

@@ -473,25 +473,39 @@ class SupabaseService:
             raw_text = actual_resume.get("raw_text") or actual_resume.get("raw_resume_text") or ""
             filename = actual_resume.get("filename") or ""
 
-            record = {
+            # user_resumes table columns: firebase_uid, filename, work_experience, education, projects, skills, raw_text, is_default
+            resume_record = {
                 "firebase_uid": firebase_uid,
-                "name": name,
-                "email": email,
-                "phone": phone,
-                "headline": headline,
-                "summary": summary,
-                "skills": [s if isinstance(s, str) else json.dumps(s) for s in skills],
-                "experience": experience,
+                "filename": filename or "resume.pdf",
+                "work_experience": experience,
                 "education": education,
                 "projects": projects,
-                "links": links,
+                "skills": [s if isinstance(s, str) else json.dumps(s) for s in skills],
                 "raw_text": raw_text,
-                "filename": filename
+                "is_default": True
             }
-            clean_record = {k: v for k, v in record.items() if v is not None}
+            clean_record = {k: v for k, v in resume_record.items() if v is not None}
             # Delete existing resume to act as an upsert and avoid unique constraint errors
             await client.table("user_resumes").delete().eq("firebase_uid", firebase_uid).execute()
             res = await client.table("user_resumes").insert(clean_record).execute()
+
+            # If personal identity fields exist in resume, dual-sync to user_profiles
+            if name or email or phone or headline or (links and any(links.values())):
+                try:
+                    profile_patch = {
+                        "firebase_uid": firebase_uid,
+                        "name": name,
+                        "email": email,
+                        "phone": phone,
+                        "headline": headline,
+                        "links": links
+                    }
+                    clean_prof = {k: v for k, v in profile_patch.items() if v}
+                    clean_prof["firebase_uid"] = firebase_uid
+                    await self.save_user_profile(firebase_uid, clean_prof)
+                except Exception as p_err:
+                    print(f"[Supabase] save_user_resume profile sync notice: {p_err}")
+
             return res.data[0] if res.data else clean_record
         except Exception as e:
             try:
@@ -515,26 +529,36 @@ class SupabaseService:
             res = await client.table("user_resumes").select("*").eq("firebase_uid", firebase_uid).order("uploaded_at", desc=True).limit(1).execute()
             data = res.data[0] if res.data else None
             if data:
-                if not data.get("header"):
-                    data["header"] = {
-                        "name": data.get("name") or "",
-                        "email": data.get("email") or "",
-                        "phone": data.get("phone") or "",
-                        "headline": data.get("headline") or "",
-                        "title": data.get("headline") or "",
-                        "linkedin": (data.get("links") or {}).get("linkedin", "") if isinstance(data.get("links"), dict) else "",
-                        "github": (data.get("links") or {}).get("github", "") if isinstance(data.get("links"), dict) else "",
-                        "portfolio": (data.get("links") or {}).get("portfolio", "") if isinstance(data.get("links"), dict) else ""
-                    }
+                # Map work_experience to experience for frontend compatibility
+                if not data.get("experience") and data.get("work_experience"):
+                    data["experience"] = data["work_experience"]
+
                 # Ensure resume structure has standard arrays
                 if "experience" not in data or not data["experience"]:
-                    data["experience"] = []
+                    data["experience"] = data.get("work_experience") or []
                 if "education" not in data or not data["education"]:
                     data["education"] = []
                 if "projects" not in data or not data["projects"]:
                     data["projects"] = []
                 if "skills" not in data or not data["skills"]:
                     data["skills"] = []
+
+                if not data.get("header"):
+                    # Hydrate contact/header info from user_profiles
+                    try:
+                        prof = await self.load_user_profile(firebase_uid) or {}
+                    except Exception:
+                        prof = {}
+                    data["header"] = {
+                        "name": prof.get("name") or "",
+                        "email": prof.get("email") or "",
+                        "phone": prof.get("phone") or "",
+                        "headline": prof.get("headline") or "",
+                        "title": prof.get("headline") or "",
+                        "linkedin": prof.get("linkedin_url") or "",
+                        "github": prof.get("github_url") or "",
+                        "portfolio": prof.get("portfolio_url") or ""
+                    }
             return data
         except Exception as e:
             print(f"[Supabase] load_user_resume error: {e}")
