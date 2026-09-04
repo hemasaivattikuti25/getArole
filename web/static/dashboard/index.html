@@ -2336,6 +2336,9 @@
     let selectedMatchJobId = null;
     const activePills = new Set();
     let tracker = JSON.parse(localStorage.getItem('getarole_tracker') || '{"saved":[],"applied":[],"interview":[],"offer":[]}');
+    if (!tracker.saved) tracker.saved = [];
+    if (!tracker.applied) tracker.applied = [];
+    if (!tracker.applied_timestamps) tracker.applied_timestamps = {};
     const prefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
 
     function toast(msg) {
@@ -2415,36 +2418,39 @@
             }
           });
           if (supaRes.ok) {
-            loadedList = await supaRes.json();
+            const fallbackData = await supaRes.json();
+            if (Array.isArray(fallbackData)) loadedList = fallbackData;
           }
         }
 
-        allJobs = loadedList || [];
+        allJobs = Array.isArray(loadedList) ? loadedList : [];
         
         // 3. Real Dynamic 5-Dimension Fit Score Calculation based on user preferences & profile
         const userProf = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
         const userPrefs = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
         
         function computeJobFitScore(job, profile, prefs) {
-          const userSkills = (profile.skills || []).map(s => s.toLowerCase());
+          const userSkills = Array.isArray(profile.skills) ? profile.skills.map(s => String(s).toLowerCase()) : [];
+          
+          const safeArray = (arr) => Array.isArray(arr) ? arr : [];
           const targetRoles = [
-            ...(prefs.roles || []),
-            ...(prefs.specializations || []),
+            ...safeArray(prefs.roles),
+            ...safeArray(prefs.specializations),
             prefs.role,
             prefs.target_role,
             profile.headline
-          ].filter(Boolean).map(r => r.toLowerCase().trim());
+          ].filter(Boolean).map(r => String(r).toLowerCase().trim());
 
-          const preferredCities = (prefs.locations || [prefs.city, profile.city])
+          const preferredCities = safeArray(prefs.locations || [prefs.city, profile.city])
             .filter(Boolean)
-            .map(c => c.toLowerCase().trim());
+            .map(c => String(c).toLowerCase().trim());
           const remotePref = prefs.remoteOnly || prefs.workplaceType === 'Remote';
           const hybridPref = prefs.workplaceType === 'Hybrid';
 
           const jobTitle = (job.title || '').toLowerCase();
           const jobDesc = (job.description || '').toLowerCase();
           const jobLoc = (job.location || '').toLowerCase();
-          const jobSkills = (job.skills || []).map(s => s.toLowerCase());
+          const jobSkills = safeArray(job.skills).map(s => String(s).toLowerCase());
           const isRemote = (job.workplace_type || '').toLowerCase() === 'remote' || jobLoc.includes('remote');
 
           // ── DIMENSION 1: ROLE & SENIORITY (35 PTS) ──
@@ -2569,9 +2575,18 @@
         if (feed) {
           feed.innerHTML = `
             <div style="padding:40px 20px; text-align:center; color:#ef4444; font-size:13.5px; font-weight:600;">
-              ⚠️ Could not load jobs. <button class="btn-refresh" onclick="loadJobs()" style="margin:12px auto;">Try Again</button>
+              ⚠️ Could not load jobs. Error: ${e.message} <button class="btn-refresh" onclick="loadJobs()" style="margin:12px auto;">Try Again</button>
             </div>`;
         }
+        
+        const grid = document.getElementById('home-matches-preview-grid');
+        if (grid) {
+          grid.innerHTML = `
+            <div style="padding:40px 20px; text-align:center; color:#ef4444; font-size:13.5px; font-weight:600;">
+              ⚠️ Failed to compute matches. Please clear preferences and try again.
+            </div>`;
+        }
+
         toast('Error loading jobs.');
       }
     }
@@ -2918,7 +2933,8 @@
     }
 
     function updateCounts() {
-      document.getElementById('nav-match-count').textContent = matchedJobs.length;
+      const matchBadge = document.getElementById('nav-match-count');
+      if (matchBadge) matchBadge.textContent = matchedJobs.length;
     }
 
     function renderTracker() {
