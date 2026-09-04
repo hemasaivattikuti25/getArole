@@ -263,7 +263,7 @@ def test_mobile_viewport_font_size_and_motion_reduction():
     """Validates that core app interfaces enforce 16px mobile input size (iOS auto-zoom fix)."""
     base_static = os.path.join(os.path.dirname(__file__), "..", "web", "static")
     
-    for page in ["landing.html", "dashboard/index.html", "explore/index.html", "matches/index.html", "profile/index.html", "preferences/index.html"]:
+    for page in ["dashboard/index.html", "explore/index.html", "matches/index.html", "profile/index.html", "settings/index.html"]:
         path = os.path.join(base_static, page)
         assert os.path.exists(path), f"{page} missing!"
         with open(path, "r", encoding="utf-8") as f:

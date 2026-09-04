@@ -21,6 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="/favicon.png">
+  <script src="/js/config.js"></script>
   <script src="/js/storage-sync.js"></script>
   <script>
     // Strict Authentication Guard
@@ -221,7 +222,7 @@
     }
     .telemetry-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
       gap: 14px;
       width: 100%;
       box-sizing: border-box;
@@ -563,6 +564,8 @@
         box-sizing: border-box !important;
       }
       .deployment-stepper-row {
+        display: flex !important;
+        overflow-x: auto !important;
         gap: 10px !important;
         padding-bottom: 6px !important;
         scroll-snap-type: x mandatory !important;
@@ -1450,7 +1453,7 @@
   <link rel="stylesheet" href="/css/global-aurora.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-  <script src="/static/js/mobile-nav.js?v=3"></script>
+  <script src="/js/mobile-nav.js?v=3"></script>
 </head>
 <body>
     <!-- Exact Landing Page Ambient Glow Orbs -->
@@ -1466,52 +1469,10 @@
 
   <!-- ════════════════════ HEADER (SIMPLIFY NAVIGATION) ════════════════════ -->
   <!-- ════════════════════ UNIFORM HEADER ════════════════════ -->
-  <header>
-    <div class="header-inner">
-      <div class="brand-group">
-        <a href="/dashboard/" class="brand-logo">
-          <img src="/logo.svg" alt="getArole" style="width:34px;height:34px;object-fit:contain;">
-          <span class="brand-title">get<span>A</span>role</span>
-        </a>
-
-        <nav class="nav-tabs">
-          <a class="nav-tab active" href="/dashboard/" id="tab-btn-home">Overview</a>
-          <a class="nav-tab" href="/matches/" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
-          <a class="nav-tab" href="/explore/" id="tab-btn-jobs">Explore Jobs</a>
-          <a class="nav-tab" href="/resume-builder/" id="tab-btn-resume">📄 ATS Resume</a>
-          <a class="nav-tab" href="/cover-letter-builder/" id="tab-btn-cover-letter">✉️ Cover Letter</a>
-          <a class="nav-tab" href="/profile/" id="tab-btn-profile">Profile</a>
-        </nav>
-      </div>
-
-      <div class="header-actions">
-        <button class="btn-refresh" id="btn-refresh-scrape" onclick="typeof triggerScrape === 'function' ? triggerScrape() : window.location.reload()">
-          <span class="btn-refresh-text">Sync</span>
-        </button>
-
-        <button class="btn-signout" onclick="openSignOutModal()" title="Sign out of your account" style="display:inline-flex; align-items:center; gap:6px; background:#ffffff; border:1px solid #fecaca; border-radius:99px; padding:6px 14px; font-size:12.5px; font-weight:600; color:#dc2626; cursor:pointer; box-shadow:0 1px 2px rgba(0,0,0,0.05); transition:all 0.2s ease;">
-          <span>🚪</span> Sign Out
-        </button>
-
-        <div class="user-profile-btn" onclick="document.getElementById('user-dropdown') && document.getElementById('user-dropdown').classList.toggle('show')">
-          <div class="user-avatar" id="nav-avatar">U</div>
-          <span class="user-name-text" id="nav-username">User</span>
-          <span style="font-size: 10px; color: var(--text-subtle, #94a3b8)">▼</span>
-
-          <div class="user-dropdown" id="user-dropdown">
-            <a href="/profile/" class="dropdown-item">⚙️ Profile & Preferences</a>
-            <a href="/crm/" id="nav-admin-crm-link" class="dropdown-item" style="display:none; color:#4f46e5; font-weight:700;">👑 Master CRM Sheet</a>
-            <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
-            <a href="#" onclick="openSignOutModal(); return false;" class="dropdown-item" style="color:#ef4444; font-weight:600;">🚪 Sign Out</a>
-            <a href="#" onclick="openDeleteAccountModal(); return false;" class="dropdown-item" style="color:#dc2626; font-size:12px;">⚠️ Delete Account &amp; Data</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
+  <!-- GLOBAL_HEADER -->
 
   <!-- ════════════════════ MAIN CONTENT ════════════════════ -->
-  <main id="main-content">
+  <main id="main-content" style="position: relative; z-index: 1;">
     <!-- 0. HOME VIEW -->
     <div id="view-home" class="page-view home-view active">
       
@@ -1545,14 +1506,6 @@
             <div class="telemetry-val" style="font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-matches-count">...</div>
           </div>
 
-          <!-- Metric 2: Applications Sent -->
-          <div class="telemetry-card" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; position: relative; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
-            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: #3b82f6;"></div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-              <div class="telemetry-label" style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Applications Sent</div>
-            </div>
-            <div class="telemetry-val" style="font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-applied-count">...</div>
-          </div>
 
           <!-- Metric 3: Saved Opportunities -->
           <div class="telemetry-card" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; position: relative; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
@@ -1635,19 +1588,6 @@
         <!-- Right Column: Target Criteria Snapshot & Career Tool Launchpad -->
         <div style="min-width: 0; display: flex; flex-direction: column; gap: 20px;">
           
-          <!-- Card 1: Target Criteria Snapshot -->
-          <div style="background: rgba(255,255,255,0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(0,0,0,0.02);">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <span style="font-size: 16px;">🎯</span>
-                <h3 style="font-size: 13.5px; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Target Criteria</h3>
-              </div>
-              <button onclick="openPreferencesModal()" style="background: none; border: none; font-size: 12px; font-weight: 700; color: var(--primary); cursor: pointer; padding: 0;">Edit ⚙️</button>
-            </div>
-            <div id="target-criteria-content" style="display: flex; flex-direction: column; gap: 8px;">
-              <div style="font-size: 12.5px; color: var(--text-muted);">Loading criteria...</div>
-            </div>
-          </div>
 
           <!-- Card 2: Career Tool Suite & Launchpad -->
           <div style="background: rgba(255,255,255,0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: 0 4px 18px rgba(0,0,0,0.02);">
@@ -1704,127 +1644,7 @@
   </main>
 
                 <!-- ════════════════════ GLOBAL ENTERPRISE FOOTER ════════════════════ -->
-  <footer class="global-footer" style="background:#ffffff; border-top:1px solid #e2e8f0; padding:48px 24px 24px; margin-top:auto; font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; position:relative;">
-    <style>
-      .global-footer a.footer-nav-link { color: #64748b; text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.15s ease, transform 0.15s ease; display: inline-block; }
-      .global-footer a.footer-nav-link:hover { color: #4f46e5 !important; transform: translateX(2px); }
-      .footer-top-grid { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1.2fr; gap: 36px; margin-bottom: 36px; min-width: 0; }
-      @media (max-width: 960px) {
-        .footer-top-grid { grid-template-columns: 1fr 1fr !important; gap: 28px !important; }
-      }
-      @media (max-width: 600px) {
-        .footer-top-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
-        .footer-bottom-bar { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
-      }
-    </style>
-
-    <div style="max-width: 100%; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 0 16px;">
-      
-      <!-- Top Grid: Brand & Founder Spotlight + Navigation Pillars -->
-      <div class="footer-top-grid">
-        
-        <!-- Col 1: Brand & Founder Identity -->
-        <div style="display:flex; flex-direction:column; gap:16px;">
-          <a href="/" class="brand-group" style="display:inline-flex; align-items:center; gap:10px; text-decoration:none;">
-            <img src="/logo.svg" alt="getArole Logo" style="width:34px; height:34px; border-radius:9px; box-shadow:0 3px 10px rgba(79,70,229,0.2); flex-shrink:0;">
-            <span style="font-family:'Outfit', sans-serif; font-size:22px; font-weight:800; color:#0f172a; letter-spacing:-0.03em;">get<span style="color:#4f46e5;">A</span>role</span>
-          </a>
-
-          <p style="font-size:13px; color:#475569; line-height:1.6; max-width:340px; margin:0;">
-            Job discovery and application management platform indexing verified opportunities directly from official company career portals.
-          </p>
-
-          <!-- Founder Spotlight Card (Factual & Enterprise) -->
-          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px 16px; max-width:390px; box-shadow:0 2px 6px rgba(0,0,0,0.02); display:flex; align-items:flex-start; gap:14px;">
-            <div style="position:relative; flex-shrink:0;">
-              <img src="/founder.png" alt="Hemasai Vattikuti" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid #4f46e5; box-shadow:0 2px 6px rgba(79,70,229,0.2);">
-              <span style="position:absolute; bottom:0; right:0; width:12px; height:12px; background:#22c55e; border:2px solid #ffffff; border-radius:50%;" title="Active Founder"></span>
-            </div>
-            <div style="min-width:0; flex:1;">
-              <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                <span style="font-size:13.5px; font-weight:800; color:#0f172a;">Hemasai Vattikuti</span>
-                <span style="font-size:10.5px; font-weight:700; background:#e0e7ff; color:#4338ca; padding:1px 7px; border-radius:4px;">Founder</span>
-              </div>
-              <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Lead Developer &amp; Architect, getArole</div>
-              <p style="font-size:11.5px; color:#475569; margin:6px 0 0; line-height:1.45;">
-                Building intelligent tools to accelerate job discovery, optimize ATS resumes, and streamline application tracking for engineers across India.
-              </p>
-              <div style="display:flex; align-items:center; gap:12px; margin-top:9px; flex-wrap:wrap;">
-                <a href="mailto:hemasaivattikuti2727@gmail.com" style="font-size:11.5px; font-weight:700; color:#4f46e5; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
-                  <span>✉️ hemasaivattikuti2727@gmail.com</span>
-                </a>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Col 2: Platform & Real Tools -->
-        <div>
-          <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#0f172a; margin-bottom:14px;">Platform Tools</div>
-          <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
-            <li><a href="/dashboard/" class="footer-nav-link">Application Tracker</a></li>
-            <li><a href="/explore/" class="footer-nav-link">Job Discovery &amp; Search</a></li>
-            <li><a href="/matches/" class="footer-nav-link">AI Resume Matcher</a></li>
-            <li><a href="/resume-builder/" class="footer-nav-link">LaTeX Resume Builder</a></li>
-            <li><a href="/cover-letter-builder/" class="footer-nav-link">Cover Letter Builder</a></li>
-            <li><a href="/profile/" class="footer-nav-link">Candidate Profile</a></li>
-          </ul>
-        </div>
-
-        <!-- Col 3: Real Job Categories & Search Hubs -->
-        <div>
-          <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#0f172a; margin-bottom:14px;">Active Hubs</div>
-          <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
-            <li><a href="/explore?q=Bengaluru" class="footer-nav-link">Bengaluru Tech Hub</a></li>
-            <li><a href="/explore?q=Hyderabad" class="footer-nav-link">Hyderabad Openings</a></li>
-            <li><a href="/explore?q=Pune" class="footer-nav-link">Pune &amp; Mumbai</a></li>
-            <li><a href="/explore?q=Gurgaon" class="footer-nav-link">Delhi NCR / Gurgaon</a></li>
-            <li><a href="/explore?q=Remote" class="footer-nav-link">Remote in India</a></li>
-            <li><a href="/explore?q=Fresher" class="footer-nav-link">Freshers &amp; Early Career</a></li>
-          </ul>
-        </div>
-
-        <!-- Col 4: Contact, Grievance & Governance -->
-        <div>
-          <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#0f172a; margin-bottom:14px;">Contact &amp; Legal</div>
-          <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
-            <li>
-              <a href="mailto:hemasaivattikuti2727@gmail.com" class="footer-nav-link" style="color:#4f46e5; font-weight:700; word-break:break-all;">
-                hemasaivattikuti2727@gmail.com
-              </a>
-            </li>
-            <li><a href="/privacy/" class="footer-nav-link">Privacy Policy</a></li>
-            <li><a href="/terms/" class="footer-nav-link">Terms of Service</a></li>
-            <li><a href="/preferences/" class="footer-nav-link">Target Preferences</a></li>
-            <li><a href="mailto:hemasaivattikuti2727@gmail.com?subject=Grievance%20Redressal" class="footer-nav-link">Grievance Redressal</a></li>
-            <li style="margin-top:4px; font-size:11.5px; color:#64748b; line-height:1.45;">
-              DPDP Act 2023 Compliant • Direct employer links
-            </li>
-          </ul>
-        </div>
-
-      </div>
-
-      <!-- Bottom Bar: Factual & Clean Enterprise Attribution -->
-      <div class="footer-bottom-bar" style="border-top:1px solid #e2e8f0; padding-top:20px; display:flex; align-items:center; justify-content:space-between; font-size:12px; color:#64748b; flex-wrap:wrap; gap:14px;">
-        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-          <span>© <span class="global-footer-year">2026</span> <strong>getArole.in</strong></span>
-          <span>•</span>
-          <span>Founded by Hemasai Vattikuti</span>
-          <span>•</span>
-          <span>Bengaluru, Karnataka, India</span>
-        </div>
-        
-        <div style="display:flex; align-items:center; gap:14px; font-size:11.5px; color:#64748b; flex-wrap:wrap;">
-          <span>Verified Opportunities • Direct Application Links</span>
-          <span>•</span>
-          <a href="mailto:hemasaivattikuti2727@gmail.com" style="color:#4f46e5; text-decoration:none; font-weight:600;">Contact Founder</a>
-        </div>
-      </div>
-
-    </div>
-  </footer>
+  <!-- GLOBAL_FOOTER -->
 
   <div id="toast"></div>
 
@@ -2126,7 +1946,7 @@
     };
   </script>
 
-  <script src="/static/js/getarole-core.js"></script>
+  <script src="/js/getarole-core.js"></script>
   <script>
     const modalIndianCities = [
       "India (Anywhere)", "Remote in India", "Global Remote", "Hybrid",
@@ -2549,8 +2369,8 @@
       if (tabName === 'matches') renderMatchesSplitView();
     }
 
-    const SUPABASE_REST_URL = "https://tgmhtlqcjgcjedlnthfk.supabase.co/rest/v1/jobs?select=*&order=created_at.desc&limit=1500";
-    const SUPABASE_ANON_KEY = "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn";
+    const SUPABASE_REST_URL = window.APP_CONFIG.SUPABASE_REST_URL + "/jobs?select=*&order=created_at.desc&limit=1500";
+    const SUPABASE_ANON_KEY = window.APP_CONFIG.SUPABASE_ANON_KEY;
 
     let searchAbortController = null;
 
@@ -3021,46 +2841,6 @@
         }
       } catch (e) {}
     }
-    function renderTargetCriteriaSnapshot() {
-      const tcContainer = document.getElementById('target-criteria-content');
-      if (!tcContainer) return;
-
-      const profStr = localStorage.getItem('getarole_profile');
-      let prof = null;
-      try { if (profStr) prof = JSON.parse(profStr); } catch (e) {}
-
-      let role = 'Not set';
-      let location = 'Remote / Anywhere';
-      let salary = 'Not set';
-      let hasRes = !!localStorage.getItem('getarole_resume_v2') ? '<span style="color:#10b981;">✓ Linked</span>' : '<span style="color:#ef4444;">✗ Missing</span>';
-
-      if (prof && prof.preferences) {
-        if (prof.preferences.target_roles && prof.preferences.target_roles.length > 0) role = prof.preferences.target_roles.join(', ');
-        if (prof.preferences.locations && prof.preferences.locations.length > 0) location = prof.preferences.locations.join(', ');
-        if (prof.preferences.salary_min) salary = '₹' + prof.preferences.salary_min.toLocaleString('en-IN') + (prof.preferences.salary_max ? ' - ₹' + prof.preferences.salary_max.toLocaleString('en-IN') : '+');
-      }
-
-      tcContainer.innerHTML = `
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <div style="display: flex; justify-content: space-between; font-size: 13px;">
-            <span style="color: var(--text-muted); font-weight: 500;">Role:</span>
-            <span style="font-weight: 600; color: var(--text-main); text-align: right; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${role}</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; font-size: 13px;">
-            <span style="color: var(--text-muted); font-weight: 500;">Location:</span>
-            <span style="font-weight: 600; color: var(--text-main); text-align: right; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${location}</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; font-size: 13px;">
-            <span style="color: var(--text-muted); font-weight: 500;">Salary:</span>
-            <span style="font-weight: 600; color: var(--text-main); text-align: right; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${salary}</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; font-size: 13px;">
-            <span style="color: var(--text-muted); font-weight: 500;">Resume:</span>
-            <span style="font-weight: 600; color: var(--text-main); text-align: right;">${hasRes}</span>
-          </div>
-        </div>
-      `;
-    }
 
     function renderHomeView() {
       const matchesEl = document.getElementById('home-matches-count');
@@ -3069,7 +2849,6 @@
       if (welcomeMatchEl) welcomeMatchEl.textContent = matchedJobs.length.toLocaleString('en-IN');
       renderTracker();
       updateGetStartedProgress();
-      if (typeof renderTargetCriteriaSnapshot === 'function') renderTargetCriteriaSnapshot();
 
       const grid = document.getElementById('home-matches-preview-grid');
       if (!grid) return;

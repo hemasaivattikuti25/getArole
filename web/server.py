@@ -45,12 +45,12 @@ app.add_middleware(ObservabilityMiddleware)
 # Attach GZip compression for all responses > 500 bytes (LCP/PageSpeed optimization)
 app.add_middleware(GZipMiddleware, minimum_size=500)
 
-allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000,http://localhost:3000,http://127.0.0.1:3000,https://getarole.in,https://getarole.com")
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "https://getarole.in,https://getarole.com")
 allowed_origins = [o.strip() for o in allowed_origins_env.split(",") if o.strip()]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins if allowed_origins else ["http://localhost:8000"],
+    allow_origins=allowed_origins if allowed_origins else ["https://getarole.com"],
     allow_origin_regex=r"^https:\/\/([a-zA-Z0-9-]+\.)?vercel\.app$",
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -388,18 +388,14 @@ async def get_candidate_by_id(
 @app.get("/resume-builder/", response_class=HTMLResponse)
 async def serve_resume_builder():
     rb_file = os.path.join(STATIC_DIR, "resume-builder", "index.html")
-    if os.path.exists(rb_file):
-        with open(rb_file, "r", encoding="utf-8") as f:
-            return f.read()
+    return render_template(rb_file)
     return "<h1>Resume Builder — Starting Up</h1>"
 
 @app.get("/cover-letter-builder", response_class=HTMLResponse)
 @app.get("/cover-letter-builder/", response_class=HTMLResponse)
 async def serve_cover_letter_builder():
     cl_file = os.path.join(STATIC_DIR, "cover-letter-builder", "index.html")
-    if os.path.exists(cl_file):
-        with open(cl_file, "r", encoding="utf-8") as f:
-            return f.read()
+    return render_template(cl_file)
     return "<h1>Cover Letter Builder — Starting Up</h1>"
 
 # ── AI Bullet Enhancer ───────────────────────────────────────────────────────
@@ -871,85 +867,81 @@ async def serve_service_worker():
         with open(sw_path, "r", encoding="utf-8") as f:
             return Response(content=f.read(), media_type="application/javascript", headers={"Cache-Control": "no-cache, must-revalidate", "Service-Worker-Allowed": "/"})
     raise HTTPException(status_code=404, detail="Service worker not found.")
+def render_template(filepath: str) -> str:
+    if not os.path.exists(filepath):
+        return "<h1>Not Found</h1>"
+        
+    with open(filepath, "r", encoding="utf-8") as f:
+        html = f.read()
+        
+    header_path = os.path.join(STATIC_DIR, "components", "header.html")
+    if "<!-- GLOBAL_HEADER -->" in html and os.path.exists(header_path):
+        with open(header_path, "r", encoding="utf-8") as hf:
+            html = html.replace("<!-- GLOBAL_HEADER -->", hf.read())
+            
+    footer_path = os.path.join(STATIC_DIR, "components", "footer.html")
+    if "<!-- GLOBAL_FOOTER -->" in html and os.path.exists(footer_path):
+        with open(footer_path, "r", encoding="utf-8") as ff:
+            html = html.replace("<!-- GLOBAL_FOOTER -->", ff.read())
+            
+    return html
 
-@app.get("/", response_class=HTMLResponse)
-async def serve_landing():
-    landing_file = os.path.join(STATIC_DIR, "landing.html")
-    if os.path.exists(landing_file):
-        with open(landing_file, "r", encoding="utf-8") as f:
-            return f.read()
-    return "<h1>getArole — Starting Up</h1>"
+
 
 @app.get("/candidate", response_class=HTMLResponse)
 @app.get("/candidate/", response_class=HTMLResponse)
 async def serve_candidate():
     cand_file = os.path.join(STATIC_DIR, "candidate", "index.html")
-    if os.path.exists(cand_file):
-        with open(cand_file, "r", encoding="utf-8") as f:
-            return f.read()
+    return render_template(cand_file)
     return "<h1>Candidate Not Found</h1>"
 
 @app.get("/onboarding", response_class=HTMLResponse)
 @app.get("/onboarding/", response_class=HTMLResponse)
 async def serve_onboarding():
     ob_file = os.path.join(STATIC_DIR, "onboarding", "index.html")
-    if os.path.exists(ob_file):
-        with open(ob_file, "r", encoding="utf-8") as f:
-            return f.read()
+    return render_template(ob_file)
     return "<h1>getArole Onboarding</h1>"
 
 @app.get("/dashboard", response_class=HTMLResponse)
 @app.get("/dashboard/", response_class=HTMLResponse)
 async def serve_dashboard():
     dash_file = os.path.join(STATIC_DIR, "dashboard", "index.html")
-    if os.path.exists(dash_file):
-        with open(dash_file, "r", encoding="utf-8") as f:
-            return f.read()
+    return render_template(dash_file)
     return "<h1>getArole Dashboard</h1>"
 
 @app.get("/explore", response_class=HTMLResponse)
 @app.get("/explore/", response_class=HTMLResponse)
 async def serve_explore():
     exp_file = os.path.join(STATIC_DIR, "explore", "index.html")
-    if os.path.exists(exp_file):
-        with open(exp_file, "r", encoding="utf-8") as f:
-            return f.read()
+    return render_template(exp_file)
     return "<h1>getArole Explore</h1>"
 
 @app.get("/matches", response_class=HTMLResponse)
 @app.get("/matches/", response_class=HTMLResponse)
 async def serve_matches():
     match_file = os.path.join(STATIC_DIR, "matches", "index.html")
-    if os.path.exists(match_file):
-        with open(match_file, "r", encoding="utf-8") as f:
-            return f.read()
+    return render_template(match_file)
     return "<h1>getArole Matches</h1>"
 
 @app.get("/profile", response_class=HTMLResponse)
 @app.get("/profile/", response_class=HTMLResponse)
 async def serve_profile():
     prof_file = os.path.join(STATIC_DIR, "profile", "index.html")
-    if os.path.exists(prof_file):
-        with open(prof_file, "r", encoding="utf-8") as f:
-            return f.read()
+    return render_template(prof_file)
     return "<h1>getArole Profile</h1>"
 
 @app.get("/privacy", response_class=HTMLResponse)
 @app.get("/privacy/", response_class=HTMLResponse)
 async def serve_privacy():
     priv_file = os.path.join(STATIC_DIR, "privacy", "index.html")
-    if os.path.exists(priv_file):
-        with open(priv_file, "r", encoding="utf-8") as f:
-            return f.read()
+    return render_template(priv_file)
     return "<h1>getArole Privacy Policy</h1>"
 
 @app.get("/terms", response_class=HTMLResponse)
 @app.get("/terms/", response_class=HTMLResponse)
 async def serve_terms():
     terms_file = os.path.join(STATIC_DIR, "terms", "index.html")
-    if os.path.exists(terms_file):
-        with open(terms_file, "r", encoding="utf-8") as f:
-            return f.read()
+    return render_template(terms_file)
     return "<h1>getArole Terms of Service</h1>"
 
 # ─── CRM Sheet & Admin Dashboard (Restricted to hemasaivattikuti2727@gmail.com) ───
@@ -960,9 +952,7 @@ async def serve_terms():
 @app.get("/admin/crm/", response_class=HTMLResponse)
 async def serve_crm_dashboard():
     crm_file = os.path.join(STATIC_DIR, "crm", "index.html")
-    if os.path.exists(crm_file):
-        with open(crm_file, "r", encoding="utf-8") as f:
-            return f.read()
+    return render_template(crm_file)
     return "<h1>getArole CRM Dashboard</h1>"
 
 @app.get("/api/admin/crm/users")
@@ -1235,14 +1225,11 @@ async def parse_and_match_resume(file: UploadFile = File(...)):
         return JSONResponse(status_code=500, content={"error": f"Error parsing resume: {str(e)}"})
 
 
-@app.get("/preferences", response_class=HTMLResponse)
-@app.get("/preferences/", response_class=HTMLResponse)
-async def serve_preferences():
-    pref_file = os.path.join(STATIC_DIR, "preferences", "index.html")
-    if os.path.exists(pref_file):
-        with open(pref_file, "r", encoding="utf-8") as f:
-            return f.read()
-    return "<h1>getArole Preferences</h1>"
+@app.get("/settings", response_class=HTMLResponse)
+@app.get("/settings/", response_class=HTMLResponse)
+async def serve_settings():
+    settings_file = os.path.join(STATIC_DIR, "settings", "index.html")
+    return render_template(settings_file)
 
 
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST

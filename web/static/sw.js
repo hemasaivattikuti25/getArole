@@ -13,7 +13,7 @@ const PRECACHE_ASSETS = [
   '/explore/',
   '/matches/',
   '/profile/',
-  '/preferences/',
+  '/settings/',
   '/onboarding/',
   '/resume-builder/',
   '/cover-letter-builder/',

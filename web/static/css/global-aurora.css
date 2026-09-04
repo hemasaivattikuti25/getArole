@@ -17,11 +17,9 @@ html, body {
 }
 
 /* ── Content Sits Gracefully Above Background ── */
-header,
 main,
 footer,
 aside,
-nav,
 .page-container,
 .profile-main-wrapper,
 #main-content,

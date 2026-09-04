@@ -329,7 +329,7 @@
     .profile-main-wrapper {
       max-width: 1440px;
       margin: 0 auto;
-      padding: 32px 24px 64px;
+      padding: 16px 24px 64px;
       width: 100%;
       position: relative;
       z-index: 1;
@@ -552,13 +552,26 @@
       border: 1px solid #bbf7d0;
     }
 
-    /* ── THREE-COLUMN DOSSIER LAYOUT ── */
+    /* ── TABBED SPA DOSSIER LAYOUT ── */
     .dossier-grid {
       display: grid;
-      grid-template-columns: 280px minmax(0, 1fr) 370px;
+      grid-template-columns: 280px minmax(0, 1fr);
       gap: 24px;
       align-items: start;
     }
+    
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease forwards;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     @media (max-width: 1280px) {
       .dossier-grid {
         grid-template-columns: 260px minmax(0, 1fr);
@@ -1011,13 +1024,11 @@
       gap: 24px;
     }
     .section-card {
-      background: var(--surface-glass);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: #ffffff;
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
+      border-radius: 16px;
       padding: 24px 28px;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.03);
       position: relative;
     }
     .section-header {
@@ -1442,6 +1453,18 @@
       opacity: 1;
       pointer-events: auto;
     }
+    .meter-tag {
+      color: #64748b;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .meter-tag.done {
+      color: #10b981;
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -1455,229 +1478,204 @@
   <div class="landing-blueprint-grid" aria-hidden="true"></div>
 
   <!-- ════════════════════ UNIFORM TOP NAVBAR ════════════════════ -->
-  <header>
-    <div class="header-inner">
-      <div class="brand-group">
-        <a href="/dashboard/" class="brand-logo">
-          <img src="/logo.svg" alt="getArole" style="width:34px;height:34px;object-fit:contain;">
-          <span class="brand-title">get<span>A</span>role</span>
-        </a>
-
-        <nav class="nav-tabs">
-          <a class="nav-tab" href="/dashboard/" id="tab-btn-home">Overview</a>
-          <a class="nav-tab" href="/matches/" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">0</span></a>
-          <a class="nav-tab" href="/explore/" id="tab-btn-jobs">Explore Jobs</a>
-          <a class="nav-tab" href="/resume-builder/" id="tab-btn-resume">📄 ATS Resume</a>
-          <a class="nav-tab" href="/cover-letter-builder/" id="tab-btn-cover-letter">✉️ Cover Letter</a>
-          <a class="nav-tab active" href="/profile/" id="tab-btn-profile">Profile</a>
-        </nav>
-      </div>
-
-      <div class="header-actions">
-        <button class="btn-sync" onclick="syncAllProfileData()" title="Sync profile with cloud database">
-          <span>🔄 Sync</span>
-        </button>
-
-        <button class="btn-signout" onclick="openSignOutModal()" title="Sign out of your account">
-          <span>🚪 Sign Out</span>
-        </button>
-
-        <div class="user-profile-btn" onclick="toggleUserDropdown()">
-          <span style="font-size: 14px;">👤</span>
-          <span class="user-name-text" id="nav-username">Candidate</span>
-          <span style="font-size: 10px; color: var(--text-subtle);">▼</span>
-
-          <div class="user-dropdown" id="user-dropdown">
-            <a href="/profile/" class="dropdown-item">⚙️ Profile & Preferences</a>
-            <a href="/crm/" id="nav-admin-crm-link" class="dropdown-item" style="display:none; color:#4f46e5; font-weight:700;">👑 Master CRM Sheet</a>
-            <div style="height:1px; background:var(--border); margin:4px 0;"></div>
-            <a href="#" onclick="openSignOutModal(); return false;" class="dropdown-item" style="color:#ef4444; font-weight:600;">🚪 Sign Out</a>
-            <a href="#" onclick="openDeleteAccountModal(); return false;" class="dropdown-item" style="color:#dc2626; font-size:12px;">⚠️ Delete Account &amp; Data</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
+  <!-- GLOBAL_HEADER -->
 
   <!-- ════════════════════ MAIN PROFILE DOSSIER WRAPPER ════════════════════ -->
   <main class="profile-main-wrapper" id="main-content">
     
-    <!-- ── 1. CANDIDATE HERO & IDENTITY COMMAND CARD ── -->
-    <section class="candidate-hero-card">
-      <div class="hero-top-row">
-        
-        <div class="hero-identity">
-          <div class="hero-text">
-            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-              <span class="badge-verified">✓ Verified Candidate</span>
-              <span style="font-size:12px; font-weight:700; color:#10b981; display:inline-flex; align-items:center; gap:5px;">
-                <span style="width:7px; height:7px; border-radius:50%; background:#10b981; display:inline-block;"></span> Active
-              </span>
-            </div>
-            <h1>
-              <span id="hero-candidate-name">Your Name</span>
-            </h1>
-            <p class="hero-headline" id="hero-candidate-headline">Software Engineer</p>
-            
-            <div class="hero-chips-row">
-              <span class="hero-chip" id="chip-location">📍 Add Location</span>
-              <span class="hero-chip" id="chip-email">✉️ Add Email</span>
-              <span class="hero-chip" id="chip-phone">📱 Add Phone</span>
-              <span class="hero-chip" id="chip-notice" style="display:none;">⏱️ Notice</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="hero-actions-col">
-          <div class="status-select-wrap">
-            <span>●</span>
-            <select id="select-job-status" onchange="updateJobStatus(this.value)">
-              <option value="Actively looking">Actively looking for roles</option>
-              <option value="Open to offers">Open to offers</option>
-              <option value="Closed to offers">Not looking right now</option>
-            </select>
-          </div>
-
-          <div class="hero-btn-group">
-            <button class="btn-action-primary" onclick="triggerResumeUpload()">
-              <span>📄 Auto-Fill from Resume</span>
-            </button>
-            <input type="file" id="resume-file-input" accept=".pdf,.docx,.doc" style="display:none;" onchange="handleResumeFile(event)">
-            
-            <button class="btn-action-secondary" onclick="openPersonalModal()">
-              <span>✏️ Edit Identity</span>
-            </button>
-            
-            <a href="/resume-builder/" class="btn-action-secondary" title="View formatted Harvard LaTeX resume">
-              <span>📄 View in Resume Architect ↗</span>
-            </a>
-
-            <button class="btn-action-secondary" onclick="exportProfileJSON()">
-              <span>📥 Export JSON</span>
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Completion Meter Bar -->
-      <div class="meter-container">
-        <div class="meter-info">
-          <span style="font-size:13px; font-weight:700; color:var(--text-main);">ATS Resume Readiness:</span>
-          <div class="meter-bar-track">
-            <div class="meter-bar-fill" id="meter-fill" style="width: 0%;"></div>
-          </div>
-          <span class="meter-pct" id="meter-pct-text">0%</span>
-        </div>
-
-        <div class="meter-tags" id="meter-tags-wrap">
-          <span class="meter-tag" id="tag-m-identity">○ Contact & Info</span>
-          <span class="meter-tag" id="tag-m-skills">○ Categorized Skills</span>
-          <span class="meter-tag" id="tag-m-exp">○ Experience & Bullets</span>
-          <span class="meter-tag" id="tag-m-proj">○ Projects</span>
-          <span class="meter-tag" id="tag-m-edu">○ Education</span>
-          <span class="meter-tag" id="tag-m-cert">○ Certifications</span>
-          <span class="meter-tag" id="tag-m-resume">○ Resume Sync</span>
-        </div>
-      </div>
-    </section>
-
+    
     <!-- ── 2. TWO-COLUMN DOSSIER WORKSPACE ── -->
     <div class="dossier-grid">
       
       <!-- LEFT SIDEBAR: QUICK NAVIGATION & DEVELOPER LINKS -->
       <aside class="dossier-sidebar">
         
-        <!-- Unified (Profile) Card -->
+        <!-- NEW UNIFIED PROFILE & CAREER HUB CARD (As per Screenshot Design) -->
+        <style>
+          .new-profile-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.03);
+            border: 1px solid var(--border);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            margin-bottom: 20px;
+          }
+          .new-edit-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+          }
+          .new-edit-btn:hover { background: #f8fafc; color: #0f172a; }
+          .new-avatar-box {
+            width: 76px;
+            height: 76px;
+            background: #22b8cf; /* Teal matching screenshot */
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            margin-top: 8px;
+            box-shadow: 0 8px 16px rgba(34, 184, 207, 0.25);
+          }
+          .new-prof-name {
+            font-size: 21px;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 0 0 12px 0;
+            letter-spacing: -0.02em;
+          }
+          .new-status-label {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 6px;
+          }
+          .new-status-pill {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 12.5px;
+            font-weight: 700;
+            margin-bottom: 24px;
+          }
+          .new-divider {
+            width: 100%;
+            height: 1px;
+            background: #f1f5f9;
+            margin-bottom: 24px;
+          }
+          .new-hub-title {
+            width: 100%;
+            font-size: 15.5px;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 0 0 16px 0;
+            text-align: left;
+          }
+          .new-hub-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+            background: #ffffff;
+          }
+          .new-hub-btn:last-child { margin-bottom: 0; }
+          .new-hub-btn.active {
+            background: #14b8a6; /* teal background from screenshot */
+            border-color: #14b8a6;
+            box-shadow: 0 8px 20px rgba(20, 184, 166, 0.25);
+          }
+          .new-hub-btn.active .btn-title, .new-hub-btn.active .btn-sub {
+            color: white;
+          }
+          .new-hub-btn.active .arrow { color: white; }
+          .new-hub-btn:not(.active):hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transform: translateY(-1px);
+          }
+          .btn-left { display: flex; align-items: center; gap: 14px; }
+          .btn-icon { font-size: 20px; }
+          .btn-text { display: flex; flex-direction: column; gap: 3px; text-align: left; }
+          .btn-title { font-size: 15px; font-weight: 800; color: #1e293b; letter-spacing: -0.01em; }
+          .btn-sub { font-size: 13px; color: #64748b; font-weight: 500; }
+          .arrow { color: #1e293b; font-weight: 700; font-size: 16px; }
+        </style>
+
+        <div class="new-profile-card">
+          <button class="new-edit-btn" onclick="openGenericModal('personal')">✏️</button>
+          <div class="new-avatar-box" id="prof-avatar">U</div>
+          <h2 class="new-prof-name" id="disp-name">User Name</h2>
+          <div class="new-status-label">Job Search Status</div>
+          <div class="new-status-pill" id="disp-status">Actively looking</div>
+          
+          <div class="new-divider"></div>
+          
+          <h3 class="new-hub-title">My Career Hub</h3>
+          
+          <a href="#" class="new-hub-btn" id="btn-tab-personal" onclick="switchTab('personal'); return false;">
+            <div class="btn-left">
+              <div class="btn-icon">📊</div>
+              <div class="btn-text">
+                <span class="btn-title">Personal Info</span>
+                <span class="btn-sub">Edit demographic data</span>
+              </div>
+            </div>
+            <span class="arrow">→</span>
+          </a>
+
+          <a href="#" class="new-hub-btn active" id="btn-tab-profile" onclick="switchTab('profile'); return false;">
+            <div class="btn-left">
+              <div class="btn-icon">✏️</div>
+              <div class="btn-text">
+                <span class="btn-title">Profile</span>
+                <span class="btn-sub">Edit autofill information</span>
+              </div>
+            </div>
+            <span class="arrow">→</span>
+          </a>
+          
+          <a href="#" class="new-hub-btn" id="btn-tab-preferences" onclick="switchTab('preferences'); return false;">
+            <div class="btn-left">
+              <div class="btn-icon">💼</div>
+              <div class="btn-text">
+                <span class="btn-title">Job Preferences</span>
+                <span class="btn-sub">Refine your job search</span>
+              </div>
+            </div>
+            <span class="arrow">→</span>
+          </a>
+        </div>
+
+        <!-- Secondary Fast Jump Links & Resume Header Links -->
         <div class="sidebar-card">
-          <div class="sidebar-title">
-            <span>(Profile)</span>
-            <span style="font-size:12px; color:var(--primary); font-weight:700;">Fast Jump</span>
-          </div>
-          <nav class="nav-hub-list">
-            <a href="#section-personal" class="hub-link">
-              <div class="hub-link-left"><span>👤</span><span>Personal &amp; Summary</span></div>
-              <span>→</span>
-            </a>
-            <a href="#section-skills" class="hub-link">
-              <div class="hub-link-left"><span>🛠️</span><span>Categorized Tech Stack</span></div>
-              <span>→</span>
-            </a>
-            <a href="#section-experience" class="hub-link">
-              <div class="hub-link-left"><span>💼</span><span>Work Experience</span></div>
-              <span>→</span>
-            </a>
-            <a href="#section-projects" class="hub-link">
-              <div class="hub-link-left"><span>📁</span><span>Featured Projects</span></div>
-              <span>→</span>
-            </a>
-            <a href="#section-education" class="hub-link">
-              <div class="hub-link-left"><span>🎓</span><span>Education &amp; Coursework</span></div>
-              <span>→</span>
-            </a>
-            <a href="#section-certifications" class="hub-link">
-              <div class="hub-link-left"><span>📜</span><span>Certifications &amp; Licenses</span></div>
-              <span>→</span>
-            </a>
-            <a href="#section-achievements" class="hub-link">
-              <div class="hub-link-left"><span>🏆</span><span>Honors &amp; Achievements</span></div>
-              <span>→</span>
-            </a>
-            <a href="#section-preferences-panel" class="hub-link">
-              <div class="hub-link-left"><span>🎯</span><span>Personal Preferences</span></div>
-              <span>→</span>
-            </a>
-          </nav>
-
-          <!-- Developer Profiles & Links Embedded Inside (Profile) -->
-          <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <span style="font-family:'Outfit', sans-serif; font-size:11.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted);">Resume Header Links</span>
-              <button class="btn-edit-section" style="padding:2px 8px; font-size:11px;" onclick="openSocialModal()">Edit</button>
-            </div>
-            <div class="social-links-list" id="social-links-container">
-              <!-- Injected via JS -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Resume Sync Indicator Card -->
-        <div class="sidebar-card" style="background:linear-gradient(135deg, rgba(232, 240, 254, 0.7), rgba(243, 232, 255, 0.7)); border-color:#bfdbfe;">
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-            <span style="font-size:16px;">📄</span>
-            <strong style="font-size:13.5px; color:#1e40af;">Live ATS Resume Bridge</strong>
-          </div>
-          <p style="font-size:12.5px; color:#334155; line-height:1.5;">
-            Every detail saved in your profile automatically syncs with <strong>getArole LaTeX Resume Architect</strong> for 1-click export.
-          </p>
-          <div style="margin-top:12px;">
-            <a href="/resume-builder/" style="font-size:12px; font-weight:800; color:var(--primary); text-decoration:none;">Open LaTeX Resume Architect →</a>
-          </div>
-        </div>
-
-        <!-- Account & Security / Session Card -->
-        <div class="sidebar-card" style="border:1px solid #fee2e2; background:linear-gradient(180deg, #ffffff 0%, #fffbfb 100%);">
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:15px;">🛡️</span>
-              <strong style="font-size:13px; color:#991b1b;">Account &amp; Security</strong>
-            </div>
-            <span style="font-size:10px; font-weight:700; background:#fee2e2; color:#b91c1c; padding:2px 6px; border-radius:4px; text-transform:uppercase;">GDPR</span>
+          <div class="sidebar-title" style="margin-bottom: 5px;">
+            <span style="font-size:14px; font-weight:800;">Profile Strength</span>
+            <span style="font-size:14px; color:var(--primary); font-weight:800;" id="meter-pct-text">0%</span>
           </div>
           
-          <div style="font-size:12px; color:var(--text-muted); margin-bottom:12px; line-height:1.4;">
-            Session: <strong id="sidebar-auth-email" style="color:var(--text-main); word-break:break-all;">Candidate</strong>
+          <div style="background:#e2e8f0; border-radius:10px; height:10px; margin: 15px 0 20px 0; overflow:hidden;">
+            <div id="meter-fill" style="background:linear-gradient(90deg, #0ea5e9, #6366f1); width:0%; height:100%; border-radius:10px; transition:width 0.8s cubic-bezier(0.4, 0, 0.2, 1);"></div>
           </div>
 
-          <div style="display:flex; flex-direction:column; gap:8px;">
-            <button type="button" onclick="openSignOutModal()" style="display:flex; align-items:center; justify-content:center; gap:6px; width:100%; padding:8px 12px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; font-size:12.5px; font-weight:600; color:#334155; cursor:pointer; transition:all 0.15s ease;">
-              <span>🚪</span> Sign Out
-            </button>
-            <button type="button" onclick="openDeleteAccountModal()" style="display:flex; align-items:center; justify-content:center; gap:6px; width:100%; padding:8px 12px; background:#fff5f5; border:1px solid #fecaca; border-radius:8px; font-size:12px; font-weight:600; color:#dc2626; cursor:pointer; transition:all 0.15s ease;">
-              <span>⚠️</span> Delete Account &amp; Data
-            </button>
+          <div style="display:flex; flex-direction:column; gap:10px; font-size:12.5px;">
+            <div id="tag-m-identity" class="meter-tag">○ Contact &amp; Info</div>
+            <div id="tag-m-skills" class="meter-tag">○ Categorized Skills</div>
+            <div id="tag-m-exp" class="meter-tag">○ Experience &amp; Bullets</div>
+            <div id="tag-m-proj" class="meter-tag">○ Projects</div>
+            <div id="tag-m-edu" class="meter-tag">○ Education</div>
+            <div id="tag-m-cert" class="meter-tag">○ Certifications</div>
+            <div id="tag-m-resume" class="meter-tag">○ Resume Synced</div>
           </div>
         </div>
+
 
       </aside>
 
@@ -1694,9 +1692,35 @@
             <button class="btn-edit-section" onclick="openPersonalModal()">✏️ Edit Personal Info</button>
           </div>
 
-          <p class="bio-text" id="disp-summary">
-            Passionate software engineer focused on building robust, scalable applications. Experienced with modern frontend and backend architectures, microservices, and AI workflow integration.
-          </p>
+          <div class="skills-matrix">
+            <div class="skill-category-block" style="border-left: 4px solid var(--primary);">
+              <div class="skill-category-header"><span>👤</span> Core Identity</div>
+              <div style="display:flex; flex-direction:column; gap:6px; font-size:13px; color:var(--text-muted);">
+                <div id="disp-name" style="font-weight:700; color:var(--text-main); font-size:15px;"></div>
+                <div id="disp-headline" style="font-weight:600; color:var(--primary);"></div>
+                <div id="disp-contact"></div>
+              </div>
+            </div>
+            <div class="skill-category-block">
+              <div class="skill-category-header"><span>📝</span> Executive Summary</div>
+              <p class="bio-text" id="disp-summary" style="font-size:13.5px; color:#334155; line-height:1.6; margin:0;"></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION: RESUME HEADER LINKS -->
+        <section class="section-card" id="section-social">
+          <div class="section-header">
+            <div class="section-header-left">
+              <div class="section-icon" style="background:#e0e7ff; color:#4f46e5;">🔗</div>
+              <h2 class="section-title">Resume Header Links</h2>
+            </div>
+            <button class="btn-edit-section" onclick="openSocialModal()">✏️ Edit Links</button>
+          </div>
+
+          <div class="skills-matrix" id="social-links-container">
+            <!-- Injected via JS -->
+          </div>
         </section>
 
         <!-- SECTION 2: CATEGORIZED TECHNICAL SKILLS MATRIX -->
@@ -1817,243 +1841,60 @@
             <button class="btn-edit-section" onclick="openPreferencesModal()">✏️ Edit Targets</button>
           </div>
 
-          <div class="pref-block-grid">
-            <div class="pref-item-card">
-              <div class="pref-label">Target Role Titles</div>
+          <div class="skills-matrix">
+            <div class="skill-category-block">
+              <div class="skill-category-header"><span>💼</span> Target Role Titles</div>
               <div id="pref-roles-wrap"></div>
             </div>
-
-            <div class="pref-item-card">
-              <div class="pref-label">Preferred Locations</div>
+            <div class="skill-category-block">
+              <div class="skill-category-header"><span>📈</span> Seniority Level</div>
+              <div id="pref-seniority-wrap"></div>
+            </div>
+            <div class="skill-category-block">
+              <div class="skill-category-header"><span>📍</span> Preferred Locations</div>
               <div id="pref-locations-wrap"></div>
             </div>
-
-            <div class="pref-item-card">
-              <div class="pref-label">Workplace Mode</div>
+            <div class="skill-category-block">
+              <div class="skill-category-header"><span>🏢</span> Workplace Mode</div>
               <div id="pref-workplace-wrap"></div>
             </div>
-
-            <div class="pref-item-card">
-              <div class="pref-label">Minimum Expected Salary</div>
-              <div class="salary-highlight" id="pref-salary-display">₹15 LPA+</div>
+            <div class="skill-category-block">
+              <div class="skill-category-header"><span>🤝</span> Employment Type</div>
+              <div id="pref-emptype-wrap"></div>
+            </div>
+            <div class="skill-category-block">
+              <div class="skill-category-header"><span>💰</span> Minimum Expected Salary</div>
+              <div class="salary-highlight" id="pref-salary-display" style="font-size: 14px; margin-top: 4px;">₹15 LPA+</div>
+            </div>
+            <div class="skill-category-block">
+              <div class="skill-category-header"><span>🏭</span> Target Industries</div>
+              <div id="pref-industries-wrap"></div>
+            </div>
+            <div class="skill-category-block">
+              <div class="skill-category-header"><span>👥</span> Company Size</div>
+              <div id="pref-compsize-wrap"></div>
+            </div>
+            <div class="skill-category-block">
+              <div class="skill-category-header"><span>🚀</span> Job Search Urgency</div>
+              <div id="pref-urgency-wrap"></div>
             </div>
           </div>
         </section>
 
-        <!-- SECTION: ACCOUNT SOVEREIGNTY & DATA ERASURE -->
-        <section class="section-card" id="section-danger-zone" style="border:1px solid #fed7d7; background:#fffbfb;">
-          <div class="section-header" style="border-bottom:1px solid #fee2e2;">
-            <div class="section-header-left">
-              <div class="section-icon" style="background:#fee2e2; color:#dc2626;">🛡️</div>
-              <div>
-                <h2>Account Sovereignty &amp; Data Deletion</h2>
-                <div class="section-subtitle">Full GDPR compliance, session control, and permanent data erasure</div>
-              </div>
-            </div>
-            <span style="font-size:11px; font-weight:700; color:#dc2626; background:#fef2f2; padding:3px 8px; border-radius:6px; border:1px solid #fecaca;">DANGER ZONE</span>
-          </div>
 
-          <div style="padding:20px 24px; display:flex; flex-direction:column; gap:16px;">
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
-              <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
-                <div>
-                  <div style="font-weight:700; font-size:14px; color:#1e293b; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
-                    <span>🚪</span> Active Session Controls
-                  </div>
-                  <p style="font-size:12.5px; color:#64748b; line-height:1.5; margin:0 0 14px;">
-                    End your authenticated session. You can choose a quick sign out or complete device cache purge for shared computers.
-                  </p>
-                </div>
-                <button type="button" onclick="openSignOutModal()" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; background:#f1f5f9; border:1px solid #cbd5e1; color:#334155; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s;">
-                  🚪 Sign Out
-                </button>
-              </div>
-
-              <div style="background:#ffffff; border:1px solid #fecaca; border-radius:10px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
-                <div>
-                  <div style="font-weight:700; font-size:14px; color:#991b1b; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
-                    <span>⚠️</span> Permanent Account Purge (GDPR)
-                  </div>
-                  <p style="font-size:12.5px; color:#64748b; line-height:1.5; margin:0 0 14px;">
-                    Irrevocably delete your profile, preferences, resume records from Supabase cloud database, and delete Firebase user.
-                  </p>
-                </div>
-                <button type="button" onclick="openDeleteAccountModal()" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; background:#fef2f2; border:1px solid #f87171; color:#dc2626; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.15s;">
-                  🗑️ Delete Account &amp; All Data
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
 
       </div>
 
       <!-- RIGHT COLUMN: DEDICATED PERSONAL PREFERENCES COLUMN -->
-      <aside class="preferences-column" id="section-preferences-panel">
-        <div class="pref-panel-card">
-          <div class="pref-panel-header">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <div class="section-icon" style="background:#e0f2fe; color:#0284c7;">🎯</div>
-              <div>
-                <h2 style="font-family:'Outfit', sans-serif; font-size:15px; font-weight:800; color:var(--text-main); margin:0;">Personal Preferences</h2>
-                <div style="font-size:11.5px; color:var(--text-muted);">Powers /matches/ 5D Fit Engine</div>
-              </div>
-            </div>
-            <span class="sync-badge" id="pref-sync-indicator" title="Synchronized with Supabase Cloud">● Cloud Synced</span>
-          </div>
-
-          <!-- 1. Target Roles / Specialization -->
-          <div class="pref-group">
-            <div class="pref-group-title">
-              <span>Target Roles (35% Fit)</span>
-              <span style="font-size:10.5px; font-weight:600; color:var(--primary);" id="col-roles-count">0 roles</span>
-            </div>
-            <div class="pref-tags-wrap" id="col-roles-tags"></div>
-            <div class="pref-add-row">
-              <input type="text" id="col-role-input" class="pref-mini-input" placeholder="Add custom role..." onkeydown="if(event.key==='Enter'){event.preventDefault();addColRole();}">
-              <button type="button" class="pref-mini-btn" onclick="addColRole()">+ Add</button>
-            </div>
-            <div class="pref-presets-row">
-              <span class="pref-preset-pill" onclick="quickAddRole('Full Stack Developer')">+ Full Stack</span>
-              <span class="pref-preset-pill" onclick="quickAddRole('Backend Engineer')">+ Backend</span>
-              <span class="pref-preset-pill" onclick="quickAddRole('Frontend Engineer')">+ Frontend</span>
-              <span class="pref-preset-pill" onclick="quickAddRole('AI / ML Engineer')">+ AI/ML</span>
-              <span class="pref-preset-pill" onclick="quickAddRole('DevOps Engineer')">+ DevOps</span>
-            </div>
-          </div>
-
-          <!-- 2. Seniority Level -->
-          <div class="pref-group">
-            <div class="pref-group-title">
-              <span>Seniority Level (10% Fit)</span>
-            </div>
-            <div class="pref-pills-row" id="col-seniority-pills">
-              <button type="button" class="pref-choice-pill" data-seniority="fresher" onclick="setColSeniority('fresher')">Fresher (0-1y)</button>
-              <button type="button" class="pref-choice-pill" data-seniority="junior" onclick="setColSeniority('junior')">Junior (1-3y)</button>
-              <button type="button" class="pref-choice-pill active" data-seniority="mid" onclick="setColSeniority('mid')">Mid (3-5y)</button>
-              <button type="button" class="pref-choice-pill" data-seniority="senior" onclick="setColSeniority('senior')">Senior (5-8y)</button>
-              <button type="button" class="pref-choice-pill" data-seniority="lead" onclick="setColSeniority('lead')">Lead / Staff (8y+)</button>
-            </div>
-          </div>
-
-          <!-- 3. Workplace Mode -->
-          <div class="pref-group">
-            <div class="pref-group-title">
-              <span>Workplace Mode (15% Fit)</span>
-            </div>
-            <div class="pref-segmented" id="col-workplace-segmented">
-              <button type="button" class="pref-segment-btn" data-wp="Remote" onclick="setColWorkplace('Remote')">🌐 Remote</button>
-              <button type="button" class="pref-segment-btn active" data-wp="Hybrid" onclick="setColWorkplace('Hybrid')">🏢 Hybrid</button>
-              <button type="button" class="pref-segment-btn" data-wp="On-Site" onclick="setColWorkplace('On-Site')">📍 On-Site</button>
-              <button type="button" class="pref-segment-btn" data-wp="Any" onclick="setColWorkplace('Any')">✨ Any</button>
-            </div>
-          </div>
-
-          <!-- 4. Target Locations -->
-          <div class="pref-group">
-            <div class="pref-group-title">
-              <span>Target Locations</span>
-            </div>
-            <div class="pref-chips-multi" id="col-locations-chips"></div>
-            <div class="pref-add-row" style="margin-top:4px;">
-              <input type="text" id="col-loc-input" class="pref-mini-input" placeholder="Add other city..." onkeydown="if(event.key==='Enter'){event.preventDefault();addColLocation();}">
-              <button type="button" class="pref-mini-btn" onclick="addColLocation()">+ Add</button>
-            </div>
-          </div>
-
-          <!-- 5. Minimum Expected Compensation -->
-          <div class="pref-group">
-            <div class="pref-group-title" style="display:flex; justify-content:space-between; align-items:center;">
-              <span>Minimum Expected CTC (5% Fit)</span>
-              <div class="currency-toggle-pill">
-                <button type="button" class="curr-btn active" id="col-curr-inr" onclick="setColCurrency('INR')">INR (₹)</button>
-                <button type="button" class="curr-btn" id="col-curr-usd" onclick="setColCurrency('USD')">USD ($)</button>
-              </div>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin:6px 0 2px;">
-              <span style="font-size:11.5px; color:var(--text-muted);">Floor:</span>
-              <span class="salary-highlight" id="col-salary-val" style="font-size:18px;">₹18 LPA+</span>
-            </div>
-            <input type="range" id="col-salary-slider" class="pref-range-slider" min="300000" max="6000000" step="100000" value="1800000" oninput="onColSalaryChange(this.value)">
-            <div class="pref-presets-row" id="col-salary-presets"></div>
-          </div>
-
-          <!-- 6. Employment Types -->
-          <div class="pref-group">
-            <div class="pref-group-title">Employment Type</div>
-            <div class="pref-pills-row" id="col-emptype-pills">
-              <button type="button" class="pref-choice-pill active" data-emp="Full-Time" onclick="toggleColEmpType('Full-Time')">Full-Time</button>
-              <button type="button" class="pref-choice-pill" data-emp="Internship" onclick="toggleColEmpType('Internship')">Internship</button>
-              <button type="button" class="pref-choice-pill" data-emp="Contract" onclick="toggleColEmpType('Contract')">Contract</button>
-            </div>
-          </div>
-
-          <!-- 7. Target Industries (Max 3) -->
-          <div class="pref-group">
-            <div class="pref-group-title">Target Industries (Max 3)</div>
-            <div class="pref-chips-multi" id="col-industries-chips"></div>
-          </div>
-
-          <!-- 8. Company Size -->
-          <div class="pref-group">
-            <div class="pref-group-title">Preferred Company Size</div>
-            <div class="pref-pills-row" id="col-companysize-pills">
-              <button type="button" class="pref-choice-pill" data-size="1-10" onclick="setColCompanySize('1-10')">1-10</button>
-              <button type="button" class="pref-choice-pill" data-size="11-50" onclick="setColCompanySize('11-50')">11-50</button>
-              <button type="button" class="pref-choice-pill active" data-size="51-200" onclick="setColCompanySize('51-200')">51-200</button>
-              <button type="button" class="pref-choice-pill" data-size="200-1000" onclick="setColCompanySize('200-1000')">200-1000</button>
-              <button type="button" class="pref-choice-pill" data-size="10000+" onclick="setColCompanySize('10000+')">10000+</button>
-              <button type="button" class="pref-choice-pill" data-size="Any" onclick="setColCompanySize('Any')">Any</button>
-            </div>
-          </div>
-
-          <!-- 9. Search Urgency -->
-          <div class="pref-group">
-            <div class="pref-group-title">Job Search Urgency</div>
-            <div class="pref-status-cards">
-              <div class="status-card-label active" id="col-status-card-act" onclick="setColStatus('actively_looking')">
-                <input type="radio" name="col_status_radio" value="actively_looking" id="col-status-act" checked>
-                <div class="status-card-content">
-                  <span style="font-size:16px;">🚀</span>
-                  <div>
-                    <strong>Actively Interviewing</strong>
-                    <span>Immediate availability</span>
-                  </div>
-                </div>
-              </div>
-              <div class="status-card-label" id="col-status-card-cas" onclick="setColStatus('casually_browsing')">
-                <input type="radio" name="col_status_radio" value="casually_browsing" id="col-status-cas">
-                <div class="status-card-content">
-                  <span style="font-size:16px;">👀</span>
-                  <div>
-                    <strong>Casually Browsing</strong>
-                    <span>Open to great offers</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ACTION BUTTONS -->
-          <div style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
-            <button type="button" class="btn-primary-action" id="btn-save-col-prefs" onclick="savePersonalPreferencesColumn()">
-              ⚡ Save Preferences &amp; Re-Calculate Matches
-            </button>
-            <a href="/matches/" class="btn-matches-jump" id="btn-jump-matches">
-              <span>View Live 90%+ Matches Feed</span>
-              <span>→</span>
-            </a>
-          </div>
-
-        </div>
-      </aside>
+      <!-- DEDICATED PERSONAL PREFERENCES COLUMN DELETED (MOVED TO MODAL) -->
     </div>
 
   </main>
 
   <!-- ════════════════════ COMPREHENSIVE MODALS ════════════════════ -->
   
-  <!-- 1. EDIT PERSONAL / IDENTITY MODAL -->
+
+  <!-- 1. PERSONAL INFO MODAL -->
   <div class="modal-overlay" id="modal-personal">
     <div class="modal-dialog">
       <div class="modal-header">
@@ -2096,7 +1937,43 @@
       </div>
       <div class="modal-footer">
         <button class="btn-action-secondary" onclick="closeModal('modal-personal')">Cancel</button>
-        <button class="btn-action-primary" onclick="savePersonalInfo()">Save Personal Info</button>
+        <button class="btn-action-primary" onclick="savePersonalInfo()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOCIAL LINKS MODAL -->
+  <div class="modal-overlay" id="modal-social">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Edit Resume Header Links</h3>
+        <button class="modal-close-btn" onclick="closeModal('modal-social')">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>LinkedIn Profile</label>
+          <input type="url" id="link-linkedin" class="form-control" placeholder="https://linkedin.com/in/username">
+        </div>
+        <div class="form-group">
+          <label>GitHub Profile</label>
+          <input type="url" id="link-github" class="form-control" placeholder="https://github.com/username">
+        </div>
+        <div class="form-group">
+          <label>Portfolio / Personal Website</label>
+          <input type="url" id="link-portfolio" class="form-control" placeholder="https://yourportfolio.com">
+        </div>
+        <div class="form-group">
+          <label>LeetCode / Coding Profile</label>
+          <input type="url" id="link-leetcode" class="form-control" placeholder="https://leetcode.com/username">
+        </div>
+        <div class="form-group">
+          <label>Twitter / X Profile</label>
+          <input type="url" id="link-twitter" class="form-control" placeholder="https://twitter.com/username">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action-secondary" onclick="closeModal('modal-social')">Cancel</button>
+        <button class="btn-action-primary" onclick="saveSocialLinks()">Save Links</button>
       </div>
     </div>
   </div>
@@ -2338,76 +2215,140 @@
   </div>
 
   <!-- 8. EDIT SOCIAL LINKS MODAL -->
-  <div class="modal-overlay" id="modal-social">
-    <div class="modal-dialog">
-      <div class="modal-header">
-        <h3>Edit Resume Header Links</h3>
-        <button class="modal-close-btn" onclick="closeModal('modal-social')">×</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>LinkedIn Profile</label>
-          <input type="url" id="link-linkedin" class="form-control" placeholder="https://linkedin.com/in/username">
-        </div>
-        <div class="form-group">
-          <label>GitHub Profile</label>
-          <input type="url" id="link-github" class="form-control" placeholder="https://github.com/username">
-        </div>
-        <div class="form-group">
-          <label>Portfolio / Personal Website</label>
-          <input type="url" id="link-portfolio" class="form-control" placeholder="https://yourportfolio.com">
-        </div>
-        <div class="form-group">
-          <label>LeetCode / Coding Profile</label>
-          <input type="url" id="link-leetcode" class="form-control" placeholder="https://leetcode.com/username">
-        </div>
-        <div class="form-group">
-          <label>Twitter / X Profile</label>
-          <input type="url" id="link-twitter" class="form-control" placeholder="https://twitter.com/username">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-action-secondary" onclick="closeModal('modal-social')">Cancel</button>
-        <button class="btn-action-primary" onclick="saveSocialLinks()">Save Links</button>
-      </div>
-    </div>
-  </div>
 
   <!-- 9. EDIT CAREER PREFERENCES MODAL -->
   <div class="modal-overlay" id="modal-preferences">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="max-width: 650px;">
       <div class="modal-header">
-        <h3>Career Targets &amp; Preferences</h3>
+        <h3>Edit Job Search Preferences</h3>
         <button class="modal-close-btn" onclick="closeModal('modal-preferences')">×</button>
       </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>Target Job Titles (Comma separated)</label>
-          <input type="text" id="pref-inp-roles" class="form-control" placeholder="Full Stack Developer, Software Engineer, Backend Engineer">
-        </div>
-        <div class="form-group">
-          <label>Preferred Locations (Comma separated)</label>
-          <input type="text" id="pref-inp-locations" class="form-control" placeholder="Bengaluru, Hyderabad, Remote in India, Global Remote">
-        </div>
-        <div class="form-group">
-          <label>Workplace Preference</label>
-          <select id="pref-inp-workplace" class="form-control">
-            <option value="Remote">Remote</option>
-            <option value="Hybrid">Hybrid</option>
-            <option value="On-site">On-site</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Minimum Expected Salary</label>
-          <div style="display:flex; gap:12px; align-items:center;">
-            <select id="pref-inp-curr" class="form-control" style="width:120px;" onchange="updateSalaryModalDisplay()">
-              <option value="INR">INR (₹)</option>
-              <option value="USD">USD ($)</option>
-            </select>
-            <input type="range" id="pref-inp-salary-slider" min="300000" max="6000000" step="100000" value="1500000" style="flex:1;" oninput="updateSalaryModalDisplay()">
-            <span id="pref-modal-salary-txt" style="font-family:'JetBrains Mono',monospace; font-weight:800; font-size:16px; color:var(--primary); min-width:100px; text-align:right;">₹15 LPA+</span>
+      <div class="modal-body" style="background:#f8fafc; padding:20px; max-height:75vh; overflow-y:auto;">
+          <!-- 1. Target Roles / Specialization -->
+          <div class="pref-group">
+            <div class="pref-group-title">
+              <span>Target Roles</span>
+              <span style="font-size:10.5px; font-weight:600; color:var(--primary);" id="col-roles-count">0 roles</span>
+            </div>
+            <div class="pref-tags-wrap" id="col-roles-tags"></div>
+            <div class="pref-add-row">
+              <input type="text" id="col-role-input" class="pref-mini-input" placeholder="Add custom role..." onkeydown="if(event.key==='Enter'){event.preventDefault();addColRole();}">
+              <button type="button" class="pref-mini-btn" onclick="addColRole()">+ Add</button>
+            </div>
+            <div class="pref-presets-row">
+              <span class="pref-preset-pill" onclick="quickAddRole('Full Stack Developer')">+ Full Stack</span>
+              <span class="pref-preset-pill" onclick="quickAddRole('Backend Engineer')">+ Backend</span>
+              <span class="pref-preset-pill" onclick="quickAddRole('Frontend Engineer')">+ Frontend</span>
+              <span class="pref-preset-pill" onclick="quickAddRole('AI / ML Engineer')">+ AI/ML</span>
+              <span class="pref-preset-pill" onclick="quickAddRole('DevOps Engineer')">+ DevOps</span>
+            </div>
           </div>
-        </div>
+
+          <!-- 2. Seniority Level -->
+          <div class="pref-group">
+            <div class="pref-group-title">Seniority Level</div>
+            <div class="pref-pills-row" id="col-seniority-pills">
+              <button type="button" class="pref-choice-pill" data-seniority="fresher" onclick="setColSeniority('fresher')">Fresher (0-1y)</button>
+              <button type="button" class="pref-choice-pill" data-seniority="junior" onclick="setColSeniority('junior')">Junior (1-3y)</button>
+              <button type="button" class="pref-choice-pill active" data-seniority="mid" onclick="setColSeniority('mid')">Mid (3-5y)</button>
+              <button type="button" class="pref-choice-pill" data-seniority="senior" onclick="setColSeniority('senior')">Senior (5-8y)</button>
+              <button type="button" class="pref-choice-pill" data-seniority="lead" onclick="setColSeniority('lead')">Lead / Staff (8y+)</button>
+            </div>
+          </div>
+
+          <!-- 3. Workplace Mode -->
+          <div class="pref-group">
+            <div class="pref-group-title">Workplace Mode</div>
+            <div class="pref-segmented" id="col-workplace-segmented">
+              <button type="button" class="pref-segment-btn" data-wp="Remote" onclick="setColWorkplace('Remote')">🌐 Remote</button>
+              <button type="button" class="pref-segment-btn active" data-wp="Hybrid" onclick="setColWorkplace('Hybrid')">🏢 Hybrid</button>
+              <button type="button" class="pref-segment-btn" data-wp="On-Site" onclick="setColWorkplace('On-Site')">📍 On-Site</button>
+              <button type="button" class="pref-segment-btn" data-wp="Any" onclick="setColWorkplace('Any')">✨ Any</button>
+            </div>
+          </div>
+
+          <!-- 4. Target Locations -->
+          <div class="pref-group">
+            <div class="pref-group-title">Target Locations</div>
+            <div class="pref-chips-multi" id="col-locations-chips"></div>
+            <div class="pref-add-row" style="margin-top:4px;">
+              <input type="text" id="col-loc-input" class="pref-mini-input" placeholder="Add other city..." onkeydown="if(event.key==='Enter'){event.preventDefault();addColLocation();}">
+              <button type="button" class="pref-mini-btn" onclick="addColLocation()">+ Add</button>
+            </div>
+          </div>
+
+          <!-- 5. Minimum Expected Compensation -->
+          <div class="pref-group">
+            <div class="pref-group-title" style="display:flex; justify-content:space-between; align-items:center;">
+              <span>Minimum Expected CTC</span>
+              <div class="currency-toggle-pill">
+                <button type="button" class="curr-btn active" id="col-curr-inr" onclick="setColCurrency('INR')">INR (₹)</button>
+                <button type="button" class="curr-btn" id="col-curr-usd" onclick="setColCurrency('USD')">USD ($)</button>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin:6px 0 2px;">
+              <span style="font-size:11.5px; color:var(--text-muted);">Floor:</span>
+              <span class="salary-highlight" id="col-salary-val" style="font-size:18px;">₹18 LPA+</span>
+            </div>
+            <input type="range" id="col-salary-slider" class="pref-range-slider" min="300000" max="6000000" step="100000" value="1800000" oninput="onColSalaryChange(this.value)">
+            <div class="pref-presets-row" id="col-salary-presets"></div>
+          </div>
+
+          <!-- 6. Employment Types -->
+          <div class="pref-group">
+            <div class="pref-group-title">Employment Type</div>
+            <div class="pref-pills-row" id="col-emptype-pills">
+              <button type="button" class="pref-choice-pill active" data-emp="Full-Time" onclick="toggleColEmpType('Full-Time')">Full-Time</button>
+              <button type="button" class="pref-choice-pill" data-emp="Internship" onclick="toggleColEmpType('Internship')">Internship</button>
+              <button type="button" class="pref-choice-pill" data-emp="Contract" onclick="toggleColEmpType('Contract')">Contract</button>
+            </div>
+          </div>
+
+          <!-- 7. Target Industries (Max 3) -->
+          <div class="pref-group">
+            <div class="pref-group-title">Target Industries (Max 3)</div>
+            <div class="pref-chips-multi" id="col-industries-chips"></div>
+          </div>
+
+          <!-- 8. Company Size -->
+          <div class="pref-group">
+            <div class="pref-group-title">Preferred Company Size</div>
+            <div class="pref-pills-row" id="col-companysize-pills">
+              <button type="button" class="pref-choice-pill" data-size="1-10" onclick="setColCompanySize('1-10')">1-10</button>
+              <button type="button" class="pref-choice-pill" data-size="11-50" onclick="setColCompanySize('11-50')">11-50</button>
+              <button type="button" class="pref-choice-pill active" data-size="51-200" onclick="setColCompanySize('51-200')">51-200</button>
+              <button type="button" class="pref-choice-pill" data-size="200-1000" onclick="setColCompanySize('200-1000')">200-1000</button>
+              <button type="button" class="pref-choice-pill" data-size="10000+" onclick="setColCompanySize('10000+')">10000+</button>
+              <button type="button" class="pref-choice-pill" data-size="Any" onclick="setColCompanySize('Any')">Any</button>
+            </div>
+          </div>
+
+          <!-- 9. Search Urgency -->
+          <div class="pref-group">
+            <div class="pref-group-title">Job Search Urgency</div>
+            <div class="pref-status-cards">
+              <div class="status-card-label active" id="col-status-card-act" onclick="setColStatus('actively_looking')">
+                <input type="radio" name="col_status_radio" value="actively_looking" id="col-status-act" checked>
+                <div class="status-card-content">
+                  <span style="font-size:16px;">🚀</span>
+                  <div>
+                    <strong>Actively Interviewing</strong>
+                    <span>Immediate availability</span>
+                  </div>
+                </div>
+              </div>
+              <div class="status-card-label" id="col-status-card-cas" onclick="setColStatus('casually_browsing')">
+                <input type="radio" name="col_status_radio" value="casually_browsing" id="col-status-cas">
+                <div class="status-card-content">
+                  <span style="font-size:16px;">👀</span>
+                  <div>
+                    <strong>Casually Browsing</strong>
+                    <span>Open to great offers</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
       </div>
       <div class="modal-footer">
         <button class="btn-action-secondary" onclick="closeModal('modal-preferences')">Cancel</button>
@@ -2589,7 +2530,7 @@
     });
   </script>
 
-  <script src="/static/js/getarole-core.js"></script>
+  <script src="/js/getarole-core.js"></script>
   <script>
     // ── GLOBAL STATE ──
     let state = {
@@ -2801,8 +2742,9 @@
       const phone = state.profile.phone || '';
       const notice = state.profile.notice || '';
 
-      const nameEl = document.getElementById('hero-candidate-name');
+      const nameEl = document.getElementById('disp-name');
       if (nameEl) nameEl.textContent = name;
+      
       const headEl = document.getElementById('hero-candidate-headline');
       if (headEl) headEl.textContent = headline;
       const locEl = document.getElementById('chip-location');
@@ -2825,7 +2767,7 @@
       const initials = (name && name !== 'Your Name')
         ? name.split(/\s+/).filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase()
         : 'U';
-      const heroAv = document.getElementById('hero-avatar-text');
+      const heroAv = document.getElementById('prof-avatar');
       if (heroAv) heroAv.textContent = initials;
       const navAv = document.getElementById('nav-avatar');
       if (navAv) navAv.textContent = initials[0] || 'U';
@@ -2833,12 +2775,30 @@
       if (navUser) navUser.textContent = name !== 'Your Name' ? name : 'Candidate';
 
       // Status
-      const statusSelect = document.getElementById('select-job-status');
-      if (statusSelect && state.prefs.status) statusSelect.value = state.prefs.status;
+      const statusPill = document.getElementById('disp-status');
+      if (statusPill) {
+        statusPill.textContent = state.prefs.status || 'Actively looking for roles';
+      }
 
-      // 2. Personal Bio
+      // 2. Personal Bio Block View Populator
       const sumEl = document.getElementById('disp-summary');
-      if (sumEl) sumEl.textContent = state.profile.summary;
+      if (sumEl) sumEl.innerHTML = state.profile.summary ? escapeHTML(state.profile.summary) : '<span style="color:transparent; user-select:none;">_</span>';
+      
+      const dispNameEl = document.getElementById('disp-name');
+      if (dispNameEl) dispNameEl.innerHTML = state.profile.name ? escapeHTML(state.profile.name) : '<span style="color:transparent; user-select:none;">_</span>';
+      
+      const dispHeadEl = document.getElementById('disp-headline');
+      if (dispHeadEl) dispHeadEl.innerHTML = state.profile.headline ? escapeHTML(state.profile.headline) : '<span style="color:transparent; user-select:none;">_</span>';
+      
+      const contactEl = document.getElementById('disp-contact');
+      if (contactEl) {
+        const parts = [];
+        if (state.profile.loc) parts.push('📍 ' + escapeHTML(state.profile.loc));
+        if (state.profile.email) parts.push('✉️ ' + escapeHTML(state.profile.email));
+        if (state.profile.phone) parts.push('📞 ' + escapeHTML(state.profile.phone));
+        if (state.profile.notice) parts.push('⏳ ' + escapeHTML(state.profile.notice));
+        contactEl.innerHTML = parts.length > 0 ? parts.join(' &nbsp;|&nbsp; ') : '<span style="color:transparent; user-select:none;">_</span>';
+      }
 
       // 3. Technical Skills Categories
       const renderChips = (id, list) => {
@@ -2857,7 +2817,7 @@
       renderChips('skills-cloud-wrap', state.profile.skills_cloud);
       renderChips('skills-tools-wrap', state.profile.skills_tools);
 
-      // 4. Developer Links
+      // 4. Developer Links Block View Populator
       const linksWrap = document.getElementById('social-links-container');
       if (linksWrap) {
         const links = state.profile.links || {};
@@ -2870,15 +2830,14 @@
         ];
 
         linksWrap.innerHTML = platforms.map(p => {
-          const url = links[p.key] || '#';
-          const hasUrl = url && url !== '#';
+          const url = links[p.key] || '';
           return `
-            <a href="${hasUrl ? escapeHTML(url) : 'javascript:void(0)'}" target="${hasUrl ? '_blank' : '_self'}" class="social-link-item" rel="noopener noreferrer">
-              <span>${p.icon} ${p.label}</span>
-              <span style="font-size:11.5px; color:${hasUrl ? 'var(--primary)' : 'var(--text-subtle)'};">
-                ${hasUrl ? 'Open ↗' : 'Not linked'}
-              </span>
-            </a>
+            <div class="skill-category-block" style="padding:10px 16px;">
+              <div class="skill-category-header" style="margin-bottom:6px;"><span>${p.icon}</span> ${p.label}</div>
+              <div style="font-size:13px;">
+                ${url ? `<a href="${escapeHTML(url)}" target="_blank" style="color:var(--primary); text-decoration:none;">${escapeHTML(url)}</a>` : '<span style="color:transparent; user-select:none;">_</span>'}
+              </div>
+            </div>
           `;
         }).join('');
       }
@@ -3045,18 +3004,47 @@
       const rolesWrap = document.getElementById('pref-roles-wrap');
       if (rolesWrap) {
         const roles = state.prefs.roles || [];
-        rolesWrap.innerHTML = roles.map(r => `<span class="pref-val-pill">💼 ${escapeHTML(r)}</span>`).join('');
+        rolesWrap.innerHTML = roles.length ? roles.map(r => `<span class="pref-val-pill">💼 ${escapeHTML(r)}</span>`).join('') : '<span style="color:transparent; user-select:none;">_</span>';
+      }
+
+      const seniorityWrap = document.getElementById('pref-seniority-wrap');
+      if (seniorityWrap) {
+        seniorityWrap.innerHTML = state.prefs.seniority ? `<span class="pref-val-pill">📈 ${escapeHTML(state.prefs.seniority.charAt(0).toUpperCase() + state.prefs.seniority.slice(1))}</span>` : '<span style="color:transparent; user-select:none;">_</span>';
       }
 
       const locsWrap = document.getElementById('pref-locations-wrap');
       if (locsWrap) {
         const locs = state.prefs.locations || [];
-        locsWrap.innerHTML = locs.map(l => `<span class="pref-val-pill">📍 ${escapeHTML(l)}</span>`).join('');
+        locsWrap.innerHTML = locs.length ? locs.map(l => `<span class="pref-val-pill">📍 ${escapeHTML(l)}</span>`).join('') : '<span style="color:transparent; user-select:none;">_</span>';
       }
 
       const wpWrap = document.getElementById('pref-workplace-wrap');
       if (wpWrap) {
-        wpWrap.innerHTML = `<span class="pref-val-pill" style="background:#ecfdf5; color:#059669; border-color:#a7f3d0;">🏢 ${escapeHTML(state.prefs.workplaceType || 'Hybrid')}</span>`;
+        wpWrap.innerHTML = state.prefs.workplaceType ? `<span class="pref-val-pill" style="background:#ecfdf5; color:#059669; border-color:#a7f3d0;">🏢 ${escapeHTML(state.prefs.workplaceType)}</span>` : '<span style="color:transparent; user-select:none;">_</span>';
+      }
+
+      const empWrap = document.getElementById('pref-emptype-wrap');
+      if (empWrap) {
+        const emps = state.prefs.employmentType || [];
+        empWrap.innerHTML = emps.length ? emps.map(e => `<span class="pref-val-pill">🤝 ${escapeHTML(e)}</span>`).join('') : '<span style="color:transparent; user-select:none;">_</span>';
+      }
+
+      const indWrap = document.getElementById('pref-industries-wrap');
+      if (indWrap) {
+        const inds = state.prefs.industries || [];
+        indWrap.innerHTML = inds.length ? inds.map(i => `<span class="pref-val-pill">🏭 ${escapeHTML(i)}</span>`).join('') : '<span style="color:transparent; user-select:none;">_</span>';
+      }
+
+      const sizeWrap = document.getElementById('pref-compsize-wrap');
+      if (sizeWrap) {
+        sizeWrap.innerHTML = state.prefs.companySize ? `<span class="pref-val-pill">👥 ${escapeHTML(state.prefs.companySize)}</span>` : '<span style="color:transparent; user-select:none;">_</span>';
+      }
+
+      const urgWrap = document.getElementById('pref-urgency-wrap');
+      if (urgWrap) {
+        const uMap = { 'actively_looking': '🚀 Actively Interviewing', 'casually_browsing': '👀 Casually Browsing' };
+        const uText = uMap[state.prefs.status] || state.prefs.status || '';
+        urgWrap.innerHTML = uText ? `<span class="pref-val-pill" style="background:#e0e7ff; color:#4f46e5;">${escapeHTML(uText)}</span>` : '<span style="color:transparent; user-select:none;">_</span>';
       }
 
       const salaryDisp = document.getElementById('pref-salary-display');
@@ -3418,7 +3406,7 @@
       const btn = document.getElementById('btn-save-col-prefs');
       const originalHtml = btn ? btn.innerHTML : '';
       if (btn) {
-        btn.innerHTML = '⏳ Saving &amp; Re-Calculating...';
+        btn.innerHTML = '⏳ Saving...';
         btn.disabled = true;
       }
 
@@ -3449,29 +3437,10 @@
           await window.getAroleSync.syncUserPreferences(state.prefs);
         }
 
-        // 2. Also update center column display if present
-        const centerRoles = document.getElementById('pref-roles-wrap');
-        if (centerRoles) centerRoles.innerHTML = state.prefs.roles.map(r => `<span class="pref-val-pill">💼 ${escapeHTML(r)}</span>`).join('');
-        const centerLocs = document.getElementById('pref-locations-wrap');
-        if (centerLocs) centerLocs.innerHTML = state.prefs.locations.map(l => `<span class="pref-val-pill">📍 ${escapeHTML(l)}</span>`).join('');
-        const centerWp = document.getElementById('pref-workplace-wrap');
-        if (centerWp) centerWp.innerHTML = `<span class="pref-val-pill" style="background:#ecfdf5; color:#059669; border-color:#a7f3d0;">🏢 ${escapeHTML(state.prefs.workplaceType)}</span>`;
-        const centerSal = document.getElementById('pref-salary-display');
-        if (centerSal) {
-          if (state.prefs.salary_curr === 'INR') centerSal.textContent = `₹${(state.prefs.salary_amt / 100000).toFixed(0)} LPA+`;
-          else centerSal.textContent = `$${(state.prefs.salary_amt / 1000).toFixed(0)}k/yr+`;
-        }
+        closeModal('modal-preferences');
+        renderFullProfile();
 
-        // 3. Update Cloud Synced Indicator
-        const ind = document.getElementById('pref-sync-indicator');
-        if (ind) {
-          ind.innerHTML = '✓ Cloud Synced';
-          ind.style.background = '#ecfdf5';
-          ind.style.borderColor = '#a7f3d0';
-          ind.style.color = '#059669';
-        }
-
-        toast('✓ Personal preferences saved & synced to Supabase! Matches re-calculated.');
+        toast('✓ Preferences saved & synced!');
       } catch (err) {
         console.error('Error saving personal preferences:', err);
         toast('Preferences saved locally.');
@@ -3661,7 +3630,7 @@
 
     // ── MODAL SAVE HANDLERS ──
 
-    // 1. Personal Info
+    // 1. Personal Info Saver
     window.openPersonalModal = function() {
       document.getElementById('inp-name').value = state.profile.name || '';
       document.getElementById('inp-headline').value = state.profile.headline || '';
@@ -4006,7 +3975,7 @@
       persistProfileData();
     };
 
-    // 8. Social Links
+    // 8. Social Links Saver
     window.openSocialModal = function() {
       const links = state.profile.links || {};
       document.getElementById('link-linkedin').value = links.linkedin || '';
@@ -4031,43 +4000,10 @@
 
     // 9. Career Targets Modal
     window.openPreferencesModal = function() {
-      const roles = state.prefs.roles || [];
-      const locs = state.prefs.locations || [];
-      document.getElementById('pref-inp-roles').value = roles.join(', ');
-      document.getElementById('pref-inp-locations').value = locs.join(', ');
-      document.getElementById('pref-inp-workplace').value = state.prefs.workplaceType || 'Hybrid';
-      document.getElementById('pref-inp-curr').value = state.prefs.salary_curr || 'INR';
-      document.getElementById('pref-inp-salary-slider').value = state.prefs.salary_amt || 1500000;
-      updateSalaryModalDisplay();
+      renderPersonalPreferencesColumn();
       openModal('modal-preferences');
     };
 
-    window.updateSalaryModalDisplay = function() {
-      const curr = document.getElementById('pref-inp-curr').value;
-      const slider = document.getElementById('pref-inp-salary-slider');
-      const txt = document.getElementById('pref-modal-salary-txt');
-      if (curr === 'INR') {
-        slider.min = 300000; slider.max = 6000000; slider.step = 100000;
-        txt.textContent = `₹${(slider.value / 100000).toFixed(0)} LPA+`;
-      } else {
-        slider.min = 20000; slider.max = 250000; slider.step = 5000;
-        txt.textContent = `$${(slider.value / 1000).toFixed(0)}k/yr+`;
-      }
-    };
-
-    window.saveCareerPreferences = function() {
-      const rStr = document.getElementById('pref-inp-roles').value;
-      const lStr = document.getElementById('pref-inp-locations').value;
-      state.prefs.roles = rStr.split(',').map(r => r.trim()).filter(Boolean);
-      state.prefs.specializations = [...state.prefs.roles];
-      state.prefs.locations = lStr.split(',').map(l => l.trim()).filter(Boolean);
-      state.prefs.workplaceType = document.getElementById('pref-inp-workplace').value;
-      state.prefs.salary_curr = document.getElementById('pref-inp-curr').value;
-      state.prefs.salary_amt = parseInt(document.getElementById('pref-inp-salary-slider').value, 10);
-      
-      closeModal('modal-preferences');
-      persistProfileData();
-    };
 
     window.updateJobStatus = function(val) {
       state.prefs.status = val;
@@ -4251,8 +4187,65 @@
       }
     };
 
+    // ── SPA TAB CONTROLLER ──
+    window.switchTab = function(tabId) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      const target = document.getElementById('tab-content-' + tabId);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('.new-hub-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById('btn-tab-' + tabId);
+      if (activeBtn) activeBtn.classList.add('active');
+    };
+
     // ── INITIALIZATION ──
     document.addEventListener('DOMContentLoaded', () => {
+      // 1. SPA Architecture: Group sections into tabs dynamically to avoid HTML layout breaks
+      const dossierContent = document.querySelector('.dossier-content');
+      if (dossierContent) {
+        const tabPersonal = document.createElement('div');
+        tabPersonal.className = 'tab-content';
+        tabPersonal.id = 'tab-content-personal';
+        
+        const tabProfile = document.createElement('div');
+        tabProfile.className = 'tab-content active';
+        tabProfile.id = 'tab-content-profile';
+        
+        const tabPreferences = document.createElement('div');
+        tabPreferences.className = 'tab-content';
+        tabPreferences.id = 'tab-content-preferences';
+
+        // Move Personal Tab sections
+        const secPersonal = document.getElementById('section-personal');
+        const secSocial = document.getElementById('section-social');
+        if (secPersonal) tabPersonal.appendChild(secPersonal);
+        if (secSocial) tabPersonal.appendChild(secSocial);
+
+        // Move Profile Tab sections
+        const profileSections = ['section-skills', 'section-experience', 'section-projects', 'section-education', 'section-certifications', 'section-achievements'];
+        profileSections.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) tabProfile.appendChild(el);
+        });
+
+        // Move Preferences Tab sections
+        const secPreferences = document.getElementById('section-preferences');
+        const prefColumn = document.querySelector('.preferences-column');
+        if (secPreferences) tabPreferences.appendChild(secPreferences);
+        if (prefColumn) {
+          prefColumn.style.position = 'static';
+          prefColumn.style.width = '100%';
+          prefColumn.style.maxWidth = '100%';
+          prefColumn.style.marginTop = '24px';
+          tabPreferences.appendChild(prefColumn);
+        }
+
+        // Append to DOM
+        dossierContent.appendChild(tabPersonal);
+        dossierContent.appendChild(tabProfile);
+        dossierContent.appendChild(tabPreferences);
+      }
+
       renderFullProfile();
       try {
         const u = JSON.parse(localStorage.getItem('getarole_user') || '{}');
@@ -4263,6 +4256,6 @@
       } catch (_) {}
     });
   </script>
-  <script src="/static/js/mobile-nav.js?v=3"></script>
+  <script src="/js/mobile-nav.js?v=3"></script>
 </body>
 </html>

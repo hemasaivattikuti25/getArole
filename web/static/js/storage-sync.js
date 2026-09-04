@@ -12,8 +12,8 @@
 (function () {
   'use strict';
 
-  const SUPABASE_REST_URL = "https://tgmhtlqcjgcjedlnthfk.supabase.co/rest/v1";
-  const SUPABASE_ANON_KEY = "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn";
+  const SUPABASE_REST_URL = window.APP_CONFIG ? window.APP_CONFIG.SUPABASE_REST_URL : "https://tgmhtlqcjgcjedlnthfk.supabase.co/rest/v1";
+  const SUPABASE_ANON_KEY = window.APP_CONFIG ? window.APP_CONFIG.SUPABASE_ANON_KEY : "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn";
 
   /**
    * Resolves the active user ID across Firebase Auth, localStorage, and sessionStorage.

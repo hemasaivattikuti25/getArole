@@ -1,0 +1,65 @@
+  <header style="position: sticky; top: 0; z-index: 999999 !important; width: 100%;">
+    <div class="header-inner">
+      <div class="brand-group">
+        <a href="/dashboard/" class="brand-logo">
+          <img src="/logo.svg" alt="getArole" style="width:34px;height:34px;object-fit:contain;">
+          <span class="brand-title">get<span>A</span>role</span>
+        </a>
+
+        <nav class="nav-tabs" style="overflow:visible !important;">
+          <a class="nav-tab active" href="/dashboard/" id="tab-btn-home">Overview</a>
+          <a class="nav-tab" href="/matches/" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">—</span></a>
+          <a class="nav-tab" href="/explore/" id="tab-btn-jobs">Explore Jobs</a>
+          <div class="nav-dropdown" style="position:relative; display:inline-block;" onmouseenter="this.querySelector('.nav-dropdown-menu').style.display='flex'" onmouseleave="this.querySelector('.nav-dropdown-menu').style.display='none'">
+            <a class="nav-tab nav-dropdown-btn" style="cursor:pointer; display:flex; align-items:center; gap:4px; margin:0;" onclick="const m = this.nextElementSibling; m.style.display = m.style.display === 'flex' ? 'none' : 'flex';">CV & CL ▼</a>
+            <div class="nav-dropdown-menu" style="position:absolute; top:100%; left:0; width:160px; background:var(--surface, #ffffff); border:1px solid var(--border, #e2e8f0); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.1); padding:8px; display:none; flex-direction:column; gap:4px; z-index:999999; text-align:left;">
+              <a href="/resume-builder/" class="nav-dropdown-item" style="padding:8px 12px; border-radius:6px; font-size:13.5px; font-weight:600; color:#0f172a; text-decoration:none; display:flex; align-items:center; gap:8px;" onmouseover="this.style.background='#f8fafc'; this.style.color='#4f46e5'" onmouseout="this.style.background='transparent'; this.style.color='#0f172a'">📄 Resume</a>
+              <a href="/cover-letter-builder/" class="nav-dropdown-item" style="padding:8px 12px; border-radius:6px; font-size:13.5px; font-weight:600; color:#0f172a; text-decoration:none; display:flex; align-items:center; gap:8px;" onmouseover="this.style.background='#f8fafc'; this.style.color='#4f46e5'" onmouseout="this.style.background='transparent'; this.style.color='#0f172a'">✉️ Cover Letter</a>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-refresh" id="btn-refresh-scrape" onclick="typeof triggerScrape === 'function' ? triggerScrape() : window.location.reload()">
+          <span class="btn-refresh-text">Sync</span>
+        </button>
+
+        <div class="user-profile-btn" onclick="document.getElementById('user-dropdown') && document.getElementById('user-dropdown').classList.toggle('show')">
+          <div class="user-avatar" id="nav-avatar">U</div>
+          <span class="user-name-text" id="nav-username" style="display: none !important;">User</span>
+          <span style="font-size: 10px; color: var(--text-subtle, #94a3b8)">▼</span>
+
+          <div class="user-dropdown" id="user-dropdown">
+            <a href="/profile/" class="dropdown-item">👤 Profile</a>
+            <a href="/settings/" class="dropdown-item">⚙️ Settings</a>
+            <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
+            <a href="#" onclick="openSignOutModal(); return false;" class="dropdown-item" style="color:#ef4444; font-weight:600;">🚪 Sign Out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const path = window.location.pathname;
+    document.querySelectorAll(".nav-tab").forEach(tab => {
+      const href = tab.getAttribute("href");
+      if (href) {
+        if (href === path || (href !== "/" && path.startsWith(href))) {
+          tab.classList.add("active");
+        } else {
+          tab.classList.remove("active");
+        }
+      }
+    });
+
+    window.addEventListener('click', (e) => {
+      if (!e.target.closest('.user-profile-btn')) {
+        const dropdown = document.getElementById('user-dropdown');
+        if (dropdown) dropdown.classList.remove('show');
+      }
+    });
+  });
+</script>

@@ -172,6 +172,7 @@ function persistUserSession(user) {
  * Global Auth State Listener
  */
 export function initAuthListener(onUserChanged) {
+  // Localhost mock user bypass has been removed for production readiness.
   onAuthStateChanged(auth, (user) => {
     if (user) {
       persistUserSession(user);

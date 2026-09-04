@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="/js/config.js"></script>
   
   <style>
             :root {
@@ -563,46 +564,26 @@
     <div class="ambient-orb orb-2"></div>
     <div class="ambient-orb orb-3"></div>
   </div>
+  <div class="landing-blueprint-grid" aria-hidden="true"></div>
 
   <!-- ─── Top Navbar ─── -->
-  <header class="crm-navbar">
-    <a href="/dashboard/" class="crm-brand">
-      <span>🚀 getArole</span>
-      <span class="crm-badge">Master CRM Sheet</span>
-      <span class="live-dot" title="Live Supabase Sync"></span>
-    </a>
-
-    <div class="crm-nav-actions">
-      <button onclick="copyForGoogleSheets()" class="btn-crm" title="Copies full table formatted to paste directly into Google Sheets">
-        📋 Copy for Google Sheets
-      </button>
-      <button onclick="exportCSV()" class="btn-crm btn-crm-success" title="Download formatted CSV spreadsheet">
-        📥 Export CSV
-      </button>
-      <button onclick="loadCRMData()" class="btn-crm" title="Refresh live candidate dataset">
-        🔄 Refresh
-      </button>
-      <button onclick="handleSignOut()" class="btn-crm" style="color:#ef4444" title="Sign out of CRM">
-        Sign Out
-      </button>
-    </div>
-  </header>
+  <!-- GLOBAL_HEADER -->
 
   <!-- ─── Metrics Header ─── -->
   <section class="metrics-bar">
     <div class="metric-card">
       <span class="metric-title">Total Candidates</span>
-      <span class="metric-val" id="metric-total-candidates">0</span>
+      <span class="metric-val" id="metric-total-candidates">—</span>
       <span class="metric-sub">Registered across profiles & database</span>
     </div>
     <div class="metric-card">
       <span class="metric-title">Resumes Uploaded</span>
-      <span class="metric-val" id="metric-resumes-count" style="color:var(--success)">0</span>
+      <span class="metric-val" id="metric-resumes-count" style="color:var(--success)">—</span>
       <span class="metric-sub">Complete parsed ATS candidate records</span>
     </div>
     <div class="metric-card">
       <span class="metric-title">Contact Verified</span>
-      <span class="metric-val" id="metric-contacts-count" style="color:var(--primary)">0</span>
+      <span class="metric-val" id="metric-contacts-count" style="color:var(--primary)">—</span>
       <span class="metric-sub">Candidates with Phone / Email</span>
     </div>
     <div class="metric-card">
@@ -839,8 +820,8 @@
       window.location.href = "/";
     };
 
-    const SUPABASE_REST_URL = "https://tgmhtlqcjgcjedlnthfk.supabase.co/rest/v1";
-    const SUPABASE_ANON_KEY = "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn";
+    const SUPABASE_REST_URL = window.APP_CONFIG.SUPABASE_REST_URL;
+    const SUPABASE_ANON_KEY = window.APP_CONFIG.SUPABASE_ANON_KEY;
 
     // Load Master CRM Data from backend API or Supabase Cloud
     async function loadCRMData() {
