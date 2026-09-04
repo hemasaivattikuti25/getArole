@@ -1469,119 +1469,119 @@
   <!-- ════════════════════ MAIN CONTENT ════════════════════ -->
   <main id="main-content">
     <!-- 0. HOME VIEW -->
-    <div id="view-home" class="page-view home-view active" style="padding: 32px 24px; max-width: 1400px; margin: 0 auto;">
+    <div id="view-home" class="page-view home-view active" style="padding: 20px 20px; max-width: 1200px; margin: 0 auto;">
       
       <!-- 1. Personalized Welcome Command Center -->
-      <div class="home-welcome-card" style="display: flex; flex-direction: column; gap: 24px; margin-bottom: 32px; background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+      <div class="home-welcome-card" style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
           <div>
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
               <span style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 6px; background: #ecfdf5; border: 1px solid #a7f3d0; font-size: 11px; font-weight: 700; color: #059669; letter-spacing: 0.5px; text-transform: uppercase;"><div style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; animation: pulse 2s infinite;"></div> Active Search</span>
               <span id="current-datetime" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: var(--text-subtle);"></span>
             </div>
-            <h1 style="font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; margin-bottom: 4px;">Good <span id="greeting-time">day</span>, <span id="home-user-name" style="color: var(--primary);">Engineer</span></h1>
-            <p style="font-size: 14px; color: var(--text-muted); font-weight: 500;">Your AI matching engine is running. New verified opportunities found since your last visit.</p>
+            <h1 style="font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; margin-bottom: 4px;">Good <span id="greeting-time">day</span>, <span id="home-user-name" style="color: var(--primary);">Engineer</span></h1>
+            <p style="font-size: 13.5px; color: var(--text-muted); font-weight: 500;">Your AI matching engine is running. New verified opportunities found since your last visit.</p>
           </div>
         </div>
       </div>
 
       <!-- 2. KPI Metrics Strip -->
-      <div style="margin-bottom: 32px;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-          <h2 style="font-size: 15px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">System Telemetry</h2>
-          <span style="font-size: 12px; font-weight: 600; color: var(--text-subtle);">Updated just now</span>
+      <div style="margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+          <h2 style="font-size: 14px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">System Telemetry</h2>
+          <span style="font-size: 11.5px; font-weight: 600; color: var(--text-subtle);">Updated just now</span>
         </div>
-        <div class="telemetry-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+        <div class="telemetry-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
           
           <!-- Metric 1: Verified Jobs -->
-          <div class="telemetry-card" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+          <div class="telemetry-card" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; position: relative; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: #0ea5e9;"></div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
               <div class="telemetry-label" style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Verified Jobs Live</div>
             </div>
-            <div class="telemetry-val" style="font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-total-jobs">...</div>
+            <div class="telemetry-val" style="font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-total-jobs">...</div>
           </div>
 
           <!-- Metric 3: High-Fit Matches -->
-          <div class="telemetry-card" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+          <div class="telemetry-card" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; position: relative; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: #10b981;"></div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
               <div class="telemetry-label" style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">High-Fit Matches</div>
             </div>
-            <div class="telemetry-val" style="font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-matches-count">...</div>
+            <div class="telemetry-val" style="font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-matches-count">...</div>
           </div>
 
           <!-- Metric 4: Applications Sent -->
-          <div class="telemetry-card" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+          <div class="telemetry-card" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; position: relative; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: #3b82f6;"></div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
               <div class="telemetry-label" style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Applications Sent</div>
             </div>
-            <div class="telemetry-val" style="font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-applied-count">...</div>
+            <div class="telemetry-val" style="font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-applied-count">...</div>
           </div>
 
           <!-- Metric 5: Saved Opportunities -->
-          <div class="telemetry-card" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 16px; position: relative; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+          <div class="telemetry-card" style="background: rgba(255,255,255,0.8); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; position: relative; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: #f59e0b;"></div>
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
               <div class="telemetry-label" style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Saved Opportunities</div>
             </div>
-            <div class="telemetry-val" style="font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-saved-count">...</div>
+            <div class="telemetry-val" style="font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; color: var(--text-main); letter-spacing: -1px;" id="home-saved-count">...</div>
           </div>
         </div>
       </div>
 
-      <!-- 6. Getting Started Journey (Horizontal Stepper) -->
-      <div class="deployment-sequence-card" style="margin-bottom: 32px; background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-          <div>
-            <h2 style="font-size: 18px; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif;">Deployment Sequence</h2>
-            <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Follow these steps to initialize your automated job search pipeline.</p>
+      <!-- 6. Getting Started Journey (Compact Pipeline Sequence) -->
+      <div class="deployment-sequence-card" style="margin-bottom: 20px; background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; box-shadow: 0 2px 12px rgba(0,0,0,0.02);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 14px;">⚡</span>
+            <h2 style="font-size: 14px; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; margin: 0;">Search Pipeline Sequence</h2>
           </div>
-          <div id="get-started-progress" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; background: #e0e7ff; color: #4338ca; padding: 6px 12px; border-radius: 6px;">...</div>
+          <div id="get-started-progress" style="font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 700; background: #e0e7ff; color: #4338ca; padding: 3px 10px; border-radius: 6px;">...</div>
         </div>
         
-        <div class="deployment-stepper-row" style="display: flex; flex-direction: row; gap: 16px; overflow-x: auto; padding-bottom: 8px;">
+        <div class="deployment-stepper-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
           <!-- Step 1 -->
-          <div class="deployment-step-item" style="flex: 1; min-width: 200px; padding: 16px; border-radius: 12px; border: 1px solid var(--border-strong); background: var(--surface); position: relative; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';" onclick="window.location.href='/profile/'">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-              <div style="width: 24px; height: 24px; border-radius: 50%; background: #4f46e5; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">1</div>
+          <div class="deployment-step-item" id="step-card-1" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border-strong); background: var(--surface); cursor: pointer; transition: all 0.2s;" onclick="window.location.href='/profile/'">
+            <div id="step-badge-1" style="width: 22px; height: 22px; border-radius: 50%; background: #4f46e5; color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0;">1</div>
+            <div style="min-width: 0;">
+              <div style="font-size: 13px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Configure Profile</div>
+              <div style="font-size: 11px; color: var(--text-muted);">Target roles &amp; tech stack</div>
             </div>
-            <h3 style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">Configure Profile</h3>
-            <p style="font-size: 12px; color: var(--text-muted); line-height: 1.4;">Input parameters for semantic matching engine.</p>
           </div>
           
           <!-- Step 2 -->
-          <div class="deployment-step-item" style="flex: 1; min-width: 200px; padding: 16px; border-radius: 12px; border: 1px dashed var(--border-strong); background: rgba(255,255,255,0.5); position: relative; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';" onclick="window.location.href='/matches/'">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-              <div style="width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border-strong); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">2</div>
+          <div class="deployment-step-item" id="step-card-2" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; border: 1px dashed var(--border-strong); background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s;" onclick="window.location.href='/matches/'">
+            <div id="step-badge-2" style="width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border-strong); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0;">2</div>
+            <div style="min-width: 0;">
+              <div style="font-size: 13px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Review Matches</div>
+              <div style="font-size: 11px; color: var(--text-muted);">90%+ correlated roles</div>
             </div>
-            <h3 style="font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">Review Matches</h3>
-            <p style="font-size: 12px; color: var(--text-subtle); line-height: 1.4;">Analyze initial batch of highly correlated jobs.</p>
           </div>
 
           <!-- Step 3 -->
-          <div class="deployment-step-item" style="flex: 1; min-width: 200px; padding: 16px; border-radius: 12px; border: 1px dashed var(--border-strong); background: rgba(255,255,255,0.5); position: relative; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';" onclick="window.location.href='/explore/'">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-              <div style="width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border-strong); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">3</div>
+          <div class="deployment-step-item" id="step-card-3" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; border: 1px dashed var(--border-strong); background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s;" onclick="window.location.href='/explore/'">
+            <div id="step-badge-3" style="width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border-strong); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0;">3</div>
+            <div style="min-width: 0;">
+              <div style="font-size: 13px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Apply to Roles</div>
+              <div style="font-size: 11px; color: var(--text-muted);">Direct employer dispatch</div>
             </div>
-            <h3 style="font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">Execute Application</h3>
-            <p style="font-size: 12px; color: var(--text-subtle); line-height: 1.4;">Dispatch resume to target organization.</p>
           </div>
 
           <!-- Step 4 -->
-          <div class="deployment-step-item" style="flex: 1; min-width: 200px; padding: 16px; border-radius: 12px; border: 1px dashed var(--border-strong); background: rgba(255,255,255,0.5); position: relative; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';" onclick="window.location.href='/dashboard/'">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-              <div style="width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--border-strong); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">4</div>
+          <div class="deployment-step-item" id="step-card-4" style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 10px; border: 1px dashed var(--border-strong); background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.2s;" onclick="window.location.href='/dashboard/'">
+            <div id="step-badge-4" style="width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border-strong); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0;">4</div>
+            <div style="min-width: 0;">
+              <div style="font-size: 13px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Monitor Pipeline</div>
+              <div style="font-size: 11px; color: var(--text-muted);">Status tracking &amp; telemetry</div>
             </div>
-            <h3 style="font-size: 14px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">Monitor Pipeline</h3>
-            <p style="font-size: 12px; color: var(--text-subtle); line-height: 1.4;">Track application status and analytics.</p>
           </div>
         </div>
       </div>
 
       <!-- Main Layout Grid (1 Column) -->
-      <div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; align-items: start;" id="desktop-grid-layout">
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start;" id="desktop-grid-layout">
         
         <!-- Left Column: Top AI Matches Preview (Ranked List) -->
         <div>
@@ -1744,23 +1744,33 @@
       </div>
 
       <!-- Modal Body (Scrollable) -->
-      <div style="padding:24px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:24px;">
+      <div style="padding:24px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:20px;">
         
-        <!-- SECTION 1: PROFILE & RESUME -->
+        <!-- SECTION 1: TARGET ROLES & SPECIALIZATIONS (PRIMARY) -->
         <div style="background:var(--bg-subtle); border:1px solid var(--border); border-radius:12px; padding:16px;">
-          <div style="font-size:12px; font-weight:800; color:var(--primary); text-transform:uppercase; margin-bottom:8px;">1. Candidate Details & Resume</div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
-            <div>
-              <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Full Name</label>
-              <input type="text" id="pref-fullname" placeholder="e.g. Arjun Mehta" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-size:13.5px; outline:none;">
-            </div>
-            <div>
-              <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Target Title</label>
-              <input type="text" id="pref-target-title" placeholder="e.g. Software Engineer" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-size:13.5px; outline:none;">
-            </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <label style="font-size:13.5px; font-weight:800; color:var(--text-main); margin:0;">🎯 1. Target Positions &amp; Specialization (Primary Match)</label>
+            <span style="font-size:11px; font-weight:700; color:var(--primary); background:#e0e7ff; padding:2px 8px; border-radius:4px;">Rank #1 Criterion</span>
           </div>
-          <div style="display:flex; align-items:center; justify-content:space-between; background:#ffffff; border:1px dashed var(--border-strong); border-radius:8px; padding:10px 14px;">
-            <div style="font-size:13px; font-weight:600; color:var(--text-main);" id="pref-resume-status">📄 Resume Uploaded & Active</div>
+          <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Choose your primary domain or type a custom engineering role:</p>
+          <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px;" id="modal-role-chips">
+            <!-- Dynamically populated -->
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Custom Target Title / Role</label>
+            <input type="text" id="pref-target-title" placeholder="e.g. Full Stack Engineer, Backend Developer, AI Engineer" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-size:13.5px; outline:none; background:#ffffff;">
+          </div>
+        </div>
+
+        <!-- SECTION 2: CANDIDATE DETAILS & RESUME -->
+        <div style="border:1px solid var(--border); border-radius:12px; padding:16px;">
+          <div style="font-size:12.5px; font-weight:800; color:var(--text-main); margin-bottom:10px;">👤 2. Candidate Details &amp; Resume</div>
+          <div style="margin-bottom:12px;">
+            <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Full Name</label>
+            <input type="text" id="pref-fullname" placeholder="Your Full Name" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-size:13.5px; outline:none; background:#ffffff;">
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; background:var(--bg-subtle); border:1px dashed var(--border-strong); border-radius:8px; padding:10px 14px;">
+            <div style="font-size:13px; font-weight:600; color:var(--text-main);" id="pref-resume-status">📄 Checking resume...</div>
             <label style="font-size:12px; font-weight:700; color:var(--primary); cursor:pointer; text-decoration:underline;">
               Update PDF
               <input type="file" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleModalResumeUpload(event)">
@@ -1768,22 +1778,19 @@
           </div>
         </div>
 
-        <!-- SECTION 2: TIMELINE / URGENCY -->
+        <!-- SECTION 3: EXPERIENCE LEVEL -->
         <div>
-          <label style="font-size:13.5px; font-weight:800; color:var(--text-main); display:block; margin-bottom:8px;">⚡ Job Search Timeline</label>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="modal-timeline-grid">
-            <div class="option-card" style="padding:10px 14px; font-size:13px;" onclick="selectModalTimeline(this, 'ASAP')">⚡ ASAP (Active)</div>
-            <div class="option-card" style="padding:10px 14px; font-size:13px;" onclick="selectModalTimeline(this, 'Within 3 months')">📅 Within 3 months</div>
-            <div class="option-card" style="padding:10px 14px; font-size:13px;" onclick="selectModalTimeline(this, 'Within 6 months')">⏳ Within 6 months</div>
-            <div class="option-card" style="padding:10px 14px; font-size:13px;" onclick="selectModalTimeline(this, 'Passively browsing')">👀 Passively browsing</div>
+          <label style="font-size:13.5px; font-weight:800; color:var(--text-main); display:block; margin-bottom:8px;">🎓 3. Experience Level</label>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;" id="modal-exp-chips">
+            <!-- Dynamically populated -->
           </div>
         </div>
 
-        <!-- SECTION 3: LOCATIONS (INDIA & REMOTE) -->
+        <!-- SECTION 4: LOCATIONS (INDIA & REMOTE TECH HUBS) -->
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <label style="font-size:13.5px; font-weight:800; color:var(--text-main);">📍 Preferred Locations</label>
-            <span style="font-size:12px; font-weight:700; color:var(--primary);" id="modal-loc-count">4 Selected</span>
+            <label style="font-size:13.5px; font-weight:800; color:var(--text-main);">📍 4. Preferred Locations</label>
+            <span style="font-size:12px; font-weight:700; color:var(--primary);" id="modal-loc-count">0 Selected</span>
           </div>
           <div style="position:relative; margin-bottom:8px;">
             <input type="text" id="modal-city-search" placeholder="Search Indian tech hubs and cities (e.g. Bengaluru, Hyderabad, Remote)..." oninput="renderModalCities()" style="width:100%; padding:8px 12px 8px 32px; border-radius:8px; border:1px solid var(--border); font-size:13px; outline:none;">
@@ -1794,26 +1801,10 @@
           </div>
         </div>
 
-        <!-- SECTION 4: EXPERIENCE LEVEL -->
-        <div>
-          <label style="font-size:13.5px; font-weight:800; color:var(--text-main); display:block; margin-bottom:8px;">🎓 Experience Level</label>
-          <div style="display:flex; flex-wrap:wrap; gap:6px;" id="modal-exp-chips">
-            <!-- Dynamically populated -->
-          </div>
-        </div>
-
-        <!-- SECTION 5: TARGET SPECIALIZATIONS -->
-        <div>
-          <label style="font-size:13.5px; font-weight:800; color:var(--text-main); display:block; margin-bottom:8px;">💻 Primary Specialization</label>
-          <div style="display:flex; flex-wrap:wrap; gap:6px;" id="modal-role-chips">
-            <!-- Dynamically populated -->
-          </div>
-        </div>
-
-        <!-- SECTION 6: MINIMUM COMPENSATION -->
+        <!-- SECTION 5: MINIMUM COMPENSATION -->
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <label style="font-size:13.5px; font-weight:800; color:var(--text-main);">💰 Minimum Expected Compensation</label>
+            <label style="font-size:13.5px; font-weight:800; color:var(--text-main);">💰 5. Minimum Expected Compensation</label>
             <div class="salary-toggle" style="margin-bottom:0; padding:2px;">
               <button class="salary-tab active" id="modal-sal-inr" onclick="setModalCurrency('INR')" style="padding:4px 10px; font-size:11.5px;">₹ INR</button>
               <button class="salary-tab" id="modal-sal-usd" onclick="setModalCurrency('USD')" style="padding:4px 10px; font-size:11.5px;">$ USD</button>
@@ -1821,6 +1812,17 @@
           </div>
           <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;" id="modal-salary-grid">
             <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- SECTION 6: TIMELINE / URGENCY -->
+        <div>
+          <label style="font-size:13.5px; font-weight:800; color:var(--text-main); display:block; margin-bottom:8px;">⚡ 6. Job Search Timeline</label>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;" id="modal-timeline-grid">
+            <div class="option-card" style="padding:10px 14px; font-size:13px;" onclick="selectModalTimeline(this, 'ASAP')">⚡ ASAP (Active)</div>
+            <div class="option-card" style="padding:10px 14px; font-size:13px;" onclick="selectModalTimeline(this, 'Within 3 months')">📅 Within 3 months</div>
+            <div class="option-card" style="padding:10px 14px; font-size:13px;" onclick="selectModalTimeline(this, 'Within 6 months')">⏳ Within 6 months</div>
+            <div class="option-card" style="padding:10px 14px; font-size:13px;" onclick="selectModalTimeline(this, 'Passively browsing')">👀 Passively browsing</div>
           </div>
         </div>
 
@@ -1969,18 +1971,36 @@
       const saved = JSON.parse(localStorage.getItem('getarole_prefs') || '{}');
       const profile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
       
-      if (saved.timeline) modalPrefs = { ...modalPrefs, ...saved };
+      if (saved && Object.keys(saved).length > 0) {
+        modalPrefs = { ...modalPrefs, ...saved };
+        if (saved.roles && saved.roles[0]) modalPrefs.role = saved.roles[0];
+        else if (saved.specializations && saved.specializations[0]) modalPrefs.role = saved.specializations[0];
+        if (saved.locations && Array.isArray(saved.locations)) modalPrefs.locations = [...saved.locations];
+      }
       
       const nameEl = document.getElementById('pref-fullname');
       if (nameEl) nameEl.value = profile.name || profile.firstName || '';
       const titleEl = document.getElementById('pref-target-title');
-      if (titleEl) titleEl.value = modalPrefs.role || '';
+      if (titleEl) titleEl.value = modalPrefs.role || profile.headline || '';
 
-      renderModalTimeline();
-      renderModalCities();
-      renderModalExp();
+      const resumeStatusEl = document.getElementById('pref-resume-status');
+      if (resumeStatusEl) {
+        const hasResume = localStorage.getItem('getarole_resume_v2') || localStorage.getItem('getarole_resume_pdf');
+        if (hasResume) {
+          const pdfName = localStorage.getItem('getarole_resume_pdf') || 'Resume Linked';
+          resumeStatusEl.textContent = `📄 ${pdfName}`;
+          resumeStatusEl.style.color = '#059669';
+        } else {
+          resumeStatusEl.textContent = '○ No resume uploaded yet';
+          resumeStatusEl.style.color = 'var(--text-muted)';
+        }
+      }
+
       renderModalRoles();
+      renderModalExp();
+      renderModalCities();
       renderModalSalary();
+      renderModalTimeline();
 
       document.getElementById('preferences-modal').style.display = 'flex';
     };
@@ -2138,6 +2158,7 @@
     async function savePreferencesFromModal() {
       const name = document.getElementById('pref-fullname').value.trim();
       const targetTitle = document.getElementById('pref-target-title').value.trim();
+      if (targetTitle) modalPrefs.role = targetTitle;
       
       const profile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
       if (name) profile.name = name;
@@ -2145,7 +2166,15 @@
       profile.preferences = { ...modalPrefs };
       localStorage.setItem('getarole_profile', JSON.stringify(profile));
 
-      localStorage.setItem('getarole_prefs', JSON.stringify(modalPrefs));
+      const fullPrefs = {
+        ...modalPrefs,
+        roles: modalPrefs.role ? [modalPrefs.role] : (modalPrefs.roles || []),
+        role: modalPrefs.role || (modalPrefs.roles && modalPrefs.roles[0]) || targetTitle || '',
+        specializations: modalPrefs.role ? [modalPrefs.role] : (modalPrefs.roles || []),
+        locations: modalPrefs.locations || [],
+        city: (modalPrefs.locations && modalPrefs.locations[0]) || ''
+      };
+      localStorage.setItem('getarole_prefs', JSON.stringify(fullPrefs));
       
       closePreferencesModal();
       toast('✓ Job Preferences saved successfully!');
@@ -2162,7 +2191,7 @@
 
       if (window.getAroleSync) {
         window.getAroleSync.syncUserProfile(profile).catch(e => console.warn('[Profile Supabase sync]', e));
-        window.getAroleSync.syncUserPreferences(modalPrefs).catch(e => console.warn('[Prefs Supabase sync]', e));
+        window.getAroleSync.syncUserPreferences(fullPrefs).catch(e => console.warn('[Prefs Supabase sync]', e));
       }
 
       Promise.all([
@@ -2174,7 +2203,7 @@
         fetch('/api/user/preferences', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-          body: JSON.stringify(modalPrefs)
+          body: JSON.stringify(fullPrefs)
         }).catch(e => console.warn('[Prefs sync]', e))
       ]);
     }
@@ -2696,30 +2725,23 @@
 
     function renderHomeView() {
       const totalJobsEl = document.getElementById('home-total-jobs');
-      if (totalJobsEl) totalJobsEl.textContent = (allJobs.length || 1000).toLocaleString('en-IN');
-      document.getElementById('home-matches-count').textContent = matchedJobs.length;
+      if (totalJobsEl) totalJobsEl.textContent = allJobs.length > 0 ? allJobs.length.toLocaleString('en-IN') : '0';
+      const matchesEl = document.getElementById('home-matches-count');
+      if (matchesEl) matchesEl.textContent = matchedJobs.length.toLocaleString('en-IN');
       renderTracker();
       updateGetStartedProgress();
 
-      // Platform counts
-      const ghCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('greenhouse')).length;
-      const ashbyCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('ashby')).length;
-      const liCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('linkedin')).length;
-      const leverCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('lever')).length;
-      const internCount = allJobs.filter(j => (j.platform || '').toLowerCase().includes('internshala')).length;
-
-      const ghEl = document.getElementById('feed-count-greenhouse');
-      if (ghEl) ghEl.textContent = `● Greenhouse (${ghCount} live roles)`;
-      const ashEl = document.getElementById('feed-count-ashby');
-      if (ashEl) ashEl.textContent = `● Ashby Gateway (${ashbyCount} live roles)`;
-      const liEl = document.getElementById('feed-count-linkedin');
-      if (liEl) liEl.textContent = `● LinkedIn (${liCount} roles)`;
-      const levEl = document.getElementById('feed-count-lever');
-      if (levEl) levEl.textContent = `● Lever (${leverCount} roles)`;
-      const intEl = document.getElementById('feed-count-internshala');
-      if (intEl) intEl.textContent = `● Internshala (${internCount} roles)`;
-
       const grid = document.getElementById('home-matches-preview-grid');
+      if (!grid) return;
+      if (matchedJobs.length === 0) {
+        grid.innerHTML = `
+          <div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 13px;">
+            No matching opportunities found for your current criteria.<br>
+            <a href="javascript:void(0)" onclick="openPreferencesModal()" style="color: var(--primary); font-weight: 700; text-decoration: none; margin-top: 6px; display: inline-block;">Update Target Preferences →</a>
+          </div>
+        `;
+        return;
+      }
       grid.innerHTML = matchedJobs.slice(0, 5).map((j, idx) => {
         const compInitial = j.company ? j.company[0].toUpperCase() : 'G';
         const fitScore = Math.round(j.fit_score || 0);

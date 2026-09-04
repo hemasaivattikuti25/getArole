@@ -211,6 +211,11 @@
     const p = rawProfile || {};
     const uid = getEffectiveUID();
 
+    let existingProfile = {};
+    try {
+      existingProfile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+    } catch (_) {}
+
     // Standardize
     let firstName = p.first || p.first_name || '';
     let lastName = p.last || p.last_name || '';
@@ -219,31 +224,43 @@
       firstName = parts[0];
       lastName = parts.slice(1).join(' ');
     }
-    const fullName = p.name || `${firstName} ${lastName}`.trim() || 'Candidate';
+    const fullName = p.name || `${firstName} ${lastName}`.trim() || existingProfile.name || 'Candidate';
 
     const canonicalProfile = {
+      ...existingProfile,
+      ...p,
       firebase_uid: uid,
       name: fullName,
       first: firstName,
       last: lastName,
-      email: p.email || '',
-      phone: p.phone || '',
-      loc: p.loc || p.location || p.city || 'Bengaluru, India',
-      location: p.loc || p.location || p.city || 'Bengaluru, India',
-      headline: p.headline || 'Full Stack Engineer • 2+ Years Experience',
-      summary: p.summary || p.bio || '',
-      bio: p.summary || p.bio || '',
-      skills: Array.isArray(p.skills) ? p.skills : [],
-      experience: Array.isArray(p.experience) ? p.experience : [],
-      projects: Array.isArray(p.projects) ? p.projects : [],
-      education: Array.isArray(p.education) ? p.education : [],
-      certifications: Array.isArray(p.certifications) ? p.certifications : [],
-      awards: Array.isArray(p.awards) ? p.awards : [],
-      links: p.links || {
-        linkedin: p.linkedin_url || '',
-        github: p.github_url || '',
-        portfolio: p.portfolio_url || '',
-        other: p.other_url || ''
+      email: p.email || existingProfile.email || '',
+      phone: p.phone || existingProfile.phone || '',
+      loc: p.loc || p.location || p.city || existingProfile.loc || '',
+      location: p.loc || p.location || p.city || existingProfile.location || '',
+      headline: p.headline !== undefined ? p.headline : (existingProfile.headline || ''),
+      notice: p.notice !== undefined ? p.notice : (existingProfile.notice || ''),
+      summary: p.summary !== undefined ? p.summary : (p.bio !== undefined ? p.bio : (existingProfile.summary || '')),
+      bio: p.summary !== undefined ? p.summary : (p.bio !== undefined ? p.bio : (existingProfile.bio || '')),
+      skills: Array.isArray(p.skills) ? p.skills : (existingProfile.skills || []),
+      skills_languages: Array.isArray(p.skills_languages) ? p.skills_languages : (existingProfile.skills_languages || []),
+      skills_frameworks: Array.isArray(p.skills_frameworks) ? p.skills_frameworks : (existingProfile.skills_frameworks || []),
+      skills_cloud: Array.isArray(p.skills_cloud) ? p.skills_cloud : (existingProfile.skills_cloud || []),
+      skills_tools: Array.isArray(p.skills_tools) ? p.skills_tools : (existingProfile.skills_tools || []),
+      experience: Array.isArray(p.experience) ? p.experience : (existingProfile.experience || []),
+      projects: Array.isArray(p.projects) ? p.projects : (existingProfile.projects || []),
+      education: Array.isArray(p.education) ? p.education : (existingProfile.education || []),
+      certifications: Array.isArray(p.certifications) ? p.certifications : (existingProfile.certifications || []),
+      achievements: Array.isArray(p.achievements) ? p.achievements : (Array.isArray(p.awards) ? p.awards : (existingProfile.achievements || existingProfile.awards || [])),
+      awards: Array.isArray(p.awards) ? p.awards : (Array.isArray(p.achievements) ? p.achievements : (existingProfile.awards || existingProfile.achievements || [])),
+      links: {
+        ...(existingProfile.links || {}),
+        ...(p.links || {}),
+        linkedin: (p.links && p.links.linkedin) || p.linkedin_url || (existingProfile.links && existingProfile.links.linkedin) || '',
+        github: (p.links && p.links.github) || p.github_url || (existingProfile.links && existingProfile.links.github) || '',
+        portfolio: (p.links && p.links.portfolio) || p.portfolio_url || (existingProfile.links && existingProfile.links.portfolio) || '',
+        leetcode: (p.links && p.links.leetcode) || (existingProfile.links && existingProfile.links.leetcode) || '',
+        twitter: (p.links && p.links.twitter) || (existingProfile.links && existingProfile.links.twitter) || '',
+        other: (p.links && p.links.other) || p.other_url || (existingProfile.links && existingProfile.links.other) || ''
       },
       updated_at: new Date().toISOString()
     };
@@ -319,10 +336,16 @@
             ...localProfile,
             ...cloud,
             name: localProfile.name || `${cloud.first || ''} ${cloud.last || ''}`.trim() || 'Candidate',
-            headline: cloud.headline || localProfile.headline,
-            email: cloud.email || localProfile.email,
-            phone: cloud.phone || localProfile.phone,
-            loc: cloud.loc || localProfile.loc,
+            headline: cloud.headline || localProfile.headline || '',
+            email: cloud.email || localProfile.email || '',
+            phone: cloud.phone || localProfile.phone || '',
+            loc: cloud.loc || localProfile.loc || '',
+            notice: localProfile.notice || '',
+            skills_languages: localProfile.skills_languages || [],
+            skills_frameworks: localProfile.skills_frameworks || [],
+            skills_cloud: localProfile.skills_cloud || [],
+            skills_tools: localProfile.skills_tools || [],
+            achievements: localProfile.achievements || localProfile.awards || [],
             links: {
               ...(localProfile.links || {}),
               linkedin: cloud.linkedin_url || (localProfile.links && localProfile.links.linkedin) || '',

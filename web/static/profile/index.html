@@ -1490,12 +1490,13 @@
             <h1>
               <span id="hero-candidate-name">Your Name</span>
             </h1>
-            <p class="hero-headline" id="hero-candidate-headline">Full Stack Engineer • 2+ Years Experience</p>
+            <p class="hero-headline" id="hero-candidate-headline">Software Engineer</p>
             
             <div class="hero-chips-row">
-              <span class="hero-chip" id="chip-location">📍 Bengaluru, India</span>
-              <span class="hero-chip" id="chip-email">✉️ Loading...</span>
+              <span class="hero-chip" id="chip-location">📍 Add Location</span>
+              <span class="hero-chip" id="chip-email">✉️ Add Email</span>
               <span class="hero-chip" id="chip-phone">📱 Add Phone</span>
+              <span class="hero-chip" id="chip-notice" style="display:none;">⏱️ Notice</span>
             </div>
           </div>
         </div>
@@ -1537,19 +1538,19 @@
         <div class="meter-info">
           <span style="font-size:13px; font-weight:700; color:var(--text-main);">ATS Resume Readiness:</span>
           <div class="meter-bar-track">
-            <div class="meter-bar-fill" id="meter-fill" style="width: 90%;"></div>
+            <div class="meter-bar-fill" id="meter-fill" style="width: 0%;"></div>
           </div>
-          <span class="meter-pct" id="meter-pct-text">90%</span>
+          <span class="meter-pct" id="meter-pct-text">0%</span>
         </div>
 
         <div class="meter-tags" id="meter-tags-wrap">
-          <span class="meter-tag done" id="tag-m-identity">✓ Contact & Info</span>
-          <span class="meter-tag done" id="tag-m-skills">✓ Categorized Skills</span>
-          <span class="meter-tag done" id="tag-m-exp">✓ Experience & Bullets</span>
-          <span class="meter-tag done" id="tag-m-proj">✓ Projects</span>
-          <span class="meter-tag done" id="tag-m-edu">✓ Education</span>
-          <span class="meter-tag done" id="tag-m-cert">✓ Certifications</span>
-          <span class="meter-tag done" id="tag-m-resume">✓ Resume Sync</span>
+          <span class="meter-tag" id="tag-m-identity">○ Contact & Info</span>
+          <span class="meter-tag" id="tag-m-skills">○ Categorized Skills</span>
+          <span class="meter-tag" id="tag-m-exp">○ Experience & Bullets</span>
+          <span class="meter-tag" id="tag-m-proj">○ Projects</span>
+          <span class="meter-tag" id="tag-m-edu">○ Education</span>
+          <span class="meter-tag" id="tag-m-cert">○ Certifications</span>
+          <span class="meter-tag" id="tag-m-resume">○ Resume Sync</span>
         </div>
       </div>
     </section>
@@ -1965,7 +1966,7 @@
       <div class="modal-body">
         <div class="form-group">
           <label>Full Name (Resume Header)</label>
-          <input type="text" id="inp-name" class="form-control" placeholder="e.g. Arjun Mehta">
+          <input type="text" id="inp-name" class="form-control" placeholder="Your Full Name">
         </div>
         <div class="form-group">
           <label>Professional Headline / Target Title</label>
@@ -2150,7 +2151,7 @@
         <div class="form-row">
           <div class="form-group">
             <label>Live Demo URL</label>
-            <input type="url" id="proj-demo" class="form-control" placeholder="https://getarole.in">
+            <input type="url" id="proj-demo" class="form-control" placeholder="https://yourproject.live">
           </div>
           <div class="form-group">
             <label>GitHub Repository URL</label>
@@ -2449,22 +2450,43 @@
         state.profile.name = resolvedName;
         state.profile.email = state.profile.email || userObj.email || (resumeV2.header && resumeV2.header.email) || '';
         state.profile.phone = state.profile.phone || (resumeV2.header && resumeV2.header.phone) || '';
-        state.profile.headline = state.profile.headline || (resumeV2.header && resumeV2.header.title) || 'Full Stack Engineer • 2+ Years Experience';
-        state.profile.loc = state.profile.loc || state.profile.city || 'Bengaluru, India';
-        state.profile.summary = state.profile.summary || (resumeV2.summary && resumeV2.summary.text) || 'Passionate software engineer focused on building robust, scalable applications. Experienced with modern frontend and backend architectures, microservices, and AI workflow integration.';
+        state.profile.headline = state.profile.headline || (resumeV2.header && resumeV2.header.title) || '';
+        state.profile.loc = state.profile.loc || state.profile.city || (resumeV2.header && resumeV2.header.location) || '';
+        state.profile.notice = state.profile.notice || '';
+        state.profile.summary = state.profile.summary || (resumeV2.summary && resumeV2.summary.text) || '';
 
-        // Categorized Skills initialization
-        if (!state.profile.skills_languages || state.profile.skills_languages.length === 0) {
-          state.profile.skills_languages = ['Python', 'TypeScript', 'JavaScript', 'SQL', 'C++', 'Java'];
+        // Purge legacy mock placeholders if present from previous sessions
+        if (state.profile.headline === 'Full Stack Engineer • 2+ Years Experience') {
+          state.profile.headline = '';
         }
-        if (!state.profile.skills_frameworks || state.profile.skills_frameworks.length === 0) {
-          state.profile.skills_frameworks = ['React', 'Next.js', 'Node.js', 'FastAPI', 'Express', 'TailwindCSS'];
+        if (state.profile.summary && state.profile.summary.startsWith('Passionate software engineer focused on building robust')) {
+          state.profile.summary = '';
         }
-        if (!state.profile.skills_cloud || state.profile.skills_cloud.length === 0) {
-          state.profile.skills_cloud = ['AWS', 'Docker', 'PostgreSQL', 'Supabase', 'Redis', 'MongoDB'];
-        }
-        if (!state.profile.skills_tools || state.profile.skills_tools.length === 0) {
-          state.profile.skills_tools = ['Git', 'Linux', 'Postman', 'CI/CD', 'Vite', 'Figma'];
+
+        // Categorized Skills initialization without fake mock injections
+        if (!Array.isArray(state.profile.skills_languages)) state.profile.skills_languages = [];
+        if (!Array.isArray(state.profile.skills_frameworks)) state.profile.skills_frameworks = [];
+        if (!Array.isArray(state.profile.skills_cloud)) state.profile.skills_cloud = [];
+        if (!Array.isArray(state.profile.skills_tools)) state.profile.skills_tools = [];
+
+        // If resumeV2 has parsed skills and profile has none, hydrate from resume
+        if (Array.isArray(resumeV2.skills) && resumeV2.skills.length > 0 &&
+            state.profile.skills_languages.length === 0 &&
+            state.profile.skills_frameworks.length === 0 &&
+            state.profile.skills_cloud.length === 0 &&
+            state.profile.skills_tools.length === 0) {
+          resumeV2.skills.forEach(group => {
+            const items = (group.items || '').split(',').map(s => s.trim()).filter(Boolean);
+            const label = (group.label || '').toLowerCase();
+            if (label.includes('language')) state.profile.skills_languages.push(...items);
+            else if (label.includes('framework') || label.includes('library')) state.profile.skills_frameworks.push(...items);
+            else if (label.includes('cloud') || label.includes('database') || label.includes('devops')) state.profile.skills_cloud.push(...items);
+            else state.profile.skills_tools.push(...items);
+          });
+          state.profile.skills_languages = Array.from(new Set(state.profile.skills_languages));
+          state.profile.skills_frameworks = Array.from(new Set(state.profile.skills_frameworks));
+          state.profile.skills_cloud = Array.from(new Set(state.profile.skills_cloud));
+          state.profile.skills_tools = Array.from(new Set(state.profile.skills_tools));
         }
 
         // Consolidated skills list for search compatibility
@@ -2472,38 +2494,31 @@
           ...state.profile.skills_languages,
           ...state.profile.skills_frameworks,
           ...state.profile.skills_cloud,
-          ...state.profile.skills_tools
+          ...state.profile.skills_tools,
+          ...(Array.isArray(state.profile.skills) ? state.profile.skills : [])
         ]));
 
-        // Experience
-        if (!Array.isArray(state.profile.experience) || state.profile.experience.length === 0) {
+        // Experience - preserve real data, never re-inject mock getArole job
+        if (!Array.isArray(state.profile.experience)) {
           if (Array.isArray(resumeV2.experience) && resumeV2.experience.length > 0) {
             state.profile.experience = resumeV2.experience.map(e => ({
               title: e.title || '',
               company: e.company || '',
               type: 'Full-time',
-              location: e.location || 'Bengaluru, India',
-              start: e.dates ? e.dates.split('-')[0].trim() : '2023',
+              location: e.location || '',
+              start: e.dates ? e.dates.split('-')[0].trim() : '',
               end: e.dates ? e.dates.split('-')[1].trim() : 'Present',
               desc: Array.isArray(e.bullets) ? e.bullets.join('\n') : (e.desc || '')
             }));
           } else {
-            state.profile.experience = [
-              {
-                title: 'Full Stack Engineer',
-                company: 'getArole',
-                type: 'Full-time',
-                location: 'Bengaluru, India',
-                start: 'Jan 2023',
-                end: 'Present',
-                desc: '• Architected high-performance developer job discovery engine with real-time vector semantic matching\n• Engineered sub-50ms API endpoints and automated web scrapers across 5+ major ATS portals\n• Reduced database read latency by 45% through write-through cache layering and Supabase REST optimization'
-              }
-            ];
+            state.profile.experience = [];
           }
         }
+        // Purge mock getArole experience if present
+        state.profile.experience = state.profile.experience.filter(e => !(e.company === 'getArole' && (e.title === 'Full Stack Engineer' || (e.desc && e.desc.includes('sub-50ms API endpoints')))));
 
-        // Projects
-        if (!Array.isArray(state.profile.projects) || state.profile.projects.length === 0) {
+        // Projects - preserve real data, never re-inject mock getArole project
+        if (!Array.isArray(state.profile.projects)) {
           if (Array.isArray(resumeV2.projects) && resumeV2.projects.length > 0) {
             state.profile.projects = resumeV2.projects.map(p => ({
               title: p.name || p.title || '',
@@ -2513,67 +2528,41 @@
               github: p.githubLink || p.github || ''
             }));
           } else {
-            state.profile.projects = [
-              {
-                title: 'getArole AI Career Suite',
-                desc: '• Intelligent career acceleration engine featuring automated ATS LaTeX resume generation and live job pipeline\n• Built bidirectional synchronization across client storage and cloud Supabase database with sub-second reactivity',
-                tags: ['Next.js', 'FastAPI', 'Supabase', 'TypeScript', 'TailwindCSS'],
-                demo: 'https://getarole.in',
-                github: 'https://github.com'
-              }
-            ];
+            state.profile.projects = [];
           }
         }
+        state.profile.projects = state.profile.projects.filter(p => !(p.title === 'getArole AI Career Suite' && p.demo === 'https://getarole.in'));
 
-        // Education
-        if (!Array.isArray(state.profile.education) || state.profile.education.length === 0) {
+        // Education - preserve real data, never re-inject mock institute
+        if (!Array.isArray(state.profile.education)) {
           if (Array.isArray(resumeV2.education) && resumeV2.education.length > 0) {
             state.profile.education = resumeV2.education.map(ed => ({
               school: ed.school || '',
               degree: ed.degree || '',
-              year: ed.dates || '2024',
-              grade: ed.grade || '8.8 / 10.0 CGPA',
-              coursework: ed.coursework || 'Data Structures, Operating Systems, DBMS, Distributed Systems'
+              year: ed.dates || '',
+              grade: ed.grade || '',
+              coursework: ed.coursework || ''
             }));
           } else {
-            state.profile.education = [
-              {
-                school: 'Engineering & Technology Institute',
-                degree: 'B.Tech in Computer Science & Engineering',
-                year: '2020 - 2024',
-                grade: '8.8 / 10.0 CGPA',
-                coursework: 'Data Structures & Algorithms, Operating Systems, DBMS, System Design, Computer Networks'
-              }
-            ];
+            state.profile.education = [];
           }
         }
+        state.profile.education = state.profile.education.filter(ed => !(ed.school === 'Engineering & Technology Institute' && ed.grade === '8.8 / 10.0 CGPA'));
 
-        // Certifications
-        if (!Array.isArray(state.profile.certifications) || state.profile.certifications.length === 0) {
-          state.profile.certifications = [
-            {
-              name: 'AWS Certified Solutions Architect – Associate',
-              issuer: 'Amazon Web Services',
-              year: '2024',
-              link: 'https://aws.amazon.com/certification/'
-            }
-          ];
+        // Certifications - never re-inject mock AWS cert
+        if (!Array.isArray(state.profile.certifications)) {
+          state.profile.certifications = [];
         }
+        state.profile.certifications = state.profile.certifications.filter(c => !(c.name === 'AWS Certified Solutions Architect – Associate' && c.issuer === 'Amazon Web Services'));
 
-        // Honors & Achievements
-        if (!Array.isArray(state.profile.achievements) || state.profile.achievements.length === 0) {
-          state.profile.achievements = [
-            {
-              title: '1st Place – AI Hackathon 2024',
-              issuer: 'Developer Community',
-              year: '2024',
-              desc: 'Ranked #1 among 300+ teams nationwide for building an autonomous recruiter screening engine.'
-            }
-          ];
+        // Honors & Achievements - never re-inject mock Hackathon
+        if (!Array.isArray(state.profile.achievements)) {
+          state.profile.achievements = [];
         }
+        state.profile.achievements = state.profile.achievements.filter(a => !(a.title === '1st Place – AI Hackathon 2024' && a.issuer === 'Developer Community'));
 
         // Links
-        if (!state.profile.links || Object.keys(state.profile.links).length === 0) {
+        if (!state.profile.links || typeof state.profile.links !== 'object') {
           state.profile.links = {
             linkedin: (resumeV2.header && resumeV2.header.linkedin) || '',
             github: (resumeV2.header && resumeV2.header.github) || '',
@@ -2584,10 +2573,10 @@
         }
 
         // Target Preferences Defaults
-        state.prefs.roles = state.prefs.roles || state.prefs.specializations || ['Full Stack Engineer', 'Software Engineer', 'Backend Developer'];
-        state.prefs.locations = state.prefs.locations || ['Bengaluru', 'Hyderabad', 'Remote in India', 'Global Remote'];
+        state.prefs.roles = Array.isArray(state.prefs.roles) ? state.prefs.roles : (Array.isArray(state.prefs.specializations) ? state.prefs.specializations : (state.prefs.role ? [state.prefs.role] : []));
+        state.prefs.locations = Array.isArray(state.prefs.locations) ? state.prefs.locations : (state.prefs.city ? [state.prefs.city] : []);
         state.prefs.workplaceType = state.prefs.workplaceType || 'Hybrid';
-        state.prefs.salary_amt = state.prefs.salary_amt || 1500000;
+        state.prefs.salary_amt = state.prefs.salary_amt || 1200000;
         state.prefs.salary_curr = state.prefs.salary_curr || 'INR';
         state.prefs.status = state.prefs.status || 'Actively looking';
 
@@ -2602,20 +2591,30 @@
       // 1. Hero Identity
       const name = state.profile.name || 'Your Name';
       const headline = state.profile.headline || 'Software Engineer';
-      const loc = state.profile.loc || 'Bengaluru, India';
+      const loc = state.profile.loc || '';
       const email = state.profile.email || '';
       const phone = state.profile.phone || '';
+      const notice = state.profile.notice || '';
 
       const nameEl = document.getElementById('hero-candidate-name');
       if (nameEl) nameEl.textContent = name;
       const headEl = document.getElementById('hero-candidate-headline');
       if (headEl) headEl.textContent = headline;
       const locEl = document.getElementById('chip-location');
-      if (locEl) locEl.textContent = `📍 ${loc}`;
+      if (locEl) locEl.textContent = loc ? `📍 ${loc}` : '📍 Add Location';
       const mailEl = document.getElementById('chip-email');
       if (mailEl) mailEl.textContent = email ? `✉️ ${email}` : '✉️ Add Email';
       const phEl = document.getElementById('chip-phone');
       if (phEl) phEl.textContent = phone ? `📱 ${phone}` : '📱 Add Phone';
+      const noticeEl = document.getElementById('chip-notice');
+      if (noticeEl) {
+        if (notice) {
+          noticeEl.textContent = `⏱️ ${notice}`;
+          noticeEl.style.display = 'inline-flex';
+        } else {
+          noticeEl.style.display = 'none';
+        }
+      }
 
       // Initials Avatar
       const initials = (name && name !== 'Your Name')
@@ -2897,14 +2896,16 @@
       const p = state.prefs || {};
       
       // Roles
-      if (Array.isArray(p.roles) && p.roles.length > 0) {
+      if (Array.isArray(p.roles)) {
         colPrefsData.roles = [...p.roles];
-      } else if (Array.isArray(p.specializations) && p.specializations.length > 0) {
+      } else if (Array.isArray(p.specializations)) {
         colPrefsData.roles = [...p.specializations];
       } else if (p.role) {
         colPrefsData.roles = [p.role];
+      } else if (state.profile.headline) {
+        colPrefsData.roles = [state.profile.headline.split('•')[0].trim()];
       } else {
-        colPrefsData.roles = ['Full Stack Developer', 'Backend Engineer'];
+        colPrefsData.roles = [];
       }
 
       // Seniority
@@ -2914,12 +2915,14 @@
       colPrefsData.workplaceType = p.workplaceType || (p.remoteOnly ? 'Remote' : 'Hybrid');
 
       // Locations
-      if (Array.isArray(p.locations) && p.locations.length > 0) {
+      if (Array.isArray(p.locations)) {
         colPrefsData.locations = [...p.locations];
       } else if (p.city) {
         colPrefsData.locations = [p.city];
+      } else if (state.profile.loc) {
+        colPrefsData.locations = [state.profile.loc.split(',')[0].trim()];
       } else {
-        colPrefsData.locations = ['Bengaluru', 'Remote in India'];
+        colPrefsData.locations = [];
       }
 
       // Salary
@@ -3043,12 +3046,7 @@
     window.toggleColLocation = function(loc) {
       const idx = colPrefsData.locations.indexOf(loc);
       if (idx >= 0) {
-        if (colPrefsData.locations.length > 1) {
-          colPrefsData.locations.splice(idx, 1);
-        } else {
-          toast('Select at least one preferred location.');
-          return;
-        }
+        colPrefsData.locations.splice(idx, 1);
       } else {
         colPrefsData.locations.push(loc);
       }
@@ -3281,19 +3279,49 @@
     };
 
     function computeProfileCompletion() {
-      let score = 20; // Base identity
-      if (state.profile.headline && state.profile.headline.length > 5) score += 10;
-      if (state.profile.skills && state.profile.skills.length >= 5) score += 15;
-      if (Array.isArray(state.profile.experience) && state.profile.experience.length > 0) score += 20;
-      if (Array.isArray(state.profile.projects) && state.profile.projects.length > 0) score += 15;
-      if (Array.isArray(state.profile.education) && state.profile.education.length > 0) score += 10;
-      if (Array.isArray(state.profile.certifications) && state.profile.certifications.length > 0) score += 10;
+      const hasIdentity = Boolean(state.profile.name && (state.profile.email || state.profile.phone));
+      const hasSkills = Boolean((Array.isArray(state.profile.skills_languages) && state.profile.skills_languages.length) || 
+                                (Array.isArray(state.profile.skills) && state.profile.skills.length));
+      const hasExp = Boolean(Array.isArray(state.profile.experience) && state.profile.experience.length > 0);
+      const hasProj = Boolean(Array.isArray(state.profile.projects) && state.profile.projects.length > 0);
+      const hasEdu = Boolean(Array.isArray(state.profile.education) && state.profile.education.length > 0);
+      const hasCert = Boolean(Array.isArray(state.profile.certifications) && state.profile.certifications.length > 0);
+      const hasResume = Boolean(localStorage.getItem('getarole_resume_v2') || localStorage.getItem('getarole_resume_pdf'));
 
-      score = Math.min(100, score);
+      let score = 0;
+      if (hasIdentity) score += 15;
+      if (hasSkills) score += 20;
+      if (hasExp) score += 25;
+      if (hasProj) score += 15;
+      if (hasEdu) score += 15;
+      if (hasCert) score += 5;
+      if (hasResume) score += 5;
+
+      score = Math.min(100, Math.max(0, score));
       const fill = document.getElementById('meter-fill');
       const text = document.getElementById('meter-pct-text');
       if (fill) fill.style.width = `${score}%`;
       if (text) text.textContent = `${score}%`;
+
+      function updateMeterTag(id, isDone, label) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (isDone) {
+          el.className = 'meter-tag done';
+          el.textContent = `✓ ${label}`;
+        } else {
+          el.className = 'meter-tag';
+          el.textContent = `○ ${label}`;
+        }
+      }
+
+      updateMeterTag('tag-m-identity', hasIdentity, 'Contact & Info');
+      updateMeterTag('tag-m-skills', hasSkills, 'Categorized Skills');
+      updateMeterTag('tag-m-exp', hasExp, 'Experience & Bullets');
+      updateMeterTag('tag-m-proj', hasProj, 'Projects');
+      updateMeterTag('tag-m-edu', hasEdu, 'Education');
+      updateMeterTag('tag-m-cert', hasCert, 'Certifications');
+      updateMeterTag('tag-m-resume', hasResume, 'Resume Sync');
     }
 
     function escapeHTML(str) {
@@ -3864,16 +3892,65 @@
       if (inp) inp.click();
     };
 
-    window.handleResumeFile = function(e) {
+    window.handleResumeFile = async function(e) {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
 
-      toast(`⏳ Parsing ${file.name} for AI auto-fill...`, '📄');
-      
-      setTimeout(() => {
-        toast(`✓ Auto-filled profile and resume from ${file.name}!`);
-        persistProfileData();
-      }, 800);
+      toast(`⏳ Analyzing ${file.name} with AI...`, '📄');
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        const res = await fetch('/api/parse-resume', { method: 'POST', body: formData });
+        if (res.ok) {
+          const parsed = await res.json();
+          if (parsed.name && parsed.name !== 'Candidate') state.profile.name = parsed.name;
+          if (parsed.email) state.profile.email = parsed.email;
+          if (parsed.phone) state.profile.phone = parsed.phone;
+          if (parsed.headline) state.profile.headline = parsed.headline;
+          if (parsed.summary) state.profile.summary = parsed.summary;
+          if (parsed.location) state.profile.loc = parsed.location;
+
+          if (Array.isArray(parsed.skills_languages) && parsed.skills_languages.length) {
+            state.profile.skills_languages = parsed.skills_languages;
+          }
+          if (Array.isArray(parsed.skills_frameworks) && parsed.skills_frameworks.length) {
+            state.profile.skills_frameworks = parsed.skills_frameworks;
+          }
+          if (Array.isArray(parsed.skills_cloud) && parsed.skills_cloud.length) {
+            state.profile.skills_cloud = parsed.skills_cloud;
+          }
+          if (Array.isArray(parsed.skills_tools) && parsed.skills_tools.length) {
+            state.profile.skills_tools = parsed.skills_tools;
+          }
+          if (Array.isArray(parsed.skills) && parsed.skills.length) {
+            state.profile.skills = parsed.skills;
+          }
+          if (Array.isArray(parsed.experience) && parsed.experience.length) {
+            state.profile.experience = parsed.experience;
+          }
+          if (Array.isArray(parsed.projects) && parsed.projects.length) {
+            state.profile.projects = parsed.projects;
+          }
+          if (Array.isArray(parsed.education) && parsed.education.length) {
+            state.profile.education = parsed.education;
+          }
+          if (Array.isArray(parsed.certifications) && parsed.certifications.length) {
+            state.profile.certifications = parsed.certifications;
+          }
+
+          localStorage.setItem('getarole_resume_pdf', file.name);
+          await persistProfileData();
+          renderFullProfile();
+          toast(`✓ Extracted profile & skills from ${file.name}!`);
+          return;
+        }
+      } catch (err) {
+        console.warn('Backend resume parse notice:', err);
+      }
+      localStorage.setItem('getarole_resume_pdf', file.name);
+      await persistProfileData();
+      renderFullProfile();
+      toast(`✓ Resume uploaded: ${file.name}`);
     };
 
     window.handleLogoutUser = function() {
