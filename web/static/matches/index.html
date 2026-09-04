@@ -1663,7 +1663,72 @@
 
   <!-- ════════════════════ HEADER (SIMPLIFY NAVIGATION) ════════════════════ -->
   <!-- ════════════════════ UNIFORM HEADER ════════════════════ -->
-  <!-- GLOBAL_HEADER -->
+    <header style="position: sticky; top: 0; z-index: 999999 !important; width: 100%;">
+    <div class="header-inner">
+      <div class="brand-group">
+        <a href="/dashboard/" class="brand-logo">
+          <img src="/logo.svg" alt="getArole" style="width:34px;height:34px;object-fit:contain;">
+          <span class="brand-title">get<span>A</span>role</span>
+        </a>
+
+        <nav class="nav-tabs" style="overflow:visible !important;">
+          <a class="nav-tab active" href="/dashboard/" id="tab-btn-home">Overview</a>
+          <a class="nav-tab" href="/matches/" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">—</span></a>
+          <a class="nav-tab" href="/explore/" id="tab-btn-jobs">Explore Jobs</a>
+          <div class="nav-dropdown" style="position:relative; display:inline-block;" onmouseenter="this.querySelector('.nav-dropdown-menu').style.display='flex'" onmouseleave="this.querySelector('.nav-dropdown-menu').style.display='none'">
+            <a class="nav-tab nav-dropdown-btn" style="cursor:pointer; display:flex; align-items:center; gap:4px; margin:0;" onclick="const m = this.nextElementSibling; m.style.display = m.style.display === 'flex' ? 'none' : 'flex';">CV & CL ▼</a>
+            <div class="nav-dropdown-menu" style="position:absolute; top:100%; left:0; width:160px; background:var(--surface, #ffffff); border:1px solid var(--border, #e2e8f0); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.1); padding:8px; display:none; flex-direction:column; gap:4px; z-index:999999; text-align:left;">
+              <a href="/resume-builder/" class="nav-dropdown-item" style="padding:8px 12px; border-radius:6px; font-size:13.5px; font-weight:600; color:#0f172a; text-decoration:none; display:flex; align-items:center; gap:8px;" onmouseover="this.style.background='#f8fafc'; this.style.color='#4f46e5'" onmouseout="this.style.background='transparent'; this.style.color='#0f172a'">📄 Resume</a>
+              <a href="/cover-letter-builder/" class="nav-dropdown-item" style="padding:8px 12px; border-radius:6px; font-size:13.5px; font-weight:600; color:#0f172a; text-decoration:none; display:flex; align-items:center; gap:8px;" onmouseover="this.style.background='#f8fafc'; this.style.color='#4f46e5'" onmouseout="this.style.background='transparent'; this.style.color='#0f172a'">✉️ Cover Letter</a>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-refresh" id="btn-refresh-scrape" onclick="typeof triggerScrape === 'function' ? triggerScrape() : window.location.reload()">
+          <span class="btn-refresh-text">Sync</span>
+        </button>
+
+        <div class="user-profile-btn" onclick="document.getElementById('user-dropdown') && document.getElementById('user-dropdown').classList.toggle('show')">
+          <div class="user-avatar" id="nav-avatar">U</div>
+          <span class="user-name-text" id="nav-username" style="display: none !important;">User</span>
+          <span style="font-size: 10px; color: var(--text-subtle, #94a3b8)">▼</span>
+
+          <div class="user-dropdown" id="user-dropdown">
+            <a href="/profile/" class="dropdown-item">👤 Profile</a>
+            <a href="/settings/" class="dropdown-item">⚙️ Settings</a>
+            <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
+            <a href="#" onclick="openSignOutModal(); return false;" class="dropdown-item" style="color:#ef4444; font-weight:600;">🚪 Sign Out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const path = window.location.pathname;
+    document.querySelectorAll(".nav-tab").forEach(tab => {
+      const href = tab.getAttribute("href");
+      if (href) {
+        if (href === path || (href !== "/" && path.startsWith(href))) {
+          tab.classList.add("active");
+        } else {
+          tab.classList.remove("active");
+        }
+      }
+    });
+
+    window.addEventListener('click', (e) => {
+      if (!e.target.closest('.user-profile-btn')) {
+        const dropdown = document.getElementById('user-dropdown');
+        if (dropdown) dropdown.classList.remove('show');
+      }
+    });
+  });
+</script>
+
 
     <!-- ════════════════════ MAIN CONTENT ════════════════════ -->
   <main id="main-content">
@@ -1707,7 +1772,128 @@
   </main>
 
                 <!-- ════════════════════ GLOBAL ENTERPRISE FOOTER ════════════════════ -->
-  <!-- GLOBAL_FOOTER -->
+    <footer class="global-footer" style="background:#ffffff; border-top:1px solid #e2e8f0; padding:48px 24px 24px; margin-top:auto; font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; position:relative;">
+    <style>
+      .global-footer a.footer-nav-link { color: #64748b; text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.15s ease, transform 0.15s ease; display: inline-block; }
+      .global-footer a.footer-nav-link:hover { color: #4f46e5 !important; transform: translateX(2px); }
+      .footer-top-grid { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1.2fr; gap: 36px; margin-bottom: 36px; min-width: 0; }
+      @media (max-width: 960px) {
+        .footer-top-grid { grid-template-columns: 1fr 1fr !important; gap: 28px !important; }
+      }
+      @media (max-width: 600px) {
+        .footer-top-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+        .footer-bottom-bar { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
+      }
+    </style>
+
+    <div style="max-width: 100%; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 0 16px;">
+      
+      <!-- Top Grid: Brand & Founder Spotlight + Navigation Pillars -->
+      <div class="footer-top-grid">
+        
+        <!-- Col 1: Brand & Founder Identity -->
+        <div style="display:flex; flex-direction:column; gap:16px;">
+          <a href="/" class="brand-group" style="display:inline-flex; align-items:center; gap:10px; text-decoration:none;">
+            <img src="/logo.svg" alt="getArole Logo" style="width:34px; height:34px; border-radius:9px; box-shadow:0 3px 10px rgba(79,70,229,0.2); flex-shrink:0;">
+            <span style="font-family:'Outfit', sans-serif; font-size:22px; font-weight:800; color:#0f172a; letter-spacing:-0.03em;">get<span style="color:#4f46e5;">A</span>role</span>
+          </a>
+
+          <p style="font-size:13px; color:#475569; line-height:1.6; max-width:340px; margin:0;">
+            Job discovery and application management platform indexing verified opportunities directly from official company career portals.
+          </p>
+
+          <!-- Founder Spotlight Card (Factual & Enterprise) -->
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:14px 16px; max-width:390px; box-shadow:0 2px 6px rgba(0,0,0,0.02); display:flex; align-items:flex-start; gap:14px;">
+            <div style="position:relative; flex-shrink:0;">
+              <img src="/founder.png" alt="Hemasai Vattikuti" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid #4f46e5; box-shadow:0 2px 6px rgba(79,70,229,0.2);">
+              <span style="position:absolute; bottom:0; right:0; width:12px; height:12px; background:#22c55e; border:2px solid #ffffff; border-radius:50%;" title="Active Founder"></span>
+            </div>
+            <div style="min-width:0; flex:1;">
+              <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <span style="font-size:13.5px; font-weight:800; color:#0f172a;">Hemasai Vattikuti</span>
+                <span style="font-size:10.5px; font-weight:700; background:#e0e7ff; color:#4338ca; padding:1px 7px; border-radius:4px;">Founder</span>
+              </div>
+              <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Lead Developer &amp; Architect, getArole</div>
+              <p style="font-size:11.5px; color:#475569; margin:6px 0 0; line-height:1.45;">
+                Building intelligent tools to accelerate job discovery, optimize ATS resumes, and streamline application tracking for engineers across India.
+              </p>
+              <div style="display:flex; align-items:center; gap:12px; margin-top:9px; flex-wrap:wrap;">
+                <a href="mailto:admingetarole@gmail.com" style="font-size:11.5px; font-weight:700; color:#4f46e5; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+                  <span>✉️ admingetarole@gmail.com</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Col 2: Platform & Real Tools -->
+        <div>
+          <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#0f172a; margin-bottom:14px;">Platform Tools</div>
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
+            <li><a href="/dashboard/" class="footer-nav-link">Application Tracker</a></li>
+            <li><a href="/explore/" class="footer-nav-link">Job Discovery &amp; Search</a></li>
+            <li><a href="/matches/" class="footer-nav-link">AI Resume Matcher</a></li>
+            <li><a href="/resume-builder/" class="footer-nav-link">LaTeX Resume Builder</a></li>
+            <li><a href="/cover-letter-builder/" class="footer-nav-link">Cover Letter Builder</a></li>
+            <li><a href="/profile/" class="footer-nav-link">Candidate Profile</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Real Job Categories & Search Hubs -->
+        <div>
+          <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#0f172a; margin-bottom:14px;">Active Hubs</div>
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
+            <li><a href="/explore?q=Bengaluru" class="footer-nav-link">Bengaluru Tech Hub</a></li>
+            <li><a href="/explore?q=Hyderabad" class="footer-nav-link">Hyderabad Openings</a></li>
+            <li><a href="/explore?q=Pune" class="footer-nav-link">Pune &amp; Mumbai</a></li>
+            <li><a href="/explore?q=Gurgaon" class="footer-nav-link">Delhi NCR / Gurgaon</a></li>
+            <li><a href="/explore?q=Remote" class="footer-nav-link">Remote in India</a></li>
+            <li><a href="/explore?q=Fresher" class="footer-nav-link">Freshers &amp; Early Career</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Contact, Grievance & Governance -->
+        <div>
+          <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:#0f172a; margin-bottom:14px;">Contact &amp; Legal</div>
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; padding:0; margin:0;">
+            <li>
+              <a href="mailto:admingetarole@gmail.com" class="footer-nav-link" style="color:#4f46e5; font-weight:700; word-break:break-all;">
+                admingetarole@gmail.com
+              </a>
+            </li>
+            <li><a href="/privacy/" class="footer-nav-link">Privacy Policy</a></li>
+            <li><a href="/terms/" class="footer-nav-link">Terms of Service</a></li>
+            <li><a href="/settings/" class="footer-nav-link">Account Settings</a></li>
+            <li><a href="mailto:admingetarole@gmail.com?subject=Grievance%20Redressal" class="footer-nav-link">Grievance Redressal</a></li>
+            <li style="margin-top:4px; font-size:11.5px; color:#64748b; line-height:1.45;">
+              DPDP Act 2023 Compliant • Direct employer links
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Bottom Bar: Factual & Clean Enterprise Attribution -->
+      <div class="footer-bottom-bar" style="border-top:1px solid #e2e8f0; padding-top:20px; display:flex; align-items:center; justify-content:space-between; font-size:12px; color:#64748b; flex-wrap:wrap; gap:14px;">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span>© <span class="global-footer-year">2026</span> <strong>getArole.in</strong></span>
+          <span>•</span>
+          <span>Founded by Hemasai Vattikuti</span>
+          <span>•</span>
+          <span>Bengaluru, Karnataka, India</span>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:14px; font-size:11.5px; color:#64748b; flex-wrap:wrap;">
+          <span>Verified Opportunities • Direct Application Links</span>
+          <span>•</span>
+          <a href="mailto:admingetarole@gmail.com" style="color:#4f46e5; text-decoration:none; font-weight:600;">Contact Founder</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
 
   <div style="display:none">
     <span id="home-user-name"></span>
