@@ -501,10 +501,10 @@
   }
 
   /**
-   * Safe Sign-Out: Purges only authentication tokens and session identifiers,
-   * completely preserving candidate resume, profile, preferences, and tracker.
+   * Safe Sign-Out: Purges authentication tokens and session identifiers.
+   * If purgeAll is true, completely clears candidate data from the device as well.
    */
-  async function safeSignOut() {
+  async function safeSignOut(purgeAll = false) {
     try {
       if (window.firebaseAuth && typeof window.firebaseAuth.signOut === 'function') {
         await window.firebaseAuth.signOut();
@@ -513,18 +513,46 @@
     try {
       const mod = await import('/firebase-auth.js');
       if (mod && typeof mod.logoutUser === 'function') {
-        await mod.logoutUser();
+        await mod.logoutUser(purgeAll);
       }
     } catch (_) {}
     localStorage.removeItem('getarole_user');
     localStorage.removeItem('firebase_uid');
+    localStorage.removeItem('getarole_username');
     sessionStorage.removeItem('firebase_uid');
+    sessionStorage.clear();
+    if (purgeAll) {
+      localStorage.removeItem('getarole_profile');
+      localStorage.removeItem('getarole_prefs');
+      localStorage.removeItem('getarole_resume_v2');
+      localStorage.removeItem('getarole_resume_pdf');
+      localStorage.removeItem('getarole_tracker');
+    }
+    window.location.href = '/';
+  }
+
+  /**
+   * Permanent Account Deletion:
+   * Cascades through backend GDPR deletion endpoint, deletes Firebase user,
+   * wipes 100% of client storage, and redirects to home.
+   */
+  async function deleteUserAccount() {
+    try {
+      const mod = await import('/firebase-auth.js');
+      if (mod && typeof mod.deleteAccount === 'function') {
+        await mod.deleteAccount();
+      }
+    } catch (e) {
+      console.error('[Delete Account Error]', e);
+    }
+    localStorage.clear();
     sessionStorage.clear();
     window.location.href = '/';
   }
 
   window.safeSignOut = safeSignOut;
   window.handleLogout = safeSignOut;
+  window.deleteUserAccount = deleteUserAccount;
 
   // Export globally
   window.getAroleSync = {
@@ -533,6 +561,7 @@
     syncUserPreferences,
     loadUserPreferences,
     syncUserProfile,
+    deleteUserAccount,
     loadUserProfile,
     syncUserResume,
     loadUserResume,

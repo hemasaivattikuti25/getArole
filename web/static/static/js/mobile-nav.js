@@ -471,9 +471,13 @@
             👑 Master CRM Sheet
           </a>
           <div style="height: 1px; background: #e2e8f0; margin: 8px 0;"></div>
-          <a href="#" onclick="typeof safeSignOut === 'function' ? safeSignOut() : (typeof handleLogout === 'function' ? handleLogout() : (localStorage.removeItem('getarole_user'), localStorage.removeItem('firebase_uid'), sessionStorage.clear(), window.location.href='/'))" class="mobile-nav-link" style="color:#ef4444; font-weight:600;">
+          <a href="#" onclick="typeof openSignOutModal === 'function' ? openSignOutModal() : (typeof safeSignOut === 'function' ? safeSignOut() : (localStorage.removeItem('getarole_user'), localStorage.removeItem('firebase_uid'), sessionStorage.clear(), window.location.href='/'))" class="mobile-nav-link" style="color:#ef4444; font-weight:600;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
             Sign Out
+          </a>
+          <a href="#" onclick="typeof openDeleteAccountModal === 'function' ? openDeleteAccountModal() : (window.location.href='/profile/#section-danger-zone')" class="mobile-nav-link" style="color:#dc2626; font-size:13px; font-weight:600;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            Delete Account (GDPR)
           </a>
         </nav>
       `;

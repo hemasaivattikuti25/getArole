@@ -244,6 +244,28 @@
       border-color: var(--border-strong);
     }
 
+    .btn-signout {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      border: 1px solid #fecaca;
+      border-radius: 99px;
+      padding: 6px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #dc2626;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+    .btn-signout:hover {
+      background: #fef2f2;
+      border-color: #f87171;
+      color: #b91c1c;
+      transform: translateY(-1px);
+    }
+
     .user-profile-btn {
       position: relative;
       display: flex;
@@ -1452,8 +1474,12 @@
       </div>
 
       <div class="header-actions">
-        <button class="btn-sync" onclick="syncAllProfileData()">
+        <button class="btn-sync" onclick="syncAllProfileData()" title="Sync profile with cloud database">
           <span>🔄 Sync</span>
+        </button>
+
+        <button class="btn-signout" onclick="openSignOutModal()" title="Sign out of your account">
+          <span>🚪 Sign Out</span>
         </button>
 
         <div class="user-profile-btn" onclick="toggleUserDropdown()">
@@ -1465,7 +1491,8 @@
             <a href="/profile/" class="dropdown-item">⚙️ Profile & Preferences</a>
             <a href="/crm/" id="nav-admin-crm-link" class="dropdown-item" style="display:none; color:#4f46e5; font-weight:700;">👑 Master CRM Sheet</a>
             <div style="height:1px; background:var(--border); margin:4px 0;"></div>
-            <a href="#" onclick="typeof safeSignOut === 'function' ? safeSignOut() : handleLogoutUser()" class="dropdown-item" style="color:#ef4444">Sign Out</a>
+            <a href="#" onclick="openSignOutModal(); return false;" class="dropdown-item" style="color:#ef4444; font-weight:600;">🚪 Sign Out</a>
+            <a href="#" onclick="openDeleteAccountModal(); return false;" class="dropdown-item" style="color:#dc2626; font-size:12px;">⚠️ Delete Account &amp; Data</a>
           </div>
         </div>
       </div>
@@ -1628,6 +1655,30 @@
           </div>
         </div>
 
+        <!-- Account & Security / Session Card -->
+        <div class="sidebar-card" style="border:1px solid #fee2e2; background:linear-gradient(180deg, #ffffff 0%, #fffbfb 100%);">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:15px;">🛡️</span>
+              <strong style="font-size:13px; color:#991b1b;">Account &amp; Security</strong>
+            </div>
+            <span style="font-size:10px; font-weight:700; background:#fee2e2; color:#b91c1c; padding:2px 6px; border-radius:4px; text-transform:uppercase;">GDPR</span>
+          </div>
+          
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom:12px; line-height:1.4;">
+            Session: <strong id="sidebar-auth-email" style="color:var(--text-main); word-break:break-all;">Candidate</strong>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <button type="button" onclick="openSignOutModal()" style="display:flex; align-items:center; justify-content:center; gap:6px; width:100%; padding:8px 12px; background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; font-size:12.5px; font-weight:600; color:#334155; cursor:pointer; transition:all 0.15s ease;">
+              <span>🚪</span> Sign Out
+            </button>
+            <button type="button" onclick="openDeleteAccountModal()" style="display:flex; align-items:center; justify-content:center; gap:6px; width:100%; padding:8px 12px; background:#fff5f5; border:1px solid #fecaca; border-radius:8px; font-size:12px; font-weight:600; color:#dc2626; cursor:pointer; transition:all 0.15s ease;">
+              <span>⚠️</span> Delete Account &amp; Data
+            </button>
+          </div>
+        </div>
+
       </aside>
 
       <!-- RIGHT COLUMN: DETAILED DOSSIER SECTIONS -->
@@ -1785,6 +1836,52 @@
             <div class="pref-item-card">
               <div class="pref-label">Minimum Expected Salary</div>
               <div class="salary-highlight" id="pref-salary-display">₹15 LPA+</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION: ACCOUNT SOVEREIGNTY & DATA ERASURE -->
+        <section class="section-card" id="section-danger-zone" style="border:1px solid #fed7d7; background:#fffbfb;">
+          <div class="section-header" style="border-bottom:1px solid #fee2e2;">
+            <div class="section-header-left">
+              <div class="section-icon" style="background:#fee2e2; color:#dc2626;">🛡️</div>
+              <div>
+                <h2>Account Sovereignty &amp; Data Deletion</h2>
+                <div class="section-subtitle">Full GDPR compliance, session control, and permanent data erasure</div>
+              </div>
+            </div>
+            <span style="font-size:11px; font-weight:700; color:#dc2626; background:#fef2f2; padding:3px 8px; border-radius:6px; border:1px solid #fecaca;">DANGER ZONE</span>
+          </div>
+
+          <div style="padding:20px 24px; display:flex; flex-direction:column; gap:16px;">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+              <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                  <div style="font-weight:700; font-size:14px; color:#1e293b; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                    <span>🚪</span> Active Session Controls
+                  </div>
+                  <p style="font-size:12.5px; color:#64748b; line-height:1.5; margin:0 0 14px;">
+                    End your authenticated session. You can choose a quick sign out or complete device cache purge for shared computers.
+                  </p>
+                </div>
+                <button type="button" onclick="openSignOutModal()" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; background:#f1f5f9; border:1px solid #cbd5e1; color:#334155; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.15s;">
+                  🚪 Sign Out
+                </button>
+              </div>
+
+              <div style="background:#ffffff; border:1px solid #fecaca; border-radius:10px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                  <div style="font-weight:700; font-size:14px; color:#991b1b; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                    <span>⚠️</span> Permanent Account Purge (GDPR)
+                  </div>
+                  <p style="font-size:12.5px; color:#64748b; line-height:1.5; margin:0 0 14px;">
+                    Irrevocably delete your profile, preferences, resume records from Supabase cloud database, and delete Firebase user.
+                  </p>
+                </div>
+                <button type="button" onclick="openDeleteAccountModal()" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; background:#fef2f2; border:1px solid #f87171; color:#dc2626; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer; transition:all 0.15s;">
+                  🗑️ Delete Account &amp; All Data
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -2319,6 +2416,111 @@
     </div>
   </div>
 
+  <!-- SIGN OUT CONFIRMATION MODAL -->
+  <div class="modal-overlay" id="modal-signout">
+    <div class="modal-dialog" style="max-width: 480px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:20px;">🚪</span>
+          <h3>Sign Out</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('modal-signout')">×</button>
+      </div>
+      <div class="modal-body" style="padding:22px;">
+        <p style="font-size:13.5px; color:#475569; margin-bottom:18px; line-height:1.5;">
+          Select how you want to sign out from getArole:
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <!-- Option A: Standard Sign Out -->
+          <div style="border:1px solid #e2e8f0; border-radius:10px; padding:14px 16px; background:#f8fafc; cursor:pointer; transition:all 0.2s;" onclick="executeSignOut(false)" onmouseover="this.style.borderColor='#94a3b8'" onmouseout="this.style.borderColor='#e2e8f0'">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <strong style="font-size:13.5px; color:#1e293b;">🚪 Standard Sign Out</strong>
+              <span style="font-size:11px; font-weight:700; background:#e0e7ff; color:#4338ca; padding:2px 8px; border-radius:99px;">Personal Device</span>
+            </div>
+            <p style="font-size:12px; color:#64748b; margin:0;">
+              Signs out of your account while keeping local drafts and cached resume on this device for fast return.
+            </p>
+          </div>
+
+          <!-- Option B: Complete Device Purge -->
+          <div style="border:1px solid #fed7d7; border-radius:10px; padding:14px 16px; background:#fff5f5; cursor:pointer; transition:all 0.2s;" onclick="executeSignOut(true)" onmouseover="this.style.borderColor='#f87171'" onmouseout="this.style.borderColor='#fed7d7'">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <strong style="font-size:13.5px; color:#b91c1c;">🧹 Sign Out &amp; Clear Device Data</strong>
+              <span style="font-size:11px; font-weight:700; background:#fee2e2; color:#dc2626; padding:2px 8px; border-radius:99px;">Public / Shared</span>
+            </div>
+            <p style="font-size:12px; color:#7f1d1d; margin:0;">
+              Clears all local cached profiles, resumes, and cookies on this device. Your cloud data remains intact.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="padding:14px 22px; display:flex; justify-content:flex-end; gap:10px; border-top:1px solid var(--border);">
+        <button type="button" class="btn-action-secondary" onclick="closeModal('modal-signout')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERMANENT ACCOUNT DELETION MODAL (GDPR RIGHT TO BE FORGOTTEN) -->
+  <div class="modal-overlay" id="modal-delete-account">
+    <div class="modal-dialog" style="max-width: 520px; border-color:#fca5a5;">
+      <div class="modal-header" style="background:#fef2f2; border-bottom:1px solid #fee2e2;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:22px;">⚠️</span>
+          <div>
+            <h3 style="color:#991b1b; margin:0; font-size:18px;">Permanently Delete Account</h3>
+            <div style="font-size:11.5px; color:#b91c1c;">GDPR Right-to-be-Forgotten &amp; Cascade Purge</div>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('modal-delete-account')">×</button>
+      </div>
+      <div class="modal-body" style="padding:22px;">
+        <div style="background:#fff1f2; border:1px solid #fecdd3; border-radius:8px; padding:12px 14px; margin-bottom:16px;">
+          <p style="font-size:13px; font-weight:700; color:#be123c; margin:0 0 4px;">
+            This action is permanent and cannot be undone!
+          </p>
+          <p style="font-size:12px; color:#881337; margin:0; line-height:1.4;">
+            By proceeding, all data associated with your account will be permanently expunged:
+          </p>
+        </div>
+
+        <ul style="list-style:none; padding:0; margin:0 0 18px; display:flex; flex-direction:column; gap:8px;">
+          <li style="display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:#334155;">
+            <span style="color:#dc2626; font-weight:bold;">✕</span>
+            <span><strong>Cloud Records:</strong> All profile dossiers, skills, education, experience, and custom ATS resumes in Supabase.</span>
+          </li>
+          <li style="display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:#334155;">
+            <span style="color:#dc2626; font-weight:bold;">✕</span>
+            <span><strong>Matching Preferences:</strong> Target roles, salary criteria, location preferences, and 5D fit weights.</span>
+          </li>
+          <li style="display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:#334155;">
+            <span style="color:#dc2626; font-weight:bold;">✕</span>
+            <span><strong>Authentication Identity:</strong> Your Firebase user account, login credentials, and session tokens.</span>
+          </li>
+          <li style="display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:#334155;">
+            <span style="color:#dc2626; font-weight:bold;">✕</span>
+            <span><strong>Device Storage:</strong> All offline caches, cookies, drafts, and service-worker storage.</span>
+          </li>
+        </ul>
+
+        <div style="border-top:1px solid #e2e8f0; padding-top:14px;">
+          <label style="display:block; font-size:12.5px; font-weight:700; color:#1e293b; margin-bottom:6px;">
+            To confirm, please type <code style="background:#fee2e2; color:#dc2626; padding:2px 6px; border-radius:4px; font-weight:800;">DELETE</code> below:
+          </label>
+          <input type="text" id="input-confirm-delete" placeholder="Type DELETE to confirm" style="width:100%; box-sizing:border-box; padding:10px 14px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px;" oninput="handleDeleteInputChange(this.value)">
+        </div>
+
+        <div id="delete-account-status" style="display:none; margin-top:12px; font-size:12px; text-align:center; padding:8px; border-radius:6px;"></div>
+      </div>
+      <div class="modal-footer" style="padding:14px 22px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #fee2e2; background:#fcfcfc;">
+        <button type="button" class="btn-action-secondary" onclick="closeModal('modal-delete-account')">Cancel</button>
+        <button type="button" id="btn-confirm-delete-account" disabled onclick="executeAccountDeletion()" style="background:#ef4444; border:none; color:white; padding:9px 18px; border-radius:8px; font-weight:700; font-size:12.5px; cursor:not-allowed; opacity:0.5; transition:all 0.2s;">
+          Permanently Purge My Account
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Element -->
   <div id="toast-notification">
     <span id="toast-icon">✓</span>
@@ -2327,19 +2529,22 @@
 
   <!-- ════════════════════ SCRIPTS & ATOMIC DATA ENGINE ════════════════════ -->
   <script type="module">
-    import { initAuthListener, logoutUser } from "/firebase-auth.js";
+    import { initAuthListener, logoutUser, deleteAccount } from "/firebase-auth.js";
 
-    window.logoutFirebase = async function() {
-      await logoutUser();
-      localStorage.removeItem('getarole_user');
-      localStorage.removeItem('firebase_uid');
-      sessionStorage.removeItem('firebase_uid');
-      sessionStorage.clear();
+    window.logoutFirebase = async function(purgeAll = false) {
+      await logoutUser(purgeAll);
+      window.location.href = "/";
+    };
+
+    window.deleteAccountFirebase = async function() {
+      await deleteAccount();
       window.location.href = "/";
     };
 
     initAuthListener(async (user) => {
       if (user) {
+        const sidebarEmail = document.getElementById('sidebar-auth-email');
+        if (sidebarEmail) sidebarEmail.textContent = user.email || user.displayName || 'Verified Candidate';
         const uName = user.displayName || user.email.split('@')[0];
         const avatarEl = document.getElementById('nav-avatar');
         const usernameEl = document.getElementById('nav-username');
@@ -3954,12 +4159,93 @@
     };
 
     window.handleLogoutUser = function() {
-      if (typeof logoutFirebase === 'function') {
-        logoutFirebase();
+      openSignOutModal();
+    };
+
+    window.openSignOutModal = function() {
+      const el = document.getElementById('modal-signout');
+      if (el) el.classList.add('active');
+    };
+
+    window.executeSignOut = async function(purgeAll = false) {
+      if (window.getAroleSync && typeof window.getAroleSync.safeSignOut === 'function') {
+        await window.getAroleSync.safeSignOut(purgeAll);
+      } else if (typeof logoutFirebase === 'function') {
+        await logoutFirebase(purgeAll);
       } else {
         localStorage.removeItem('getarole_user');
         localStorage.removeItem('firebase_uid');
-        sessionStorage.removeItem('firebase_uid');
+        localStorage.removeItem('getarole_username');
+        sessionStorage.clear();
+        if (purgeAll) localStorage.clear();
+        window.location.href = '/';
+      }
+    };
+
+    window.openDeleteAccountModal = function() {
+      const inp = document.getElementById('input-confirm-delete');
+      if (inp) inp.value = '';
+      const btn = document.getElementById('btn-confirm-delete-account');
+      if (btn) {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+        btn.style.cursor = 'not-allowed';
+        btn.textContent = 'Permanently Purge My Account';
+      }
+      const st = document.getElementById('delete-account-status');
+      if (st) st.style.display = 'none';
+      const el = document.getElementById('modal-delete-account');
+      if (el) el.classList.add('active');
+    };
+
+    window.handleDeleteInputChange = function(val) {
+      const btn = document.getElementById('btn-confirm-delete-account');
+      if (!btn) return;
+      if (val.trim() === 'DELETE') {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+      } else {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+        btn.style.cursor = 'not-allowed';
+      }
+    };
+
+    window.executeAccountDeletion = async function() {
+      const btn = document.getElementById('btn-confirm-delete-account');
+      const st = document.getElementById('delete-account-status');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Purging Data & Account...';
+      }
+      if (st) {
+        st.style.display = 'block';
+        st.style.background = '#fef2f2';
+        st.style.color = '#dc2626';
+        st.textContent = 'Cascading account deletion through Supabase and Firebase...';
+      }
+
+      try {
+        if (window.getAroleSync && typeof window.getAroleSync.deleteUserAccount === 'function') {
+          await window.getAroleSync.deleteUserAccount();
+        } else if (typeof deleteAccountFirebase === 'function') {
+          await deleteAccountFirebase();
+        } else {
+          const uid = localStorage.getItem('firebase_uid');
+          if (uid) {
+            await fetch('/api/user/account', {
+              method: 'DELETE',
+              headers: { 'X-Firebase-UID': uid }
+            }).catch(() => {});
+          }
+          localStorage.clear();
+          sessionStorage.clear();
+          window.location.href = '/';
+        }
+      } catch (err) {
+        console.error('Account deletion error:', err);
+        localStorage.clear();
         sessionStorage.clear();
         window.location.href = '/';
       }
@@ -3968,6 +4254,13 @@
     // ── INITIALIZATION ──
     document.addEventListener('DOMContentLoaded', () => {
       renderFullProfile();
+      try {
+        const u = JSON.parse(localStorage.getItem('getarole_user') || '{}');
+        const sidebarEmail = document.getElementById('sidebar-auth-email');
+        if (sidebarEmail && (u.email || u.displayName)) {
+          sidebarEmail.textContent = u.email || u.displayName;
+        }
+      } catch (_) {}
     });
   </script>
   <script src="/static/js/mobile-nav.js?v=3"></script>

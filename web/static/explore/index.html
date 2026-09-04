@@ -1456,6 +1456,10 @@
           <span class="btn-refresh-text">Sync</span>
         </button>
 
+        <button class="btn-signout" onclick="typeof safeSignOut === 'function' ? safeSignOut() : (typeof handleLogout === 'function' ? handleLogout() : (localStorage.removeItem('getarole_user'), localStorage.removeItem('firebase_uid'), sessionStorage.clear(), window.location.href='/'))" title="Sign out of your account" style="display:inline-flex; align-items:center; gap:6px; background:#ffffff; border:1px solid #fecaca; border-radius:99px; padding:6px 14px; font-size:12.5px; font-weight:600; color:#dc2626; cursor:pointer; box-shadow:0 1px 2px rgba(0,0,0,0.05); transition:all 0.2s ease;">
+          <span>🚪</span> Sign Out
+        </button>
+
         <div class="user-profile-btn" onclick="document.getElementById('user-dropdown') && document.getElementById('user-dropdown').classList.toggle('show')">
           <div class="user-avatar" id="nav-avatar">U</div>
           <span class="user-name-text" id="nav-username">User</span>
@@ -1465,7 +1469,8 @@
             <a href="/profile/" class="dropdown-item">⚙️ Profile & Preferences</a>
             <a href="/crm/" id="nav-admin-crm-link" class="dropdown-item" style="display:none; color:#4f46e5; font-weight:700;">👑 Master CRM Sheet</a>
             <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
-            <a href="#" onclick="typeof safeSignOut === 'function' ? safeSignOut() : (typeof handleLogout === 'function' ? handleLogout() : (localStorage.removeItem('getarole_user'), localStorage.removeItem('firebase_uid'), sessionStorage.clear(), window.location.href='/'))" class="dropdown-item" style="color:#ef4444">Sign Out</a>
+            <a href="#" onclick="typeof safeSignOut === 'function' ? safeSignOut() : (typeof handleLogout === 'function' ? handleLogout() : (localStorage.removeItem('getarole_user'), localStorage.removeItem('firebase_uid'), sessionStorage.clear(), window.location.href='/'))" class="dropdown-item" style="color:#ef4444; font-weight:600;">🚪 Sign Out</a>
+            <a href="/profile/#section-danger-zone" class="dropdown-item" style="color:#dc2626; font-size:12px;">⚠️ Delete Account &amp; Data</a>
           </div>
         </div>
       </div>
