@@ -1295,54 +1295,24 @@
         <div style="display:flex; align-items:center; gap:10px;">
           <span style="font-size:22px;">⚠️</span>
           <div>
-            <h3 style="color:#991b1b; margin:0; font-size:18px;">Permanently Delete Account</h3>
-            <div style="font-size:11.5px; color:#b91c1c;">GDPR Right-to-be-Forgotten &amp; Cascade Purge</div>
+            <h3 style="color:#991b1b; margin:0; font-size:18px;">Delete Account</h3>
           </div>
         </div>
         <button class="modal-close-btn" onclick="closeAuthModal('modal-delete-account')">×</button>
       </div>
       <div class="modal-body" style="padding:22px; display:block; overflow-y:visible;">
         <div style="background:#fff1f2; border:1px solid #fecdd3; border-radius:8px; padding:12px 14px; margin-bottom:16px;">
-          <p style="font-size:13px; font-weight:700; color:#be123c; margin:0 0 4px;">
-            This action is permanent and cannot be undone!
+          <p style="font-size:14px; font-weight:700; color:#be123c; margin:0;">
+            Are you sure you want to delete your account? You may lose data.
           </p>
-          <p style="font-size:12px; color:#881337; margin:0; line-height:1.4;">
-            By proceeding, all data associated with your account will be permanently expunged:
-          </p>
-        </div>
-
-        <ul style="list-style:none; padding:0; margin:0 0 18px; display:flex; flex-direction:column; gap:8px;">
-          <li style="display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:#334155;">
-            <span style="color:#dc2626; font-weight:bold;">✕</span>
-            <span><strong>Cloud Records:</strong> All profile dossiers, skills, education, experience, and custom ATS resumes in Supabase.</span>
-          </li>
-          <li style="display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:#334155;">
-            <span style="color:#dc2626; font-weight:bold;">✕</span>
-            <span><strong>Matching Preferences:</strong> Target roles, salary criteria, location preferences, and 5D fit weights.</span>
-          </li>
-          <li style="display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:#334155;">
-            <span style="color:#dc2626; font-weight:bold;">✕</span>
-            <span><strong>Authentication Identity:</strong> Your Firebase user account, login credentials, and session tokens.</span>
-          </li>
-          <li style="display:flex; align-items:flex-start; gap:8px; font-size:12.5px; color:#334155;">
-            <span style="color:#dc2626; font-weight:bold;">✕</span>
-            <span><strong>Device Storage:</strong> All offline caches, cookies, drafts, and service-worker storage.</span>
-          </li>
-        </ul>
-
-        <div style="border-top:1px solid #e2e8f0; padding-top:14px;">
-          <label style="display:block; font-size:12.5px; font-weight:700; color:#1e293b; margin-bottom:6px;">
-            To confirm, please type <code style="background:#fee2e2; color:#dc2626; padding:2px 6px; border-radius:4px; font-weight:800;">DELETE</code> below:
-          </label>
-          <input type="text" id="input-confirm-delete" placeholder="Type DELETE to confirm" style="width:100%; box-sizing:border-box; padding:10px 14px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px;" oninput="handleDeleteInputChange(this.value)">
         </div>
 
         <div id="delete-account-status" style="display:none; margin-top:12px; font-size:12px; text-align:center; padding:8px; border-radius:6px;"></div>
       </div>
       <div class="modal-footer" style="padding:14px 22px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #fee2e2; background:#fcfcfc;">
         <button type="button" class="btn-close-txt" onclick="closeAuthModal('modal-delete-account')">Cancel</button>
-        <button type="button" id="btn-confirm-delete-account" disabled onclick="executeAccountDeletion()" style="background:#ef4444; border:none; color:white; padding:9px 18px; border-radius:8px; font-weight:700; font-size:12.5px; cursor:not-allowed; opacity:0.5; transition:all 0.2s;">
-          Permanently Purge My Account
+        <button type="button" id="btn-confirm-delete-account" onclick="executeAccountDeletion()" style="background:#ef4444; border:none; color:white; padding:9px 18px; border-radius:8px; font-weight:700; font-size:12.5px; cursor:pointer; transition:all 0.2s;">
+          Delete Account
         </button>
       </div>
     </div>
