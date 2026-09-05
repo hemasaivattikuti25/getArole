@@ -1454,49 +1454,38 @@
     }
     .resume-paper {
       background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 36px 40px;
-      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
-      max-width: 780px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 36px 44px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      max-width: 800px;
       margin: 0 auto;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #000000;
+      line-height: 1.45;
     }
     @media (max-width: 640px) {
       .resume-paper { padding: 20px 16px; }
     }
     .resume-paper-section {
-      margin-top: 22px;
-      padding-top: 18px;
-      border-top: 1.5px solid #f1f5f9;
-    }
-    .resume-paper-section:first-of-type {
-      margin-top: 0;
+      margin-top: 14px;
       padding-top: 0;
       border-top: none;
     }
+    .resume-paper-section:first-of-type {
+      margin-top: 0;
+    }
     .resume-paper-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: 13px;
+      font-family: inherit;
+      font-size: 12.5px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #4338ca;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .resume-paper-tag {
-      display: inline-block;
-      background: #f1f5f9;
-      color: #334155;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 3px 9px;
-      border-radius: 6px;
-      border: 1px solid #e2e8f0;
-      margin: 2px 4px 2px 0;
+      letter-spacing: 0.07em;
+      color: #000000;
+      border-bottom: 1.5px solid #000000;
+      padding-bottom: 2px;
+      margin-bottom: 8px;
+      display: block;
     }
     .resume-raw-pre {
       background: #0f172a;
@@ -4350,49 +4339,120 @@
         if (res.ok) {
           const parsed = await res.json();
           if (parsed.name && parsed.name !== 'Candidate') state.profile.name = parsed.name;
+          if (parsed.first_name) state.profile.first = parsed.first_name;
+          if (parsed.last_name) state.profile.last = parsed.last_name;
           if (parsed.email) state.profile.email = parsed.email;
           if (parsed.phone) state.profile.phone = parsed.phone;
           if (parsed.headline) state.profile.headline = parsed.headline;
           if (parsed.summary) state.profile.summary = parsed.summary;
           if (parsed.location) state.profile.loc = parsed.location;
 
-          if (Array.isArray(parsed.skills_languages) && parsed.skills_languages.length) {
-            state.profile.skills_languages = parsed.skills_languages;
+          if (parsed.links) {
+            if (!state.profile.links) state.profile.links = {};
+            Object.assign(state.profile.links, parsed.links);
           }
-          if (Array.isArray(parsed.skills_frameworks) && parsed.skills_frameworks.length) {
-            state.profile.skills_frameworks = parsed.skills_frameworks;
+
+          // Skills Categorization & Hydration
+          const langKeywords = ['python', 'javascript', 'typescript', 'java', 'c++', 'c#', 'c', 'golang', 'go', 'rust', 'ruby', 'php', 'swift', 'kotlin', 'scala', 'dart', 'sql', 'html', 'html5', 'css', 'css3', 'r', 'shell', 'bash'];
+          const frameKeywords = ['react', 'next.js', 'nextjs', 'vue', 'angular', 'svelte', 'node.js', 'nodejs', 'express', 'fastapi', 'django', 'flask', 'spring', 'spring boot', 'rails', 'asp.net', 'tailwind', 'tailwindcss', 'bootstrap', 'redux', 'graphql', 'rest api', 'jquery'];
+          const cloudKeywords = ['aws', 'azure', 'gcp', 'docker', 'kubernetes', 'k8s', 'terraform', 'ci/cd', 'postgresql', 'mysql', 'mongodb', 'redis', 'sqlite', 'cassandra', 'elasticsearch', 'dynamodb', 'firebase', 'supabase'];
+          const toolKeywords = ['git', 'github', 'gitlab', 'bitbucket', 'postman', 'linux', 'unix', 'vite', 'webpack', 'jira', 'figma', 'vscode', 'agile', 'scrum'];
+
+          let langs = Array.isArray(parsed.skills_languages) ? [...parsed.skills_languages] : [];
+          let frames = Array.isArray(parsed.skills_frameworks) ? [...parsed.skills_frameworks] : [];
+          let cloud = Array.isArray(parsed.skills_cloud) ? [...parsed.skills_cloud] : [];
+          let tools = Array.isArray(parsed.skills_tools) ? [...parsed.skills_tools] : [];
+
+          if ((!langs.length && !frames.length) && Array.isArray(parsed.skills)) {
+            parsed.skills.forEach(s => {
+              const low = String(s).toLowerCase();
+              const cap = s.length <= 3 ? s.toUpperCase() : (s.charAt(0).toUpperCase() + s.slice(1));
+              if (langKeywords.includes(low)) langs.push(cap);
+              else if (frameKeywords.includes(low)) frames.push(cap);
+              else if (cloudKeywords.includes(low)) cloud.push(cap);
+              else tools.push(cap);
+            });
           }
-          if (Array.isArray(parsed.skills_cloud) && parsed.skills_cloud.length) {
-            state.profile.skills_cloud = parsed.skills_cloud;
-          }
-          if (Array.isArray(parsed.skills_tools) && parsed.skills_tools.length) {
-            state.profile.skills_tools = parsed.skills_tools;
-          }
+
+          if (langs.length) state.profile.skills_languages = Array.from(new Set(langs));
+          if (frames.length) state.profile.skills_frameworks = Array.from(new Set(frames));
+          if (cloud.length) state.profile.skills_cloud = Array.from(new Set(cloud));
+          if (tools.length) state.profile.skills_tools = Array.from(new Set(tools));
           if (Array.isArray(parsed.skills) && parsed.skills.length) {
-            state.profile.skills = parsed.skills;
+            state.profile.skills = Array.from(new Set(parsed.skills));
           }
+
+          // Work Experience Normalization
           if (Array.isArray(parsed.experience) && parsed.experience.length) {
-            state.profile.experience = parsed.experience;
+            state.profile.experience = parsed.experience.map(e => {
+              const bullets = Array.isArray(e.bullets) ? e.bullets : (e.desc ? e.desc.split('\n').filter(b => b.trim()) : []);
+              const d = e.dates || (e.start ? `${e.start} - ${e.end || 'Present'}` : '');
+              let start = e.start || '';
+              let end = e.end || 'Present';
+              if (!start && d) {
+                const parts = d.split(/[-–—]/);
+                start = parts[0] ? parts[0].trim() : '';
+                end = parts[1] ? parts[1].trim() : 'Present';
+              }
+              return {
+                title: e.title || 'Software Engineer',
+                company: e.company || 'Company',
+                type: e.type || 'Full-time',
+                location: e.location || state.profile.loc || '',
+                start: start,
+                end: end,
+                bullets: bullets,
+                desc: bullets.join('\n') || (e.desc || '')
+              };
+            });
           }
+
+          // Projects Normalization
           if (Array.isArray(parsed.projects) && parsed.projects.length) {
-            state.profile.projects = parsed.projects;
+            state.profile.projects = parsed.projects.map(p => ({
+              title: p.title || p.name || 'Project',
+              desc: p.desc || p.description || (Array.isArray(p.bullets) ? p.bullets.join('\n') : ''),
+              tags: Array.isArray(p.tags) ? p.tags : (p.stack ? p.stack.split(',') : (p.tech ? p.tech.split(',') : [])),
+              demo: p.demo || p.liveLink || p.link || '',
+              github: p.github || p.githubLink || (p.link && p.link.includes('github') ? p.link : '')
+            }));
           }
+
+          // Education Normalization
           if (Array.isArray(parsed.education) && parsed.education.length) {
-            state.profile.education = parsed.education;
+            state.profile.education = parsed.education.map(ed => ({
+              degree: ed.degree || 'Degree',
+              school: ed.school || 'University',
+              year: ed.year || ed.dates || '',
+              grade: ed.grade || '',
+              coursework: ed.coursework || ''
+            }));
           }
+
           if (Array.isArray(parsed.certifications) && parsed.certifications.length) {
             state.profile.certifications = parsed.certifications;
           }
 
-          if (parsed.resume_text) {
+          const rawText = parsed.raw_text || parsed.resume_text || '';
+          if (rawText) {
             try {
-              localStorage.setItem('getarole_resume_raw_text', parsed.resume_text);
+              localStorage.setItem('getarole_resume_raw_text', rawText);
             } catch(_) {}
           }
 
           localStorage.setItem('getarole_resume_pdf', file.name);
+          syncProfileToResumeV2();
           await persistProfileData();
           renderFullProfile();
+
+          // If resume preview modal is open, re-render it in real-time
+          const modal = document.getElementById('modal-resume-preview');
+          if (modal && modal.style.display !== 'none') {
+            const fnEl = document.getElementById('resume-preview-filename');
+            if (fnEl) fnEl.innerHTML = `Active file: <strong style="color:#0f172a;">${escapeHTML(file.name)}</strong>`;
+            renderResumePreviewBody(currentResumePreviewTab);
+          }
+
           if (bar) bar.style.width = '100%';
           setTimeout(() => { if (prog) prog.style.display = 'none'; }, 600);
           toast(`✓ Extracted profile & skills from ${file.name}! Click "Preview Resume" to inspect.`);
@@ -4570,7 +4630,7 @@
         return;
       }
 
-      // Default: 'extracted' (Standard Formatted ATS Resume)
+      // Default: 'extracted' (Standard Formatted Monochrome ATS Resume)
       const candName = prof.name || (resumeV2.header && resumeV2.header.name) || 'Candidate Name';
       const candHeadline = prof.headline || (resumeV2.header && resumeV2.header.title) || 'Software Engineer';
       const candLoc = prof.loc || (resumeV2.header && resumeV2.header.location) || '';
@@ -4580,12 +4640,21 @@
 
       const links = prof.links || {};
       const contactItems = [];
-      if (candLoc) contactItems.push(`<span>📍 ${escapeHTML(candLoc)}</span>`);
-      if (candEmail) contactItems.push(`<span>✉️ <a href="mailto:${escapeHTML(candEmail)}" style="color:inherit; text-decoration:none;">${escapeHTML(candEmail)}</a></span>`);
-      if (candPhone) contactItems.push(`<span>📞 ${escapeHTML(candPhone)}</span>`);
-      if (links.linkedin) contactItems.push(`<span>💼 <a href="${escapeHTML(links.linkedin)}" target="_blank" style="color:#4f46e5; font-weight:600; text-decoration:underline;">LinkedIn</a></span>`);
-      if (links.github) contactItems.push(`<span>🐙 <a href="${escapeHTML(links.github)}" target="_blank" style="color:#4f46e5; font-weight:600; text-decoration:underline;">GitHub</a></span>`);
-      if (links.portfolio) contactItems.push(`<span>🌐 <a href="${escapeHTML(links.portfolio)}" target="_blank" style="color:#4f46e5; font-weight:600; text-decoration:underline;">Portfolio</a></span>`);
+      if (candLoc) contactItems.push(escapeHTML(candLoc));
+      if (candEmail) contactItems.push(`<a href="mailto:${escapeHTML(candEmail)}" style="color:#000000; text-decoration:none;">${escapeHTML(candEmail)}</a>`);
+      if (candPhone) contactItems.push(escapeHTML(candPhone));
+      if (links.linkedin) {
+        const clean = links.linkedin.replace(/^https?:\/\/(www\.)?/, '');
+        contactItems.push(`<a href="${escapeHTML(links.linkedin)}" target="_blank" style="color:#000000; text-decoration:none; border-bottom:1px dotted #000;">${escapeHTML(clean)}</a>`);
+      }
+      if (links.github) {
+        const clean = links.github.replace(/^https?:\/\/(www\.)?/, '');
+        contactItems.push(`<a href="${escapeHTML(links.github)}" target="_blank" style="color:#000000; text-decoration:none; border-bottom:1px dotted #000;">${escapeHTML(clean)}</a>`);
+      }
+      if (links.portfolio) {
+        const clean = links.portfolio.replace(/^https?:\/\/(www\.)?/, '');
+        contactItems.push(`<a href="${escapeHTML(links.portfolio)}" target="_blank" style="color:#000000; text-decoration:none; border-bottom:1px dotted #000;">${escapeHTML(clean)}</a>`);
+      }
 
       // Skills categories
       const langSkills = Array.isArray(prof.skills_languages) ? prof.skills_languages : [];
@@ -4602,15 +4671,13 @@
       let html = `
         <div class="resume-paper" id="resume-formatted-paper">
           <!-- CANDIDATE HEADER -->
-          <div style="text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 16px; margin-bottom: 18px;">
-            <h1 style="font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 800; color: #0f172a; margin: 0 0 6px; letter-spacing: -0.02em;">
+          <div style="text-align: center; border-bottom: 2px solid #000000; padding-bottom: 12px; margin-bottom: 14px;">
+            <h1 style="font-family: inherit; font-size: 24px; font-weight: 800; color: #000000; margin: 0 0 4px; text-transform: uppercase; letter-spacing: 0.04em;">
               ${escapeHTML(candName)}
             </h1>
-            <div style="font-size: 14.5px; font-weight: 700; color: #4338ca; margin-bottom: 10px;">
-              ${escapeHTML(candHeadline)}
-            </div>
-            <div style="display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: #475569;">
-              ${contactItems.join(' <span style="color:#cbd5e1;">•</span> ')}
+            ${candHeadline ? `<div style="font-size: 13.5px; font-weight: 700; color: #000000; margin-bottom: 6px;">${escapeHTML(candHeadline)}</div>` : ''}
+            <div style="font-size: 12px; color: #000000; line-height: 1.5;">
+              ${contactItems.join(' &nbsp;|&nbsp; ')}
             </div>
           </div>
       `;
@@ -4619,8 +4686,8 @@
       if (candSummary) {
         html += `
           <div class="resume-paper-section">
-            <div class="resume-paper-title">Executive Summary</div>
-            <p style="font-size: 13.5px; line-height: 1.65; color: #334155; margin: 0;">
+            <div class="resume-paper-title">Professional Summary</div>
+            <p style="font-size: 12.5px; line-height: 1.55; color: #000000; margin: 0; text-align: justify;">
               ${escapeHTML(candSummary)}
             </p>
           </div>
@@ -4631,48 +4698,23 @@
       if (langSkills.length || frameSkills.length || cloudSkills.length || toolSkills.length || generalSkills.length) {
         html += `
           <div class="resume-paper-section">
-            <div class="resume-paper-title">Technical Competencies & Skills</div>
-            <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div class="resume-paper-title">Technical Skills</div>
+            <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; line-height: 1.55; color: #000000;">
         `;
         if (langSkills.length) {
-          html += `
-            <div style="font-size: 13px; line-height: 1.5;">
-              <strong style="color: #0f172a;">Languages:</strong>
-              ${langSkills.map(s => `<span class="resume-paper-tag">${escapeHTML(s)}</span>`).join('')}
-            </div>
-          `;
+          html += `<div><strong>Languages:</strong> ${langSkills.map(escapeHTML).join(', ')}</div>`;
         }
         if (frameSkills.length) {
-          html += `
-            <div style="font-size: 13px; line-height: 1.5;">
-              <strong style="color: #0f172a;">Frameworks & Libraries:</strong>
-              ${frameSkills.map(s => `<span class="resume-paper-tag">${escapeHTML(s)}</span>`).join('')}
-            </div>
-          `;
+          html += `<div><strong>Frameworks & Libraries:</strong> ${frameSkills.map(escapeHTML).join(', ')}</div>`;
         }
         if (cloudSkills.length) {
-          html += `
-            <div style="font-size: 13px; line-height: 1.5;">
-              <strong style="color: #0f172a;">Cloud, DevOps & Databases:</strong>
-              ${cloudSkills.map(s => `<span class="resume-paper-tag">${escapeHTML(s)}</span>`).join('')}
-            </div>
-          `;
+          html += `<div><strong>Cloud, DevOps & Databases:</strong> ${cloudSkills.map(escapeHTML).join(', ')}</div>`;
         }
         if (toolSkills.length) {
-          html += `
-            <div style="font-size: 13px; line-height: 1.5;">
-              <strong style="color: #0f172a;">Tools & Platforms:</strong>
-              ${toolSkills.map(s => `<span class="resume-paper-tag">${escapeHTML(s)}</span>`).join('')}
-            </div>
-          `;
+          html += `<div><strong>Tools & Platforms:</strong> ${toolSkills.map(escapeHTML).join(', ')}</div>`;
         }
         if (!langSkills.length && !frameSkills.length && generalSkills.length) {
-          html += `
-            <div style="font-size: 13px; line-height: 1.5;">
-              <strong style="color: #0f172a;">Core Skills:</strong>
-              ${generalSkills.map(s => `<span class="resume-paper-tag">${escapeHTML(s)}</span>`).join('')}
-            </div>
-          `;
+          html += `<div><strong>Skills:</strong> ${generalSkills.map(escapeHTML).join(', ')}</div>`;
         }
         html += `
             </div>
@@ -4685,26 +4727,26 @@
         html += `
           <div class="resume-paper-section">
             <div class="resume-paper-title">Professional Experience</div>
-            <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; flex-direction: column; gap: 12px;">
         `;
         experienceList.forEach(exp => {
           const dates = exp.dates || (exp.start ? `${exp.start} - ${exp.end || 'Present'}` : '');
+          const bullets = exp.bullets || (exp.desc ? exp.desc.split('\n').filter(b => b.trim()) : []);
           html += `
             <div>
-              <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px;">
-                <div style="font-size: 14.5px; font-weight: 800; color: #0f172a;">
-                  ${escapeHTML(exp.title || 'Role')} <span style="font-weight: 600; color: #4338ca;">@ ${escapeHTML(exp.company || 'Company')}</span>
-                </div>
-                <div style="font-size: 12px; font-weight: 700; color: #64748b;">
-                  ${escapeHTML(dates)}${exp.location ? ` • ${escapeHTML(exp.location)}` : ''}
-                </div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px; font-size: 13px;">
+                <div style="font-weight: 800; color: #000000;">${escapeHTML(exp.title || 'Role')}</div>
+                <div style="font-weight: 700; color: #000000; font-size: 12px;">${escapeHTML(dates)}</div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 12.5px; color: #000000; font-style: italic; margin-bottom: 3px;">
+                <span>${escapeHTML(exp.company || 'Company')}</span>
+                ${exp.location ? `<span>${escapeHTML(exp.location)}</span>` : ''}
               </div>
           `;
-          const bullets = exp.bullets || (exp.desc ? exp.desc.split('\n').filter(b => b.trim()) : []);
           if (bullets.length) {
-            html += `<ul style="margin: 6px 0 0 18px; padding: 0; font-size: 13px; color: #334155; line-height: 1.55;">`;
+            html += `<ul style="margin: 3px 0 0 18px; padding: 0; list-style-type: disc; font-size: 12.5px; color: #000000; line-height: 1.5;">`;
             bullets.forEach(b => {
-              html += `<li style="margin-bottom: 4px;">${escapeHTML(b.replace(/^[•\-\*]\s*/, ''))}</li>`;
+              html += `<li style="margin-bottom: 2px;">${escapeHTML(b.replace(/^[•\-\*·]\s*/, ''))}</li>`;
             });
             html += `</ul>`;
           }
@@ -4720,30 +4762,30 @@
       if (projectList.length) {
         html += `
           <div class="resume-paper-section">
-            <div class="resume-paper-title">Technical Projects</div>
-            <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="resume-paper-title">Projects</div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
         `;
         projectList.forEach(proj => {
           const projName = proj.title || proj.name || 'Project';
           const projStack = Array.isArray(proj.tags) ? proj.tags.join(', ') : (proj.stack || '');
+          const bullets = proj.bullets || (proj.desc ? proj.desc.split('\n').filter(b => b.trim()) : []);
           html += `
             <div>
-              <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px;">
-                <div style="font-size: 14px; font-weight: 800; color: #0f172a;">
-                  ${escapeHTML(projName)}
-                  ${projStack ? `<span style="font-size: 12px; font-weight: 600; color: #64748b; margin-left: 8px;">[${escapeHTML(projStack)}]</span>` : ''}
+              <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; font-size: 13px;">
+                <div>
+                  <strong style="color: #000000;">${escapeHTML(projName)}</strong>
+                  ${projStack ? `<span style="font-size: 12px; font-style: italic; color: #000000; margin-left: 6px;">| ${escapeHTML(projStack)}</span>` : ''}
                 </div>
-                <div style="display: flex; gap: 10px; font-size: 12px;">
-                  ${(proj.demo || proj.liveLink) ? `<a href="${escapeHTML(proj.demo || proj.liveLink)}" target="_blank" style="color: #4f46e5; font-weight: 700; text-decoration: underline;">Live Demo ↗</a>` : ''}
-                  ${(proj.github || proj.githubLink) ? `<a href="${escapeHTML(proj.github || proj.githubLink)}" target="_blank" style="color: #4f46e5; font-weight: 700; text-decoration: underline;">Code ↗</a>` : ''}
+                <div style="display: flex; gap: 8px; font-size: 11.5px;">
+                  ${(proj.demo || proj.liveLink) ? `<a href="${escapeHTML(proj.demo || proj.liveLink)}" target="_blank" style="color: #000000; text-decoration: none; border-bottom: 1px dotted #000;">[Demo]</a>` : ''}
+                  ${(proj.github || proj.githubLink) ? `<a href="${escapeHTML(proj.github || proj.githubLink)}" target="_blank" style="color: #000000; text-decoration: none; border-bottom: 1px dotted #000;">[Code]</a>` : ''}
                 </div>
               </div>
           `;
-          const bullets = proj.bullets || (proj.desc ? proj.desc.split('\n').filter(b => b.trim()) : []);
           if (bullets.length) {
-            html += `<ul style="margin: 6px 0 0 18px; padding: 0; font-size: 13px; color: #334155; line-height: 1.55;">`;
+            html += `<ul style="margin: 3px 0 0 18px; padding: 0; list-style-type: disc; font-size: 12.5px; color: #000000; line-height: 1.5;">`;
             bullets.forEach(b => {
-              html += `<li style="margin-bottom: 4px;">${escapeHTML(b.replace(/^[•\-\*]\s*/, ''))}</li>`;
+              html += `<li style="margin-bottom: 2px;">${escapeHTML(b.replace(/^[•\-\*·]\s*/, ''))}</li>`;
             });
             html += `</ul>`;
           }
@@ -4760,19 +4802,19 @@
         html += `
           <div class="resume-paper-section">
             <div class="resume-paper-title">Education</div>
-            <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 8px;">
         `;
         educationList.forEach(ed => {
           html += `
-            <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px;">
-              <div>
-                <div style="font-size: 14px; font-weight: 800; color: #0f172a;">${escapeHTML(ed.degree || 'Degree')}</div>
-                <div style="font-size: 13px; color: #475569;">${escapeHTML(ed.school || 'University')}${ed.grade ? ` • <span style="font-weight: 700; color: #15803d;">Grade: ${escapeHTML(ed.grade)}</span>` : ''}</div>
-                ${ed.coursework ? `<div style="font-size: 12px; color: #64748b; margin-top: 3px;"><strong>Coursework:</strong> ${escapeHTML(ed.coursework)}</div>` : ''}
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; font-size: 13px;">
+                <div style="font-weight: 800; color: #000000;">${escapeHTML(ed.degree || 'Degree')}</div>
+                <div style="font-weight: 700; color: #000000; font-size: 12px;">${escapeHTML(ed.year || ed.dates || '')}</div>
               </div>
-              <div style="font-size: 12px; font-weight: 700; color: #64748b;">
-                ${escapeHTML(ed.year || ed.dates || '')}
+              <div style="font-size: 12.5px; color: #000000; font-style: italic;">
+                ${escapeHTML(ed.school || 'University')}${ed.grade ? ` — Grade: ${escapeHTML(ed.grade)}` : ''}
               </div>
+              ${ed.coursework ? `<div style="font-size: 12px; color: #000000; margin-top: 2px;"><strong>Relevant Coursework:</strong> ${escapeHTML(ed.coursework)}</div>` : ''}
             </div>
           `;
         });
@@ -4787,16 +4829,13 @@
         html += `
           <div class="resume-paper-section">
             <div class="resume-paper-title">Certifications</div>
-            <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div style="display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: #000000;">
         `;
         certList.forEach(c => {
           html += `
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
-              <div>
-                <strong style="color: #0f172a;">${escapeHTML(c.name || 'Certification')}</strong>
-                ${c.issuer ? `<span style="color: #64748b;"> — ${escapeHTML(c.issuer)}</span>` : ''}
-              </div>
-              <div style="font-size: 12px; font-weight: 700; color: #64748b;">${escapeHTML(c.year || '')}</div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div><strong>${escapeHTML(c.name || 'Certification')}</strong>${c.issuer ? ` — <em>${escapeHTML(c.issuer)}</em>` : ''}</div>
+              <div style="font-size: 12px; font-weight: 700;">${escapeHTML(c.year || '')}</div>
             </div>
           `;
         });
@@ -4832,13 +4871,12 @@
         return;
       }
       printWin.document.write(`<!DOCTYPE html><html><head><title>Resume Preview</title>
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
         <style>
-          body { font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; margin: 20mm; padding: 0; }
-          h1, h2, h3 { font-family: 'Outfit', sans-serif; }
-          .resume-paper { max-width: 100%; border: none; box-shadow: none; padding: 0; }
-          .resume-paper-tag { display: inline-block; background: #f1f5f9; color: #334155; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 4px; border: 1px solid #e2e8f0; margin: 2px 4px 2px 0; }
-          @page { margin: 15mm; size: auto; }
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #000000; margin: 15mm; padding: 0; line-height: 1.45; }
+          .resume-paper { max-width: 100%; border: none; box-shadow: none; padding: 0; color: #000000; }
+          .resume-paper-title { font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: #000000; border-bottom: 1.5px solid #000000; padding-bottom: 2px; margin-bottom: 8px; display: block; }
+          a { color: #000000; text-decoration: none; }
+          @page { margin: 12mm; size: auto; }
         </style>
       </head><body>${el.outerHTML}</body></html>`);
       printWin.document.close();

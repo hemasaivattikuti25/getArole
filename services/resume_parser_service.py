@@ -111,6 +111,82 @@ class ResumeParserService:
                     links["portfolio"] = full_url
         return links
 
+    def categorize_skills(self, text: str, extracted_skills: List[str]) -> Tuple[List[str], List[str], List[str], List[str]]:
+        """Categorize skills into languages, frameworks, cloud/databases, and tools."""
+        lang_set = {
+            "python", "javascript", "typescript", "java", "c++", "c#", "c", "golang", "go",
+            "rust", "ruby", "php", "swift", "kotlin", "scala", "dart", "sql", "html", "html5",
+            "css", "css3", "r", "shell", "bash", "perl"
+        }
+        framework_set = {
+            "react", "next.js", "nextjs", "vue", "angular", "svelte", "node.js", "nodejs", "express", "fastapi",
+            "django", "flask", "spring", "spring boot", "rails", "asp.net", "tailwind",
+            "tailwindcss", "bootstrap", "redux", "graphql", "rest api", "grpc", "pytorch",
+            "tensorflow", "scikit-learn", "jquery"
+        }
+        cloud_set = {
+            "aws", "azure", "gcp", "docker", "kubernetes", "k8s", "terraform", "ci/cd",
+            "postgresql", "mysql", "mongodb", "redis", "sqlite", "cassandra", "elasticsearch",
+            "dynamodb", "firebase", "supabase", "ansible", "kafka", "spark", "hadoop"
+        }
+        tool_set = {
+            "git", "github", "gitlab", "bitbucket", "postman", "linux", "unix", "vite",
+            "webpack", "jira", "figma", "vscode", "agile", "scrum"
+        }
+
+        cat_langs: List[str] = []
+        cat_frameworks: List[str] = []
+        cat_cloud: List[str] = []
+        cat_tools: List[str] = []
+
+        # Check for explicit labeled sections in the text
+        for line in text.splitlines():
+            l_strip = line.strip()
+            if not l_strip or ":" not in l_strip:
+                continue
+            parts = l_strip.split(":", 1)
+            prefix = parts[0].strip().lower()
+            vals = [v.strip() for v in re.split(r'[,|•·]', parts[1]) if v.strip()]
+            if any(k in prefix for k in ["programming language", "languages", "coding language"]):
+                cat_langs.extend(vals)
+            elif any(k in prefix for k in ["framework", "libraries", "web technologies"]):
+                cat_frameworks.extend(vals)
+            elif any(k in prefix for k in ["cloud", "database", "devops", "storage"]):
+                cat_cloud.extend(vals)
+            elif any(k in prefix for k in ["tool", "developer tool", "platform", "environments"]):
+                cat_tools.extend(vals)
+
+        # Map any skills from extracted_skills that were not covered
+        for s in extracted_skills:
+            s_lower = s.lower()
+            display_name = s.title()
+            if s_lower in ["sql", "html", "css", "c++", "c#", "aws", "gcp", "k8s", "ci/cd"]:
+                display_name = s.upper()
+            elif s_lower in ["fastapi", "next.js", "node.js", "vue.js", "tailwindcss"]:
+                display_name = s
+
+            if s_lower in lang_set and not any(s_lower == x.lower() for x in cat_langs):
+                cat_langs.append(display_name)
+            elif s_lower in framework_set and not any(s_lower == x.lower() for x in cat_frameworks):
+                cat_frameworks.append(display_name)
+            elif s_lower in cloud_set and not any(s_lower == x.lower() for x in cat_cloud):
+                cat_cloud.append(display_name)
+            elif s_lower in tool_set and not any(s_lower == x.lower() for x in cat_tools):
+                cat_tools.append(display_name)
+            elif not any(s_lower == x.lower() for x in (cat_langs + cat_frameworks + cat_cloud + cat_tools)):
+                cat_tools.append(display_name)
+
+        def dedup(lst: List[str]) -> List[str]:
+            seen = set()
+            out = []
+            for item in lst:
+                if item.lower() not in seen:
+                    seen.add(item.lower())
+                    out.append(item)
+            return out
+
+        return dedup(cat_langs), dedup(cat_frameworks), dedup(cat_cloud), dedup(cat_tools)
+
     def _parse_experience_lines(self, lines: List[str]) -> List[Dict[str, Any]]:
         """Helper to parse experience section lines into structured objects."""
         fb_exp = []
@@ -126,23 +202,95 @@ class ResumeParserService:
             lower_l = l.lower()
             is_company = any(ci in lower_l for ci in company_indicators) and len(l) < 120
             is_role = any(ri in lower_l for ri in role_indicators) and len(l) < 120
-            
+
             if is_bullet:
                 bullet = l.lstrip("•-·* ").strip()
                 if curr_exp and bullet:
                     curr_exp["bullets"].append(bullet)
-            elif is_company and not is_bullet:
-                curr_exp = {"company": l, "title": "", "dates": "", "bullets": []}
-                fb_exp.append(curr_exp)
-            elif not curr_exp and not is_bullet and len(l) < 120:
-                curr_exp = {"company": l, "title": "", "dates": "", "bullets": []}
-                fb_exp.append(curr_exp)
+                    curr_exp["desc"] = "\n".join(curr_exp["bullets"])
             elif has_date and curr_exp and not curr_exp.get("dates"):
-                curr_exp["dates"] = l
-            elif is_role and curr_exp and not curr_exp.get("title"):
-                curr_exp["title"] = l
+                date_part = l
+                loc_part = ""
+                if "|" in l:
+                    parts = [p.strip() for p in l.split("|") if p.strip()]
+                    date_part = next((p for p in parts if month_pattern.search(p) or date_pattern.search(p)), parts[0])
+                    loc_part = next((p for p in parts if p != date_part), "")
+                curr_exp["dates"] = date_part
+                if loc_part and not curr_exp.get("location"):
+                    curr_exp["location"] = loc_part
+                d_parts = re.split(r'[-–—]', date_part, 1)
+                curr_exp["start"] = d_parts[0].strip() if len(d_parts) > 0 else ""
+                curr_exp["end"] = d_parts[1].strip() if len(d_parts) > 1 else "Present"
+            elif (is_company or is_role) and not is_bullet:
+                title = ""
+                company = ""
+                location = ""
+                if "|" in l:
+                    parts = [p.strip() for p in l.split("|") if p.strip()]
+                    for p in parts:
+                        p_low = p.lower()
+                        if any(ri in p_low for ri in role_indicators) and not title:
+                            title = p
+                        elif any(ci in p_low for ci in company_indicators) and not company:
+                            company = p
+                        elif month_pattern.search(p) or date_pattern.search(p):
+                            pass
+                        elif not company:
+                            company = p
+                        elif not location:
+                            location = p
+                elif " at " in l:
+                    parts = l.split(" at ", 1)
+                    title = parts[0].strip()
+                    company = parts[1].strip()
+                else:
+                    if is_role and not is_company:
+                        title = l
+                    else:
+                        company = l
+
+                if curr_exp and len(curr_exp.get("bullets", [])) == 0 and not curr_exp.get("dates"):
+                    if title and not curr_exp.get("title"): curr_exp["title"] = title
+                    if company and not curr_exp.get("company"): curr_exp["company"] = company
+                    if location and not curr_exp.get("location"): curr_exp["location"] = location
+                else:
+                    curr_exp = {
+                        "company": company or (l if not title else "Company"),
+                        "title": title or ("Engineer" if is_role else ""),
+                        "location": location,
+                        "type": "Full-time",
+                        "dates": "",
+                        "start": "",
+                        "end": "Present",
+                        "bullets": [],
+                        "desc": ""
+                    }
+                    fb_exp.append(curr_exp)
+            elif not curr_exp and not is_bullet and len(l) < 120:
+                curr_exp = {
+                    "company": l,
+                    "title": "",
+                    "location": "",
+                    "type": "Full-time",
+                    "dates": "",
+                    "start": "",
+                    "end": "Present",
+                    "bullets": [],
+                    "desc": ""
+                }
+                fb_exp.append(curr_exp)
             elif curr_exp and not curr_exp.get("title") and not is_bullet and len(l) < 100:
                 curr_exp["title"] = l
+
+        for e in fb_exp:
+            if not e.get("desc") and e.get("bullets"):
+                e["desc"] = "\n".join(e["bullets"])
+            if not e.get("start") and e.get("dates"):
+                d_parts = re.split(r'[-–—]', e["dates"], 1)
+                e["start"] = d_parts[0].strip() if len(d_parts) > 0 else ""
+                e["end"] = d_parts[1].strip() if len(d_parts) > 1 else "Present"
+            if not e.get("title"):
+                e["title"] = "Software Engineer"
         return fb_exp
 
     def _parse_projects_lines(self, lines: List[str]) -> List[Dict[str, Any]]:
@@ -164,12 +312,15 @@ class ResumeParserService:
                     curr_proj["bullets"].append(bullet)
                     if not curr_proj["description"]:
                         curr_proj["description"] = bullet
+                    curr_proj["desc"] = "\n".join(curr_proj["bullets"])
             elif is_noise or is_year_only or is_url:
                 if is_url and curr_proj and not curr_proj.get("link"):
                     curr_proj["link"] = l
+                    curr_proj["demo"] = l
                 continue
             elif is_tech_stack and curr_proj:
                 curr_proj["tech"] = l
+                curr_proj["stack"] = l
                 continue
             elif not is_bullet and not is_noise and not is_year_only and not is_tech_stack:
                 l_stripped = l.strip()
@@ -177,16 +328,18 @@ class ResumeParserService:
                 starts_upper = l_stripped[0].isupper() if l_stripped else False
                 if word_count <= 6 and starts_upper and not l_stripped.endswith(".") and not l_stripped.startswith("for ") and not l_stripped.startswith("and "):
                     if curr_proj and len(curr_proj["bullets"]) > 0:
-                        curr_proj = {"name": l_stripped, "description": "", "link": "", "bullets": []}
+                        curr_proj = {"name": l_stripped, "title": l_stripped, "description": "", "desc": "", "link": "", "demo": "", "bullets": []}
                         fb_proj.append(curr_proj)
                     elif not curr_proj:
-                        curr_proj = {"name": l_stripped, "description": "", "link": "", "bullets": []}
+                        curr_proj = {"name": l_stripped, "title": l_stripped, "description": "", "desc": "", "link": "", "demo": "", "bullets": []}
                         fb_proj.append(curr_proj)
                     else:
                         curr_proj["description"] = (curr_proj["description"] + " " + l_stripped).strip()
+                        curr_proj["desc"] = curr_proj["description"]
                 else:
                     if curr_proj:
                         curr_proj["description"] = (curr_proj["description"] + " " + l_stripped).strip()
+                        curr_proj["desc"] = curr_proj["description"]
         return fb_proj
 
     def _parse_education_lines(self, lines: List[str]) -> List[Dict[str, Any]]:
@@ -194,7 +347,7 @@ class ResumeParserService:
         fb_edu = []
         curr_edu = None
         school_keywords = ["university", "institute", "institution", "college", "school", "academy", "polytechnic", "conservatory", "faculty"]
-        degree_keywords = ["b.tech", "b.e", "b.s", "b.a", "m.tech", "m.s", "m.a", "ph.d", "phd", "bachelor", "master", "doctorate", "diploma", "degree", "major"]
+        degree_keywords = ["b.tech", "b.e", "b.s", "b.a", "m.tech", "m.s", "m.a", "ph.d", "phd", "bachelor", "master", "doctorate", "diploma", "degree", "major", "engineering"]
         
         for l in lines:
             if l.startswith("http") or l.startswith("mailto:") or "://" in l or l.startswith("==="):
@@ -204,20 +357,64 @@ class ResumeParserService:
             is_school = any(k in lower_l for k in school_keywords)
             is_degree = any(k in lower_l for k in degree_keywords)
             has_year = bool(re.search(r'20\d{2}', l))
-            
-            if is_school:
-                curr_edu = {"school": l, "degree": "", "year": ""}
-                fb_edu.append(curr_edu)
-            elif not curr_edu and (is_degree or has_year) and len(l) < 120:
-                curr_edu = {"school": l, "degree": "", "year": ""}
-                fb_edu.append(curr_edu)
-            elif curr_edu:
-                if has_year and not curr_edu["year"]:
-                    curr_edu["year"] = l
-                elif not curr_edu["degree"]:
+
+            line_school = ""
+            line_degree = ""
+            line_year = ""
+
+            if "|" in l:
+                parts = [p.strip() for p in l.split("|") if p.strip()]
+                for p in parts:
+                    p_low = p.lower()
+                    if any(k in p_low for k in school_keywords) and not line_school:
+                        line_school = p
+                    elif any(k in p_low for k in degree_keywords) and not line_degree:
+                        line_degree = p
+                    elif re.search(r'20\d{2}', p) and not line_year:
+                        line_year = p
+            else:
+                if is_school:
+                    line_school = l
+                elif is_degree:
+                    line_degree = l
+                if has_year:
+                    year_match = re.search(r'(?:20\d{2}\s*[-–—]\s*(?:20\d{2}|Present)|\b20\d{2}\b)', l)
+                    if year_match:
+                        line_year = year_match.group(0)
+
+            if is_school or is_degree or has_year:
+                can_merge = curr_edu and (
+                    (line_school and (not curr_edu.get("school") or curr_edu.get("school") == "University")) or
+                    (line_degree and (not curr_edu.get("degree") or curr_edu.get("degree") == "Degree")) or
+                    (line_year and not curr_edu.get("year"))
+                )
+                if can_merge:
+                    if line_school:
+                        curr_edu["school"] = line_school
+                    if line_degree:
+                        curr_edu["degree"] = line_degree
+                    if line_year:
+                        curr_edu["year"] = line_year
+                else:
+                    curr_edu = {
+                        "school": line_school or (l if is_school else "University"),
+                        "degree": line_degree or (l if is_degree else "Degree"),
+                        "year": line_year
+                    }
+                    fb_edu.append(curr_edu)
+            elif curr_edu and len(l) < 120:
+                if not curr_edu.get("degree") or curr_edu.get("degree") == "Degree":
                     curr_edu["degree"] = l
-                elif len(l) > 5 and not l.startswith("http"):
-                    curr_edu["degree"] += " · " + l
+                elif not curr_edu.get("school") or curr_edu.get("school") == "University":
+                    curr_edu["school"] = l
+
+        for ed in fb_edu:
+            if (not ed.get("school") or ed.get("school") == "University") and ed.get("degree"):
+                if any(k in ed["degree"].lower() for k in school_keywords):
+                    ed["school"], ed["degree"] = ed["degree"], "Degree"
+            if not ed.get("year"):
+                ed["year"] = ""
+
         return fb_edu
 
     def parse_sections_fallback(self, text: str) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], List[Dict[str, Any]]]:
@@ -359,6 +556,9 @@ Return valid JSON with exact structure:
         candidate_name = "Candidate"
         for l in lines[:5]:
             l_clean = l.strip()
+            # If line has pipe (e.g. "Jane Doe | Software Engineer"), take first part
+            if "|" in l_clean:
+                l_clean = l_clean.split("|")[0].strip()
             if l_clean.lower() not in ignore_names and len(l_clean.split()) <= 4 and re.match(r'^[A-Za-z\s.\'-]+$', l_clean) and len(l_clean) >= 3:
                 candidate_name = l_clean
                 break
@@ -366,8 +566,38 @@ Return valid JSON with exact structure:
         email = email_match.group(0) if email_match else ""
         raw_phone = phone_match.group(0).strip() if phone_match else ""
         phone = raw_phone if sum(c.isdigit() for c in raw_phone) >= 10 else ""
+        
+        # Heuristic candidate headline / title
         headline = "Software Engineer"
-        summary = " ".join(lines[1:4]) if len(lines) > 1 else ""
+        for l in lines[1:5]:
+            l_clean = l.strip()
+            if len(l_clean) < 60 and "@" not in l_clean and not re.search(r'\d{5}', l_clean) and not l_clean.startswith("http") and "|" not in l_clean:
+                if any(ri in l_clean.lower() for ri in ["engineer", "developer", "architect", "lead", "manager", "specialist", "scientist", "analyst", "designer", "consultant"]):
+                    headline = l_clean
+                    break
+
+        # Extract real summary from explicit section if present
+        summary = ""
+        in_summary = False
+        summary_lines = []
+        for l in lines:
+            u = l.upper().strip(":")
+            if u in ["SUMMARY", "PROFESSIONAL SUMMARY", "EXECUTIVE SUMMARY", "ABOUT ME", "PROFILE SUMMARY", "CAREER SUMMARY"]:
+                in_summary = True
+                continue
+            elif in_summary:
+                if u in ["EXPERIENCE", "WORK EXPERIENCE", "EMPLOYMENT", "SKILLS", "TECHNICAL SKILLS", "EDUCATION", "PROJECTS", "CERTIFICATIONS", "LANGUAGES", "ACHIEVEMENTS"]:
+                    break
+                if not any(k in l.lower() for k in ["@", "linkedin.com", "github.com", "tel:"]):
+                    summary_lines.append(l)
+        if summary_lines:
+            summary = " ".join(summary_lines).strip()
+        if not summary:
+            # Fallback if no explicit section
+            for l in lines[1:6]:
+                if len(l) > 35 and "@" not in l and "|" not in l and not re.search(r'\d{7}', l) and not l.startswith("http"):
+                    summary = l
+                    break
 
         llm_parsed = await self._call_llm_parser(text) if use_llm else {}
 
@@ -391,6 +621,9 @@ Return valid JSON with exact structure:
         if llm_parsed.get("skills"):
             extracted_skills = sorted(list(set(extracted_skills + [s for s in llm_parsed["skills"] if isinstance(s, str)])))
 
+        # Categorize skills into 4 core buckets
+        cat_langs, cat_frameworks, cat_cloud, cat_tools = self.categorize_skills(text, extracted_skills)
+
         links = self.extract_links(text, pdf_links, llm_parsed)
         experience_list = llm_parsed.get("experience") or []
         education_list = llm_parsed.get("education") or []
@@ -401,6 +634,21 @@ Return valid JSON with exact structure:
         if not education_list and fb_edu: education_list = fb_edu
         if not projects_list and fb_proj: projects_list = fb_proj
 
+        location = llm_parsed.get("location", "India")
+        # Check text for location hint if fallback
+        if location == "India":
+            for l in lines[:6]:
+                if any(ci in l.lower() for ci in ["bangalore", "bengaluru", "hyderabad", "mumbai", "pune", "delhi", "chennai", "noida", "gurgaon", "san francisco", "new york", "london", "singapore", "remote"]):
+                    if "|" in l:
+                        parts = [p.strip() for p in l.split("|")]
+                        for p in parts:
+                            if any(ci in p.lower() for ci in ["bangalore", "bengaluru", "hyderabad", "mumbai", "pune", "delhi", "chennai", "noida", "gurgaon", "san francisco", "new york", "london", "singapore", "remote"]):
+                                location = p
+                                break
+                    else:
+                        location = l
+                    break
+
         candidate_profile = {
             "first_name": first_name,
             "last_name": last_name,
@@ -410,8 +658,12 @@ Return valid JSON with exact structure:
             "email": email,
             "phone": phone,
             "headline": headline,
-            "location": llm_parsed.get("location", "India"),
+            "location": location,
             "skills": extracted_skills,
+            "skills_languages": cat_langs,
+            "skills_frameworks": cat_frameworks,
+            "skills_cloud": cat_cloud,
+            "skills_tools": cat_tools,
             "summary": summary,
             "experience": experience_list,
             "education": education_list,
@@ -426,12 +678,15 @@ Return valid JSON with exact structure:
                 "last_name": last_name,
                 "email": email,
                 "phone": phone,
-                "location": llm_parsed.get("location", "India"),
+                "location": location,
                 "title": headline
             },
             "summary": {"text": summary},
             "skills": {
-                "languages": ", ".join(extracted_skills[:10]),
+                "languages": ", ".join(cat_langs),
+                "frameworks": ", ".join(cat_frameworks),
+                "cloud": ", ".join(cat_cloud),
+                "tools": ", ".join(cat_tools),
                 "all": ", ".join(extracted_skills)
             },
             "experience": experience_list,
@@ -445,13 +700,22 @@ Return valid JSON with exact structure:
             "success": True,
             "filename": filename,
             "resume_text": text,
+            "raw_text": text,
             "candidate_profile": candidate_profile,
             "resume_data": resume_data,
             "skills": extracted_skills,
+            "skills_languages": cat_langs,
+            "skills_frameworks": cat_frameworks,
+            "skills_cloud": cat_cloud,
+            "skills_tools": cat_tools,
             "email": email,
             "phone": phone,
             "headline": headline,
             "name": candidate_name,
+            "first_name": first_name,
+            "last_name": last_name,
+            "location": location,
+            "summary": summary,
             "experience": experience_list,
             "education": education_list,
             "projects": projects_list,
