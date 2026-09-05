@@ -1939,12 +1939,16 @@
               <input type="text" id="pref-target-title" placeholder="e.g. Software Engineer" style="width:100%; padding:8px 12px; border-radius:8px; border:1px solid var(--border); font-size:13.5px; outline:none;">
             </div>
           </div>
-          <div style="display:flex; align-items:center; justify-content:space-between; background:#ffffff; border:1px dashed var(--border-strong); border-radius:8px; padding:10px 14px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; background:#ffffff; border:1px dashed var(--border-strong); border-radius:8px; padding:10px 14px; flex-wrap:wrap; gap:8px;">
             <div style="font-size:13px; font-weight:600; color:var(--text-main);" id="pref-resume-status">📄 Resume Uploaded & Active</div>
-            <label style="font-size:12px; font-weight:700; color:var(--primary); cursor:pointer; text-decoration:underline;">
-              Update PDF
-              <input type="file" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleModalResumeUpload(event)">
-            </label>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <a href="/profile/#modal-resume-preview" onclick="localStorage.setItem('open_resume_preview_modal', '1')" style="font-size:12px; font-weight:700; color:#4f46e5; text-decoration:none; display:flex; align-items:center; gap:4px; padding:3px 8px; border-radius:6px; background:#eef2ff;"><span>👁️</span> Preview</a>
+              <span style="color:#cbd5e1;">|</span>
+              <label style="font-size:12px; font-weight:700; color:var(--primary); cursor:pointer; text-decoration:underline;">
+                Update PDF
+                <input type="file" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleModalResumeUpload(event)">
+              </label>
+            </div>
           </div>
         </div>
 

@@ -1428,6 +1428,91 @@
       .form-row { grid-template-columns: 1fr; }
     }
 
+    /* ── RESUME PREVIEW MODAL STYLES ── */
+    .resume-prev-tab-btn {
+      padding: 7px 15px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .resume-prev-tab-btn:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+    .resume-prev-tab-btn.active {
+      background: #eef2ff;
+      border-color: #c7d2fe;
+      color: #4338ca;
+    }
+    .resume-paper {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 36px 40px;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+      max-width: 780px;
+      margin: 0 auto;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    @media (max-width: 640px) {
+      .resume-paper { padding: 20px 16px; }
+    }
+    .resume-paper-section {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1.5px solid #f1f5f9;
+    }
+    .resume-paper-section:first-of-type {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+    .resume-paper-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #4338ca;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .resume-paper-tag {
+      display: inline-block;
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      margin: 2px 4px 2px 0;
+    }
+    .resume-raw-pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 520px;
+      overflow-y: auto;
+      border: 1px solid #1e293b;
+    }
+
     /* Toast Notification */
     #toast-notification {
       position: fixed;
@@ -1759,9 +1844,14 @@
               <div id="sidebar-resume-file-label" style="font-size: 11.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">No file uploaded</div>
             </div>
           </div>
-          <button type="button" onclick="triggerResumeUpload()" class="btn-sweep" style="width: 100%; padding: 10px 14px; border-radius: 10px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: #ffffff; font-size: 13px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 8px rgba(79,70,229,0.25);">
-            <span>📤</span> Upload Resume
-          </button>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" onclick="triggerResumeUpload()" class="btn-sweep" style="flex: 1; padding: 10px 10px; border-radius: 10px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: #ffffff; font-size: 12.5px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(79,70,229,0.25);">
+              <span>📤</span> Upload
+            </button>
+            <button type="button" id="btn-sidebar-preview-resume" onclick="openResumePreviewModal()" class="btn-sweep" style="flex: 1; padding: 10px 10px; border-radius: 10px; background: #ffffff; color: #4338ca; border: 1.5px solid #c7d2fe; font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s;">
+              <span>👁️</span> Preview
+            </button>
+          </div>
         </div>
 
       </aside>
@@ -1785,7 +1875,7 @@
                   Upload your resume in PDF or Word format to automatically populate your profile details, skills, and matched opportunities.
                 </p>
                 <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                  <div id="resume-status-badge" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: #15803d; background: #dcfce7; padding: 4px 12px; border-radius: 8px; border: 1px solid #bbf7d0;">
+                  <div id="resume-status-badge" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: #15803d; background: #dcfce7; padding: 4px 12px; border-radius: 8px; border: 1px solid #bbf7d0; cursor: pointer;" onclick="openResumePreviewModal()" title="Click to preview resume">
                     <span id="resume-status-icon">✓</span> <span id="resume-status-text">Ready to upload</span>
                   </div>
                   <span style="font-size: 12px; color: #64748b;">Supports PDF, DOCX, DOC up to 10MB</span>
@@ -1794,9 +1884,14 @@
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
-              <button type="button" onclick="triggerResumeUpload()" class="btn-sweep" style="padding: 14px 26px; border-radius: 12px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: #ffffff; font-size: 14.5px; font-weight: 800; border: none; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 16px rgba(79,70,229,0.35); transition: all 0.2s;">
-                <span style="font-size: 18px;">📤</span> Upload Resume
-              </button>
+              <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: flex-end;">
+                <button type="button" id="btn-hero-preview-resume" onclick="openResumePreviewModal()" class="btn-sweep" style="padding: 14px 22px; border-radius: 12px; background: #ffffff; color: #4338ca; border: 1.5px solid #c7d2fe; font-size: 14.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(79,70,229,0.08); transition: all 0.2s;">
+                  <span style="font-size: 17px;">👁️</span> Preview Resume
+                </button>
+                <button type="button" onclick="triggerResumeUpload()" class="btn-sweep" style="padding: 14px 26px; border-radius: 12px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: #ffffff; font-size: 14.5px; font-weight: 800; border: none; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 16px rgba(79,70,229,0.35); transition: all 0.2s;">
+                  <span style="font-size: 18px;">📤</span> Upload Resume
+                </button>
+              </div>
               <div style="font-size: 11.5px; color: #64748b; font-weight: 500;">or drag and drop your file here</div>
             </div>
           </div>
@@ -2562,6 +2657,65 @@
     </div>
   </div>
 
+  <!-- ════════════════════ RESUME PREVIEW MODAL ════════════════════ -->
+  <div class="modal-overlay" id="modal-resume-preview">
+    <div class="modal-dialog" style="max-width: 880px; width: 96%; height: 90vh; max-height: 90vh;">
+      <div class="modal-header" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); padding: 18px 24px; border-bottom: 1px solid #e2e8f0;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #4f46e5, #0ea5e9); color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; box-shadow: 0 4px 12px rgba(79,70,229,0.25); flex-shrink: 0;">📄</div>
+          <div>
+            <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #0f172a; font-family: 'Outfit', sans-serif;">Resume Preview</h3>
+            <div id="resume-preview-filename" style="font-size: 12px; color: #64748b; margin-top: 2px;">Active resume document</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button type="button" class="btn-action-secondary" onclick="triggerResumeUpload()" style="padding: 7px 12px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; border-radius: 8px;">
+            <span>📤</span> Replace File
+          </button>
+          <button class="modal-close-btn" onclick="closeModal('modal-resume-preview')">×</button>
+        </div>
+      </div>
+
+      <!-- Preview Navigation Tabs -->
+      <div style="padding: 10px 24px; background: #ffffff; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+        <div style="display: flex; gap: 6px;" id="resume-preview-tabs">
+          <button type="button" id="tab-btn-resume-extracted" class="resume-prev-tab-btn active" onclick="switchResumePreviewTab('extracted')">
+            <span>📄</span> ATS Resume
+          </button>
+          <button type="button" id="tab-btn-resume-document" class="resume-prev-tab-btn" onclick="switchResumePreviewTab('document')">
+            <span>📑</span> Document Viewer
+          </button>
+          <button type="button" id="tab-btn-resume-raw" class="resume-prev-tab-btn" onclick="switchResumePreviewTab('raw')">
+            <span>🔤</span> Raw Extracted Text
+          </button>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <a href="/resume-builder/" target="_blank" style="text-decoration: none; font-size: 12px; font-weight: 700; color: #4f46e5; display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 6px; background: #eef2ff;">
+            <span>🛠️</span> Open in LaTeX Builder ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- Dynamic Preview Body -->
+      <div class="modal-body" id="resume-preview-content" style="padding: 24px; background: #f8fafc; overflow-y: auto; flex: 1;">
+        <!-- Injected via JavaScript renderResumePreviewBody() -->
+      </div>
+
+      <!-- Footer Actions -->
+      <div class="modal-footer" style="padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; background: #ffffff; border-top: 1px solid #e2e8f0;">
+        <div style="font-size: 12px; color: #64748b;" id="resume-preview-footer-status">
+          ✓ Real-time ATS Profile Synchronization
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button type="button" class="btn-action-secondary" onclick="closeModal('modal-resume-preview')">Close</button>
+          <button type="button" class="btn-sweep" onclick="printResumePreview()" style="padding: 9px 18px; border-radius: 8px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: white; font-size: 13px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+            <span>🖨️</span> Print / Save PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Element -->
   <div id="toast-notification">
     <span id="toast-icon">✓</span>
@@ -2882,18 +3036,22 @@
       const heroResumeBadge = document.getElementById('resume-status-badge');
       const heroResumeText = document.getElementById('resume-status-text');
       const sidebarResumeLabel = document.getElementById('sidebar-resume-file-label');
-      const savedPdf = localStorage.getItem('getarole_resume_pdf');
+      const savedPdf = localStorage.getItem('getarole_resume_pdf') || sessionStorage.getItem('getarole_resume_pdf_name');
       if (heroResumeBadge && heroResumeText) {
         if (savedPdf) {
           heroResumeBadge.style.background = '#dcfce7';
           heroResumeBadge.style.color = '#15803d';
           heroResumeBadge.style.borderColor = '#bbf7d0';
-          heroResumeText.textContent = `✓ Active Resume: ${savedPdf}`;
+          heroResumeBadge.style.cursor = 'pointer';
+          heroResumeBadge.onclick = () => openResumePreviewModal();
+          heroResumeText.innerHTML = `✓ Active Resume: <strong>${escapeHTML(savedPdf)}</strong> <span style="text-decoration:underline; margin-left:6px; font-size:11.5px; color:#166534; font-weight:700;">(Preview)</span>`;
         } else {
           heroResumeBadge.style.background = '#fef3c7';
           heroResumeBadge.style.color = '#b45309';
           heroResumeBadge.style.borderColor = '#fde68a';
-          heroResumeText.textContent = '○ No resume uploaded yet';
+          heroResumeBadge.style.cursor = 'pointer';
+          heroResumeBadge.onclick = () => openResumePreviewModal();
+          heroResumeText.textContent = '○ No resume uploaded yet (Click to preview/upload)';
         }
       }
       if (sidebarResumeLabel) {
@@ -4150,13 +4308,30 @@
 
     // ── RESUME FILE PARSER / UPLOAD ──
     window.triggerResumeUpload = function() {
-      const inp = document.getElementById('resume-file-input');
+      const inp = document.getElementById('hero-resume-file-input') || document.getElementById('resume-file-input');
       if (inp) inp.click();
     };
 
     window.handleResumeFile = async function(e) {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
+
+      // 1. Capture file Data URL for instant in-browser native preview
+      try {
+        const reader = new FileReader();
+        reader.onload = function(re) {
+          try {
+            sessionStorage.setItem('getarole_resume_pdf_dataurl', re.target.result);
+            sessionStorage.setItem('getarole_resume_pdf_name', file.name);
+            sessionStorage.setItem('getarole_resume_pdf_type', file.type || '');
+          } catch(storageErr) {
+            console.warn('SessionStorage quota reached for resume data URL:', storageErr);
+          }
+        };
+        reader.readAsDataURL(file);
+      } catch(err) {
+        console.warn('FileReader notice:', err);
+      }
 
       const prog = document.getElementById('resume-upload-progress');
       const bar = document.getElementById('resume-upload-progress-bar');
@@ -4209,12 +4384,18 @@
             state.profile.certifications = parsed.certifications;
           }
 
+          if (parsed.resume_text) {
+            try {
+              localStorage.setItem('getarole_resume_raw_text', parsed.resume_text);
+            } catch(_) {}
+          }
+
           localStorage.setItem('getarole_resume_pdf', file.name);
           await persistProfileData();
           renderFullProfile();
           if (bar) bar.style.width = '100%';
           setTimeout(() => { if (prog) prog.style.display = 'none'; }, 600);
-          toast(`✓ Extracted profile & skills from ${file.name}!`);
+          toast(`✓ Extracted profile & skills from ${file.name}! Click "Preview Resume" to inspect.`);
           return;
         }
       } catch (err) {
@@ -4226,6 +4407,443 @@
       await persistProfileData();
       renderFullProfile();
       toast(`✓ Resume uploaded: ${file.name}`);
+    };
+
+    // ── RESUME PREVIEW ENGINE ──
+    let currentResumePreviewTab = 'extracted';
+
+    window.openResumePreviewModal = function(initialTab = 'extracted') {
+      const modal = document.getElementById('modal-resume-preview');
+      if (!modal) return;
+
+      const fnEl = document.getElementById('resume-preview-filename');
+      const savedPdf = localStorage.getItem('getarole_resume_pdf') || sessionStorage.getItem('getarole_resume_pdf_name');
+      if (fnEl) {
+        if (savedPdf) {
+          fnEl.innerHTML = `Active file: <strong style="color:#0f172a;">${escapeHTML(savedPdf)}</strong>`;
+        } else {
+          fnEl.textContent = 'Active profile resume preview';
+        }
+      }
+
+      switchResumePreviewTab(initialTab);
+      openModal('modal-resume-preview');
+    };
+
+    window.switchResumePreviewTab = function(tabKey) {
+      currentResumePreviewTab = tabKey;
+      ['extracted', 'document', 'raw'].forEach(k => {
+        const btn = document.getElementById(`tab-btn-resume-${k}`);
+        if (btn) {
+          if (k === tabKey) btn.classList.add('active');
+          else btn.classList.remove('active');
+        }
+      });
+      renderResumePreviewBody(tabKey);
+    };
+
+    window.renderResumePreviewBody = function(tabKey) {
+      const container = document.getElementById('resume-preview-content');
+      if (!container) return;
+
+      const savedPdf = localStorage.getItem('getarole_resume_pdf') || sessionStorage.getItem('getarole_resume_pdf_name');
+      const pdfDataUrl = sessionStorage.getItem('getarole_resume_pdf_dataurl');
+      const rawText = localStorage.getItem('getarole_resume_raw_text');
+      const resumeV2 = JSON.parse(localStorage.getItem('getarole_resume_v2') || '{}');
+
+      const prof = state.profile || {};
+      const hasContent = Boolean(prof.name || (Array.isArray(prof.skills) && prof.skills.length) || (Array.isArray(prof.experience) && prof.experience.length) || savedPdf);
+
+      if (!hasContent && !pdfDataUrl) {
+        container.innerHTML = `
+          <div style="text-align:center; padding: 48px 24px; background: white; border: 1px dashed #cbd5e1; border-radius: 16px; margin: 12px 0;">
+            <div style="width: 56px; height: 56px; border-radius: 16px; background: #e0e7ff; color: #4338ca; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 16px;">📄</div>
+            <h4 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 8px; font-family: 'Outfit', sans-serif;">No Resume Uploaded Yet</h4>
+            <p style="font-size: 13.5px; color: #64748b; max-width: 440px; margin: 0 auto 20px; line-height: 1.55;">
+              Upload your resume in PDF or Word format to instantly preview your parsed ATS resume and automatically populate your candidate dossier.
+            </p>
+            <button type="button" onclick="closeModal('modal-resume-preview'); triggerResumeUpload();" class="btn-sweep" style="padding: 12px 24px; border-radius: 10px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: white; font-size: 13.5px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+              <span>📤</span> Upload Resume Now
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      if (tabKey === 'document') {
+        if (pdfDataUrl) {
+          container.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; background: white; padding: 12px 18px; border-radius: 10px; border: 1px solid #e2e8f0; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; color: #0f172a;">
+                  <span style="font-size: 18px;">📄</span>
+                  <span>${escapeHTML(savedPdf || 'Uploaded Resume.pdf')}</span>
+                  <span style="font-size: 11.5px; background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; padding: 2px 8px; border-radius: 6px; font-weight: 700;">Native PDF Preview</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <a href="${pdfDataUrl}" download="${escapeHTML(savedPdf || 'resume.pdf')}" class="btn-action-secondary" style="text-decoration: none; padding: 7px 14px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 5px; font-weight: 700;">
+                    <span>⬇️</span> Download File
+                  </a>
+                  <button type="button" onclick="triggerResumeUpload()" class="btn-action-secondary" style="padding: 7px 14px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 5px; font-weight: 700;">
+                    <span>📤</span> Re-upload
+                  </button>
+                </div>
+              </div>
+              <div style="width: 100%; height: 600px; background: #525659; border-radius: 12px; overflow: hidden; border: 1px solid #cbd5e1; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
+                <iframe src="${pdfDataUrl}" style="width: 100%; height: 100%; border: none;" title="Resume Document Viewer"></iframe>
+              </div>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `
+            <div style="background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 40px 28px; text-align: center; max-width: 640px; margin: 20px auto; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);">
+              <div style="width: 60px; height: 60px; border-radius: 16px; background: #e0e7ff; color: #4338ca; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 16px;">
+                📑
+              </div>
+              <h4 style="font-size: 19px; font-weight: 800; color: #0f172a; margin: 0 0 6px; font-family: 'Outfit', sans-serif;">
+                ${savedPdf ? escapeHTML(savedPdf) : 'Active Resume Document'}
+              </h4>
+              <div style="display: inline-flex; align-items: center; gap: 6px; background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 6px; margin-bottom: 16px;">
+                ✓ Parsed & Synced with Profile Dossier
+              </div>
+              <p style="font-size: 13.5px; color: #475569; line-height: 1.6; margin: 0 0 24px;">
+                All competencies, experience, education, and career details from this file are fully active. To render the original binary PDF inside this embedded window, you can re-select your PDF file, or view the complete formatted ATS layout in the ATS Resume tab.
+              </p>
+              <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                <button type="button" onclick="switchResumePreviewTab('extracted')" class="btn-sweep" style="padding: 11px 20px; border-radius: 10px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: white; font-size: 13.5px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                  <span>📄</span> View Formatted ATS Resume
+                </button>
+                <button type="button" onclick="triggerResumeUpload()" class="btn-action-secondary" style="padding: 11px 20px; border-radius: 10px; font-size: 13.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                  <span>📤</span> Select File to View Original PDF
+                </button>
+              </div>
+            </div>
+          `;
+        }
+        return;
+      }
+
+      if (tabKey === 'raw') {
+        let textToDisplay = rawText || '';
+        if (!textToDisplay) {
+          // Generate structured plain text summary
+          const lines = [];
+          lines.push(`NAME: ${prof.name || 'Candidate'}`);
+          lines.push(`HEADLINE: ${prof.headline || ''}`);
+          lines.push(`LOCATION: ${prof.loc || ''}`);
+          lines.push(`EMAIL: ${prof.email || ''}`);
+          lines.push(`PHONE: ${prof.phone || ''}`);
+          if (prof.summary) lines.push(`\nSUMMARY:\n${prof.summary}`);
+          if (prof.skills_languages && prof.skills_languages.length) lines.push(`\nLANGUAGES: ${prof.skills_languages.join(', ')}`);
+          if (prof.skills_frameworks && prof.skills_frameworks.length) lines.push(`FRAMEWORKS: ${prof.skills_frameworks.join(', ')}`);
+          if (prof.skills_cloud && prof.skills_cloud.length) lines.push(`CLOUD & DBs: ${prof.skills_cloud.join(', ')}`);
+          if (prof.skills_tools && prof.skills_tools.length) lines.push(`TOOLS: ${prof.skills_tools.join(', ')}`);
+          if (Array.isArray(prof.experience) && prof.experience.length) {
+            lines.push('\nEXPERIENCE:');
+            prof.experience.forEach(e => {
+              lines.push(`- ${e.title} at ${e.company} (${e.start || ''} - ${e.end || 'Present'})`);
+              if (e.desc) lines.push(`  ${e.desc}`);
+            });
+          }
+          if (Array.isArray(prof.education) && prof.education.length) {
+            lines.push('\nEDUCATION:');
+            prof.education.forEach(ed => {
+              lines.push(`- ${ed.degree} - ${ed.school} (${ed.year || ''})`);
+            });
+          }
+          textToDisplay = lines.join('\n');
+        }
+
+        container.innerHTML = `
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; background: white; padding: 10px 16px; border-radius: 10px; border: 1px solid #e2e8f0; flex-wrap: wrap; gap: 10px;">
+              <div style="font-size: 13px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 6px;">
+                <span>🔤</span> Raw Extracted Resume Text (ATS Stream)
+              </div>
+              <button type="button" onclick="copyResumeRawText()" class="btn-action-secondary" style="padding: 6px 14px; font-size: 12.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                <span>📋</span> Copy Text
+              </button>
+            </div>
+            <pre class="resume-raw-pre" id="resume-raw-content">${escapeHTML(textToDisplay)}</pre>
+          </div>
+        `;
+        return;
+      }
+
+      // Default: 'extracted' (Standard Formatted ATS Resume)
+      const candName = prof.name || (resumeV2.header && resumeV2.header.name) || 'Candidate Name';
+      const candHeadline = prof.headline || (resumeV2.header && resumeV2.header.title) || 'Software Engineer';
+      const candLoc = prof.loc || (resumeV2.header && resumeV2.header.location) || '';
+      const candEmail = prof.email || (resumeV2.header && resumeV2.header.email) || '';
+      const candPhone = prof.phone || (resumeV2.header && resumeV2.header.phone) || '';
+      const candSummary = prof.summary || (resumeV2.summary && resumeV2.summary.text) || '';
+
+      const links = prof.links || {};
+      const contactItems = [];
+      if (candLoc) contactItems.push(`<span>📍 ${escapeHTML(candLoc)}</span>`);
+      if (candEmail) contactItems.push(`<span>✉️ <a href="mailto:${escapeHTML(candEmail)}" style="color:inherit; text-decoration:none;">${escapeHTML(candEmail)}</a></span>`);
+      if (candPhone) contactItems.push(`<span>📞 ${escapeHTML(candPhone)}</span>`);
+      if (links.linkedin) contactItems.push(`<span>💼 <a href="${escapeHTML(links.linkedin)}" target="_blank" style="color:#4f46e5; font-weight:600; text-decoration:underline;">LinkedIn</a></span>`);
+      if (links.github) contactItems.push(`<span>🐙 <a href="${escapeHTML(links.github)}" target="_blank" style="color:#4f46e5; font-weight:600; text-decoration:underline;">GitHub</a></span>`);
+      if (links.portfolio) contactItems.push(`<span>🌐 <a href="${escapeHTML(links.portfolio)}" target="_blank" style="color:#4f46e5; font-weight:600; text-decoration:underline;">Portfolio</a></span>`);
+
+      // Skills categories
+      const langSkills = Array.isArray(prof.skills_languages) ? prof.skills_languages : [];
+      const frameSkills = Array.isArray(prof.skills_frameworks) ? prof.skills_frameworks : [];
+      const cloudSkills = Array.isArray(prof.skills_cloud) ? prof.skills_cloud : [];
+      const toolSkills = Array.isArray(prof.skills_tools) ? prof.skills_tools : [];
+      const generalSkills = Array.isArray(prof.skills) ? prof.skills : [];
+
+      const experienceList = Array.isArray(prof.experience) ? prof.experience : (resumeV2.experience || []);
+      const projectList = Array.isArray(prof.projects) ? prof.projects : (resumeV2.projects || []);
+      const educationList = Array.isArray(prof.education) ? prof.education : (resumeV2.education || []);
+      const certList = Array.isArray(prof.certifications) ? prof.certifications : (resumeV2.certifications || []);
+
+      let html = `
+        <div class="resume-paper" id="resume-formatted-paper">
+          <!-- CANDIDATE HEADER -->
+          <div style="text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 16px; margin-bottom: 18px;">
+            <h1 style="font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 800; color: #0f172a; margin: 0 0 6px; letter-spacing: -0.02em;">
+              ${escapeHTML(candName)}
+            </h1>
+            <div style="font-size: 14.5px; font-weight: 700; color: #4338ca; margin-bottom: 10px;">
+              ${escapeHTML(candHeadline)}
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: #475569;">
+              ${contactItems.join(' <span style="color:#cbd5e1;">•</span> ')}
+            </div>
+          </div>
+      `;
+
+      // Summary
+      if (candSummary) {
+        html += `
+          <div class="resume-paper-section">
+            <div class="resume-paper-title">Executive Summary</div>
+            <p style="font-size: 13.5px; line-height: 1.65; color: #334155; margin: 0;">
+              ${escapeHTML(candSummary)}
+            </p>
+          </div>
+        `;
+      }
+
+      // Technical Skills
+      if (langSkills.length || frameSkills.length || cloudSkills.length || toolSkills.length || generalSkills.length) {
+        html += `
+          <div class="resume-paper-section">
+            <div class="resume-paper-title">Technical Competencies & Skills</div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+        `;
+        if (langSkills.length) {
+          html += `
+            <div style="font-size: 13px; line-height: 1.5;">
+              <strong style="color: #0f172a;">Languages:</strong>
+              ${langSkills.map(s => `<span class="resume-paper-tag">${escapeHTML(s)}</span>`).join('')}
+            </div>
+          `;
+        }
+        if (frameSkills.length) {
+          html += `
+            <div style="font-size: 13px; line-height: 1.5;">
+              <strong style="color: #0f172a;">Frameworks & Libraries:</strong>
+              ${frameSkills.map(s => `<span class="resume-paper-tag">${escapeHTML(s)}</span>`).join('')}
+            </div>
+          `;
+        }
+        if (cloudSkills.length) {
+          html += `
+            <div style="font-size: 13px; line-height: 1.5;">
+              <strong style="color: #0f172a;">Cloud, DevOps & Databases:</strong>
+              ${cloudSkills.map(s => `<span class="resume-paper-tag">${escapeHTML(s)}</span>`).join('')}
+            </div>
+          `;
+        }
+        if (toolSkills.length) {
+          html += `
+            <div style="font-size: 13px; line-height: 1.5;">
+              <strong style="color: #0f172a;">Tools & Platforms:</strong>
+              ${toolSkills.map(s => `<span class="resume-paper-tag">${escapeHTML(s)}</span>`).join('')}
+            </div>
+          `;
+        }
+        if (!langSkills.length && !frameSkills.length && generalSkills.length) {
+          html += `
+            <div style="font-size: 13px; line-height: 1.5;">
+              <strong style="color: #0f172a;">Core Skills:</strong>
+              ${generalSkills.map(s => `<span class="resume-paper-tag">${escapeHTML(s)}</span>`).join('')}
+            </div>
+          `;
+        }
+        html += `
+            </div>
+          </div>
+        `;
+      }
+
+      // Experience
+      if (experienceList.length) {
+        html += `
+          <div class="resume-paper-section">
+            <div class="resume-paper-title">Professional Experience</div>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+        `;
+        experienceList.forEach(exp => {
+          const dates = exp.dates || (exp.start ? `${exp.start} - ${exp.end || 'Present'}` : '');
+          html += `
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px;">
+                <div style="font-size: 14.5px; font-weight: 800; color: #0f172a;">
+                  ${escapeHTML(exp.title || 'Role')} <span style="font-weight: 600; color: #4338ca;">@ ${escapeHTML(exp.company || 'Company')}</span>
+                </div>
+                <div style="font-size: 12px; font-weight: 700; color: #64748b;">
+                  ${escapeHTML(dates)}${exp.location ? ` • ${escapeHTML(exp.location)}` : ''}
+                </div>
+              </div>
+          `;
+          const bullets = exp.bullets || (exp.desc ? exp.desc.split('\n').filter(b => b.trim()) : []);
+          if (bullets.length) {
+            html += `<ul style="margin: 6px 0 0 18px; padding: 0; font-size: 13px; color: #334155; line-height: 1.55;">`;
+            bullets.forEach(b => {
+              html += `<li style="margin-bottom: 4px;">${escapeHTML(b.replace(/^[•\-\*]\s*/, ''))}</li>`;
+            });
+            html += `</ul>`;
+          }
+          html += `</div>`;
+        });
+        html += `
+            </div>
+          </div>
+        `;
+      }
+
+      // Projects
+      if (projectList.length) {
+        html += `
+          <div class="resume-paper-section">
+            <div class="resume-paper-title">Technical Projects</div>
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+        `;
+        projectList.forEach(proj => {
+          const projName = proj.title || proj.name || 'Project';
+          const projStack = Array.isArray(proj.tags) ? proj.tags.join(', ') : (proj.stack || '');
+          html += `
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px;">
+                <div style="font-size: 14px; font-weight: 800; color: #0f172a;">
+                  ${escapeHTML(projName)}
+                  ${projStack ? `<span style="font-size: 12px; font-weight: 600; color: #64748b; margin-left: 8px;">[${escapeHTML(projStack)}]</span>` : ''}
+                </div>
+                <div style="display: flex; gap: 10px; font-size: 12px;">
+                  ${(proj.demo || proj.liveLink) ? `<a href="${escapeHTML(proj.demo || proj.liveLink)}" target="_blank" style="color: #4f46e5; font-weight: 700; text-decoration: underline;">Live Demo ↗</a>` : ''}
+                  ${(proj.github || proj.githubLink) ? `<a href="${escapeHTML(proj.github || proj.githubLink)}" target="_blank" style="color: #4f46e5; font-weight: 700; text-decoration: underline;">Code ↗</a>` : ''}
+                </div>
+              </div>
+          `;
+          const bullets = proj.bullets || (proj.desc ? proj.desc.split('\n').filter(b => b.trim()) : []);
+          if (bullets.length) {
+            html += `<ul style="margin: 6px 0 0 18px; padding: 0; font-size: 13px; color: #334155; line-height: 1.55;">`;
+            bullets.forEach(b => {
+              html += `<li style="margin-bottom: 4px;">${escapeHTML(b.replace(/^[•\-\*]\s*/, ''))}</li>`;
+            });
+            html += `</ul>`;
+          }
+          html += `</div>`;
+        });
+        html += `
+            </div>
+          </div>
+        `;
+      }
+
+      // Education
+      if (educationList.length) {
+        html += `
+          <div class="resume-paper-section">
+            <div class="resume-paper-title">Education</div>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+        `;
+        educationList.forEach(ed => {
+          html += `
+            <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px;">
+              <div>
+                <div style="font-size: 14px; font-weight: 800; color: #0f172a;">${escapeHTML(ed.degree || 'Degree')}</div>
+                <div style="font-size: 13px; color: #475569;">${escapeHTML(ed.school || 'University')}${ed.grade ? ` • <span style="font-weight: 700; color: #15803d;">Grade: ${escapeHTML(ed.grade)}</span>` : ''}</div>
+                ${ed.coursework ? `<div style="font-size: 12px; color: #64748b; margin-top: 3px;"><strong>Coursework:</strong> ${escapeHTML(ed.coursework)}</div>` : ''}
+              </div>
+              <div style="font-size: 12px; font-weight: 700; color: #64748b;">
+                ${escapeHTML(ed.year || ed.dates || '')}
+              </div>
+            </div>
+          `;
+        });
+        html += `
+            </div>
+          </div>
+        `;
+      }
+
+      // Certifications
+      if (certList.length) {
+        html += `
+          <div class="resume-paper-section">
+            <div class="resume-paper-title">Certifications</div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+        `;
+        certList.forEach(c => {
+          html += `
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+              <div>
+                <strong style="color: #0f172a;">${escapeHTML(c.name || 'Certification')}</strong>
+                ${c.issuer ? `<span style="color: #64748b;"> — ${escapeHTML(c.issuer)}</span>` : ''}
+              </div>
+              <div style="font-size: 12px; font-weight: 700; color: #64748b;">${escapeHTML(c.year || '')}</div>
+            </div>
+          `;
+        });
+        html += `
+            </div>
+          </div>
+        `;
+      }
+
+      html += `</div>`; // End resume-paper
+      container.innerHTML = html;
+    };
+
+    window.copyResumeRawText = function() {
+      const el = document.getElementById('resume-raw-content');
+      if (!el) return;
+      navigator.clipboard.writeText(el.innerText || el.textContent).then(() => {
+        toast('✓ Copied raw resume text to clipboard!');
+      }).catch(() => {
+        toast('✓ Resume text selected');
+      });
+    };
+
+    window.printResumePreview = function() {
+      const el = document.getElementById('resume-formatted-paper');
+      if (!el) {
+        window.print();
+        return;
+      }
+      const printWin = window.open('', '_blank', 'width=840,height=900');
+      if (!printWin) {
+        window.print();
+        return;
+      }
+      printWin.document.write(`<!DOCTYPE html><html><head><title>Resume Preview</title>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+          body { font-family: 'Plus Jakarta Sans', sans-serif; color: #0f172a; margin: 20mm; padding: 0; }
+          h1, h2, h3 { font-family: 'Outfit', sans-serif; }
+          .resume-paper { max-width: 100%; border: none; box-shadow: none; padding: 0; }
+          .resume-paper-tag { display: inline-block; background: #f1f5f9; color: #334155; font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 4px; border: 1px solid #e2e8f0; margin: 2px 4px 2px 0; }
+          @page { margin: 15mm; size: auto; }
+        </style>
+      </head><body>${el.outerHTML}</body></html>`);
+      printWin.document.close();
+      printWin.focus();
+      setTimeout(() => { printWin.print(); }, 300);
     };
 
     window.handleLogoutUser = function() {
@@ -4452,6 +5070,12 @@
           sidebarEmail.textContent = u.email || u.displayName;
         }
       } catch (_) {}
+
+      // 4. Resume preview modal auto-open trigger
+      if (window.location.hash === '#modal-resume-preview' || window.location.hash === '#preview-resume' || localStorage.getItem('open_resume_preview_modal') === '1') {
+        localStorage.removeItem('open_resume_preview_modal');
+        setTimeout(() => { openResumePreviewModal(); }, 350);
+      }
     });
   </script>
   <script src="/js/mobile-nav.js?v=3"></script>
