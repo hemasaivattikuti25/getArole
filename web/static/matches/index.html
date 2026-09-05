@@ -1673,7 +1673,7 @@
 
         <nav class="nav-tabs" style="overflow:visible !important;">
           <a class="nav-tab active" href="/dashboard/" id="tab-btn-home">Overview</a>
-          <a class="nav-tab" href="/matches/" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">—</span></a>
+          <a class="nav-tab" href="/matches/" id="tab-btn-matches">Matches</a>
           <a class="nav-tab" href="/explore/" id="tab-btn-jobs">Explore Jobs</a>
           <div class="nav-dropdown" style="position:relative; display:inline-block;" onmouseenter="this.querySelector('.nav-dropdown-menu').style.display='flex'" onmouseleave="this.querySelector('.nav-dropdown-menu').style.display='none'">
             <a class="nav-tab nav-dropdown-btn" style="cursor:pointer; display:flex; align-items:center; gap:4px; margin:0;" onclick="const m = this.nextElementSibling; m.style.display = m.style.display === 'flex' ? 'none' : 'flex';">CV & CL ▼</a>
@@ -1686,10 +1686,6 @@
       </div>
 
       <div class="header-actions">
-        <button class="btn-refresh" id="btn-refresh-scrape" onclick="typeof triggerScrape === 'function' ? triggerScrape() : window.location.reload()">
-          <span class="btn-refresh-text">Sync</span>
-        </button>
-
         <div class="user-profile-btn" onclick="document.getElementById('user-dropdown') && document.getElementById('user-dropdown').classList.toggle('show')">
           <div class="user-avatar" id="nav-avatar">U</div>
           <span class="user-name-text" id="nav-username" style="display: none !important;">User</span>
@@ -3149,7 +3145,8 @@
     }
 
     function updateCounts() {
-      document.getElementById('nav-match-count').textContent = matchedJobs.length;
+      const el = document.getElementById('nav-match-count');
+      if (el) el.textContent = matchedJobs.length;
     }
 
     function renderTracker() {
@@ -3339,22 +3336,22 @@
     }
 
     async function triggerScrape() {
-      const btn = document.getElementById('btn-refresh-scrape');
-      btn.disabled = true;
-      btn.innerHTML = '<span>⏳</span> Syncing...';
-      toast('Indexing active career portals across India...');
       try {
-        const res = await fetch('/api/scrape', { method: 'POST' });
-        const data = await res.json();
-        toast('Synced latest jobs!');
+        await fetch('/api/scrape', { method: 'POST' });
         await loadJobs();
       } catch (e) {
-        toast('Sync completed.');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<span></span> Refresh Feeds';
+        // Transparent background sync
       }
     }
+
+    // Auto-sync in background without user interaction needed
+    (function autoSyncJobsInBackground() {
+      const lastScrape = parseInt(localStorage.getItem('getarole_last_scrape_ts') || '0', 10);
+      if (Date.now() - lastScrape > 3600000) {
+        localStorage.setItem('getarole_last_scrape_ts', String(Date.now()));
+        triggerScrape();
+      }
+    })();
 
     function formatJobDescription(raw) {
       if (!raw) return '<p>Full technical details and responsibilities available on the verified employer portal.</p>';

@@ -976,7 +976,7 @@
 
         <nav class="nav-tabs" style="overflow:visible !important;">
           <a class="nav-tab active" href="/dashboard/" id="tab-btn-home">Overview</a>
-          <a class="nav-tab" href="/matches/" id="tab-btn-matches">Matches <span class="nav-badge" id="nav-match-count">—</span></a>
+          <a class="nav-tab" href="/matches/" id="tab-btn-matches">Matches</a>
           <a class="nav-tab" href="/explore/" id="tab-btn-jobs">Explore Jobs</a>
           <div class="nav-dropdown" style="position:relative; display:inline-block;" onmouseenter="this.querySelector('.nav-dropdown-menu').style.display='flex'" onmouseleave="this.querySelector('.nav-dropdown-menu').style.display='none'">
             <a class="nav-tab nav-dropdown-btn" style="cursor:pointer; display:flex; align-items:center; gap:4px; margin:0;" onclick="const m = this.nextElementSibling; m.style.display = m.style.display === 'flex' ? 'none' : 'flex';">CV & CL ▼</a>
@@ -989,10 +989,6 @@
       </div>
 
       <div class="header-actions">
-        <button class="btn-refresh" id="btn-refresh-scrape" onclick="typeof triggerScrape === 'function' ? triggerScrape() : window.location.reload()">
-          <span class="btn-refresh-text">Sync</span>
-        </button>
-
         <div class="user-profile-btn" onclick="document.getElementById('user-dropdown') && document.getElementById('user-dropdown').classList.toggle('show')">
           <div class="user-avatar" id="nav-avatar">U</div>
           <span class="user-name-text" id="nav-username" style="display: none !important;">User</span>
