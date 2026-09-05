@@ -110,15 +110,7 @@
     const prefs = canonicalizePreferences(rawPrefs);
     const uid = getEffectiveUID();
 
-    // 1. Immediate LocalStorage Write
-    try {
-      localStorage.setItem('getarole_prefs', JSON.stringify(prefs));
-      window.dispatchEvent(new CustomEvent('getarole_prefs_updated', { detail: prefs }));
-    } catch (e) {
-      console.warn('[Storage-Sync] LocalStorage write error:', e);
-    }
-
-    // 2. Direct Supabase PostgREST Cloud Upsert
+    // 1. Direct Supabase PostgREST Cloud Upsert
     const supaPayload = {
       firebase_uid: uid,
       roles: prefs.roles,
@@ -133,31 +125,44 @@
       status: prefs.status
     };
 
-    const cloudPromise = fetch(`${SUPABASE_REST_URL}/user_preferences?on_conflict=firebase_uid`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates,return=representation'
-      },
-      body: JSON.stringify(supaPayload)
-    }).then(res => {
-      if (!res.ok) console.warn('[Storage-Sync] Supabase prefs upsert HTTP', res.status);
-      return res.ok;
-    }).catch(err => {
+    let supabaseSuccess = false;
+    try {
+      const res = await fetch(`${SUPABASE_REST_URL}/user_preferences?on_conflict=firebase_uid`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates,return=representation'
+        },
+        body: JSON.stringify(supaPayload)
+      });
+      if (res.ok) {
+        supabaseSuccess = true;
+      } else {
+        console.warn('[Storage-Sync] Supabase prefs upsert HTTP', res.status);
+      }
+    } catch (err) {
       console.warn('[Storage-Sync] Supabase direct cloud error:', err);
-      return false;
-    });
+    }
 
-    // 3. Optional local FastAPI backend attempt (if running)
-    const apiPromise = fetch('/api/user/preferences', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-      body: JSON.stringify(prefs)
-    }).catch(() => false);
+    // 2. Optional local FastAPI backend attempt (if running)
+    try {
+      await fetch('/api/user/preferences', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+        body: JSON.stringify(prefs)
+      });
+    } catch (err) {}
 
-    await Promise.race([cloudPromise, apiPromise]);
+    // 3. LocalStorage Write (Fallback & Cache update)
+    try {
+      localStorage.setItem('getarole_prefs', JSON.stringify(prefs));
+      window.dispatchEvent(new CustomEvent('getarole_prefs_updated', { detail: prefs }));
+    } catch (e) {
+      console.warn('[Storage-Sync] LocalStorage write error:', e);
+    }
+
     return prefs;
   }
 
@@ -270,15 +275,7 @@
       updated_at: new Date().toISOString()
     };
 
-    // 1. Immediate LocalStorage Write
-    try {
-      localStorage.setItem('getarole_profile', JSON.stringify(canonicalProfile));
-      window.dispatchEvent(new CustomEvent('getarole_profile_updated', { detail: canonicalProfile }));
-    } catch (e) {
-      console.warn('[Storage-Sync] LocalStorage profile write error:', e);
-    }
-
-    // 2. Direct Supabase PostgREST user_profiles Upsert
+    // 1. Direct Supabase PostgREST user_profiles Upsert
     const supaProfilePayload = {
       firebase_uid: uid,
       email: canonicalProfile.email,
@@ -293,23 +290,43 @@
       other_url: (canonicalProfile.links && canonicalProfile.links.other) || ''
     };
 
-    fetch(`${SUPABASE_REST_URL}/user_profiles?on_conflict=firebase_uid`, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates,return=representation'
-      },
-      body: JSON.stringify(supaProfilePayload)
-    }).catch(err => console.warn('[Storage-Sync] Supabase profile upsert error:', err));
+    let supabaseSuccess = false;
+    try {
+      const resp = await fetch(`${SUPABASE_REST_URL}/user_profiles?on_conflict=firebase_uid`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates,return=representation'
+        },
+        body: JSON.stringify(supaProfilePayload)
+      });
+      if (resp.ok) {
+        supabaseSuccess = true;
+      } else {
+        console.warn('[Storage-Sync] Supabase profile upsert failed:', await resp.text());
+      }
+    } catch (err) {
+      console.warn('[Storage-Sync] Supabase profile upsert error:', err);
+    }
 
-    // 3. Optional local FastAPI backend attempt
-    fetch('/api/user/profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-      body: JSON.stringify(canonicalProfile)
-    }).catch(() => false);
+    // 2. Optional local FastAPI backend attempt
+    try {
+      await fetch('/api/user/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+        body: JSON.stringify(canonicalProfile)
+      });
+    } catch (err) {}
+
+    // 3. LocalStorage Write (Fallback & Cache update)
+    try {
+      localStorage.setItem('getarole_profile', JSON.stringify(canonicalProfile));
+      window.dispatchEvent(new CustomEvent('getarole_profile_updated', { detail: canonicalProfile }));
+    } catch (e) {
+      console.warn('[Storage-Sync] LocalStorage profile write error:', e);
+    }
 
     return canonicalProfile;
   }
@@ -377,14 +394,6 @@
     const R = typeof rawResume === 'string' ? JSON.parse(rawResume) : rawResume;
     const uid = getEffectiveUID();
 
-    // 1. Immediate LocalStorage Write
-    try {
-      localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
-      window.dispatchEvent(new CustomEvent('getarole_resume_updated', { detail: R }));
-    } catch (e) {
-      console.warn('[Storage-Sync] LocalStorage resume write error:', e);
-    }
-
     // 2. Format skills array for Supabase schema
     let skillList = [];
     if (Array.isArray(R.skills)) {
@@ -400,7 +409,6 @@
       });
     }
 
-    // 3. Supabase Cloud PostgREST Upsert
     const supaPayload = {
       firebase_uid: uid,
       work_experience: Array.isArray(R.experience) ? R.experience : [],
@@ -412,11 +420,24 @@
       updated_at: new Date().toISOString()
     };
 
-    // 3. Supabase Cloud PostgREST Upsert (Resilient PATCH-then-POST strategy)
-    (async () => {
-      try {
-        const patchRes = await fetch(`${SUPABASE_REST_URL}/user_resumes?firebase_uid=eq.${encodeURIComponent(uid)}`, {
-          method: 'PATCH',
+    // 1. Supabase Cloud PostgREST Upsert (Resilient PATCH-then-POST strategy)
+    let supabaseSuccess = false;
+    try {
+      const patchRes = await fetch(`${SUPABASE_REST_URL}/user_resumes?firebase_uid=eq.${encodeURIComponent(uid)}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(supaPayload)
+      });
+      const updatedRows = patchRes.ok ? await patchRes.json() : [];
+      if (!updatedRows || updatedRows.length === 0) {
+        // No row existed yet for this user; insert cleanly
+        const postRes = await fetch(`${SUPABASE_REST_URL}/user_resumes`, {
+          method: 'POST',
           headers: {
             'apikey': SUPABASE_ANON_KEY,
             'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
@@ -425,31 +446,30 @@
           },
           body: JSON.stringify(supaPayload)
         });
-        const updatedRows = patchRes.ok ? await patchRes.json() : [];
-        if (!updatedRows || updatedRows.length === 0) {
-          // No row existed yet for this user; insert cleanly
-          await fetch(`${SUPABASE_REST_URL}/user_resumes`, {
-            method: 'POST',
-            headers: {
-              'apikey': SUPABASE_ANON_KEY,
-              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-              'Content-Type': 'application/json',
-              'Prefer': 'return=representation'
-            },
-            body: JSON.stringify(supaPayload)
-          });
-        }
-      } catch (err) {
-        console.warn('[Storage-Sync] Supabase resume upsert error:', err);
+        if (postRes.ok) supabaseSuccess = true;
+      } else {
+        supabaseSuccess = true;
       }
-    })();
+    } catch (err) {
+      console.warn('[Storage-Sync] Supabase resume upsert error:', err);
+    }
 
-    // 4. Optional local FastAPI backend attempt
-    fetch('/api/user/resume', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
-      body: JSON.stringify({ resume: R })
-    }).catch(() => false);
+    // 2. Optional local FastAPI backend attempt
+    try {
+      await fetch('/api/user/resume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Firebase-UID': uid },
+        body: JSON.stringify({ resume: R })
+      });
+    } catch (err) {}
+
+    // 3. LocalStorage Write (Fallback & Cache update)
+    try {
+      localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
+      window.dispatchEvent(new CustomEvent('getarole_resume_updated', { detail: R }));
+    } catch (e) {
+      console.warn('[Storage-Sync] LocalStorage resume write error:', e);
+    }
 
     return R;
   }
