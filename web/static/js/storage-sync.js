@@ -559,6 +559,7 @@
       }
     } catch (e) {
       console.error('[Delete Account Error]', e);
+      throw e; // Bubble up to UI
     }
     localStorage.clear();
     sessionStorage.clear();

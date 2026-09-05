@@ -139,6 +139,10 @@ export async function deleteAccount() {
       await deleteUser(user);
     } catch (e) {
       console.warn('[Account Deletion] Firebase Auth delete notice:', e);
+      if (e.code === 'auth/requires-recent-login') {
+         throw new Error("Please sign out and sign back in to verify your identity before deleting your account.");
+      }
+      throw e;
     }
   }
 

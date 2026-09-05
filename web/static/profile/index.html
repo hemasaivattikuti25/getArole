@@ -4244,9 +4244,15 @@
         }
       } catch (err) {
         console.error('Account deletion error:', err);
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = '/';
+        if (st) {
+          st.style.background = '#fef2f2';
+          st.style.color = '#dc2626';
+          st.textContent = err.message || 'An error occurred while deleting your account. Please try logging out and logging back in.';
+        }
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Permanently Purge My Account';
+        }
       }
     };
 
