@@ -4182,14 +4182,12 @@
     };
 
     window.openDeleteAccountModal = function() {
-      const inp = document.getElementById('input-confirm-delete');
-      if (inp) inp.value = '';
       const btn = document.getElementById('btn-confirm-delete-account');
       if (btn) {
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-        btn.style.cursor = 'not-allowed';
-        btn.textContent = 'Permanently Purge My Account';
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.cursor = 'pointer';
+        btn.textContent = 'Delete Account';
       }
       const st = document.getElementById('delete-account-status');
       if (st) st.style.display = 'none';
