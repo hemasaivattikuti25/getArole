@@ -30,14 +30,14 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "signin" }: A
     const res = await loginWithGoogle();
     setLoading(false);
     if (res.success) {
-      onClose();
       const hasCloudPrefs = !!localStorage.getItem("getarole_cloud_prefs");
       const onboardingCompleted = localStorage.getItem("getarole_onboarding_completed") === "true";
       if (!hasCloudPrefs && !onboardingCompleted) {
-        router.push("/onboarding/");
+        window.location.href = "/onboarding/";
       } else {
-        router.push("/dashboard/");
+        window.location.href = "/dashboard/";
       }
+      onClose();
     } else {
       setError(res.error || "Failed to sign in with Google.");
     }
@@ -57,14 +57,14 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "signin" }: A
 
     setLoading(false);
     if (res.success) {
-      onClose();
       const hasCloudPrefs = !!localStorage.getItem("getarole_cloud_prefs");
       const onboardingCompleted = localStorage.getItem("getarole_onboarding_completed") === "true";
       if (!hasCloudPrefs && !onboardingCompleted) {
-        router.push("/onboarding/");
+        window.location.href = "/onboarding/";
       } else {
-        router.push("/dashboard/");
+        window.location.href = "/dashboard/";
       }
+      onClose();
     } else {
       setError(res.error || "Authentication failed. Please check your credentials.");
     }

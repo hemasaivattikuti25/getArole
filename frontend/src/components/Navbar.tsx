@@ -18,6 +18,13 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Auto-redirect logged-in users away from the marketing landing page
+  useEffect(() => {
+    if (user && window.location.pathname === "/") {
+      window.location.href = "/dashboard/";
+    }
+  }, [user]);
+
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-200 ${
