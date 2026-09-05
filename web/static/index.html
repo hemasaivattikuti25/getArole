@@ -1832,10 +1832,11 @@
       }
       const localPrefs = localStorage.getItem('getarole_prefs');
       const onboardingCompleted = localStorage.getItem('getarole_onboarding_completed') === 'true';
-      if (!isExplicitSignUp && (hasCloudPrefs || localPrefs || onboardingCompleted)) {
-        window.location.href = "/dashboard/";
+      // If explicit sign up OR (no cloud prefs and not completed), force onboarding
+      if (isExplicitSignUp || (!hasCloudPrefs && !onboardingCompleted)) {
+        window.location.href = "/onboarding/";
       } else {
-        window.location.href = (isExplicitSignUp || (!hasCloudPrefs && !onboardingCompleted)) ? "/onboarding/" : "/dashboard/";
+        window.location.href = "/dashboard/";
       }
     }
 

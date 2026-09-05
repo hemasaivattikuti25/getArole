@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { X, Sparkles, AlertCircle } from "lucide-react";
 import { useAuth } from "@/providers/auth-provider";
+import { useRouter } from "next/navigation";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "signin" }: A
   const [loading, setLoading] = useState(false);
 
   const { loginWithGoogle, loginWithEmail, signupWithEmail } = useAuth();
+  const router = useRouter();
 
   if (!isOpen) return null;
 
@@ -29,6 +31,13 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "signin" }: A
     setLoading(false);
     if (res.success) {
       onClose();
+      const hasCloudPrefs = !!localStorage.getItem("getarole_cloud_prefs");
+      const onboardingCompleted = localStorage.getItem("getarole_onboarding_completed") === "true";
+      if (!hasCloudPrefs && !onboardingCompleted) {
+        router.push("/onboarding/");
+      } else {
+        router.push("/dashboard/");
+      }
     } else {
       setError(res.error || "Failed to sign in with Google.");
     }
@@ -49,6 +58,13 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "signin" }: A
     setLoading(false);
     if (res.success) {
       onClose();
+      const hasCloudPrefs = !!localStorage.getItem("getarole_cloud_prefs");
+      const onboardingCompleted = localStorage.getItem("getarole_onboarding_completed") === "true";
+      if (!hasCloudPrefs && !onboardingCompleted) {
+        router.push("/onboarding/");
+      } else {
+        router.push("/dashboard/");
+      }
     } else {
       setError(res.error || "Authentication failed. Please check your credentials.");
     }
