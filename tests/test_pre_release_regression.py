@@ -74,7 +74,7 @@ def test_reg_03_main_product_semantic_resume_matcher():
     # Create valid in-memory PDF
     doc = fitz.open()
     page = doc.new_page()
-    page.insert_text((50, 50), "Hemasai Vattikuti\nLead Python SRE\nSkills: Python, FastAPI, Docker, Kubernetes, PostgreSQL\nExperience: Google Staff SRE (2022 - Present)")
+    page.insert_text((50, 50), "Test Candidate\nLead Python SRE\nSkills: Python, FastAPI, Docker, Kubernetes, PostgreSQL\nExperience: Google Staff SRE (2022 - Present)")
     pdf_bytes = doc.write()
     doc.close()
 
@@ -93,7 +93,7 @@ def test_reg_03_main_product_semantic_resume_matcher():
         employment_type="Full-time"
     )
     
-    ranked = matcher.rank_jobs_by_fit("Hemasai Vattikuti Senior Python SRE with FastAPI and Kubernetes", [job])
+    ranked = matcher.rank_jobs_by_fit("Test Candidate Senior Python SRE with FastAPI and Kubernetes", [job])
     assert len(ranked) == 1
     assert ranked[0].fit_score is not None
     assert 0.0 <= ranked[0].fit_score <= 100.0

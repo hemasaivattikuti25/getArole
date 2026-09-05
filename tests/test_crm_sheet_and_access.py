@@ -26,7 +26,7 @@ def test_crm_unauthorized_access_rejected():
     assert res_csv.status_code == 403
 
 def test_crm_authorized_owner_access_granted():
-    """Validates that hemasaivattikuti2727@gmail.com is granted access to the CRM endpoints."""
+    """Validates that testcandidatevattikuti2727@gmail.com is granted access to the CRM endpoints."""
     mock_users = [
         {
             "id": "usr_001",
@@ -51,7 +51,7 @@ def test_crm_authorized_owner_access_granted():
 
     with patch("services.supabase_service.SupabaseService.fetch_crm_all_users", new_callable=AsyncMock, return_value=mock_users):
         # 1. Header auth
-        res_header = client.get("/api/admin/crm/users", headers={"X-User-Email": "hemasaivattikuti2727@gmail.com"})
+        res_header = client.get("/api/admin/crm/users", headers={"X-User-Email": "testcandidatevattikuti2727@gmail.com"})
         assert res_header.status_code == 200
         data = res_header.json()
         assert data["status"] == "ok"
@@ -60,7 +60,7 @@ def test_crm_authorized_owner_access_granted():
         assert data["metrics"]["resumes_count"] == 1
 
         # 2. Query param auth
-        res_query = client.get("/api/admin/crm/users?email=hemasaivattikuti2727@gmail.com")
+        res_query = client.get("/api/admin/crm/users?email=testcandidatevattikuti2727@gmail.com")
         assert res_query.status_code == 200
 
         # 3. Secondary authorized admin email
@@ -94,7 +94,7 @@ def test_crm_csv_export_endpoint():
     ]
 
     with patch("services.supabase_service.SupabaseService.fetch_crm_all_users", new_callable=AsyncMock, return_value=mock_users):
-        res = client.get("/api/admin/crm/export.csv", headers={"X-User-Email": "hemasaivattikuti2727@gmail.com"})
+        res = client.get("/api/admin/crm/export.csv", headers={"X-User-Email": "testcandidatevattikuti2727@gmail.com"})
         assert res.status_code == 200
         assert res.headers["content-type"].startswith("text/csv")
         assert "getArole_CRM_Candidates_Export.csv" in res.headers["content-disposition"]

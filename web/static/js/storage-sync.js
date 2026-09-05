@@ -74,7 +74,7 @@
 
     const skills = Array.isArray(raw.skills_inc) && raw.skills_inc.length > 0
       ? raw.skills_inc
-      : (Array.isArray(raw.skills) && raw.skills.length > 0 ? raw.skills : ['Python', 'JavaScript', 'React', 'SQL']);
+      : (Array.isArray(raw.skills) && raw.skills.length > 0 ? raw.skills : []);
 
     const workplaceType = raw.workplaceType || (locations.some(l => l.toLowerCase().includes('remote')) ? 'Remote' : 'Hybrid');
 
@@ -214,6 +214,11 @@
     let existingProfile = {};
     try {
       existingProfile = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+      // Nuke legacy Hemasai Vattikuti mock profile from previous Next.js builds
+      if (existingProfile.name === 'Hemasai Vattikuti' && existingProfile.email === 'hemasai@getarole.in') {
+        existingProfile = {};
+        localStorage.removeItem('getarole_profile');
+      }
     } catch (_) {}
 
     // Standardize

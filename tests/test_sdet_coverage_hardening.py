@@ -33,19 +33,19 @@ client = TestClient(app)
 
 def test_resume_parser_link_extraction():
     parser = ResumeParserService()
-    text = "Find my work on https://github.com/hemasai and linkedin at https://linkedin.com/in/hemasaivattikuti and portfolio https://hemasai.dev"
-    pdf_links = ["https://github.com/hemasai/job_finder", "https://linkedin.com/in/hemasaivattikuti"]
+    text = "Find my work on https://github.com/testcandidate and linkedin at https://linkedin.com/in/testcandidatevattikuti and portfolio https://testcandidate.dev"
+    pdf_links = ["https://github.com/testcandidate/job_finder", "https://linkedin.com/in/testcandidatevattikuti"]
     llm_parsed = {}
     
     links = parser.extract_links(text, pdf_links, llm_parsed)
     assert "github.com" in links["github"]
     assert "linkedin.com" in links["linkedin"]
-    assert "hemasai.dev" in links["portfolio"]
+    assert "testcandidate.dev" in links["portfolio"]
 
 def test_resume_parser_fallback_sections():
     parser = ResumeParserService()
     text = """
-    HEMASAI VATTIKUTI
+    Test Candidate
     Senior Software Engineer | Google Inc | 2022 - Present
     - Automated cluster failovers across 5 multi-region zones.
     - Improved P99 API latency from 450ms to 85ms.
@@ -103,12 +103,12 @@ def test_resume_parser_binary_pdf_bytes_parsing():
     parser = ResumeParserService()
     doc = fitz.open()
     page = doc.new_page()
-    page.insert_text((50, 50), "Hemasai Vattikuti\nSenior Python SRE\nSkills: Python, FastAPI, Docker")
+    page.insert_text((50, 50), "Test Candidate\nSenior Python SRE\nSkills: Python, FastAPI, Docker")
     pdf_bytes = doc.write()
     doc.close()
     
     text, links = parser.parse_pdf_bytes(pdf_bytes)
-    assert "Hemasai Vattikuti" in text
+    assert "Test Candidate" in text
     assert "Python" in text
 
 def test_resume_parser_full_mock_flow():
@@ -116,11 +116,11 @@ def test_resume_parser_full_mock_flow():
         parser = ResumeParserService()
         doc = fitz.open()
         page = doc.new_page()
-        page.insert_text((50, 50), "Hemasai Vattikuti\nhemasai@example.com\n+91 9876543210\nSenior SRE\nSkills: Python, Docker, Kubernetes\nExperience:\nGoogle - Staff SRE (2022 - Present)\n• Scaled multi-region clusters")
+        page.insert_text((50, 50), "Test Candidate\ntest@example.com\n+91 9876543210\nSenior SRE\nSkills: Python, Docker, Kubernetes\nExperience:\nGoogle - Staff SRE (2022 - Present)\n• Scaled multi-region clusters")
         pdf_bytes = doc.write()
         doc.close()
         
-        result = await parser.process_resume_bytes(pdf_bytes, "hemasai_resume.pdf")
+        result = await parser.process_resume_bytes(pdf_bytes, "testcandidate_resume.pdf")
         assert result["success"] is True
         candidate = result.get("candidate_profile", {})
         assert candidate.get("first_name") or candidate.get("name")
@@ -227,7 +227,7 @@ def test_resume_matcher_candidate_scoring():
         workplace_type="Remote",
         employment_type="Full-time"
     )
-    resume_text = "Hemasai Vattikuti. Senior Python Software Engineer skilled in Python, FastAPI, Docker, Kubernetes and Postgres."
+    resume_text = "Test Candidate. Senior Python Software Engineer skilled in Python, FastAPI, Docker, Kubernetes and Postgres."
     ranked = matcher.rank_jobs_by_fit(resume_text, [job])
     assert len(ranked) == 1
     assert ranked[0].fit_score is not None
@@ -261,7 +261,7 @@ def test_api_suggest_skills_endpoint():
 def test_api_generate_summary_endpoint():
     payload = {
         "style": "technical",
-        "candidate_name": "Hemasai",
+        "candidate_name": "testcandidate",
         "target_role": "Senior SRE",
         "skills_context": "Python; Docker; Kubernetes; Terraform"
     }

@@ -25,62 +25,22 @@ import { apiClient } from "@/lib/api-client";
 export default function ProfilePage() {
   const [profile, setProfile] = useState<any>({
     name: "",
-    headline: "Full Stack Engineer • 2+ Years Experience",
+    headline: "",
     email: "",
     phone: "",
-    city: "Bengaluru",
-    location: "Bengaluru, India",
-    summary: "Passionate software engineer focused on building robust, scalable applications. Experienced with modern frontend and backend architectures, microservices, and AI workflow integration.",
-    skills_languages: ["Python", "TypeScript", "JavaScript", "SQL", "C++", "Java"],
-    skills_frameworks: ["React", "Next.js", "Node.js", "FastAPI", "Express", "TailwindCSS"],
-    skills_cloud: ["AWS", "Docker", "PostgreSQL", "Supabase", "Redis", "MongoDB"],
-    skills_tools: ["Git", "Linux", "Postman", "CI/CD", "Vite", "Figma"],
-    skills: ["Python", "TypeScript", "React", "Next.js", "FastAPI", "PostgreSQL", "AWS", "Docker"],
-    experience: [
-      {
-        title: "Full Stack Engineer",
-        company: "getArole",
-        type: "Full-time",
-        location: "Bengaluru, India",
-        start: "Jan 2023",
-        end: "Present",
-        desc: "• Architected high-performance developer job discovery engine with real-time vector semantic matching\n• Engineered sub-50ms API endpoints and automated web scrapers across 5+ major ATS portals\n• Reduced database read latency by 45% through write-through cache layering and Supabase REST optimization"
-      }
-    ],
-    projects: [
-      {
-        title: "getArole AI Career Suite",
-        desc: "• Intelligent career acceleration engine featuring automated ATS LaTeX resume generation and live job pipeline\n• Built bidirectional synchronization across client storage and cloud Supabase database with sub-second reactivity",
-        tags: ["Next.js", "FastAPI", "Supabase", "TypeScript", "TailwindCSS"],
-        demo: "https://getarole.in",
-        github: "https://github.com"
-      }
-    ],
-    education: [
-      {
-        school: "Engineering & Technology Institute",
-        degree: "B.Tech in Computer Science & Engineering",
-        year: "2020 - 2024",
-        grade: "8.8 / 10.0 CGPA",
-        coursework: "Data Structures & Algorithms, Operating Systems, DBMS, System Design, Computer Networks"
-      }
-    ],
-    certifications: [
-      {
-        name: "AWS Certified Solutions Architect – Associate",
-        issuer: "Amazon Web Services",
-        year: "2024",
-        link: "https://aws.amazon.com/certification/"
-      }
-    ],
-    achievements: [
-      {
-        title: "1st Place – AI Hackathon 2024",
-        issuer: "Developer Community",
-        year: "2024",
-        desc: "Ranked #1 among 300+ teams nationwide for building an autonomous recruiter screening engine."
-      }
-    ],
+    city: "",
+    location: "",
+    summary: "",
+    skills_languages: [],
+    skills_frameworks: [],
+    skills_cloud: [],
+    skills_tools: [],
+    skills: [],
+    experience: [],
+    projects: [],
+    education: [],
+    certifications: [],
+    achievements: [],
     links: {
       github: "",
       linkedin: "",
@@ -89,10 +49,10 @@ export default function ProfilePage() {
   });
 
   const [prefs, setPrefs] = useState<any>({
-    roles: ["Full Stack Engineer", "Software Engineer", "Backend Developer"],
-    locations: ["Bengaluru", "Hyderabad", "Remote in India", "Global Remote"],
+    roles: [],
+    locations: [],
     workplaceType: "Hybrid",
-    salary_amt: 1500000,
+    salary_amt: 0,
     salary_curr: "INR",
     status: "Actively looking"
   });

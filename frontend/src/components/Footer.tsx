@@ -130,12 +130,12 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <a href="mailto:hemasaivattikuti2727@gmail.com" className="text-slate-500 hover:text-[#0062e3] transition-colors font-medium">
+              <a href="mailto:admingetarole@gmail.com" className="text-slate-500 hover:text-[#0062e3] transition-colors font-medium">
                 Grievance Redressal
               </a>
             </li>
             <li>
-              <a href="mailto:hemasaivattikuti2727@gmail.com" className="text-slate-500 hover:text-[#0062e3] transition-colors font-medium">
+              <a href="mailto:admingetarole@gmail.com" className="text-slate-500 hover:text-[#0062e3] transition-colors font-medium">
                 Contact Support
               </a>
             </li>

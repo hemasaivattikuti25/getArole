@@ -2566,7 +2566,7 @@
           if (avatarEl) avatarEl.textContent = (uName[0] || 'U').toUpperCase();
         }
 
-        const adminEmails = ['hemasaivattikuti2727@gmail.com', 'lakshmisatyasrisri@gmail.com', 'hemasai@getarole.in'];
+        const adminEmails = ['admingetarole@gmail.com', 'lakshmisatyasrisri@gmail.com', 'hemasai@getarole.in'];
         if (user.email && adminEmails.includes(user.email.toLowerCase().trim())) {
           const crmLink = document.getElementById('nav-admin-crm-link');
           if (crmLink) crmLink.style.display = 'block';
@@ -2667,11 +2667,9 @@
         state.profile.summary = state.profile.summary || (resumeV2.summary && resumeV2.summary.text) || '';
 
         // Purge legacy mock placeholders if present from previous sessions
-        if (state.profile.headline === 'Full Stack Engineer • 2+ Years Experience') {
-          state.profile.headline = '';
-        }
-        if (state.profile.summary && state.profile.summary.startsWith('Passionate software engineer focused on building robust')) {
-          state.profile.summary = '';
+        if (state.profile.name === 'Hemasai Vattikuti' && state.profile.email === 'hemasai@getarole.in') {
+          state.profile = {};
+          localStorage.removeItem('getarole_profile');
         }
 
         // Categorized Skills initialization without fake mock injections

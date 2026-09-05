@@ -487,7 +487,7 @@
 
       try {
         const u = JSON.parse(localStorage.getItem('getarole_user') || '{}');
-        const adminEmails = ['hemasaivattikuti2727@gmail.com', 'lakshmisatyasrisri@gmail.com', 'hemasai@getarole.in'];
+        const adminEmails = ['admingetarole@gmail.com', 'lakshmisatyasrisri@gmail.com', 'hemasai@getarole.in'];
         if (u.email && adminEmails.includes(u.email.toLowerCase().trim())) {
           const mCrm = drawer.querySelector('#mobile-drawer-crm-link');
           if (mCrm) mCrm.style.display = 'flex';

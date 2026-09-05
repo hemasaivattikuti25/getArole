@@ -12,7 +12,7 @@ export default function OnboardingPage() {
   const [targetRole, setTargetRole] = useState("Software Engineer");
   const [experience, setExperience] = useState("1-3 years");
   const [locations, setLocations] = useState<string[]>(["Bengaluru", "Remote"]);
-  const [skills, setSkills] = useState<string[]>(["React", "Node.js", "TypeScript", "Python"]);
+  const [skills, setSkills] = useState<string[]>([]);
   const [newSkill, setNewSkill] = useState("");
   const [workplaceType, setWorkplaceType] = useState("Hybrid");
   const [saving, setSaving] = useState(false);
