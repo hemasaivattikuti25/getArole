@@ -11,6 +11,11 @@
       .header-actions .btn-refresh {
         display: none !important;
       }
+      
+      /* Hide massive desktop footer on mobile to avoid layout overlap */
+      footer, .desktop-footer {
+        display: none !important;
+      }
 
       /* Clean Header for Mobile */
       header {
@@ -81,7 +86,7 @@
         align-items: center !important;
         padding: 4px 8px !important;
         padding-bottom: calc(4px + env(safe-area-inset-bottom, 0px)) !important;
-        z-index: 9990 !important;
+        z-index: 9999999 !important; /* Must be higher than sidebars and modals */
         box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05) !important;
       }
 
