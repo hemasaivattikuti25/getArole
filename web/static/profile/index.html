@@ -1755,12 +1755,12 @@
           <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
             <div style="width: 38px; height: 38px; border-radius: 10px; background: #e0e7ff; color: #4338ca; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">📄</div>
             <div style="min-width: 0;">
-              <div style="font-size: 13.5px; font-weight: 800; color: var(--text-main); line-height: 1.2;">ATS Career Resume</div>
+              <div style="font-size: 13.5px; font-weight: 800; color: var(--text-main); line-height: 1.2;">Resume</div>
               <div id="sidebar-resume-file-label" style="font-size: 11.5px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">No file uploaded</div>
             </div>
           </div>
           <button type="button" onclick="triggerResumeUpload()" class="btn-sweep" style="width: 100%; padding: 10px 14px; border-radius: 10px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: #ffffff; font-size: 13px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 8px rgba(79,70,229,0.25);">
-            <span>📤</span> Upload ATS Resume
+            <span>📤</span> Upload Resume
           </button>
         </div>
 
@@ -1779,11 +1779,10 @@
               </div>
               <div>
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap;">
-                  <h2 style="font-size: 19px; font-weight: 800; color: #0f172a; margin: 0; font-family: 'Outfit', sans-serif; letter-spacing: -0.02em;">Instant ATS Resume Parser &amp; 1-Click Profile Auto-Fill</h2>
-                  <span style="font-size: 11px; font-weight: 800; background: linear-gradient(135deg, #4f46e5, #6366f1); color: #ffffff; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; box-shadow: 0 2px 6px rgba(79,70,229,0.2);">AI Engine</span>
+                  <h2 style="font-size: 20px; font-weight: 800; color: #0f172a; margin: 0; font-family: 'Outfit', sans-serif; letter-spacing: -0.02em;">Resume</h2>
                 </div>
                 <p style="font-size: 13.5px; color: #475569; margin: 0 0 12px; line-height: 1.55;">
-                  Drop your latest PDF or Word document here. Our AI engine extracts technical skills, work history, projects, and education directly into your profile and updates your 5D match scores across all 1,400+ jobs.
+                  Upload your resume in PDF or Word format to automatically populate your profile details, skills, and matched opportunities.
                 </p>
                 <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                   <div id="resume-status-badge" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: #15803d; background: #dcfce7; padding: 4px 12px; border-radius: 8px; border: 1px solid #bbf7d0;">
@@ -1796,7 +1795,7 @@
 
             <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
               <button type="button" onclick="triggerResumeUpload()" class="btn-sweep" style="padding: 14px 26px; border-radius: 12px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: #ffffff; font-size: 14.5px; font-weight: 800; border: none; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 16px rgba(79,70,229,0.35); transition: all 0.2s;">
-                <span style="font-size: 18px;">📤</span> Upload Resume (PDF / Word)
+                <span style="font-size: 18px;">📤</span> Upload Resume
               </button>
               <div style="font-size: 11.5px; color: #64748b; font-weight: 500;">or drag and drop your file here</div>
             </div>
@@ -2889,12 +2888,12 @@
           heroResumeBadge.style.background = '#dcfce7';
           heroResumeBadge.style.color = '#15803d';
           heroResumeBadge.style.borderColor = '#bbf7d0';
-          heroResumeText.textContent = `✓ Active ATS Resume: ${savedPdf}`;
+          heroResumeText.textContent = `✓ Active Resume: ${savedPdf}`;
         } else {
           heroResumeBadge.style.background = '#fef3c7';
           heroResumeBadge.style.color = '#b45309';
           heroResumeBadge.style.borderColor = '#fde68a';
-          heroResumeText.textContent = '○ No resume uploaded yet — upload now for instant auto-fill';
+          heroResumeText.textContent = '○ No resume uploaded yet';
         }
       }
       if (sidebarResumeLabel) {
