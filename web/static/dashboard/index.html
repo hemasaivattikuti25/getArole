@@ -1555,6 +1555,20 @@
         </div>
       </div>
 
+      <!-- ── DASHBOARD REAL-TIME SEARCH BAR ── -->
+      <div style="margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); border: 1.5px solid var(--border); border-radius: 14px; padding: 10px 16px; box-shadow: 0 4px 18px rgba(0,0,0,0.03); transition: all 0.2s;">
+          <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+            <span style="font-size: 18px; color: var(--text-muted);">🔍</span>
+            <input type="text" id="dashboard-search-input" placeholder="Search roles, tech stack, or companies (e.g. Python, React, SDE, Google)..." oninput="handleDashboardSearch(this.value)" onkeydown="if(event.key==='Enter') executeDashboardSearch()" style="width: 100%; border: none; outline: none; background: transparent; font-size: 14px; color: var(--text-main); font-weight: 500;">
+            <button type="button" id="btn-clear-dash-search" onclick="clearDashboardSearch()" style="display:none; background:none; border:none; color:#94a3b8; font-size:16px; cursor:pointer; padding:4px;" title="Clear search">✕</button>
+          </div>
+          <button type="button" onclick="executeDashboardSearch()" class="btn-sweep" style="background: var(--primary); color: white; border: none; padding: 9px 18px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+            Explore All <span>→</span>
+          </button>
+        </div>
+      </div>
+
       <!-- 2. KPI Metrics Strip -->
       <div style="margin-bottom: 16px;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
@@ -3058,6 +3072,94 @@
               ${(j.skills || []).slice(0, 3).map(s => `<span style="font-size: 10px; font-weight: 700; color: var(--text-subtle); background: var(--bg-subtle); padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">${s}</span>`).join('')}
               ${j.workplace_type === 'Remote' || (j.location||'').toLowerCase().includes('remote') ? `<span style="font-size: 10px; font-weight: 700; color: #8b5cf6; background: #f3e8ff; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">Remote</span>` : ''}
               ${j.stipend_or_salary ? `<span style="font-size: 10px; font-weight: 700; color: #f59e0b; background: #fef3c7; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">${j.stipend_or_salary}</span>` : ''}
+            </div>
+          </div>
+          <div style="color: var(--primary); font-size: 18px; font-weight: 700; padding-left: 8px; flex-shrink: 0;">→</div>
+        </div>
+      `}).join('');
+    }
+
+    let dashSearchTimer = null;
+    window.handleDashboardSearch = function(val) {
+      const btnClear = document.getElementById('btn-clear-dash-search');
+      if (btnClear) btnClear.style.display = val && val.trim() ? 'block' : 'none';
+      clearTimeout(dashSearchTimer);
+      dashSearchTimer = setTimeout(() => {
+        renderDashboardSearchResults(val);
+      }, 120);
+    };
+
+    window.executeDashboardSearch = function() {
+      const inp = document.getElementById('dashboard-search-input');
+      const val = inp ? inp.value.trim() : '';
+      if (val) {
+        window.location.href = `/explore/?q=${encodeURIComponent(val)}`;
+      } else {
+        window.location.href = '/explore/';
+      }
+    };
+
+    window.clearDashboardSearch = function() {
+      const inp = document.getElementById('dashboard-search-input');
+      if (inp) {
+        inp.value = '';
+        inp.focus();
+      }
+      const btnClear = document.getElementById('btn-clear-dash-search');
+      if (btnClear) btnClear.style.display = 'none';
+      renderHomeView();
+    };
+
+    function renderDashboardSearchResults(q) {
+      const grid = document.getElementById('home-matches-preview-grid');
+      if (!grid) return;
+      if (!q || !q.trim()) {
+        renderHomeView();
+        return;
+      }
+      const cleanQ = q.toLowerCase().replace(/[,;+&|()\[\]]/g, ' ').replace(/-/g, ' ');
+      const qWords = cleanQ.split(/\s+/).map(w => w.trim()).filter(w => w.length > 0);
+      
+      const matched = (allJobs || []).filter(j => {
+        const title = (j.title || '').toLowerCase();
+        const comp = (j.company || '').toLowerCase();
+        const loc = (j.location || '').toLowerCase();
+        const desc = (j.description || '').toLowerCase();
+        const reqs = Array.isArray(j.requirements) ? j.requirements.join(' ').toLowerCase() : '';
+        const skills = Array.isArray(j.skills) ? j.skills.join(' ').toLowerCase() : '';
+        const allText = `${title} ${comp} ${loc} ${reqs} ${skills} ${desc}`;
+        return qWords.every(token => allText.includes(token));
+      }).slice(0, 5);
+
+      if (matched.length === 0) {
+        grid.innerHTML = `
+          <div style="padding: 28px; text-align: center; color: var(--text-muted); font-size: 13px;">
+            No live recommendations found matching "<strong>${escapeHTML(q)}</strong>".<br>
+            <button onclick="executeDashboardSearch()" class="btn-sweep" style="margin-top: 10px; padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;">
+              Search Entire 1,000+ Job Index →
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = matched.map((j) => {
+        const compInitial = j.company ? j.company[0].toUpperCase() : 'G';
+        const fitScore = Math.round(j.fit_score || 0);
+        return `
+        <div style="display: flex; gap: 16px; padding: 14px 18px; border-radius: 12px; background: rgba(255,255,255,0.75); cursor: pointer; transition: all 0.2s; border: 1px solid var(--border-subtle); align-items: center;" onmouseover="this.style.background='#ffffff'; this.style.borderColor='var(--border)';" onmouseout="this.style.background='rgba(255,255,255,0.75)'; this.style.borderColor='var(--border-subtle)';" onclick="window.location.href='/explore/?q=${encodeURIComponent(q)}'">
+          <div style="width: 44px; height: 44px; border-radius: 10px; background: linear-gradient(135deg, var(--primary), #8b5cf6); color: white; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; flex-shrink: 0; box-shadow: 0 4px 10px rgba(79,70,229,0.2);">
+            ${compInitial}
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; gap: 8px;">
+              <div style="font-size: 14.5px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${j.title}</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: #10b981; background: #d1fae5; padding: 2px 7px; border-radius: 4px; flex-shrink: 0;">${fitScore || 85}% Match</div>
+            </div>
+            <div style="font-size: 12.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${j.company} <span style="color:var(--text-subtle);">·</span> ${j.location || 'India'}</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+              ${(j.skills || []).slice(0, 3).map(s => `<span style="font-size: 10px; font-weight: 700; color: var(--text-subtle); background: var(--bg-subtle); padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">${s}</span>`).join('')}
+              ${j.workplace_type === 'Remote' || (j.location||'').toLowerCase().includes('remote') ? `<span style="font-size: 10px; font-weight: 700; color: #8b5cf6; background: #f3e8ff; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">Remote</span>` : ''}
             </div>
           </div>
           <div style="color: var(--primary); font-size: 18px; font-weight: 700; padding-left: 8px; flex-shrink: 0;">→</div>

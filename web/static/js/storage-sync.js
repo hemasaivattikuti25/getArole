@@ -564,46 +564,49 @@
   async function deleteUserAccount() {
     const uid = getEffectiveUID();
 
-    // 1. Direct Supabase PostgREST Cloud Deletion
-    if (uid && uid !== 'guest_user') {
-      try {
-        await Promise.allSettled([
-          fetch(`${SUPABASE_REST_URL}/user_profiles?firebase_uid=eq.${encodeURIComponent(uid)}`, {
-            method: 'DELETE',
-            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
-          }),
-          fetch(`${SUPABASE_REST_URL}/user_preferences?firebase_uid=eq.${encodeURIComponent(uid)}`, {
-            method: 'DELETE',
-            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
-          }),
-          fetch(`${SUPABASE_REST_URL}/user_resumes?firebase_uid=eq.${encodeURIComponent(uid)}`, {
-            method: 'DELETE',
-            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
-          }),
-          fetch('/api/user/account', {
-            method: 'DELETE',
-            headers: { 'X-Firebase-UID': uid }
-          })
-        ]);
-        console.log(`[Storage-Sync] Direct DB records purged for UID: ${uid}`);
-      } catch (e) {
-        console.warn('[Storage-Sync] Direct DB purge notice:', e);
-      }
-    }
-
-    // 2. Cascade Firebase Auth deletion
     try {
-      const mod = await import('/firebase-auth.js');
-      if (mod && typeof mod.deleteAccount === 'function') {
-        await mod.deleteAccount();
+      // 1. Direct Supabase PostgREST Cloud Deletion & Backend GDPR endpoint
+      if (uid && uid !== 'guest_user') {
+        try {
+          await Promise.allSettled([
+            fetch(`${SUPABASE_REST_URL}/user_profiles?firebase_uid=eq.${encodeURIComponent(uid)}`, {
+              method: 'DELETE',
+              headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+            }),
+            fetch(`${SUPABASE_REST_URL}/user_preferences?firebase_uid=eq.${encodeURIComponent(uid)}`, {
+              method: 'DELETE',
+              headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+            }),
+            fetch(`${SUPABASE_REST_URL}/user_resumes?firebase_uid=eq.${encodeURIComponent(uid)}`, {
+              method: 'DELETE',
+              headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+            }),
+            fetch('/api/user/account', {
+              method: 'DELETE',
+              headers: { 'X-Firebase-UID': uid, 'Authorization': `Bearer ${uid}` }
+            })
+          ]);
+          console.log(`[Storage-Sync] Direct DB records purged for UID: ${uid}`);
+        } catch (e) {
+          console.warn('[Storage-Sync] Direct DB purge notice:', e);
+        }
       }
-    } catch (e) {
-      console.warn('[Storage-Sync] Firebase delete notice:', e);
-    }
 
-    localStorage.clear();
-    sessionStorage.clear();
-    window.location.href = '/';
+      // 2. Cascade Firebase Auth deletion
+      try {
+        const mod = await import('/firebase-auth.js');
+        if (mod && typeof mod.deleteAccount === 'function') {
+          await mod.deleteAccount();
+        }
+      } catch (e) {
+        console.warn('[Storage-Sync] Firebase delete notice:', e);
+      }
+    } finally {
+      // 3. Guaranteed client wipe & redirect
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.replace('/?account_deleted=1');
+    }
   }
 
   window.safeSignOut = safeSignOut;

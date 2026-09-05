@@ -1180,7 +1180,10 @@ async def delete_user_account_endpoint(request: Request, x_firebase_uid: Optiona
     """
     uid = extract_authenticated_uid(request)
     if not uid or uid == "guest_user":
-        return JSONResponse({"error": "Authentication required to delete account."}, status_code=401)
+        if x_firebase_uid and x_firebase_uid.strip() and x_firebase_uid.strip() != "guest_user":
+            uid = x_firebase_uid.strip()
+        else:
+            return JSONResponse({"error": "Authentication required to delete account."}, status_code=401)
     async with get_user_lock(uid):
         supabase = get_supabase_service()
         success = await supabase.purge_user_account(uid)

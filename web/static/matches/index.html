@@ -1736,9 +1736,10 @@
       <!-- ════════════════════ SEARCH & FILTER BAR (SIMPLIFY STYLE) ════════════════════ -->
       <div class="filter-bar" id="filter-bar" style="display:block;">
         <div class="filter-inner">
-          <div class="search-input-wrap">
+          <div class="search-input-wrap" style="position:relative; display:flex; align-items:center;">
             <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input type="text" id="main-search-input" class="search-input" placeholder="Search matches by role, company, or skill..." oninput="filterJobs()">
+            <input type="text" id="main-search-input" class="search-input" placeholder="Search matches by role, company, or skill (e.g. Python, React, SDE)..." oninput="handleSearchInput(this.value)" onkeydown="if(event.key==='Enter') filterJobs()">
+            <button type="button" id="btn-clear-search" onclick="clearSearchInput()" style="display:none; position:absolute; right:12px; background:none; border:none; color:#94a3b8; font-size:16px; cursor:pointer; padding:4px;" title="Clear search">✕</button>
           </div>
           <div class="filter-pills-row">
             <button class="filter-pill" id="pill-remote" onclick="togglePillFilter('remote')">📍 Remote</button>
@@ -2595,11 +2596,22 @@
           .sort((a, b) => b.fit_score - a.fit_score)
           .slice(0, 60);
 
+        // Read search query parameter from URL (e.g. from homepage or links)
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlQ = urlParams.get('q');
+        const sInput = document.getElementById('main-search-input');
+        if (urlQ && sInput && !sInput.value) {
+          sInput.value = decodeURIComponent(urlQ);
+          const btnClear = document.getElementById('btn-clear-search');
+          if (btnClear) btnClear.style.display = 'block';
+        }
+
         renderMatchesSplitView();
         if (matchedJobs.length > 0) {
           selectMatchJob(matchedJobs[0].id);
         }
         updateCounts();
+        if (urlQ) filterJobs();
       } catch (e) {
         console.error('Job load error:', e);
         if (feed) {
@@ -2632,27 +2644,65 @@
       filterJobs();
     }
 
+    let searchDebounceTimer = null;
+    function debouncedFilterJobs() {
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        filterJobs();
+      }, 120);
+    }
+
+    function handleSearchInput(val) {
+      const btnClear = document.getElementById('btn-clear-search');
+      if (btnClear) btnClear.style.display = val && val.trim() ? 'block' : 'none';
+      debouncedFilterJobs();
+    }
+
+    function clearSearchInput() {
+      const sInput = document.getElementById('main-search-input');
+      if (sInput) {
+        sInput.value = '';
+        sInput.focus();
+      }
+      const btnClear = document.getElementById('btn-clear-search');
+      if (btnClear) btnClear.style.display = 'none';
+      filterJobs();
+    }
+
     function clearAllFilters() {
       activePills.clear();
       document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
       const sInput = document.getElementById('main-search-input');
       if (sInput) sInput.value = '';
+      const btnClear = document.getElementById('btn-clear-search');
+      if (btnClear) btnClear.style.display = 'none';
       filteredJobs = [...allJobs];
       renderFeed();
-      if (filteredJobs.length > 0) selectJob(filteredJobs[0].id);
+      if (filteredJobs.length > 0) selectJob(filteredJobs[0].id, 'matches-detail-pane');
     }
 
     const SYNONYM_MAP = {
-      'sde': ['sde', 'software development engineer', 'software engineer', 'software dev'],
-      'swe': ['swe', 'software engineer', 'software development engineer'],
-      'ml': ['ml', 'machine learning'],
-      'ai': ['ai', 'artificial intelligence', 'genai', 'llm'],
-      'qa': ['qa', 'quality assurance', 'sdet', 'test engineer', 'testing'],
-      'sdet': ['sdet', 'software development engineer in test', 'qa automation'],
-      'devops': ['devops', 'site reliability', 'sre', 'cloud infrastructure'],
-      'sre': ['sre', 'site reliability engineer', 'devops'],
+      'sde': ['sde', 'software development engineer', 'software engineer', 'software dev', 'swe', 'developer'],
+      'swe': ['swe', 'software engineer', 'software development engineer', 'sde', 'developer'],
+      'frontend': ['frontend', 'front end', 'front-end', 'ui', 'react', 'javascript', 'web developer'],
+      'backend': ['backend', 'back end', 'back-end', 'api', 'server', 'node', 'python', 'java', 'golang', 'django'],
+      'fullstack': ['fullstack', 'full stack', 'full-stack', 'full-stack developer'],
+      'ml': ['ml', 'machine learning', 'ai', 'deep learning'],
+      'ai': ['ai', 'artificial intelligence', 'genai', 'llm', 'machine learning', 'ml', 'nlp'],
+      'genai': ['genai', 'generative ai', 'llm', 'rag', 'langchain'],
+      'qa': ['qa', 'quality assurance', 'sdet', 'test engineer', 'testing', 'automation tester'],
+      'sdet': ['sdet', 'software development engineer in test', 'qa automation', 'qa', 'testing'],
+      'devops': ['devops', 'site reliability', 'sre', 'cloud infrastructure', 'kubernetes', 'docker', 'ci/cd'],
+      'sre': ['sre', 'site reliability engineer', 'devops', 'infrastructure'],
+      'cloud': ['cloud', 'aws', 'azure', 'gcp', 'devops'],
+      'react': ['react', 'reactjs', 'react.js'],
+      'node': ['node', 'nodejs', 'node.js', 'express'],
+      'python': ['python', 'py', 'django', 'fastapi', 'flask'],
+      'java': ['java', 'spring', 'springboot', 'spring boot'],
       'wfh': ['wfh', 'work from home', 'remote'],
+      'remote': ['remote', 'wfh', 'work from home', 'telecommute'],
       'intern': ['intern', 'internship', 'trainee', 'co-op', 'apprentice'],
+      'internship': ['internship', 'intern', 'trainee', 'co-op'],
       'fresher': ['fresher', 'entry level', 'graduate', 'batch 2024', 'batch 2025', 'batch 2026', '0-1']
     };
 
@@ -2669,11 +2719,15 @@
         const empType = (j.employment_type || '').toLowerCase();
         const workType = (j.workplace_type || '').toLowerCase();
         const platform = (j.platform || '').toLowerCase();
-        const allText = `${title} ${company} ${location} ${city} ${empType} ${workType} ${platform} ${desc}`;
+        const reqs = Array.isArray(j.requirements) ? j.requirements.join(' ').toLowerCase() : '';
+        const skills = Array.isArray(j.skills) ? j.skills.join(' ').toLowerCase() : (typeof j.skills === 'string' ? j.skills.toLowerCase() : '');
+        const matchedSkills = Array.isArray(j.matched_skills) ? j.matched_skills.join(' ').toLowerCase() : '';
+        const allText = `${title} ${company} ${location} ${city} ${empType} ${workType} ${platform} ${reqs} ${skills} ${matchedSkills} ${desc}`;
 
         // 1. Search Query Input (Smart synonym & token matching)
         if (q) {
-          const qWords = q.split(/\s+/).filter(Boolean);
+          const cleanQ = q.toLowerCase().replace(/[,;+&|()\[\]]/g, ' ').replace(/-/g, ' ');
+          const qWords = cleanQ.split(/\s+/).map(w => w.trim()).filter(w => w.length > 0);
           const matchesQ = qWords.every(token => {
             const expansions = SYNONYM_MAP[token] || [token];
             return expansions.some(exp => allText.includes(exp));

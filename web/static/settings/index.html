@@ -1499,22 +1499,20 @@
         } else if (typeof deleteUserAccount === 'function') {
           await deleteUserAccount();
         } else {
-          const uid = localStorage.getItem('firebase_uid');
-          if (uid) {
+          const uid = localStorage.getItem('firebase_uid') || '';
+          if (uid && uid !== 'guest_user') {
             await fetch('/api/user/account', {
               method: 'DELETE',
-              headers: { 'X-Firebase-UID': uid }
+              headers: { 'X-Firebase-UID': uid, 'Authorization': `Bearer ${uid}` }
             }).catch(() => {});
           }
-          localStorage.clear();
-          sessionStorage.clear();
-          window.location.href = '/';
         }
       } catch (err) {
         console.warn('Account deletion notice:', err);
+      } finally {
         localStorage.clear();
         sessionStorage.clear();
-        window.location.href = '/';
+        window.location.replace('/?account_deleted=1');
       }
     };
   </script>

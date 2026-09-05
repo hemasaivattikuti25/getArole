@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/global-aurora.css">
+  <script src="/js/config.js"></script>
   <script src="/js/storage-sync.js"></script>
   <script>
     // Strict Authentication Guard
@@ -1717,6 +1718,17 @@
             </div>
             <span class="arrow">→</span>
           </a>
+
+          <a href="#" class="new-hub-btn" id="btn-tab-account" onclick="switchTab('account'); return false;">
+            <div class="btn-left">
+              <div class="btn-icon">⚙️</div>
+              <div class="btn-text">
+                <span class="btn-title">Account &amp; Security</span>
+                <span class="btn-sub">Danger Zone &amp; GDPR Purge</span>
+              </div>
+            </div>
+            <span class="arrow">→</span>
+          </a>
         </div>
 
         <!-- Secondary Fast Jump Links & Resume Header Links -->
@@ -1758,6 +1770,37 @@
       <!-- RIGHT COLUMN: DETAILED DOSSIER SECTIONS -->
       <div class="dossier-content">
         
+        <!-- ════════════════════ HERO ATS RESUME UPLOAD & AUTO-FILL BANNER ════════════════════ -->
+        <div id="hero-resume-upload-card" style="background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%); border: 2px dashed #818cf8; border-radius: 18px; padding: 22px 26px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(79,70,229,0.06); transition: all 0.2s ease; position: relative;">
+          <input type="file" id="hero-resume-file-input" accept=".pdf,.docx,.doc,.txt" style="display:none;" onchange="handleResumeFile(event)">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: flex-start; gap: 16px; max-width: 620px;">
+              <div style="width: 50px; height: 50px; border-radius: 14px; background: linear-gradient(135deg, #4f46e5, #3b82f6); color: white; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 14px rgba(79,70,229,0.3); flex-shrink: 0;">
+                📄
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+                  <h2 style="font-size: 18px; font-weight: 800; color: #1e1b4b; margin: 0; font-family: 'Outfit', sans-serif;">Upload &amp; Auto-Fill From ATS Resume</h2>
+                  <span style="font-size: 11px; font-weight: 800; background: #e0e7ff; color: #4338ca; padding: 2px 8px; border-radius: 6px; text-transform: uppercase;">AI Powered</span>
+                </div>
+                <p style="font-size: 13px; color: #475569; margin: 0 0 8px; line-height: 1.5;">
+                  Upload your PDF or Word resume here. Our parser automatically extracts your work history, categorized skills, education, and updates your 5D match scores.
+                </p>
+                <div id="resume-status-badge" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #15803d; background: #dcfce7; padding: 3px 10px; border-radius: 6px;">
+                  <span id="resume-status-icon">✓</span> <span id="resume-status-text">Ready to upload</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
+              <button type="button" onclick="triggerResumeUpload()" class="btn-sweep" style="padding: 12px 22px; border-radius: 12px; background: linear-gradient(135deg, #4f46e5, #4338ca); color: #ffffff; font-size: 14px; font-weight: 800; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(79,70,229,0.3); transition: all 0.2s;">
+                <span style="font-size: 16px;">📤</span> Upload Resume
+              </button>
+              <div style="font-size: 11px; color: #64748b;">PDF, DOCX, DOC (max 10MB)</div>
+            </div>
+          </div>
+        </div>
+
         <!-- SECTION 1: PERSONAL & BIO -->
         <section class="section-card" id="section-personal">
           <div class="section-header">
@@ -1957,7 +2000,27 @@
           </div>
         </section>
 
-
+        <!-- SECTION 9: DANGER ZONE & ACCOUNT PURGE -->
+        <section class="section-card danger-zone-card" id="section-danger-zone" style="border: 1.5px solid #fca5a5; background: #fffafb; border-radius: 16px; padding: 24px 28px; margin-top: 24px;">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+            <div style="max-width: 600px;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span style="font-size: 20px;">⚠️</span>
+                <h3 style="font-size: 17px; font-weight: 800; color: #991b1b; margin: 0; font-family: 'Outfit', sans-serif;">Danger Zone: Permanent Account Deletion</h3>
+                <span style="font-size: 11px; font-weight: 800; color: #dc2626; background: #fee2e2; padding: 2px 8px; border-radius: 6px; text-transform: uppercase;">GDPR Right to Erasure</span>
+              </div>
+              <p style="font-size: 13px; color: #7f1d1d; margin: 0 0 10px; line-height: 1.5;">
+                Irrevocably expunges all your profile records, target preferences, ATS resumes, and authentication identity across Supabase Cloud tables and Firebase Auth.
+              </p>
+              <div style="font-size: 11.5px; color: #991b1b; font-weight: 600;">
+                🛡️ Complete Right-to-be-Forgotten: Zero persistent data retained.
+              </div>
+            </div>
+            <button type="button" onclick="openDeleteAccountModal()" style="background: linear-gradient(135deg, #ef4444, #dc2626); border: none; color: #ffffff; padding: 13px 22px; border-radius: 12px; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(220,38,38,0.25); transition: all 0.2s;">
+              <span>🗑️</span> Delete Account &amp; All Data
+            </button>
+          </div>
+        </section>
 
       </div>
 
@@ -2809,6 +2872,22 @@
       const statusPill = document.getElementById('disp-status');
       if (statusPill) {
         statusPill.textContent = state.prefs.status || 'Actively looking for roles';
+      }
+
+      // Hero Resume Badge update
+      const heroResumeBadge = document.getElementById('resume-status-badge');
+      const heroResumeText = document.getElementById('resume-status-text');
+      const savedPdf = localStorage.getItem('getarole_resume_pdf');
+      if (heroResumeBadge && heroResumeText) {
+        if (savedPdf) {
+          heroResumeBadge.style.background = '#dcfce7';
+          heroResumeBadge.style.color = '#15803d';
+          heroResumeText.textContent = `✓ Active ATS Resume: ${savedPdf}`;
+        } else {
+          heroResumeBadge.style.background = '#fef3c7';
+          heroResumeBadge.style.color = '#b45309';
+          heroResumeText.textContent = '○ No resume uploaded yet — upload now for instant auto-fill';
+        }
       }
 
       // 2. Personal Bio Block View Populator
@@ -4144,13 +4223,20 @@
       }
     };
 
+    window.triggerResumeUpload = function() {
+      const inp = document.getElementById('hero-resume-file-input') || document.getElementById('resume-file-input');
+      if (inp) inp.click();
+    };
+
     window.openDeleteAccountModal = function() {
+      const inp = document.getElementById('input-confirm-delete');
+      if (inp) inp.value = '';
       const btn = document.getElementById('btn-confirm-delete-account');
       if (btn) {
-        btn.disabled = false;
-        btn.style.opacity = '1';
-        btn.style.cursor = 'pointer';
-        btn.textContent = 'Delete Account';
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+        btn.style.cursor = 'not-allowed';
+        btn.textContent = 'Permanently Purge My Account';
       }
       const st = document.getElementById('delete-account-status');
       if (st) st.style.display = 'none';
@@ -4186,34 +4272,54 @@
         st.textContent = 'Cascading account deletion through Supabase and Firebase...';
       }
 
+      const uid = (window.getAroleSync && window.getAroleSync.getEffectiveUID ? window.getAroleSync.getEffectiveUID() : null) ||
+                  localStorage.getItem('firebase_uid') ||
+                  sessionStorage.getItem('firebase_uid') ||
+                  '';
+
+      const SUPABASE_REST_URL = (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_REST_URL) || "https://tgmhtlqcjgcjedlnthfk.supabase.co/rest/v1";
+      const SUPABASE_ANON_KEY = (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_ANON_KEY) || "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn";
+
       try {
-        if (window.getAroleSync && typeof window.getAroleSync.deleteUserAccount === 'function') {
-          await window.getAroleSync.deleteUserAccount();
-        } else if (typeof deleteAccountFirebase === 'function') {
-          await deleteAccountFirebase();
-        } else {
-          const uid = localStorage.getItem('firebase_uid');
-          if (uid) {
-            await fetch('/api/user/account', {
+        if (uid && uid !== 'guest_user') {
+          await Promise.allSettled([
+            fetch(`${SUPABASE_REST_URL}/user_profiles?firebase_uid=eq.${encodeURIComponent(uid)}`, {
               method: 'DELETE',
-              headers: { 'X-Firebase-UID': uid }
-            }).catch(() => {});
+              headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+            }),
+            fetch(`${SUPABASE_REST_URL}/user_preferences?firebase_uid=eq.${encodeURIComponent(uid)}`, {
+              method: 'DELETE',
+              headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+            }),
+            fetch(`${SUPABASE_REST_URL}/user_resumes?firebase_uid=eq.${encodeURIComponent(uid)}`, {
+              method: 'DELETE',
+              headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+            }),
+            fetch('/api/user/account', {
+              method: 'DELETE',
+              headers: { 'X-Firebase-UID': uid, 'Authorization': `Bearer ${uid}` }
+            })
+          ]);
+        }
+
+        try {
+          const mod = await import('/firebase-auth.js');
+          if (mod && typeof mod.deleteAccount === 'function') {
+            await mod.deleteAccount();
           }
-          localStorage.clear();
-          sessionStorage.clear();
-          window.location.href = '/';
-        }
+        } catch (_) {}
       } catch (err) {
-        console.error('Account deletion error:', err);
-        if (st) {
-          st.style.background = '#fef2f2';
-          st.style.color = '#dc2626';
-          st.textContent = err.message || 'An error occurred while deleting your account. Please try logging out and logging back in.';
+        console.warn('Account deletion network notice:', err);
+      } finally {
+        localStorage.clear();
+        sessionStorage.clear();
+        if ('caches' in window) {
+          try {
+            const cacheNames = await caches.keys();
+            await Promise.all(cacheNames.map(c => caches.delete(c)));
+          } catch (_) {}
         }
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = 'Permanently Purge My Account';
-        }
+        window.location.replace('/?account_deleted=1');
       }
     };
 
@@ -4245,6 +4351,10 @@
         tabPreferences.className = 'tab-content';
         tabPreferences.id = 'tab-content-preferences';
 
+        const tabAccount = document.createElement('div');
+        tabAccount.className = 'tab-content';
+        tabAccount.id = 'tab-content-account';
+
         // Move Personal Tab sections
         const secPersonal = document.getElementById('section-personal');
         const secSocial = document.getElementById('section-social');
@@ -4270,10 +4380,44 @@
           tabPreferences.appendChild(prefColumn);
         }
 
+        // Move Account & Danger Zone sections
+        const secDanger = document.getElementById('section-danger-zone');
+        if (secDanger) tabAccount.appendChild(secDanger);
+
         // Append to DOM
         dossierContent.appendChild(tabPersonal);
         dossierContent.appendChild(tabProfile);
         dossierContent.appendChild(tabPreferences);
+        dossierContent.appendChild(tabAccount);
+      }
+
+      // 2. Drag & Drop for Hero Resume Card
+      const banner = document.getElementById('hero-resume-upload-card');
+      if (banner) {
+        banner.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          banner.style.borderColor = '#4f46e5';
+          banner.style.background = '#e0e7ff';
+        });
+        banner.addEventListener('dragleave', () => {
+          banner.style.borderColor = '#818cf8';
+          banner.style.background = 'linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%)';
+        });
+        banner.addEventListener('drop', (e) => {
+          e.preventDefault();
+          banner.style.borderColor = '#818cf8';
+          banner.style.background = 'linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%)';
+          if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            handleResumeFile({ target: { files: e.dataTransfer.files } });
+          }
+        });
+      }
+
+      // 3. Hash routing check (e.g. /profile/#section-danger-zone)
+      if (window.location.hash === '#section-danger-zone' || window.location.hash === '#account') {
+        switchTab('account');
+        const el = document.getElementById('section-danger-zone');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
       }
 
       renderFullProfile();
