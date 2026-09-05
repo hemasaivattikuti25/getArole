@@ -121,19 +121,7 @@ export async function deleteAccount() {
   const user = auth.currentUser;
   const uid = user ? user.uid : localStorage.getItem("firebase_uid");
 
-  // 1. Purge database records via GDPR Cascade Endpoint
-  if (uid && uid !== "guest_user") {
-    try {
-      await fetch('/api/user/account', {
-        method: 'DELETE',
-        headers: { 'X-Firebase-UID': uid }
-      });
-    } catch (e) {
-      console.warn('[Account Deletion] Backend purge notice:', e);
-    }
-  }
-
-  // 2. Delete Firebase Auth User
+  // 1. Delete Firebase Auth User FIRST to ensure we don't purge DB if they need to re-authenticate
   if (user) {
     try {
       await deleteUser(user);
@@ -143,6 +131,18 @@ export async function deleteAccount() {
          throw new Error("Please sign out and sign back in to verify your identity before deleting your account.");
       }
       throw e;
+    }
+  }
+
+  // 2. Purge database records via GDPR Cascade Endpoint ONLY if Firebase delete succeeds
+  if (uid && uid !== "guest_user") {
+    try {
+      await fetch('/api/user/account', {
+        method: 'DELETE',
+        headers: { 'X-Firebase-UID': uid }
+      });
+    } catch (e) {
+      console.warn('[Account Deletion] Backend purge notice:', e);
     }
   }
 
