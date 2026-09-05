@@ -17,12 +17,12 @@
   <style>
             :root {
       /* Shared / Header Variables */
-      --primary: #0071e3;
-      --primary-hover: #0077ed;
-      --primary-accent: #0071e3;
-      --primary-light: #e8f0fe;
-      --primary-border: #bfdbfe;
-      --primary-gradient: linear-gradient(135deg, #0071e3 0%, #4facfe 100%);
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-accent: #4f46e5;
+      --primary-light: #eef2ff;
+      --primary-border: #c7d2fe;
+      --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
       --accent: #4f46e5;
       --accent-emerald: #10b981;
       --surface: #ffffff;
@@ -32,7 +32,7 @@
       --border-subtle: rgba(0, 0, 0, 0.04);
       --border: rgba(0, 0, 0, 0.06);
       --border-strong: rgba(0, 0, 0, 0.12);
-      --border-glow: rgba(0, 113, 227, 0.25);
+      --border-glow: rgba(79, 70, 229, 0.25);
       --text-main: #2C2C2E;
       --text-muted: #6E6E73;
       --text-subtle: #99999F;
@@ -55,7 +55,7 @@
       --sw: 220px;
       --ew: 440px;
       --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.04);
-      --shadow-glow: 0 0 35px rgba(0, 113, 227, 0.15);
+      --shadow-glow: 0 0 35px rgba(79, 70, 229, 0.15);
       --radius-sm: 8px;
       --radius-md: 12px;
       --radius-lg: 18px;
@@ -70,7 +70,7 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       background: var(--bg);
       color: var(--tx);
       min-height: 100dvh;
@@ -80,6 +80,7 @@
       -webkit-font-smoothing: antialiased;
           overflow-x: hidden;
     }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -.02em; }
 
     /* ════════ TOP BAR ════════ */
     .tb {
@@ -571,6 +572,7 @@
       white-space: pre-line;
       margin-bottom: 28px;
     }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -.02em; }
 
     .cl-signoff {
       font-size: 13.5px;
@@ -696,6 +698,7 @@
     @media (max-width: 640px) {
       input, select, textarea, .fi, .ft { font-size: 16px !important; }
       body { touch-action: manipulation; }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -.02em; }
       .ep, .sn, .pv { word-break: break-word; overflow-wrap: anywhere; }
     }
     .dropdown-item {
@@ -816,6 +819,7 @@
       body {
         padding-bottom: 74px !important;
       }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -.02em; }
 
       .mobile-hamburger-btn {
         display: flex !important;
@@ -1073,6 +1077,7 @@
       overflow-x: hidden !important;
       max-width: 100vw !important;
     }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -.02em; }
 
     /* Input font size iOS zoom prevention */
     input, select, textarea {
@@ -1153,6 +1158,7 @@
       body {
         min-height: 100dvh !important;
       }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; letter-spacing: -.02em; }
     }
 
   
@@ -1471,69 +1477,7 @@
       </div>
     </div>
   </main>
-  <footer class="global-footer" style="background:#ffffff; border-top:1px solid #e2e8f0; padding:28px 24px 20px; font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; flex-shrink:0;">
-    <div class="footer-inner" style="max-width:1240px; margin:0 auto; display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:24px; margin-bottom:20px; min-width:0;">
-      <div>
-        <a href="/" class="brand-group" style="display:inline-flex; align-items:center; gap:8px; text-decoration:none; margin-bottom:8px;">
-          <img src="/logo.svg" alt="getArole Logo" style="width:28px; height:28px; border-radius:7px; box-shadow:0 2px 8px rgba(79,70,229,0.2);">
-          <span style="font-family:'Outfit', sans-serif; font-size:18px; font-weight:800; color:#0f172a; letter-spacing:-0.02em;">get<span style="color:#4f46e5">A</span>role</span>
-        </a>
-        <p style="font-size:12px; color:#64748b; line-height:1.5; max-width:280px; margin-bottom:10px;">
-          AI-powered job search platform. Verified listings from top career portals.
-        </p>
-        <!-- Team / Founder Spotlight -->
-        <div style="display:inline-flex; align-items:center; gap:8px; background:#f8fafc; border:1px solid #e2e8f0; padding:4px 10px; border-radius:20px; margin-bottom:8px;">
-          <img src="/founder.png" alt="getArole Team" style="width:22px; height:22px; border-radius:50%; object-fit:cover; border:1.5px solid #4f46e5; flex-shrink:0;">
-          <span style="font-size:11px; font-weight:700; color:#0f172a;">Built by getArole Team <span style="color:#4f46e5;">✓</span></span>
-        </div>
-        <br>
-        <div style="display:inline-flex; align-items:center; gap:6px; background:#f0fdf4; border:1px solid #bbf7d0; padding:3px 10px; border-radius:99px; font-size:11px; font-weight:700; color:#15803d;">
-          <span style="width:6px; height:6px; background:#22c55e; border-radius:50%;"></span>
-          Verified Jobs • Live
-        </div>
-      </div>
-
-      <div>
-        <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:10px;">Explore Jobs</div>
-        <ul style="list-style:none; display:flex; flex-direction:column; gap:6px; padding:0; margin:0;">
-          <li><a href="/explore/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">All Opportunities</a></li>
-          <li><a href="/explore?q=Bengaluru" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Bengaluru Hub</a></li>
-          <li><a href="/explore?q=Hyderabad" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Hyderabad Roles</a></li>
-          <li><a href="/explore?q=Remote" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Global Remote</a></li>
-          <li><a href="/explore?q=Fresher" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Freshers &amp; 2026</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:10px;">AI Platform</div>
-        <ul style="list-style:none; display:flex; flex-direction:column; gap:6px; padding:0; margin:0;">
-          <li><a href="/onboarding/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">AI Resume Matcher</a></li>
-          <li><a href="/resume-builder/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">LaTeX Resume Builder</a></li>
-          <li><a href="/cover-letter-builder/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Cover Letter AI</a></li>
-          <li><a href="/matches/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Semantic Matches</a></li>
-          <li><a href="/dashboard/" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Kanban Pipeline</a></li>
-        </ul>
-      </div>
-
-      <div>
-        <div style="font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:#0f172a; margin-bottom:10px;">Legal &amp; Support</div>
-        <ul style="list-style:none; display:flex; flex-direction:column; gap:6px; padding:0; margin:0;">
-          <li><a href="/privacy" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Privacy Policy</a></li>
-          <li><a href="/terms" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Terms of Service</a></li>
-          <li><a href="mailto:admingetarole@gmail.com" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Grievance Redressal</a></li>
-          <li><a href="mailto:admingetarole@gmail.com" class="footer-nav-link" style="color:#64748b; text-decoration:none; font-size:12px; font-weight:500;">Contact Support</a></li>
-        </ul>
-      </div>
-    </div>
-
-    <div style="max-width:1240px; margin:0 auto; border-top:1px solid #e2e8f0; padding-top:14px; display:flex; align-items:center; justify-content:space-between; font-size:11.5px; color:#94a3b8; flex-wrap:wrap; gap:12px;">
-      <div>© <span id="footer-year" class="global-footer-year">2026</span> <strong>getArole.in</strong>. All rights reserved.</div>
-      <div style="font-size:11px; color:#94a3b8; display:flex; align-items:center; gap:12px;">
-        <span>🔒 DPDP Act 2023 &amp; GDPR Compliant</span>
-        <span>🛡️ 256-Bit SSL</span>
-      </div>
-    </div>
-  </footer>
+  
 
 
 
