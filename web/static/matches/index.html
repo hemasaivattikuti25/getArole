@@ -2890,12 +2890,7 @@
 
       // ── MOBILE: show JD overlay ONLY on explicit user click ──
       if (window.innerWidth <= 768) {
-        if (isUserClick) {
-          document.body.classList.add('mobile-jd-open');
-          window.scrollTo(0, 0);
-        } else {
-          document.body.classList.remove('mobile-jd-open');
-        }
+        if (isUserClick) { document.body.classList.add('mobile-jd-open'); window.scrollTo(0, 0); }
       }
 
       const pane = document.getElementById(targetPaneId) || document.getElementById('matches-detail-pane') || document.getElementById('job-detail-pane');
@@ -3088,7 +3083,7 @@
         const isSelected = j.id === selectedMatchJobId;
         const compInitial = j.company ? j.company[0].toUpperCase() : 'G';
         return `
-          <div class="job-card ${isSelected ? 'selected' : ''}" onclick="selectMatchJob('${j.id}')">
+          <div class="job-card ${isSelected ? 'selected' : ''}" onclick="selectMatchJob('${j.id}', true)">
             <div class="card-top">
               <div class="company-badge-wrap">
                 <div class="company-logo">${compInitial}</div>
@@ -3110,9 +3105,9 @@
       }
     }
 
-    function selectMatchJob(id) {
+    function selectMatchJob(id, isUserClick = false) {
       selectedMatchJobId = id;
-      selectJob(id, 'matches-detail-pane');
+      selectJob(id, 'matches-detail-pane', isUserClick);
     }
 
     function renderHomeView() {

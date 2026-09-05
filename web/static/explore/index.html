@@ -2935,7 +2935,7 @@
       if (filteredJobs.length > 0) {
         const stillPresent = filteredJobs.some(j => j.id === selectedJobId);
         if (!stillPresent) {
-          selectJob(filteredJobs[0].id);
+          selectJob(filteredJobs[0].id, 'job-detail-pane', true);
         }
       } else {
         const detailPane = document.getElementById('job-detail-pane');
@@ -3000,12 +3000,7 @@
       
       // ── MOBILE: open the JD overlay panel ONLY on explicit user click ──
       if (window.innerWidth <= 768) {
-        if (isUserClick) {
-          document.body.classList.add('mobile-jd-open');
-          window.scrollTo(0, 0);
-        } else {
-          document.body.classList.remove('mobile-jd-open');
-        }
+        if (isUserClick) { document.body.classList.add('mobile-jd-open'); window.scrollTo(0, 0); }
       }
       
       const detailCol = document.getElementById(targetPaneId);
