@@ -1514,7 +1514,7 @@
             <a href="/profile/" class="dropdown-item">👤 Profile</a>
             <a href="/settings/" class="dropdown-item">⚙️ Settings</a>
             <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
-            <a href="#" onclick="openSignOutModal(); return false;" class="dropdown-item" style="color:#ef4444; font-weight:600;">🚪 Sign Out</a>
+            <a href="#" onclick="executeSignOut(true); return false;" class="dropdown-item" style="color:#ef4444; font-weight:600;">🚪 Sign Out</a>
           </div>
         </div>
       </div>
@@ -2422,50 +2422,7 @@
     </div>
   </div>
 
-  <!-- SIGN OUT CONFIRMATION MODAL -->
-  <div class="modal-overlay" id="modal-signout">
-    <div class="modal-dialog" style="max-width: 480px;">
-      <div class="modal-header">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <span style="font-size:20px;">🚪</span>
-          <h3>Sign Out</h3>
-        </div>
-        <button class="modal-close-btn" onclick="closeModal('modal-signout')">×</button>
-      </div>
-      <div class="modal-body" style="padding:22px;">
-        <p style="font-size:13.5px; color:#475569; margin-bottom:18px; line-height:1.5;">
-          Select how you want to sign out from getArole:
-        </p>
 
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <!-- Option A: Standard Sign Out -->
-          <div style="border:1px solid #e2e8f0; border-radius:10px; padding:14px 16px; background:#f8fafc; cursor:pointer; transition:all 0.2s;" onclick="executeSignOut(false)" onmouseover="this.style.borderColor='#94a3b8'" onmouseout="this.style.borderColor='#e2e8f0'">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-              <strong style="font-size:13.5px; color:#1e293b;">🚪 Standard Sign Out</strong>
-              <span style="font-size:11px; font-weight:700; background:#e0e7ff; color:#4338ca; padding:2px 8px; border-radius:99px;">Personal Device</span>
-            </div>
-            <p style="font-size:12px; color:#64748b; margin:0;">
-              Signs out of your account while keeping local drafts and cached resume on this device for fast return.
-            </p>
-          </div>
-
-          <!-- Option B: Complete Device Purge -->
-          <div style="border:1px solid #fed7d7; border-radius:10px; padding:14px 16px; background:#fff5f5; cursor:pointer; transition:all 0.2s;" onclick="executeSignOut(true)" onmouseover="this.style.borderColor='#f87171'" onmouseout="this.style.borderColor='#fed7d7'">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-              <strong style="font-size:13.5px; color:#b91c1c;">🧹 Sign Out &amp; Clear Device Data</strong>
-              <span style="font-size:11px; font-weight:700; background:#fee2e2; color:#dc2626; padding:2px 8px; border-radius:99px;">Public / Shared</span>
-            </div>
-            <p style="font-size:12px; color:#7f1d1d; margin:0;">
-              Clears all local cached profiles, resumes, and cookies on this device. Your cloud data remains intact.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer" style="padding:14px 22px; display:flex; justify-content:flex-end; gap:10px; border-top:1px solid var(--border);">
-        <button type="button" class="btn-action-secondary" onclick="closeModal('modal-signout')">Cancel</button>
-      </div>
-    </div>
-  </div>
 
   <!-- PERMANENT ACCOUNT DELETION MODAL (GDPR RIGHT TO BE FORGOTTEN) -->
   <div class="modal-overlay" id="modal-delete-account">
@@ -4158,12 +4115,7 @@
     };
 
     window.handleLogoutUser = function() {
-      openSignOutModal();
-    };
-
-    window.openSignOutModal = function() {
-      const el = document.getElementById('modal-signout');
-      if (el) el.classList.add('active');
+      executeSignOut(true);
     };
 
     window.executeSignOut = async function(purgeAll = false) {

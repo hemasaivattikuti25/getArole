@@ -1505,7 +1505,7 @@
             <a href="/profile/" class="dropdown-item">👤 Profile</a>
             <a href="/settings/" class="dropdown-item">⚙️ Settings</a>
             <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
-            <a href="#" onclick="openSignOutModal(); return false;" class="dropdown-item" style="color:#ef4444; font-weight:600;">🚪 Sign Out</a>
+            <a href="#" onclick="executeSignOut(true); return false;" class="dropdown-item" style="color:#ef4444; font-weight:600;">🚪 Sign Out</a>
           </div>
         </div>
       </div>
@@ -1834,46 +1834,6 @@
 
   <div id="toast"></div>
 
-  <!-- SIGN OUT CONFIRMATION MODAL -->
-  <div id="modal-signout" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.6); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px;">
-    <div style="background:#ffffff; border:1px solid var(--border); border-radius:18px; width:100%; max-width:480px; display:flex; flex-direction:column; box-shadow:0 25px 60px -15px rgba(0,0,0,0.25); overflow:hidden;">
-      <div style="padding:18px 24px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; background:var(--bg-subtle);">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <span style="font-size:20px;">🚪</span>
-          <h3 style="font-size:17px; font-weight:800; color:var(--text-main); margin:0;">Sign Out</h3>
-        </div>
-        <button onclick="closeAuthModal('modal-signout')" style="background:none; border:none; font-size:20px; color:var(--text-subtle); cursor:pointer;">&times;</button>
-      </div>
-      <div style="padding:22px;">
-        <p style="font-size:13.5px; color:#475569; margin-bottom:18px; line-height:1.5;">
-          Select how you want to sign out from getArole:
-        </p>
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <div style="border:1px solid #e2e8f0; border-radius:10px; padding:14px 16px; background:#f8fafc; cursor:pointer; transition:all 0.2s;" onclick="executeSignOut(false)">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-              <strong style="font-size:13.5px; color:#1e293b;">🚪 Standard Sign Out</strong>
-              <span style="font-size:11px; font-weight:700; background:#e0e7ff; color:#4338ca; padding:2px 8px; border-radius:99px;">Personal Device</span>
-            </div>
-            <p style="font-size:12px; color:#64748b; margin:0;">
-              Signs out while keeping local drafts and cached resume on this device for fast return.
-            </p>
-          </div>
-          <div style="border:1px solid #fed7d7; border-radius:10px; padding:14px 16px; background:#fff5f5; cursor:pointer; transition:all 0.2s;" onclick="executeSignOut(true)">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-              <strong style="font-size:13.5px; color:#b91c1c;">🧹 Sign Out &amp; Clear Device Data</strong>
-              <span style="font-size:11px; font-weight:700; background:#fee2e2; color:#dc2626; padding:2px 8px; border-radius:99px;">Public / Shared</span>
-            </div>
-            <p style="font-size:12px; color:#7f1d1d; margin:0;">
-              Clears all local cached profiles, resumes, and cookies on this device. Cloud data remains safe.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div style="padding:14px 22px; display:flex; justify-content:flex-end; gap:10px; border-top:1px solid var(--border);">
-        <button type="button" onclick="closeAuthModal('modal-signout')" style="padding:8px 16px; border-radius:8px; border:1px solid var(--border); background:#ffffff; font-size:13px; font-weight:600; color:var(--text-muted); cursor:pointer;">Cancel</button>
-      </div>
-    </div>
-  </div>
 
   <!-- PERMANENT ACCOUNT DELETION MODAL (GDPR RIGHT TO BE FORGOTTEN) -->
   <div id="modal-delete-account" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(15,23,42,0.6); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px;">
@@ -2215,10 +2175,7 @@
     };
 
     // ── AUTH & ACCOUNT SOVEREIGNTY HANDLERS ──
-    window.openSignOutModal = function() {
-      const el = document.getElementById('modal-signout');
-      if (el) el.style.display = 'flex';
-    };
+
 
     window.closeAuthModal = function(id) {
       const el = document.getElementById(id);
