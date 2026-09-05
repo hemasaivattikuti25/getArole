@@ -46,9 +46,22 @@ export default function OnboardingPage() {
       skills,
     };
     
-    // Save to localStorage
+    // Save to React frontend local storage
     localStorage.setItem("getarole_cloud_prefs", JSON.stringify(prefs));
-    localStorage.setItem("getarole_user", JSON.stringify({ uid: "user-" + Date.now(), role: targetRole }));
+    
+    // Save to Vanilla JS profile local storage
+    const vanillaPrefs = {
+      roles: [targetRole],
+      role: targetRole,
+      target_role: targetRole,
+      locations: locations,
+      city: locations[0] || '',
+      workplaceType: workplaceType,
+      remoteOnly: workplaceType === "Remote" || locations.includes("Remote"),
+      skills_inc: skills,
+      updated_at: new Date().toISOString()
+    };
+    localStorage.setItem("getarole_prefs", JSON.stringify(vanillaPrefs));
     
     setTimeout(() => {
       setSaving(false);

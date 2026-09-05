@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/global-aurora.css">
   <script src="/js/config.js"></script>
+  <script src="/js/resume-utils.js"></script>
   <script src="/js/storage-sync.js"></script>
   <script>
     // Strict Authentication Guard
@@ -2554,8 +2555,8 @@
           <div class="pref-group">
             <div class="pref-group-title">Job Search Urgency</div>
             <div class="pref-status-cards">
-              <div class="status-card-label active" id="col-status-card-act" onclick="setColStatus('actively_looking')">
-                <input type="radio" name="col_status_radio" value="actively_looking" id="col-status-act" checked>
+              <div class="status-card-label active" id="col-status-card-act" onclick="setColStatus('Actively looking')">
+                <input type="radio" name="col_status_radio" value="Actively looking" id="col-status-act" checked>
                 <div class="status-card-content">
                   <span style="font-size:16px;">🚀</span>
                   <div>
@@ -2564,8 +2565,8 @@
                   </div>
                 </div>
               </div>
-              <div class="status-card-label" id="col-status-card-cas" onclick="setColStatus('casually_browsing')">
-                <input type="radio" name="col_status_radio" value="casually_browsing" id="col-status-cas">
+              <div class="status-card-label" id="col-status-card-cas" onclick="setColStatus('Casually looking')">
+                <input type="radio" name="col_status_radio" value="Casually looking" id="col-status-cas">
                 <div class="status-card-content">
                   <span style="font-size:16px;">👀</span>
                   <div>
@@ -2894,8 +2895,8 @@
               company: e.company || '',
               type: 'Full-time',
               location: e.location || '',
-              start: e.dates ? e.dates.split('-')[0].trim() : '',
-              end: e.dates ? e.dates.split('-')[1].trim() : 'Present',
+              start: e.dates ? e.dates.split(/\s*[-–—]\s*/)[0] || '' : '',
+              end: e.dates ? e.dates.split(/\s*[-–—]\s*/)[1] || 'Present' : 'Present',
               desc: Array.isArray(e.bullets) ? e.bullets.join('\n') : (e.desc || '')
             }));
           } else {
@@ -2974,8 +2975,6 @@
     }
 
     function renderFullProfile() {
-      loadStateFromStorage();
-
       // 1. Hero Identity
       const name = state.profile.name || 'Your Name';
       const headline = state.profile.headline || 'Software Engineer';
@@ -3294,7 +3293,7 @@
 
       const empWrap = document.getElementById('pref-emptype-wrap');
       if (empWrap) {
-        const emps = state.prefs.employmentType || [];
+        const emps = state.prefs.employmentTypes || state.prefs.employmentType || [];
         empWrap.innerHTML = emps.length ? emps.map(e => `<span class="pref-val-pill">🤝 ${escapeHTML(e)}</span>`).join('') : '<span style="color:transparent; user-select:none;">_</span>';
       }
 
@@ -3311,7 +3310,7 @@
 
       const urgWrap = document.getElementById('pref-urgency-wrap');
       if (urgWrap) {
-        const uMap = { 'actively_looking': '🚀 Actively Interviewing', 'casually_browsing': '👀 Casually Browsing' };
+        const uMap = { 'Actively looking': '🚀 Actively Interviewing', 'Casually looking': '👀 Casually Browsing' };
         const uText = uMap[state.prefs.status] || state.prefs.status || '';
         urgWrap.innerHTML = uText ? `<span class="pref-val-pill" style="background:#e0e7ff; color:#4f46e5;">${escapeHTML(uText)}</span>` : '<span style="color:transparent; user-select:none;">_</span>';
       }
@@ -3342,7 +3341,7 @@
       employmentTypes: ['Full-Time'],
       industries: [],
       companySize: '51-200',
-      status: 'actively_looking'
+      status: 'Actively looking'
     };
 
     const ALL_CURATED_LOCATIONS = [
@@ -3411,7 +3410,7 @@
       colPrefsData.companySize = p.companySize || '51-200';
 
       // Status
-      colPrefsData.status = p.status || 'actively_looking';
+      colPrefsData.status = p.status || 'Actively looking';
 
       // 2. Render UI Elements
       updateColRolesUI();
@@ -3659,7 +3658,7 @@
       const actRadio = document.getElementById('col-status-act');
       const casRadio = document.getElementById('col-status-cas');
 
-      const isAct = colPrefsData.status === 'actively_looking' || colPrefsData.status === 'Actively looking';
+      const isAct = colPrefsData.status === 'Actively looking';
       if (actCard) actCard.className = `status-card-label ${isAct ? 'active' : ''}`;
       if (casCard) casCard.className = `status-card-label ${!isAct ? 'active' : ''}`;
       if (actRadio) actRadio.checked = isAct;
@@ -3778,99 +3777,6 @@
     }
 
     // ── UNIVERSAL ATS RAW TEXT GENERATOR ──
-    window.generateRawResumeText = function(prof = state.profile, rV2 = null) {
-      const p = prof || {};
-      const R = rV2 || JSON.parse(localStorage.getItem('getarole_resume_v2') || '{}');
-      const lines = [];
-
-      const name = p.name || (R.header && R.header.name) || 'Candidate';
-      const headline = p.headline || (R.header && R.header.title) || '';
-      const email = p.email || (R.header && R.header.email) || '';
-      const phone = p.phone || (R.header && R.header.phone) || '';
-      const loc = p.loc || (R.header && R.header.location) || '';
-
-      lines.push(`NAME: ${name}`);
-      if (headline) lines.push(`HEADLINE: ${headline}`);
-      if (email) lines.push(`EMAIL: ${email}`);
-      if (phone) lines.push(`PHONE: ${phone}`);
-      if (loc) lines.push(`LOCATION: ${loc}`);
-
-      const summary = p.summary || (R.summary && (R.summary.text || R.summary)) || '';
-      if (summary) lines.push(`\nSUMMARY:\n${summary}`);
-
-      const langs = (Array.isArray(p.skills_languages) && p.skills_languages.length) ? p.skills_languages : [];
-      const frames = (Array.isArray(p.skills_frameworks) && p.skills_frameworks.length) ? p.skills_frameworks : [];
-      const cloud = (Array.isArray(p.skills_cloud) && p.skills_cloud.length) ? p.skills_cloud : [];
-      const tools = (Array.isArray(p.skills_tools) && p.skills_tools.length) ? p.skills_tools : [];
-
-      if (langs.length || frames.length || cloud.length || tools.length) {
-        lines.push('\nSKILLS & COMPETENCIES:');
-        if (langs.length) lines.push(`- Languages: ${langs.join(', ')}`);
-        if (frames.length) lines.push(`- Frameworks & Libraries: ${frames.join(', ')}`);
-        if (cloud.length) lines.push(`- Cloud, DevOps & Databases: ${cloud.join(', ')}`);
-        if (tools.length) lines.push(`- Tools & Platforms: ${tools.join(', ')}`);
-      } else if (Array.isArray(p.skills) && p.skills.length) {
-        lines.push(`\nSKILLS: ${p.skills.join(', ')}`);
-      }
-
-      const exp = (Array.isArray(p.experience) && p.experience.length) ? p.experience : (Array.isArray(R.experience) ? R.experience : []);
-      if (exp.length) {
-        lines.push('\nWORK EXPERIENCE:');
-        exp.forEach(e => {
-          const title = e.title || 'Role';
-          const comp = e.company || 'Company';
-          const dates = e.dates || `${e.start || e.start_year || ''} - ${e.end || e.end_year || 'Present'}`;
-          const locStr = e.location ? ` | ${e.location}` : '';
-          lines.push(`- ${title} at ${comp} (${dates}${locStr})`);
-          const bullets = Array.isArray(e.bullets) ? e.bullets : (e.desc ? e.desc.split('\n').filter(Boolean) : []);
-          bullets.forEach(b => {
-            lines.push(`  • ${String(b).replace(/^[•\-\*\s]+/, '').trim()}`);
-          });
-        });
-      }
-
-      const edu = (Array.isArray(p.education) && p.education.length) ? p.education : (Array.isArray(R.education) ? R.education : []);
-      if (edu.length) {
-        lines.push('\nEDUCATION:');
-        edu.forEach(ed => {
-          const deg = ed.degree || 'Degree';
-          const sch = ed.school || 'University';
-          const yr = ed.year || ed.dates || '';
-          const gr = ed.grade ? ` (GPA/Grade: ${ed.grade})` : '';
-          lines.push(`- ${deg} - ${sch} (${yr})${gr}`);
-          if (ed.coursework) lines.push(`  Coursework: ${ed.coursework}`);
-        });
-      }
-
-      const proj = (Array.isArray(p.projects) && p.projects.length) ? p.projects : (Array.isArray(R.projects) ? R.projects : []);
-      if (proj.length) {
-        lines.push('\nPROJECTS:');
-        proj.forEach(pr => {
-          const pTitle = pr.title || pr.name || 'Project';
-          const stack = Array.isArray(pr.tags) ? pr.tags.join(', ') : (pr.stack || '');
-          lines.push(`- ${pTitle}${stack ? ` [${stack}]` : ''}`);
-          if (pr.demo) lines.push(`  Demo: ${pr.demo}`);
-          if (pr.github) lines.push(`  GitHub: ${pr.github}`);
-          const pBullets = Array.isArray(pr.bullets) ? pr.bullets : (pr.desc ? pr.desc.split('\n').filter(Boolean) : []);
-          pBullets.forEach(b => {
-            lines.push(`  • ${String(b).replace(/^[•\-\*\s]+/, '').trim()}`);
-          });
-        });
-      }
-
-      const certs = (Array.isArray(p.certifications) && p.certifications.length) ? p.certifications : (Array.isArray(R.certifications) ? R.certifications : []);
-      if (certs.length) {
-        lines.push('\nCERTIFICATIONS:');
-        certs.forEach(c => {
-          const cName = typeof c === 'string' ? c : (c.name || c.title || '');
-          const cOrg = c.issuer || c.org ? ` - ${c.issuer || c.org}` : '';
-          const cDate = c.date || c.year ? ` (${c.date || c.year})` : '';
-          lines.push(`- ${cName}${cOrg}${cDate}`);
-        });
-      }
-
-      return lines.join('\n');
-    };
 
     // ── LIVE BIDIRECTIONAL LATEX RESUME COMPILER & SYNC ENGINE ──
     function syncProfileToResumeV2() {
@@ -3979,7 +3885,7 @@
     }
 
     // ── ATOMIC DUAL-WRITE STORAGE & SUPABASE CLOUD SYNC ──
-    async function persistProfileData() {
+    async function persistProfileData(silent = false) {
       // 1. Dual-Write to LocalStorage & Supabase Cloud
       try {
         if (window.getAroleSync) {
@@ -4005,11 +3911,11 @@
 
       // 4. Live update resume preview modal if currently open
       const modal = document.getElementById('modal-resume-preview');
-      if (modal && (modal.classList.contains('active') || modal.style.display !== 'none')) {
+      if (modal && modal.classList.contains('active')) {
         renderResumePreviewBody(currentResumePreviewTab);
       }
 
-      toast('✓ Candidate dossier & resume architect synchronized to Cloud!');
+      if (!silent) toast('✓ Candidate dossier & resume architect synchronized to Cloud!');
     }
 
     // ── MODAL SAVE HANDLERS ──
@@ -4043,7 +3949,7 @@
       localStorage.setItem('getarole_username', state.profile.name);
 
       closeModal('modal-personal');
-      persistProfileData();
+      persistProfileData().catch(console.warn);
     };
 
     // 2. Skills Modal
@@ -4070,7 +3976,7 @@
       ]));
 
       closeModal('modal-skills');
-      persistProfileData();
+      persistProfileData().catch(console.warn);
     };
 
     window.removeSingleSkill = function(containerId, skillName) {
@@ -4091,7 +3997,7 @@
         ...(state.profile.skills_tools || [])
       ]));
 
-      persistProfileData();
+      persistProfileData(true).catch(console.warn);
     };
 
     // 3. Experience Modal
@@ -4125,7 +4031,7 @@
     window.deleteExperienceItem = function(idx) {
       if (confirm('Delete this position from your timeline and resume?')) {
         state.profile.experience.splice(idx, 1);
-        persistProfileData();
+        persistProfileData(true).catch(console.warn);
       }
     };
 
@@ -4149,7 +4055,7 @@
       }
 
       closeModal('modal-experience');
-      persistProfileData();
+      persistProfileData().catch(console.warn);
     };
 
     // 4. Education Modal
@@ -4180,7 +4086,7 @@
     window.deleteEducationItem = function(idx) {
       if (confirm('Delete this qualification?')) {
         state.profile.education.splice(idx, 1);
-        persistProfileData();
+        persistProfileData(true).catch(console.warn);
       }
     };
 
@@ -4202,7 +4108,7 @@
       }
 
       closeModal('modal-education');
-      persistProfileData();
+      persistProfileData().catch(console.warn);
     };
 
     // 5. Projects Modal
@@ -4233,7 +4139,7 @@
     window.deleteProjectItem = function(idx) {
       if (confirm('Delete this project?')) {
         state.profile.projects.splice(idx, 1);
-        persistProfileData();
+        persistProfileData(true).catch(console.warn);
       }
     };
 
@@ -4256,7 +4162,7 @@
       }
 
       closeModal('modal-project');
-      persistProfileData();
+      persistProfileData().catch(console.warn);
     };
 
     // 6. Certifications Modal
@@ -4285,7 +4191,7 @@
     window.deleteCertItem = function(idx) {
       if (confirm('Delete this certificate?')) {
         state.profile.certifications.splice(idx, 1);
-        persistProfileData();
+        persistProfileData(true).catch(console.warn);
       }
     };
 
@@ -4306,7 +4212,7 @@
       }
 
       closeModal('modal-cert');
-      persistProfileData();
+      persistProfileData().catch(console.warn);
     };
 
     // 7. Achievements Modal
@@ -4335,7 +4241,7 @@
     window.deleteAchievementItem = function(idx) {
       if (confirm('Delete this achievement?')) {
         state.profile.achievements.splice(idx, 1);
-        persistProfileData();
+        persistProfileData(true).catch(console.warn);
       }
     };
 
@@ -4356,7 +4262,7 @@
       }
 
       closeModal('modal-achievement');
-      persistProfileData();
+      persistProfileData().catch(console.warn);
     };
 
     // 8. Social Links Saver
@@ -4379,7 +4285,7 @@
       state.profile.links.twitter = document.getElementById('link-twitter').value.trim();
 
       closeModal('modal-social');
-      persistProfileData();
+      persistProfileData().catch(console.warn);
     };
 
     // 9. Career Targets Modal
@@ -4391,11 +4297,11 @@
 
     window.updateJobStatus = function(val) {
       state.prefs.status = val;
-      persistProfileData();
+      persistProfileData(true).catch(console.warn);
     };
 
     window.syncAllProfileData = function() {
-      persistProfileData();
+      persistProfileData().catch(console.warn);
       toast('✓ Re-synced dossier with Supabase & Matcher!');
     };
 
@@ -4492,26 +4398,10 @@
           }
 
           // Skills Categorization & Hydration
-          const langKeywords = ['python', 'javascript', 'typescript', 'java', 'c++', 'c#', 'c', 'golang', 'go', 'rust', 'ruby', 'php', 'swift', 'kotlin', 'scala', 'dart', 'sql', 'html', 'html5', 'css', 'css3', 'r', 'shell', 'bash'];
-          const frameKeywords = ['react', 'next.js', 'nextjs', 'vue', 'angular', 'svelte', 'node.js', 'nodejs', 'express', 'fastapi', 'django', 'flask', 'spring', 'spring boot', 'rails', 'asp.net', 'tailwind', 'tailwindcss', 'bootstrap', 'redux', 'graphql', 'rest api', 'jquery'];
-          const cloudKeywords = ['aws', 'azure', 'gcp', 'docker', 'kubernetes', 'k8s', 'terraform', 'ci/cd', 'postgresql', 'mysql', 'mongodb', 'redis', 'sqlite', 'cassandra', 'elasticsearch', 'dynamodb', 'firebase', 'supabase'];
-          const toolKeywords = ['git', 'github', 'gitlab', 'bitbucket', 'postman', 'linux', 'unix', 'vite', 'webpack', 'jira', 'figma', 'vscode', 'agile', 'scrum'];
-
           let langs = Array.isArray(parsed.skills_languages) ? [...parsed.skills_languages] : [];
           let frames = Array.isArray(parsed.skills_frameworks) ? [...parsed.skills_frameworks] : [];
           let cloud = Array.isArray(parsed.skills_cloud) ? [...parsed.skills_cloud] : [];
           let tools = Array.isArray(parsed.skills_tools) ? [...parsed.skills_tools] : [];
-
-          if ((!langs.length && !frames.length) && Array.isArray(parsed.skills)) {
-            parsed.skills.forEach(s => {
-              const low = String(s).toLowerCase();
-              const cap = s.length <= 3 ? s.toUpperCase() : (s.charAt(0).toUpperCase() + s.slice(1));
-              if (langKeywords.includes(low)) langs.push(cap);
-              else if (frameKeywords.includes(low)) frames.push(cap);
-              else if (cloudKeywords.includes(low)) cloud.push(cap);
-              else tools.push(cap);
-            });
-          }
 
           if (langs.length) state.profile.skills_languages = Array.from(new Set(langs));
           if (frames.length) state.profile.skills_frameworks = Array.from(new Set(frames));
@@ -4581,12 +4471,12 @@
 
           localStorage.setItem('getarole_resume_pdf', file.name);
           syncProfileToResumeV2();
-          await persistProfileData();
+          await persistProfileData().catch(console.warn);
           renderFullProfile();
 
           // If resume preview modal is open, re-render it in real-time
           const modal = document.getElementById('modal-resume-preview');
-          if (modal && (modal.classList.contains('active') || modal.style.display !== 'none')) {
+          if (modal && modal.classList.contains('active')) {
             const fnEl = document.getElementById('resume-preview-filename');
             if (fnEl) fnEl.innerHTML = `Active file: <strong style="color:#0f172a;">${escapeHTML(file.name)}</strong>`;
             renderResumePreviewBody(currentResumePreviewTab);
@@ -4604,10 +4494,10 @@
       setTimeout(() => { if (prog) prog.style.display = 'none'; }, 600);
       localStorage.setItem('getarole_resume_pdf', file.name);
       syncProfileToResumeV2();
-      await persistProfileData();
+      await persistProfileData().catch(console.warn);
       renderFullProfile();
       const modalFallback = document.getElementById('modal-resume-preview');
-      if (modalFallback && (modalFallback.classList.contains('active') || modalFallback.style.display !== 'none')) {
+      if (modalFallback && modalFallback.classList.contains('active')) {
         const fnEl = document.getElementById('resume-preview-filename');
         if (fnEl) fnEl.innerHTML = `Active file: <strong style="color:#0f172a;">${escapeHTML(file.name)}</strong>`;
         renderResumePreviewBody(currentResumePreviewTab);
@@ -4627,6 +4517,12 @@
 
       const fnEl = document.getElementById('resume-preview-filename');
       const savedPdf = localStorage.getItem('getarole_resume_pdf') || sessionStorage.getItem('getarole_resume_pdf_name');
+      const pdfDataUrl = sessionStorage.getItem('getarole_resume_pdf_dataurl');
+
+      if (initialTab === 'document' && !pdfDataUrl) {
+        initialTab = 'extracted';
+      }
+
       if (fnEl) {
         if (savedPdf) {
           fnEl.innerHTML = `Active file: <strong style="color:#0f172a;">${escapeHTML(savedPdf)}</strong>`;
@@ -4690,7 +4586,7 @@
                   <span style="font-size: 11.5px; background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; padding: 2px 8px; border-radius: 6px; font-weight: 700;">Native PDF Preview</span>
                 </div>
                 <div style="display: flex; gap: 8px;">
-                  <a href="${pdfDataUrl}" download="${escapeHTML(savedPdf || 'resume.pdf')}" class="btn-action-secondary" style="text-decoration: none; padding: 7px 14px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 5px; font-weight: 700;">
+                  <a href="${escapeHTML(pdfDataUrl)}" download="${escapeHTML(savedPdf || 'resume.pdf')}" class="btn-action-secondary" style="text-decoration: none; padding: 7px 14px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 5px; font-weight: 700;">
                     <span>⬇️</span> Download File
                   </a>
                   <button type="button" onclick="triggerResumeUpload()" class="btn-action-secondary" style="padding: 7px 14px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 5px; font-weight: 700;">
@@ -4699,7 +4595,7 @@
                 </div>
               </div>
               <div style="width: 100%; height: 600px; background: #525659; border-radius: 12px; overflow: hidden; border: 1px solid #cbd5e1; box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
-                <iframe src="${pdfDataUrl}" style="width: 100%; height: 100%; border: none;" title="Resume Document Viewer"></iframe>
+                <iframe src="${escapeHTML(pdfDataUrl)}" style="width: 100%; height: 100%; border: none;" title="Resume Document Viewer"></iframe>
               </div>
             </div>
           `;
@@ -5159,9 +5055,21 @@
     };
 
     // ── INITIALIZATION ──
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       // 1. SPA Architecture: Group sections into tabs dynamically to avoid HTML layout breaks
       const dossierContent = document.querySelector('.dossier-content');
+      
+      // Hydrate from Supabase first
+      if (window.getAroleSync) {
+        try {
+          await Promise.allSettled([
+            window.getAroleSync.loadUserProfile(),
+            window.getAroleSync.loadUserResume(),
+            window.getAroleSync.loadUserPreferences()
+          ]);
+        } catch (_) {}
+      }
+
       if (dossierContent) {
         const tabPersonal = document.createElement('div');
         tabPersonal.className = 'tab-content';
@@ -5258,24 +5166,24 @@
 
       // 2c. Cross-tab & Cross-window real-time synchronization
       window.addEventListener('storage', (e) => {
-        if (!e.key || ['getarole_profile', 'getarole_resume_v2', 'getarole_resume_raw_text', 'getarole_resume_pdf'].includes(e.key)) {
+        if (e.key !== null && ['getarole_profile', 'getarole_resume_v2', 'getarole_resume_raw_text', 'getarole_resume_pdf'].includes(e.key)) {
           loadStateFromStorage();
           renderFullProfile();
           const prevModal = document.getElementById('modal-resume-preview');
-          if (prevModal && (prevModal.classList.contains('active') || prevModal.style.display !== 'none')) {
+          if (prevModal && prevModal.classList.contains('active')) {
             renderResumePreviewBody(currentResumePreviewTab);
           }
         }
       });
       window.addEventListener('getarole_profile_updated', () => {
         const prevModal = document.getElementById('modal-resume-preview');
-        if (prevModal && (prevModal.classList.contains('active') || prevModal.style.display !== 'none')) {
+        if (prevModal && prevModal.classList.contains('active')) {
           renderResumePreviewBody(currentResumePreviewTab);
         }
       });
       window.addEventListener('getarole_resume_updated', () => {
         const prevModal = document.getElementById('modal-resume-preview');
-        if (prevModal && (prevModal.classList.contains('active') || prevModal.style.display !== 'none')) {
+        if (prevModal && prevModal.classList.contains('active')) {
           renderResumePreviewBody(currentResumePreviewTab);
         }
       });

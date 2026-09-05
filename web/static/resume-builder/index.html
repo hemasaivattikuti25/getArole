@@ -12,6 +12,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
     rel="stylesheet">
+  <script src="/js/resume-utils.js"></script>
   <script src="/js/storage-sync.js"></script>
   <script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();
     function setResumeMobileTab(mode) {
@@ -3068,40 +3069,6 @@ ${r.header?.name || 'Candidate Name'}`
     function uad(s, i, k, v) { if (R[s][i]) R[s][i][k] = v; rp(); ss(); }
     function ubl(s, i, bi, v) { if (R[s][i] && R[s][i].bullets) R[s][i].bullets[bi] = v; rp(); ss(); }
     // ── UNIVERSAL ATS RAW TEXT GENERATOR ──
-    function generateRawResumeText(prof, R) {
-      const p = prof || {};
-      const r = R || {};
-      const lines = [];
-
-      const name = (r.header && r.header.name) || p.name || 'Candidate';
-      const headline = (r.header && r.header.title) || p.headline || '';
-      const email = (r.header && r.header.email) || p.email || '';
-      const phone = (r.header && r.header.phone) || p.phone || '';
-      const loc = (r.header && r.header.location) || p.loc || '';
-
-      lines.push(`NAME: ${name}`);
-      if (headline) lines.push(`HEADLINE: ${headline}`);
-      if (email) lines.push(`EMAIL: ${email}`);
-      if (phone) lines.push(`PHONE: ${phone}`);
-      if (loc) lines.push(`LOCATION: ${loc}`);
-
-      const summary = (r.summary && (r.summary.text || r.summary)) || p.summary || '';
-      if (summary) lines.push(`\nSUMMARY:\n${summary}`);
-
-      const langs = (Array.isArray(p.skills_languages) && p.skills_languages.length) ? p.skills_languages : [];
-      const frames = (Array.isArray(p.skills_frameworks) && p.skills_frameworks.length) ? p.skills_frameworks : [];
-      const cloud = (Array.isArray(p.skills_cloud) && p.skills_cloud.length) ? p.skills_cloud : [];
-      const tools = (Array.isArray(p.skills_tools) && p.skills_tools.length) ? p.skills_tools : [];
-
-      if (langs.length || frames.length || cloud.length || tools.length) {
-        lines.push('\nSKILLS & COMPETENCIES:');
-        if (langs.length) lines.push(`- Languages: ${langs.join(', ')}`);
-        if (frames.length) lines.push(`- Frameworks & Libraries: ${frames.join(', ')}`);
-        if (cloud.length) lines.push(`- Cloud, DevOps & Databases: ${cloud.join(', ')}`);
-        if (tools.length) lines.push(`- Tools & Platforms: ${tools.join(', ')}`);
-      } else if (Array.isArray(p.skills) && p.skills.length) {
-        lines.push(`\nSKILLS: ${p.skills.join(', ')}`);
-      }
 
       const exp = (Array.isArray(r.experience) && r.experience.length) ? r.experience : (Array.isArray(p.experience) ? p.experience : []);
       if (exp.length) {
@@ -3264,7 +3231,7 @@ ${r.header?.name || 'Candidate Name'}`
           if (Array.isArray(R.achievements)) prof.achievements = R.achievements;
 
           // Universal raw text generation & save
-          const rawText = generateRawResumeText(prof, R);
+          const rawText = window.generateRawResumeText(prof, R);
           if (rawText) {
             try {
               localStorage.setItem('getarole_resume_raw_text', rawText);

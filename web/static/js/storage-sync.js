@@ -62,11 +62,15 @@
 
     const roletype = Array.isArray(raw.roletype) && raw.roletype.length > 0
       ? raw.roletype
-      : (Array.isArray(raw.employmentTypes) && raw.employmentTypes.length > 0 ? raw.employmentTypes : ['Full-Time']);
+      : (Array.isArray(raw.employmentTypes) && raw.employmentTypes.length > 0 
+          ? raw.employmentTypes 
+          : (raw.employmentType ? [raw.employmentType] : ['Full-Time']));
 
     const compsize = Array.isArray(raw.compsize) && raw.compsize.length > 0
       ? raw.compsize
-      : (Array.isArray(raw.companySizes) && raw.companySizes.length > 0 ? raw.companySizes : ['51-200', '200-1000']);
+      : (Array.isArray(raw.companySizes) && raw.companySizes.length > 0 
+          ? raw.companySizes 
+          : (raw.companySize ? [raw.companySize] : ['51-200', '200-1000']));
 
     const industries = Array.isArray(raw.industries) && raw.industries.length > 0
       ? raw.industries
@@ -88,10 +92,12 @@
       remoteOnly: workplaceType === 'Remote' || locations.some(l => l.toLowerCase().includes('remote')),
       workplaceType: workplaceType,
       rolelevel: Array.isArray(raw.rolelevel) && raw.rolelevel.length > 0 ? raw.rolelevel : ['Mid-Level (2-5 yrs)'],
+      seniority: raw.seniority || 'mid',
       roletype: roletype,
       employmentTypes: roletype,
       compsize: compsize,
       companySizes: compsize,
+      companySize: compsize[0] || '51-200',
       industries: industries,
       industries_inc: industries,
       skills_inc: skills,
@@ -117,7 +123,9 @@
       locations: prefs.locations,
       roletype: prefs.roletype,
       rolelevel: prefs.rolelevel,
+      seniority: prefs.seniority,
       compsize: prefs.compsize,
+      companySize: prefs.companySize,
       industries: prefs.industries,
       skills_inc: prefs.skills_inc,
       salary_amt: prefs.salary_amt,
@@ -190,13 +198,13 @@
         if (rows && rows.length > 0) {
           const cloud = rows[0];
           const merged = canonicalizePreferences({
-            ...localPrefs,
             ...cloud,
-            roles: cloud.roles || localPrefs.roles,
-            locations: cloud.locations || localPrefs.locations,
-            skills: cloud.skills_inc || localPrefs.skills,
-            salary_amt: cloud.salary_amt || localPrefs.salary_amt,
-            status: cloud.status || localPrefs.status
+            ...localPrefs,
+            roles: localPrefs.roles || cloud.roles,
+            locations: localPrefs.locations || cloud.locations,
+            skills: localPrefs.skills || cloud.skills_inc,
+            salary_amt: localPrefs.salary_amt || cloud.salary_amt,
+            status: localPrefs.status || cloud.status
           });
           localStorage.setItem('getarole_prefs', JSON.stringify(merged));
           return merged;
@@ -355,13 +363,13 @@
         if (rows && rows.length > 0) {
           const cloud = rows[0];
           const merged = {
-            ...localProfile,
             ...cloud,
+            ...localProfile,
             name: localProfile.name || `${cloud.first || ''} ${cloud.last || ''}`.trim() || 'Candidate',
-            headline: cloud.headline || localProfile.headline || '',
-            email: cloud.email || localProfile.email || '',
-            phone: cloud.phone || localProfile.phone || '',
-            loc: cloud.loc || localProfile.loc || '',
+            headline: localProfile.headline || cloud.headline || '',
+            email: localProfile.email || cloud.email || '',
+            phone: localProfile.phone || cloud.phone || '',
+            loc: localProfile.loc || cloud.loc || '',
             notice: localProfile.notice || '',
             skills_languages: localProfile.skills_languages || [],
             skills_frameworks: localProfile.skills_frameworks || [],
@@ -370,9 +378,9 @@
             achievements: localProfile.achievements || localProfile.awards || [],
             links: {
               ...(localProfile.links || {}),
-              linkedin: cloud.linkedin_url || (localProfile.links && localProfile.links.linkedin) || '',
-              github: cloud.github_url || (localProfile.links && localProfile.links.github) || '',
-              portfolio: cloud.portfolio_url || (localProfile.links && localProfile.links.portfolio) || ''
+              linkedin: (localProfile.links && localProfile.links.linkedin) || cloud.linkedin_url || '',
+              github: (localProfile.links && localProfile.links.github) || cloud.github_url || '',
+              portfolio: (localProfile.links && localProfile.links.portfolio) || cloud.portfolio_url || ''
             }
           };
           localStorage.setItem('getarole_profile', JSON.stringify(merged));
@@ -433,22 +441,27 @@
         },
         body: JSON.stringify(supaPayload)
       });
-      const updatedRows = patchRes.ok ? await patchRes.json() : [];
-      if (!updatedRows || updatedRows.length === 0) {
-        // No row existed yet for this user; insert cleanly
-        const postRes = await fetch(`${SUPABASE_REST_URL}/user_resumes`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=representation'
-          },
-          body: JSON.stringify(supaPayload)
-        });
-        if (postRes.ok) supabaseSuccess = true;
+      
+      if (!patchRes.ok) {
+        console.warn('[Storage-Sync] Supabase resume patch failed:', patchRes.status);
       } else {
-        supabaseSuccess = true;
+        const updatedRows = await patchRes.json();
+        if (!updatedRows || updatedRows.length === 0) {
+          // No row existed yet for this user; insert cleanly
+          const postRes = await fetch(`${SUPABASE_REST_URL}/user_resumes`, {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=representation'
+            },
+            body: JSON.stringify(supaPayload)
+          });
+          if (postRes.ok) supabaseSuccess = true;
+        } else {
+          supabaseSuccess = true;
+        }
       }
     } catch (err) {
       console.warn('[Storage-Sync] Supabase resume upsert error:', err);
@@ -512,7 +525,7 @@
             };
           }
           if (restored) {
-            const merged = { ...(localResume || {}), ...restored };
+            const merged = { ...restored, ...(localResume || {}) };
             localStorage.setItem('getarole_resume_v2', JSON.stringify(merged));
             return merged;
           }
@@ -552,6 +565,9 @@
       localStorage.removeItem('getarole_resume_v2');
       localStorage.removeItem('getarole_resume_pdf');
       localStorage.removeItem('getarole_tracker');
+      localStorage.removeItem('getarole_resume_raw_text');
+      localStorage.removeItem('getarole_user_id');
+      localStorage.removeItem('open_resume_preview_modal');
     }
     window.location.href = '/';
   }

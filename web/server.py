@@ -1125,6 +1125,12 @@ class UserPreferencesSchema(BaseModel):
 @app.post("/api/user/profile")
 async def save_user_profile_endpoint(request: Request, profile: Dict[str, Any] = Body(...), x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
     uid = extract_authenticated_uid(request)
+    if not uid or uid == "guest_user":
+        logging.getLogger("sre.security").warning(
+            "auth_missing_uid_header",
+            extra={"path": request.url.path, "client_ip": request.client.host if request.client else "unknown"}
+        )
+        return JSONResponse({"error": "Missing X-Firebase-UID or Authorization header"}, status_code=401)
     async with get_user_lock(uid):
         supabase = get_supabase_service()
         result = await supabase.save_user_profile(uid, profile)
@@ -1140,6 +1146,12 @@ async def get_user_preferences(request: Request, x_firebase_uid: Optional[str] =
 @app.post("/api/user/preferences")
 async def save_user_preferences_endpoint(request: Request, prefs: Dict[str, Any] = Body(...), x_firebase_uid: Optional[str] = Header(None, alias="X-Firebase-UID")):
     uid = extract_authenticated_uid(request)
+    if not uid or uid == "guest_user":
+        logging.getLogger("sre.security").warning(
+            "auth_missing_uid_header",
+            extra={"path": request.url.path, "client_ip": request.client.host if request.client else "unknown"}
+        )
+        return JSONResponse({"error": "Missing X-Firebase-UID or Authorization header"}, status_code=401)
     async with get_user_lock(uid):
         supabase = get_supabase_service()
         result = await supabase.save_user_preferences(uid, prefs)
@@ -1195,13 +1207,14 @@ from services.resume_parser_service import get_resume_parser_service
 # ── Resume Parsing & PDF Matcher Endpoints ──────────────────────────────
 @app.post("/api/match-resume")
 @app.post("/api/parse-resume")
-async def parse_and_match_resume(file: UploadFile = File(...)):
+async def parse_and_match_resume(request: Request, file: UploadFile = File(...)):
     """
     Parses an uploaded PDF / DOCX resume, extracts text and key profile fields
     (name, email, phone, headline, skills, summary, experience), and returns structured candidate profile.
     Delegates to ResumeParserService for domain processing (Single Responsibility Principle).
     Enforces a strict 10MB upload payload ceiling to prevent memory exhaustion / OOM kills.
     """
+    enforce_ai_rate_limit(request, max_requests=10, window_seconds=60.0)
     try:
         contents = await file.read()
         if len(contents) > 10 * 1024 * 1024:
