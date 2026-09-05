@@ -538,6 +538,16 @@
    */
   async function deleteUserAccount() {
     try {
+      // 1. Delete from Supabase via our backend API
+      const uid = getEffectiveUID();
+      if (uid) {
+        await fetch('/api/user/account', {
+          method: 'DELETE',
+          headers: { 'X-Firebase-UID': uid }
+        }).catch(err => console.error('[Supabase Delete Error]', err));
+      }
+
+      // 2. Delete from Firebase
       const mod = await import('/firebase-auth.js');
       if (mod && typeof mod.deleteAccount === 'function') {
         await mod.deleteAccount();
