@@ -2443,6 +2443,11 @@
           if (prof.links?.github && !R.header.github) R.header.github = prof.links.github;
           if (prof.links?.portfolio && !R.header.portfolio) R.header.portfolio = prof.links.portfolio;
 
+          if (prof.summary && (!R.summary || !R.summary.text)) {
+            if (!R.summary) R.summary = {};
+            R.summary.text = prof.summary;
+          }
+
           if (Array.isArray(prof.experience) && prof.experience.length > 0 && (!R.experience || R.experience.length === 0)) {
             R.experience = prof.experience;
           }
@@ -2452,7 +2457,14 @@
           if (Array.isArray(prof.projects) && prof.projects.length > 0 && (!R.projects || R.projects.length === 0)) {
             R.projects = prof.projects;
           }
-          if (prof.skills && prof.skills.length > 0 && (!Array.isArray(R.skills) || R.skills.length === 0 || !R.skills[0].items)) {
+          if ((prof.skills_languages?.length || prof.skills_frameworks?.length || prof.skills_cloud?.length || prof.skills_tools?.length) && (!Array.isArray(R.skills) || R.skills.length === 0 || !R.skills[0].items)) {
+            R.skills = [
+              { label: 'Programming Languages', items: (prof.skills_languages || []).join(', ') },
+              { label: 'Frameworks & Libraries', items: (prof.skills_frameworks || []).join(', ') },
+              { label: 'Cloud, DevOps & Databases', items: (prof.skills_cloud || []).join(', ') },
+              { label: 'Tools & Platforms', items: (prof.skills_tools || []).join(', ') }
+            ].filter(g => g.items && g.items.trim());
+          } else if (prof.skills && prof.skills.length > 0 && (!Array.isArray(R.skills) || R.skills.length === 0 || !R.skills[0].items)) {
             R.skills = [{ label: 'Technical Skills', items: Array.isArray(prof.skills) ? prof.skills.join(', ') : prof.skills }];
           }
         } catch (e) { }
@@ -3055,6 +3067,101 @@ ${r.header?.name || 'Candidate Name'}`
     }
     function uad(s, i, k, v) { if (R[s][i]) R[s][i][k] = v; rp(); ss(); }
     function ubl(s, i, bi, v) { if (R[s][i] && R[s][i].bullets) R[s][i].bullets[bi] = v; rp(); ss(); }
+    // ── UNIVERSAL ATS RAW TEXT GENERATOR ──
+    function generateRawResumeText(prof, R) {
+      const p = prof || {};
+      const r = R || {};
+      const lines = [];
+
+      const name = (r.header && r.header.name) || p.name || 'Candidate';
+      const headline = (r.header && r.header.title) || p.headline || '';
+      const email = (r.header && r.header.email) || p.email || '';
+      const phone = (r.header && r.header.phone) || p.phone || '';
+      const loc = (r.header && r.header.location) || p.loc || '';
+
+      lines.push(`NAME: ${name}`);
+      if (headline) lines.push(`HEADLINE: ${headline}`);
+      if (email) lines.push(`EMAIL: ${email}`);
+      if (phone) lines.push(`PHONE: ${phone}`);
+      if (loc) lines.push(`LOCATION: ${loc}`);
+
+      const summary = (r.summary && (r.summary.text || r.summary)) || p.summary || '';
+      if (summary) lines.push(`\nSUMMARY:\n${summary}`);
+
+      const langs = (Array.isArray(p.skills_languages) && p.skills_languages.length) ? p.skills_languages : [];
+      const frames = (Array.isArray(p.skills_frameworks) && p.skills_frameworks.length) ? p.skills_frameworks : [];
+      const cloud = (Array.isArray(p.skills_cloud) && p.skills_cloud.length) ? p.skills_cloud : [];
+      const tools = (Array.isArray(p.skills_tools) && p.skills_tools.length) ? p.skills_tools : [];
+
+      if (langs.length || frames.length || cloud.length || tools.length) {
+        lines.push('\nSKILLS & COMPETENCIES:');
+        if (langs.length) lines.push(`- Languages: ${langs.join(', ')}`);
+        if (frames.length) lines.push(`- Frameworks & Libraries: ${frames.join(', ')}`);
+        if (cloud.length) lines.push(`- Cloud, DevOps & Databases: ${cloud.join(', ')}`);
+        if (tools.length) lines.push(`- Tools & Platforms: ${tools.join(', ')}`);
+      } else if (Array.isArray(p.skills) && p.skills.length) {
+        lines.push(`\nSKILLS: ${p.skills.join(', ')}`);
+      }
+
+      const exp = (Array.isArray(r.experience) && r.experience.length) ? r.experience : (Array.isArray(p.experience) ? p.experience : []);
+      if (exp.length) {
+        lines.push('\nWORK EXPERIENCE:');
+        exp.forEach(e => {
+          const title = e.title || 'Role';
+          const comp = e.company || 'Company';
+          const dates = e.dates || `${e.start || e.start_year || ''} - ${e.end || e.end_year || 'Present'}`;
+          const locStr = e.location ? ` | ${e.location}` : '';
+          lines.push(`- ${title} at ${comp} (${dates}${locStr})`);
+          const bullets = Array.isArray(e.bullets) ? e.bullets : (e.desc ? e.desc.split('\n').filter(Boolean) : []);
+          bullets.forEach(b => {
+            lines.push(`  • ${String(b).replace(/^[•\-\*\s]+/, '').trim()}`);
+          });
+        });
+      }
+
+      const edu = (Array.isArray(r.education) && r.education.length) ? r.education : (Array.isArray(p.education) ? p.education : []);
+      if (edu.length) {
+        lines.push('\nEDUCATION:');
+        edu.forEach(ed => {
+          const deg = ed.degree || 'Degree';
+          const sch = ed.school || 'University';
+          const yr = ed.dates || ed.year || '';
+          const gr = ed.grade ? ` (GPA/Grade: ${ed.grade})` : '';
+          lines.push(`- ${deg} - ${sch} (${yr})${gr}`);
+          if (ed.coursework) lines.push(`  Coursework: ${ed.coursework}`);
+        });
+      }
+
+      const proj = (Array.isArray(r.projects) && r.projects.length) ? r.projects : (Array.isArray(p.projects) ? p.projects : []);
+      if (proj.length) {
+        lines.push('\nPROJECTS:');
+        proj.forEach(pr => {
+          const pTitle = pr.name || pr.title || 'Project';
+          const stack = pr.stack || (Array.isArray(pr.tags) ? pr.tags.join(', ') : '');
+          lines.push(`- ${pTitle}${stack ? ` [${stack}]` : ''}`);
+          if (pr.liveLink || pr.demo) lines.push(`  Demo: ${pr.liveLink || pr.demo}`);
+          if (pr.githubLink || pr.github) lines.push(`  GitHub: ${pr.githubLink || pr.github}`);
+          const pBullets = Array.isArray(pr.bullets) ? pr.bullets : (pr.desc ? pr.desc.split('\n').filter(Boolean) : []);
+          pBullets.forEach(b => {
+            lines.push(`  • ${String(b).replace(/^[•\-\*\s]+/, '').trim()}`);
+          });
+        });
+      }
+
+      const certs = (Array.isArray(r.certifications) && r.certifications.length) ? r.certifications : (Array.isArray(p.certifications) ? p.certifications : []);
+      if (certs.length) {
+        lines.push('\nCERTIFICATIONS:');
+        certs.forEach(c => {
+          const cName = typeof c === 'string' ? c : (c.name || c.title || '');
+          const cOrg = c.issuer || c.org ? ` - ${c.issuer || c.org}` : '';
+          const cDate = c.date || c.year ? ` (${c.date || c.year})` : '';
+          lines.push(`- ${cName}${cOrg}${cDate}`);
+        });
+      }
+
+      return lines.join('\n');
+    }
+
     function ss() {
       clearTimeout(st);
       document.getElementById('asv').textContent = '...';
@@ -3073,35 +3180,101 @@ ${r.header?.name || 'Candidate Name'}`
             if (R.header.email) prof.email = R.header.email;
             if (R.header.phone) prof.phone = R.header.phone;
             if (R.header.title) prof.headline = R.header.title;
-            if (R.header.location) prof.loc = R.header.location;
+            if (R.header.location) {
+              prof.loc = R.header.location;
+              prof.location = R.header.location;
+            }
             
             if (!prof.links) prof.links = {};
             if (R.header.linkedin) prof.links.linkedin = R.header.linkedin;
             if (R.header.github) prof.links.github = R.header.github;
             if (R.header.portfolio) prof.links.portfolio = R.header.portfolio;
           }
+
+          // Summary sync
+          if (R.summary) {
+            const sumText = typeof R.summary === 'string' ? R.summary : (R.summary.text || '');
+            prof.summary = sumText;
+            prof.bio = sumText;
+          }
+
+          // Experience sync & normalization
           if (Array.isArray(R.experience) && R.experience.length > 0) {
-            prof.experience = R.experience;
+            prof.experience = R.experience.map(e => ({
+              company: e.company || '',
+              title: e.title || '',
+              type: e.type || 'Full-time',
+              location: e.location || '',
+              start: e.start || e.start_year || (e.dates ? (e.dates.split(/[-–—]/)[0] || '').trim() : ''),
+              end: e.end || e.end_year || (e.dates ? (e.dates.split(/[-–—]/)[1] || 'Present').trim() : 'Present'),
+              bullets: Array.isArray(e.bullets) ? e.bullets : (e.desc ? e.desc.split('\n').filter(Boolean) : []),
+              desc: Array.isArray(e.bullets) ? e.bullets.join('\n') : (e.desc || '')
+            }));
           }
+
+          // Education sync & normalization
           if (Array.isArray(R.education) && R.education.length > 0) {
-            prof.education = R.education;
+            prof.education = R.education.map(ed => ({
+              school: ed.school || '',
+              degree: ed.degree || '',
+              year: ed.year || ed.dates || '',
+              grade: ed.grade || '',
+              coursework: ed.coursework || ''
+            }));
           }
+
+          // Projects sync & normalization
           if (Array.isArray(R.projects) && R.projects.length > 0) {
-            prof.projects = R.projects;
+            prof.projects = R.projects.map(p => ({
+              title: p.name || p.title || '',
+              demo: p.liveLink || p.demo || '',
+              github: p.githubLink || p.github || '',
+              tags: Array.isArray(p.tags) ? p.tags : (typeof p.stack === 'string' ? p.stack.split(',').map(s => s.trim()).filter(Boolean) : []),
+              desc: Array.isArray(p.bullets) ? p.bullets.join('\n') : (p.desc || '')
+            }));
           }
-          // Flatten skills into array of strings for profile
+
+          // Categorized skills sync
+          prof.skills_languages = [];
+          prof.skills_frameworks = [];
+          prof.skills_cloud = [];
+          prof.skills_tools = [];
+          const skillList = [];
           if (Array.isArray(R.skills)) {
-            const skillList = [];
             R.skills.forEach(g => {
               if (typeof g === 'object' && g.items) {
-                g.items.split(',').map(s => s.trim()).filter(Boolean).forEach(s => {
-                  if (!skillList.includes(s)) skillList.push(s);
-                });
+                const items = String(g.items).split(/[,;\n]+/).map(s => s.trim()).filter(Boolean);
+                const label = String(g.label || '').toLowerCase();
+                if (label.includes('language')) prof.skills_languages.push(...items);
+                else if (label.includes('framework') || label.includes('library')) prof.skills_frameworks.push(...items);
+                else if (label.includes('cloud') || label.includes('database') || label.includes('devops') || label.includes('data')) prof.skills_cloud.push(...items);
+                else prof.skills_tools.push(...items);
+                items.forEach(s => { if (!skillList.includes(s)) skillList.push(s); });
               }
             });
-            if (skillList.length > 0) prof.skills = skillList;
+            prof.skills_languages = Array.from(new Set(prof.skills_languages));
+            prof.skills_frameworks = Array.from(new Set(prof.skills_frameworks));
+            prof.skills_cloud = Array.from(new Set(prof.skills_cloud));
+            prof.skills_tools = Array.from(new Set(prof.skills_tools));
+            prof.skills = skillList;
+          }
+
+          // Certifications & Achievements
+          if (Array.isArray(R.certifications)) prof.certifications = R.certifications;
+          if (Array.isArray(R.achievements)) prof.achievements = R.achievements;
+
+          // Universal raw text generation & save
+          const rawText = generateRawResumeText(prof, R);
+          if (rawText) {
+            try {
+              localStorage.setItem('getarole_resume_raw_text', rawText);
+            } catch (_) {}
           }
           localStorage.setItem('getarole_profile', JSON.stringify(prof));
+
+          // Storage pulses for other tabs/listeners
+          window.dispatchEvent(new CustomEvent('getarole_profile_updated', { detail: prof }));
+          window.dispatchEvent(new CustomEvent('getarole_resume_updated', { detail: R }));
 
           // 3. Cloud Sync via Storage-Sync engine
           if (window.getAroleSync) {
@@ -3989,6 +4162,27 @@ ${r.header?.name || 'Candidate Name'}`
 
     // ── Startup Initialization ──
     window.addEventListener('resize', scale);
+
+    // Cross-tab & Cross-window real-time synchronization
+    window.addEventListener('storage', (e) => {
+      if (['getarole_resume_v2', 'getarole_profile'].includes(e.key)) {
+        try {
+          if (e.key === 'getarole_resume_v2' && e.newValue) {
+            R = JSON.parse(e.newValue);
+            populateFormFields();
+            rp();
+            uAts();
+          } else if (e.key === 'getarole_profile' && e.newValue) {
+            loadDataFromProfile().then(() => {
+              populateFormFields();
+              rp();
+              uAts();
+            });
+          }
+        } catch (_) {}
+      }
+    });
+
     loadDataFromProfile();
     populateFormFields();
     rp();

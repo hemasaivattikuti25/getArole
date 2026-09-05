@@ -2648,6 +2648,7 @@
 
   <!-- ════════════════════ RESUME PREVIEW MODAL ════════════════════ -->
   <div class="modal-overlay" id="modal-resume-preview">
+    <input type="file" id="modal-resume-file-input" accept=".pdf,.docx,.doc,.txt" style="display:none;" onchange="handleResumeFile(event)">
     <div class="modal-dialog" style="max-width: 880px; width: 96%; height: 90vh; max-height: 90vh;">
       <div class="modal-header" style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); padding: 18px 24px; border-bottom: 1px solid #e2e8f0;">
         <div style="display: flex; align-items: center; gap: 12px;">
@@ -3776,6 +3777,101 @@
         .replace(/'/g, '&#039;');
     }
 
+    // ── UNIVERSAL ATS RAW TEXT GENERATOR ──
+    window.generateRawResumeText = function(prof = state.profile, rV2 = null) {
+      const p = prof || {};
+      const R = rV2 || JSON.parse(localStorage.getItem('getarole_resume_v2') || '{}');
+      const lines = [];
+
+      const name = p.name || (R.header && R.header.name) || 'Candidate';
+      const headline = p.headline || (R.header && R.header.title) || '';
+      const email = p.email || (R.header && R.header.email) || '';
+      const phone = p.phone || (R.header && R.header.phone) || '';
+      const loc = p.loc || (R.header && R.header.location) || '';
+
+      lines.push(`NAME: ${name}`);
+      if (headline) lines.push(`HEADLINE: ${headline}`);
+      if (email) lines.push(`EMAIL: ${email}`);
+      if (phone) lines.push(`PHONE: ${phone}`);
+      if (loc) lines.push(`LOCATION: ${loc}`);
+
+      const summary = p.summary || (R.summary && (R.summary.text || R.summary)) || '';
+      if (summary) lines.push(`\nSUMMARY:\n${summary}`);
+
+      const langs = (Array.isArray(p.skills_languages) && p.skills_languages.length) ? p.skills_languages : [];
+      const frames = (Array.isArray(p.skills_frameworks) && p.skills_frameworks.length) ? p.skills_frameworks : [];
+      const cloud = (Array.isArray(p.skills_cloud) && p.skills_cloud.length) ? p.skills_cloud : [];
+      const tools = (Array.isArray(p.skills_tools) && p.skills_tools.length) ? p.skills_tools : [];
+
+      if (langs.length || frames.length || cloud.length || tools.length) {
+        lines.push('\nSKILLS & COMPETENCIES:');
+        if (langs.length) lines.push(`- Languages: ${langs.join(', ')}`);
+        if (frames.length) lines.push(`- Frameworks & Libraries: ${frames.join(', ')}`);
+        if (cloud.length) lines.push(`- Cloud, DevOps & Databases: ${cloud.join(', ')}`);
+        if (tools.length) lines.push(`- Tools & Platforms: ${tools.join(', ')}`);
+      } else if (Array.isArray(p.skills) && p.skills.length) {
+        lines.push(`\nSKILLS: ${p.skills.join(', ')}`);
+      }
+
+      const exp = (Array.isArray(p.experience) && p.experience.length) ? p.experience : (Array.isArray(R.experience) ? R.experience : []);
+      if (exp.length) {
+        lines.push('\nWORK EXPERIENCE:');
+        exp.forEach(e => {
+          const title = e.title || 'Role';
+          const comp = e.company || 'Company';
+          const dates = e.dates || `${e.start || e.start_year || ''} - ${e.end || e.end_year || 'Present'}`;
+          const locStr = e.location ? ` | ${e.location}` : '';
+          lines.push(`- ${title} at ${comp} (${dates}${locStr})`);
+          const bullets = Array.isArray(e.bullets) ? e.bullets : (e.desc ? e.desc.split('\n').filter(Boolean) : []);
+          bullets.forEach(b => {
+            lines.push(`  • ${String(b).replace(/^[•\-\*\s]+/, '').trim()}`);
+          });
+        });
+      }
+
+      const edu = (Array.isArray(p.education) && p.education.length) ? p.education : (Array.isArray(R.education) ? R.education : []);
+      if (edu.length) {
+        lines.push('\nEDUCATION:');
+        edu.forEach(ed => {
+          const deg = ed.degree || 'Degree';
+          const sch = ed.school || 'University';
+          const yr = ed.year || ed.dates || '';
+          const gr = ed.grade ? ` (GPA/Grade: ${ed.grade})` : '';
+          lines.push(`- ${deg} - ${sch} (${yr})${gr}`);
+          if (ed.coursework) lines.push(`  Coursework: ${ed.coursework}`);
+        });
+      }
+
+      const proj = (Array.isArray(p.projects) && p.projects.length) ? p.projects : (Array.isArray(R.projects) ? R.projects : []);
+      if (proj.length) {
+        lines.push('\nPROJECTS:');
+        proj.forEach(pr => {
+          const pTitle = pr.title || pr.name || 'Project';
+          const stack = Array.isArray(pr.tags) ? pr.tags.join(', ') : (pr.stack || '');
+          lines.push(`- ${pTitle}${stack ? ` [${stack}]` : ''}`);
+          if (pr.demo) lines.push(`  Demo: ${pr.demo}`);
+          if (pr.github) lines.push(`  GitHub: ${pr.github}`);
+          const pBullets = Array.isArray(pr.bullets) ? pr.bullets : (pr.desc ? pr.desc.split('\n').filter(Boolean) : []);
+          pBullets.forEach(b => {
+            lines.push(`  • ${String(b).replace(/^[•\-\*\s]+/, '').trim()}`);
+          });
+        });
+      }
+
+      const certs = (Array.isArray(p.certifications) && p.certifications.length) ? p.certifications : (Array.isArray(R.certifications) ? R.certifications : []);
+      if (certs.length) {
+        lines.push('\nCERTIFICATIONS:');
+        certs.forEach(c => {
+          const cName = typeof c === 'string' ? c : (c.name || c.title || '');
+          const cOrg = c.issuer || c.org ? ` - ${c.issuer || c.org}` : '';
+          const cDate = c.date || c.year ? ` (${c.date || c.year})` : '';
+          lines.push(`- ${cName}${cOrg}${cDate}`);
+        });
+      }
+
+      return lines.join('\n');
+    };
+
     // ── LIVE BIDIRECTIONAL LATEX RESUME COMPILER & SYNC ENGINE ──
     function syncProfileToResumeV2() {
       try {
@@ -3853,6 +3949,18 @@
         // Save compiled Harvard resume JSON
         localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
 
+        // Synchronize fresh Raw Extracted Resume Text (ATS Stream)
+        const rawText = window.generateRawResumeText(state.profile, R);
+        if (rawText) {
+          try {
+            localStorage.setItem('getarole_resume_raw_text', rawText);
+          } catch (_) {}
+        }
+
+        // Dispatch local custom pulses
+        window.dispatchEvent(new CustomEvent('getarole_profile_updated', { detail: state.profile }));
+        window.dispatchEvent(new CustomEvent('getarole_resume_updated', { detail: R }));
+
         // Background push to Supabase Cloud & resume API
         if (window.getAroleSync) {
           window.getAroleSync.syncUserResume(R);
@@ -3889,10 +3997,18 @@
         localStorage.setItem('getarole_prefs', JSON.stringify(state.prefs));
       }
 
-      // 2. Compile and sync full Harvard resume data
+      // 2. Compile and sync full Harvard resume data & raw text
       syncProfileToResumeV2();
 
+      // 3. Render Profile dossier cards
       renderFullProfile();
+
+      // 4. Live update resume preview modal if currently open
+      const modal = document.getElementById('modal-resume-preview');
+      if (modal && (modal.classList.contains('active') || modal.style.display !== 'none')) {
+        renderResumePreviewBody(currentResumePreviewTab);
+      }
+
       toast('✓ Candidate dossier & resume architect synchronized to Cloud!');
     }
 
@@ -4297,13 +4413,36 @@
 
     // ── RESUME FILE PARSER / UPLOAD ──
     window.triggerResumeUpload = function() {
-      const inp = document.getElementById('hero-resume-file-input') || document.getElementById('resume-file-input');
-      if (inp) inp.click();
+      const inputs = [
+        document.getElementById('modal-resume-file-input'),
+        document.getElementById('hero-resume-file-input'),
+        document.getElementById('resume-file-input')
+      ].filter(Boolean);
+
+      // CRITICAL FIX: Always clear .value = '' on all file inputs before opening file picker.
+      // This ensures that selecting the exact same filename or an updated version always fires 'change'.
+      inputs.forEach(inp => {
+        try { inp.value = ''; } catch(_) {}
+      });
+
+      const target = inputs[0];
+      if (target) {
+        target.click();
+      }
     };
 
     window.handleResumeFile = async function(e) {
-      const file = e.target.files && e.target.files[0];
+      const file = (e && e.target && e.target.files && e.target.files[0]) ||
+                   (e && e.files && e.files[0]) ||
+                   (e && e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]);
       if (!file) return;
+
+      // Reset target value immediately so subsequent selection of the same file fires change reliably
+      try {
+        if (e && e.target && 'value' in e.target) {
+          e.target.value = '';
+        }
+      } catch(_) {}
 
       // 1. Capture file Data URL for instant in-browser native preview
       try {
@@ -4447,7 +4586,7 @@
 
           // If resume preview modal is open, re-render it in real-time
           const modal = document.getElementById('modal-resume-preview');
-          if (modal && modal.style.display !== 'none') {
+          if (modal && (modal.classList.contains('active') || modal.style.display !== 'none')) {
             const fnEl = document.getElementById('resume-preview-filename');
             if (fnEl) fnEl.innerHTML = `Active file: <strong style="color:#0f172a;">${escapeHTML(file.name)}</strong>`;
             renderResumePreviewBody(currentResumePreviewTab);
@@ -4464,8 +4603,15 @@
       if (bar) bar.style.width = '100%';
       setTimeout(() => { if (prog) prog.style.display = 'none'; }, 600);
       localStorage.setItem('getarole_resume_pdf', file.name);
+      syncProfileToResumeV2();
       await persistProfileData();
       renderFullProfile();
+      const modalFallback = document.getElementById('modal-resume-preview');
+      if (modalFallback && (modalFallback.classList.contains('active') || modalFallback.style.display !== 'none')) {
+        const fnEl = document.getElementById('resume-preview-filename');
+        if (fnEl) fnEl.innerHTML = `Active file: <strong style="color:#0f172a;">${escapeHTML(file.name)}</strong>`;
+        renderResumePreviewBody(currentResumePreviewTab);
+      }
       toast(`✓ Resume uploaded: ${file.name}`);
     };
 
@@ -4475,6 +4621,9 @@
     window.openResumePreviewModal = function(initialTab = 'extracted') {
       const modal = document.getElementById('modal-resume-preview');
       if (!modal) return;
+
+      // Ensure freshest sync before opening
+      syncProfileToResumeV2();
 
       const fnEl = document.getElementById('resume-preview-filename');
       const savedPdf = localStorage.getItem('getarole_resume_pdf') || sessionStorage.getItem('getarole_resume_pdf_name');
@@ -4903,11 +5052,6 @@
       }
     };
 
-    window.triggerResumeUpload = function() {
-      const inp = document.getElementById('hero-resume-file-input') || document.getElementById('resume-file-input');
-      if (inp) inp.click();
-    };
-
     window.openDeleteAccountModal = function() {
       const inp = document.getElementById('input-confirm-delete');
       if (inp) inp.value = '';
@@ -5092,6 +5236,49 @@
           }
         });
       }
+
+      // 2b. Drag & Drop for Resume Preview Modal
+      const modalDialog = document.querySelector('#modal-resume-preview .modal-dialog');
+      if (modalDialog) {
+        modalDialog.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          modalDialog.style.boxShadow = '0 0 0 3px #4f46e5, 0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+        });
+        modalDialog.addEventListener('dragleave', () => {
+          modalDialog.style.boxShadow = '';
+        });
+        modalDialog.addEventListener('drop', (e) => {
+          e.preventDefault();
+          modalDialog.style.boxShadow = '';
+          if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+            handleResumeFile({ target: { files: e.dataTransfer.files } });
+          }
+        });
+      }
+
+      // 2c. Cross-tab & Cross-window real-time synchronization
+      window.addEventListener('storage', (e) => {
+        if (!e.key || ['getarole_profile', 'getarole_resume_v2', 'getarole_resume_raw_text', 'getarole_resume_pdf'].includes(e.key)) {
+          loadStateFromStorage();
+          renderFullProfile();
+          const prevModal = document.getElementById('modal-resume-preview');
+          if (prevModal && (prevModal.classList.contains('active') || prevModal.style.display !== 'none')) {
+            renderResumePreviewBody(currentResumePreviewTab);
+          }
+        }
+      });
+      window.addEventListener('getarole_profile_updated', () => {
+        const prevModal = document.getElementById('modal-resume-preview');
+        if (prevModal && (prevModal.classList.contains('active') || prevModal.style.display !== 'none')) {
+          renderResumePreviewBody(currentResumePreviewTab);
+        }
+      });
+      window.addEventListener('getarole_resume_updated', () => {
+        const prevModal = document.getElementById('modal-resume-preview');
+        if (prevModal && (prevModal.classList.contains('active') || prevModal.style.display !== 'none')) {
+          renderResumePreviewBody(currentResumePreviewTab);
+        }
+      });
 
       // 3. Hash routing check (e.g. /profile/#section-danger-zone)
       if (window.location.hash === '#section-danger-zone' || window.location.hash === '#account') {
