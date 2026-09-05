@@ -1,7 +1,22 @@
 -- ==============================================================================
 -- getArole AI — Complete Production Supabase Schema
--- Run this ONCE in: Supabase Dashboard → SQL Editor → Run
--- https://supabase.com/dashboard/project/_/sql
+-- 
+-- 🚀 QUICK FIX MIGRATION (Run this in Supabase Dashboard → SQL Editor → Run):
+-- ------------------------------------------------------------------------------
+-- 1. Ensure user_resumes has UNIQUE(firebase_uid) for clean upserts:
+-- ALTER TABLE public.user_resumes DROP CONSTRAINT IF EXISTS user_resumes_firebase_uid_key;
+-- ALTER TABLE public.user_resumes ADD CONSTRAINT user_resumes_firebase_uid_key UNIQUE (firebase_uid);
+--
+-- 2. Ensure RLS allows full client CRUD with anon publishable key:
+-- ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
+-- ALTER TABLE public.user_preferences ENABLE ROW LEVEL SECURITY;
+-- ALTER TABLE public.user_resumes ENABLE ROW LEVEL SECURITY;
+-- DROP POLICY IF EXISTS "Anon full access - user_profiles" ON public.user_profiles;
+-- CREATE POLICY "Anon full access - user_profiles" ON public.user_profiles FOR ALL USING (true) WITH CHECK (true);
+-- DROP POLICY IF EXISTS "Anon full access - user_preferences" ON public.user_preferences;
+-- CREATE POLICY "Anon full access - user_preferences" ON public.user_preferences FOR ALL USING (true) WITH CHECK (true);
+-- DROP POLICY IF EXISTS "Anon full access - user_resumes" ON public.user_resumes;
+-- CREATE POLICY "Anon full access - user_resumes" ON public.user_resumes FOR ALL USING (true) WITH CHECK (true);
 -- ==============================================================================
 
 -- ─────────────────────────────────────────────────────────────

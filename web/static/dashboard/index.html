@@ -2079,12 +2079,26 @@
             localStorage.setItem('getarole_resume_v2', JSON.stringify(cloudResume));
           }
           
-          if (typeof loadJobs === 'function') loadJobs();
-        } catch (e) {
-          console.error("Failed to hydrate user data:", e);
-        }
+        if (typeof loadJobs === 'function') loadJobs();
+      } catch (e) {
+        console.error("Failed to hydrate user data:", e);
       }
-    });
+    } else {
+      // Unauthenticated / Guest Onboarding Visitor Fallback
+      try {
+        const localProf = JSON.parse(localStorage.getItem('getarole_profile') || '{}');
+        const name = localProf.name || localProf.first || 'Candidate';
+        const navUser = document.getElementById('nav-username');
+        const homeUser = document.getElementById('home-user-name');
+        if (navUser) navUser.textContent = name;
+        if (homeUser) homeUser.textContent = name;
+        if (typeof window.updateGreetingAndDateTime === 'function') window.updateGreetingAndDateTime();
+        if (typeof loadJobs === 'function') loadJobs();
+      } catch (_) {
+        if (typeof loadJobs === 'function') loadJobs();
+      }
+    }
+  });
 
     window.handleLogout = async function() {
       await logoutUser();

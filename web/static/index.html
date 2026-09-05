@@ -1831,10 +1831,11 @@
         }
       }
       const localPrefs = localStorage.getItem('getarole_prefs');
-      if (!isExplicitSignUp && (hasCloudPrefs || localPrefs)) {
+      const onboardingCompleted = localStorage.getItem('getarole_onboarding_completed') === 'true';
+      if (!isExplicitSignUp && (hasCloudPrefs || localPrefs || onboardingCompleted)) {
         window.location.href = "/dashboard/";
       } else {
-        window.location.href = (isExplicitSignUp || !hasCloudPrefs) ? "/onboarding/" : "/dashboard/";
+        window.location.href = (isExplicitSignUp || (!hasCloudPrefs && !onboardingCompleted)) ? "/onboarding/" : "/dashboard/";
       }
     }
 

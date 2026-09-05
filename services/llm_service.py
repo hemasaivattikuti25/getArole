@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import httpx
 from typing import Dict, Any, Optional, List
@@ -9,7 +10,7 @@ load_dotenv()
 from core.circuit_breaker import AsyncCircuitBreaker
 from core.metrics import LLM_FALLBACK_TOTAL
 
-llm_breaker = AsyncCircuitBreaker("nvidia_nim", fail_max=3, reset_timeout=30.0)
+llm_breaker = AsyncCircuitBreaker("nvidia_nim", fail_max=5, reset_timeout=20.0)
 
 class NvidiaLLMService:
     def __init__(
@@ -44,8 +45,8 @@ class NvidiaLLMService:
             "temperature": temperature,
             "max_tokens": max_tokens
         }
-        read_timeout = timeout_secs if timeout_secs is not None else 6.0
-        timeout_cfg = httpx.Timeout(connect=3.0, read=read_timeout, write=3.0, pool=3.0)
+        read_timeout = timeout_secs if timeout_secs is not None else 25.0
+        timeout_cfg = httpx.Timeout(connect=5.0, read=read_timeout, write=5.0, pool=5.0)
         try:
             async with httpx.AsyncClient(timeout=timeout_cfg) as client:
                 resp = await client.post(f"{self.base_url}/chat/completions", headers=headers, json=payload)
@@ -160,19 +161,40 @@ Respond ONLY in valid JSON:
   "justification": "<2-3 sentence clear recruiter justification explaining the 5D score and verdict>"
 }}"""
 
+        last_err = None
+        for attempt in range(2):
+            try:
+                content = await self.a_call_chat(
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.1,
+                    max_tokens=850,
+                    timeout_secs=45.0
+                )
+                if not content:
+                    raise RuntimeError("Empty response received from LLM service (circuit breaker or timeout)")
+
+                parsed = self.extract_json_payload(content)
+                if not parsed or not isinstance(parsed, dict):
+                    # Search for JSON object within markdown or surrounding text
+                    json_match = re.search(r'(\{[\s\S]*\})', content)
+                    if json_match:
+                        try:
+                            parsed = json.loads(json_match.group(1), strict=False)
+                        except Exception:
+                            pass
+                if not parsed or not isinstance(parsed, dict):
+                    raise ValueError(f"Could not parse valid JSON from LLM output: {content[:150]}")
+                break
+            except Exception as e:
+                last_err = e
+                if attempt == 0:
+                    await asyncio.sleep(1.0)
+                    continue
+                parsed = None
+
         try:
-            content = await self.a_call_chat(
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.1,
-                max_tokens=650
-            )
-            parsed = self.extract_json_payload(content)
             if not parsed or not isinstance(parsed, dict):
-                if "```json" in content:
-                    content = content.split("```json")[1].split("```")[0].strip()
-                elif "```" in content:
-                    content = content.split("```")[1].split("```")[0].strip()
-                parsed = json.loads(content)
+                raise last_err or ValueError("Failed to obtain valid LLM evaluation")
 
             rubric = parsed.get("rubric_breakdown", {})
             skills_val = float(rubric.get("skills_match", rubric.get("technical_skills", 7.0)))

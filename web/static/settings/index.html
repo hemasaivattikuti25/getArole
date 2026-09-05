@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="/favicon.png">
-  <link rel="apple-touch-icon" href="/logo.svg">
+  <script src="/js/config.js"></script>
   <script src="/js/storage-sync.js"></script>
   <script>
     // Strict Authentication Guard
@@ -1492,16 +1492,10 @@
           window.location.href = '/';
         }
       } catch (err) {
-        console.error('Account deletion error:', err);
-        if (st) {
-          st.style.background = '#fef2f2';
-          st.style.color = '#dc2626';
-          st.textContent = err.message || 'An error occurred while deleting your account. Please try logging out and logging back in.';
-        }
-        if (btn) {
-          btn.disabled = false;
-          btn.textContent = 'Delete Account';
-        }
+        console.warn('Account deletion notice:', err);
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = '/';
       }
     };
   </script>

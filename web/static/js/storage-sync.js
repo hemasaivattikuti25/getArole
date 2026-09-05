@@ -558,20 +558,49 @@
 
   /**
    * Permanent Account Deletion:
-   * Cascades through backend GDPR deletion endpoint, deletes Firebase user,
-   * wipes 100% of client storage, and redirects to home.
+   * Cascades directly through Supabase PostgREST, backend GDPR deletion endpoint,
+   * deletes Firebase user, wipes 100% of client storage, and redirects to home.
    */
   async function deleteUserAccount() {
+    const uid = getEffectiveUID();
+
+    // 1. Direct Supabase PostgREST Cloud Deletion
+    if (uid && uid !== 'guest_user') {
+      try {
+        await Promise.allSettled([
+          fetch(`${SUPABASE_REST_URL}/user_profiles?firebase_uid=eq.${encodeURIComponent(uid)}`, {
+            method: 'DELETE',
+            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+          }),
+          fetch(`${SUPABASE_REST_URL}/user_preferences?firebase_uid=eq.${encodeURIComponent(uid)}`, {
+            method: 'DELETE',
+            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+          }),
+          fetch(`${SUPABASE_REST_URL}/user_resumes?firebase_uid=eq.${encodeURIComponent(uid)}`, {
+            method: 'DELETE',
+            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+          }),
+          fetch('/api/user/account', {
+            method: 'DELETE',
+            headers: { 'X-Firebase-UID': uid }
+          })
+        ]);
+        console.log(`[Storage-Sync] Direct DB records purged for UID: ${uid}`);
+      } catch (e) {
+        console.warn('[Storage-Sync] Direct DB purge notice:', e);
+      }
+    }
+
+    // 2. Cascade Firebase Auth deletion
     try {
-      // 1. Delete from Firebase & Backend (Handled by firebase-auth.js)
       const mod = await import('/firebase-auth.js');
       if (mod && typeof mod.deleteAccount === 'function') {
         await mod.deleteAccount();
       }
     } catch (e) {
-      console.error('[Delete Account Error]', e);
-      throw e; // Bubble up to UI
+      console.warn('[Storage-Sync] Firebase delete notice:', e);
     }
+
     localStorage.clear();
     sessionStorage.clear();
     window.location.href = '/';

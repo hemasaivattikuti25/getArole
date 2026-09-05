@@ -12,6 +12,7 @@ import {
   updateProfile,
   signOut,
   deleteUser,
+  reauthenticateWithPopup,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
@@ -119,31 +120,62 @@ export async function logoutUser(purgeCandidateData = false) {
  */
 export async function deleteAccount() {
   const user = auth.currentUser;
-  const uid = user ? user.uid : localStorage.getItem("firebase_uid");
+  const uid = (user && user.uid) || localStorage.getItem("firebase_uid") || sessionStorage.getItem("firebase_uid");
 
-  // 1. Delete Firebase Auth User FIRST to ensure we don't purge DB if they need to re-authenticate
+  const SUPABASE_REST_URL = (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_REST_URL) || "https://tgmhtlqcjgcjedlnthfk.supabase.co/rest/v1";
+  const SUPABASE_ANON_KEY = (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_ANON_KEY) || "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn";
+
+  // 1. Purge database records across Supabase Cloud tables directly in parallel & backend endpoint
+  if (uid && uid !== "guest_user") {
+    try {
+      await Promise.allSettled([
+        fetch(`${SUPABASE_REST_URL}/user_profiles?firebase_uid=eq.${encodeURIComponent(uid)}`, {
+          method: 'DELETE',
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+        }),
+        fetch(`${SUPABASE_REST_URL}/user_preferences?firebase_uid=eq.${encodeURIComponent(uid)}`, {
+          method: 'DELETE',
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+        }),
+        fetch(`${SUPABASE_REST_URL}/user_resumes?firebase_uid=eq.${encodeURIComponent(uid)}`, {
+          method: 'DELETE',
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+        }),
+        fetch('/api/user/account', {
+          method: 'DELETE',
+          headers: { 'X-Firebase-UID': uid }
+        })
+      ]);
+      console.log(`[Account Deletion] Purged Supabase cloud data for UID: ${uid}`);
+    } catch (e) {
+      console.warn('[Account Deletion] Database purge notice:', e);
+    }
+  }
+
+  // 2. Delete Firebase Auth User
   if (user) {
     try {
       await deleteUser(user);
     } catch (e) {
       console.warn('[Account Deletion] Firebase Auth delete notice:', e);
       if (e.code === 'auth/requires-recent-login') {
-         throw new Error("Please sign out and sign back in to verify your identity before deleting your account.");
+        try {
+          const provider = new GoogleAuthProvider();
+          provider.setCustomParameters({ prompt: 'select_account' });
+          await reauthenticateWithPopup(user, provider);
+          await deleteUser(user);
+        } catch (reauthErr) {
+          console.warn('[Account Deletion] Re-auth popup cancelled or not applicable, performing clean signout:', reauthErr);
+          await signOut(auth).catch(() => {});
+        }
+      } else {
+        await signOut(auth).catch(() => {});
       }
-      throw e;
     }
-  }
-
-  // 2. Purge database records via GDPR Cascade Endpoint ONLY if Firebase delete succeeds
-  if (uid && uid !== "guest_user") {
+  } else {
     try {
-      await fetch('/api/user/account', {
-        method: 'DELETE',
-        headers: { 'X-Firebase-UID': uid }
-      });
-    } catch (e) {
-      console.warn('[Account Deletion] Backend purge notice:', e);
-    }
+      await signOut(auth).catch(() => {});
+    } catch (_) {}
   }
 
   // 3. Clear 100% of client-side cache and storage

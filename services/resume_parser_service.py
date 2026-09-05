@@ -45,6 +45,13 @@ class ResumeParserService:
             docx_text = self.parse_docx_bytes(pdf_bytes)
             if docx_text:
                 return docx_text, []
+            # Fallback to UTF-8 plain text if file is raw text
+            try:
+                raw_text = pdf_bytes.decode("utf-8", errors="ignore").strip()
+                if len(raw_text) > 10:
+                    return raw_text, []
+            except Exception:
+                pass
         
         text = "\n".join(pages_text).strip()
         if pdf_links:
@@ -52,12 +59,19 @@ class ResumeParserService:
         return text, pdf_links
 
     def parse_document_bytes(self, file_bytes: bytes, filename: str) -> Tuple[str, List[str]]:
-        """Extracts text based on document file type."""
+        """Extracts text based on document file type (PDF, DOCX, TXT, MD)."""
         lower_name = (filename or "").lower()
         if lower_name.endswith(".docx") or lower_name.endswith(".doc"):
             docx_text = self.parse_docx_bytes(file_bytes)
             if docx_text:
                 return docx_text, []
+        if lower_name.endswith(".txt") or lower_name.endswith(".md") or lower_name.endswith(".text"):
+            try:
+                decoded = file_bytes.decode("utf-8", errors="replace").strip()
+                if decoded:
+                    return decoded, []
+            except Exception:
+                pass
         return self.parse_pdf_bytes(file_bytes)
 
     def _is_safe_url(self, url: str) -> bool:
@@ -236,7 +250,9 @@ class ResumeParserService:
         return fb_exp, fb_edu, fb_proj
 
     async def _call_llm_parser(self, text: str) -> Dict[str, Any]:
-        """Helper to invoke LLM parser safely with dedicated 30s timeout and payload extraction."""
+        """Helper to invoke LLM parser safely with dedicated timeout and payload extraction."""
+        if not text or len(text.strip()) < 20:
+            return {}
         try:
             from services.llm_service import get_llm_service
             llm = get_llm_service()
@@ -283,7 +299,7 @@ Return valid JSON with exact structure:
     }}
   ]
 }}"""
-            resp = await llm.a_call_chat([{"role": "user", "content": prompt}], max_tokens=900, timeout_secs=30.0)
+            resp = await llm.a_call_chat([{"role": "user", "content": prompt}], max_tokens=700, timeout_secs=15.0)
             parsed = NvidiaLLMService.extract_json_payload(resp)
             if isinstance(parsed, dict):
                 return parsed
@@ -291,8 +307,26 @@ Return valid JSON with exact structure:
             print(f"[ResumeParserService LLM Notice] {e}")
         return {}
 
-    async def process_resume_bytes(self, file_bytes: bytes, filename: str) -> Dict[str, Any]:
-        """Main orchestrator for resume parsing supporting PDF and DOCX."""
+    async def process_resume_bytes(self, file_bytes: bytes, filename: str, use_llm: bool = False) -> Dict[str, Any]:
+        """Main orchestrator for resume parsing supporting PDF, DOCX, and TXT."""
+        if not file_bytes:
+            return {
+                "success": False,
+                "filename": filename,
+                "resume_text": "",
+                "candidate_profile": {"skills": [], "experience": [], "education": [], "projects": [], "links": {}},
+                "resume_data": {"header": {}, "summary": {}, "skills": {}, "experience": [], "education": [], "projects": [], "links": {}, "raw_text": ""},
+                "skills": [],
+                "email": "",
+                "phone": "",
+                "headline": "",
+                "name": "",
+                "experience": [],
+                "education": [],
+                "projects": [],
+                "links": {}
+            }
+
         text, pdf_links = await asyncio.to_thread(self.parse_document_bytes, file_bytes, filename)
 
         common_tech = [
@@ -306,7 +340,15 @@ Return valid JSON with exact structure:
             "jira", "agile", "scrum"
         ]
         lower = text.lower()
-        extracted_skills = [s for s in common_tech if s in lower]
+        extracted_skills = []
+        for s in common_tech:
+            if len(s) <= 2 or s in ["c", "go", "r", "c#", "c++"]:
+                pattern = rf'(?<![a-zA-Z0-9]){re.escape(s)}(?![a-zA-Z0-9])'
+                if re.search(pattern, lower):
+                    extracted_skills.append(s)
+            else:
+                if s in lower:
+                    extracted_skills.append(s)
 
         email_match = re.search(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+', text)
         phone_match = re.search(r'(?:(?:\+|00)\d{1,3}[-\s.]*)?(?:\(?\d{2,5}\)?[-\s.]*)?\d{3,5}[-\s.]*\d{4,5}', text)
@@ -327,7 +369,7 @@ Return valid JSON with exact structure:
         headline = "Software Engineer"
         summary = " ".join(lines[1:4]) if len(lines) > 1 else ""
 
-        llm_parsed = await self._call_llm_parser(text)
+        llm_parsed = await self._call_llm_parser(text) if use_llm else {}
 
         first_name = llm_parsed.get("first_name", "")
         last_name = llm_parsed.get("last_name", "")
@@ -404,7 +446,16 @@ Return valid JSON with exact structure:
             "filename": filename,
             "resume_text": text,
             "candidate_profile": candidate_profile,
-            "resume_data": resume_data
+            "resume_data": resume_data,
+            "skills": extracted_skills,
+            "email": email,
+            "phone": phone,
+            "headline": headline,
+            "name": candidate_name,
+            "experience": experience_list,
+            "education": education_list,
+            "projects": projects_list,
+            "links": links
         }
 
 def get_resume_parser_service() -> ResumeParserService:

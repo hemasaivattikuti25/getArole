@@ -12,6 +12,7 @@
     href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="/css/global-aurora.css">
+  <script src="/js/config.js"></script>
   <script src="/js/storage-sync.js"></script>
 
   <style>
@@ -960,6 +961,22 @@
             if (data.headline) userState.specializations = [data.headline];
             renderParsedPreview(userState.skills);
             msg.textContent = `✓ Auto-extracted ${data.skills.length} skills and role history from ${file.name}!`;
+
+            // Persist parsed resume to Supabase & local cache
+            if (window.getAroleSync && typeof window.getAroleSync.syncUserResume === 'function') {
+              window.getAroleSync.syncUserResume({
+                filename: file.name,
+                skills: userState.skills,
+                headline: data.headline || userState.specializations[0],
+                name: data.name || '',
+                email: data.email || '',
+                phone: data.phone || '',
+                summary: data.summary || '',
+                experience: data.experience || [],
+                education: data.education || [],
+                projects: data.projects || []
+              }).catch(() => {});
+            }
             return;
           }
         }
@@ -973,6 +990,14 @@
         userState.skills = [...new Set([...userState.skills, ...sampleSkills])];
         renderParsedPreview(userState.skills);
         msg.textContent = `✓ Resume verified: ${file.name} synchronized to your profile!`;
+
+        if (window.getAroleSync && typeof window.getAroleSync.syncUserResume === 'function') {
+          window.getAroleSync.syncUserResume({
+            filename: file.name,
+            skills: userState.skills,
+            headline: userState.specializations[0]
+          }).catch(() => {});
+        }
       }, 700);
     };
 
@@ -1075,7 +1100,18 @@
         status: userState.searchStatus
       };
 
+      // Preserve authenticated user identity if present
+      let userName = '';
+      let userEmail = '';
+      try {
+        const u = JSON.parse(localStorage.getItem('getarole_user') || '{}');
+        userName = u.displayName || u.name || '';
+        userEmail = u.email || '';
+      } catch (_) {}
+
       const canonicalProfile = {
+        name: userName,
+        email: userEmail,
         headline: `${canonicalPrefs.role} • ${userState.seniority[0] || '3+ Years Experience'}`,
         skills: userState.skills,
         loc: canonicalPrefs.city
@@ -1101,13 +1137,21 @@
 
     // ── INITIAL HYDRATION ──
     async function initExistingState() {
+      // Ensure specialization has at least one valid chip matching department
+      const validSpecs = departmentSpecs[userState.department] || departmentSpecs["Software Engineering"];
+      if (!userState.specializations || userState.specializations.length === 0 || !validSpecs.includes(userState.specializations[0])) {
+        userState.specializations = [validSpecs[0]];
+      }
       renderSpecializationChips();
 
       if (window.getAroleSync) {
         try {
           const savedPrefs = await window.getAroleSync.loadUserPreferences();
           if (savedPrefs && savedPrefs.roles && savedPrefs.roles.length > 0) {
-            userState.specializations = savedPrefs.roles;
+            const matched = savedPrefs.roles.filter(r => validSpecs.includes(r));
+            if (matched.length > 0) {
+              userState.specializations = matched;
+            }
             if (savedPrefs.locations && savedPrefs.locations.length > 0) userState.locations = savedPrefs.locations;
             if (savedPrefs.salary_amt) userState.salary_amt = savedPrefs.salary_amt;
             if (savedPrefs.skills && savedPrefs.skills.length > 0) userState.skills = savedPrefs.skills;
