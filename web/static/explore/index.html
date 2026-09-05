@@ -256,6 +256,34 @@
     }
     .btn-filter-pill:active { transform: scale(0.96); }
 
+    .filter-chip-pill {
+      padding: 4px 11px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border, #e2e8f0);
+      background: var(--surface, #ffffff);
+      color: var(--text-muted, #64748b);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+    .filter-chip-pill:hover {
+      border-color: var(--primary, #4f46e5);
+      color: var(--primary, #4f46e5);
+      background: rgba(79, 70, 229, 0.05);
+      transform: translateY(-1px);
+    }
+    .filter-chip-pill.active {
+      border-color: var(--primary, #4f46e5);
+      background: var(--primary, #4f46e5);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(79,70,229,0.25);
+    }
+
     .btn-filter-action {
       padding: 8px 16px; border-radius: 99px; font-size: 12.5px; font-weight: 700;
       border: none; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); white-space: nowrap;
@@ -1575,6 +1603,18 @@
         <button class="btn-clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
       </div>
 
+      <!-- QUICK POPULAR CHIPS ROW -->
+      <div class="explore-quick-chips" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding: 2px 0;">
+        <span style="font-size:11.5px; font-weight:700; color:var(--text-subtle, #94a3b8); text-transform:uppercase; letter-spacing:0.5px;">⚡ Popular:</span>
+        <button type="button" class="filter-chip-pill" data-tag="Python" onclick="quickSearchTag('Python')">🐍 Python</button>
+        <button type="button" class="filter-chip-pill" data-tag="React" onclick="quickSearchTag('React')">⚛️ React</button>
+        <button type="button" class="filter-chip-pill" data-tag="SDE" onclick="quickSearchTag('SDE')">🚀 SDE</button>
+        <button type="button" class="filter-chip-pill" data-tag="Intern" onclick="quickSearchTag('Intern')">⚡ Internship</button>
+        <button type="button" class="filter-chip-pill" data-tag="Remote" onclick="quickSearchTag('Remote')">🌐 Remote</button>
+        <button type="button" class="filter-chip-pill" data-tag="AI" onclick="quickSearchTag('AI')">🤖 AI / ML</button>
+        <button type="button" class="filter-chip-pill" data-tag="Fullstack" onclick="quickSearchTag('Fullstack')">💻 Fullstack</button>
+      </div>
+
       <!-- BOTTOM ROW: DROPDOWN FILTERS & QUICK TOGGLES -->
       <div class="filter-bottom-row">
         <select id="filter-location" class="filter-dropdown" onchange="filterJobs()">
@@ -2586,6 +2626,7 @@
     function clearAllFilters() {
       activePills.clear();
       document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.filter-chip-pill').forEach(p => p.classList.remove('active'));
       document.getElementById('main-search-input').value = '';
       if (document.getElementById('filter-location')) document.getElementById('filter-location').value = '';
       if (document.getElementById('filter-category')) document.getElementById('filter-category').value = '';
@@ -2688,8 +2729,27 @@
     function handleSearchInput(val) {
       const btnClear = document.getElementById('btn-clear-search');
       if (btnClear) btnClear.style.display = val && val.trim() ? 'block' : 'none';
+      document.querySelectorAll('.filter-chip-pill').forEach(btn => {
+        const tag = btn.getAttribute('data-tag');
+        if (val && tag && val.toLowerCase().includes(tag.toLowerCase())) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
       debouncedFilterJobs();
     }
+
+    window.quickSearchTag = function(tag) {
+      const sInput = document.getElementById('main-search-input');
+      if (!sInput) return;
+      if (sInput.value.toLowerCase() === tag.toLowerCase()) {
+        clearSearchInput();
+        return;
+      }
+      sInput.value = tag;
+      handleSearchInput(tag);
+    };
 
     function clearSearchInput() {
       const sInput = document.getElementById('main-search-input');
@@ -2699,6 +2759,7 @@
       }
       const btnClear = document.getElementById('btn-clear-search');
       if (btnClear) btnClear.style.display = 'none';
+      document.querySelectorAll('.filter-chip-pill').forEach(p => p.classList.remove('active'));
       filterJobs();
     }
 

@@ -1747,6 +1747,10 @@
             <button class="filter-pill" id="pill-hyderabad" onclick="togglePillFilter('hyderabad')">🏙️ Hyderabad</button>
             <button class="filter-pill" id="pill-intern" onclick="togglePillFilter('internship')">⚡ Internship</button>
             <button class="filter-pill" id="pill-fulltime" onclick="togglePillFilter('fulltime')">💼 Full-time</button>
+            <button class="filter-pill" id="pill-python" data-tag="Python" onclick="quickSearchMatches('Python')">🐍 Python</button>
+            <button class="filter-pill" id="pill-react" data-tag="React" onclick="quickSearchMatches('React')">⚛️ React</button>
+            <button class="filter-pill" id="pill-aiml" data-tag="AI" onclick="quickSearchMatches('AI')">🤖 AI/ML</button>
+            <button class="filter-pill" id="pill-sde" data-tag="SDE" onclick="quickSearchMatches('SDE')">🚀 SDE</button>
             <button class="btn-clear-filters" onclick="clearAllFilters()">Clear</button>
           </div>
         </div>
@@ -2655,8 +2659,27 @@
     function handleSearchInput(val) {
       const btnClear = document.getElementById('btn-clear-search');
       if (btnClear) btnClear.style.display = val && val.trim() ? 'block' : 'none';
+      document.querySelectorAll('.filter-pill[data-tag]').forEach(btn => {
+        const tag = btn.getAttribute('data-tag');
+        if (val && tag && val.toLowerCase().includes(tag.toLowerCase())) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
       debouncedFilterJobs();
     }
+
+    window.quickSearchMatches = function(tag) {
+      const sInput = document.getElementById('main-search-input');
+      if (!sInput) return;
+      if (sInput.value.toLowerCase() === tag.toLowerCase()) {
+        clearSearchInput();
+        return;
+      }
+      sInput.value = tag;
+      handleSearchInput(tag);
+    };
 
     function clearSearchInput() {
       const sInput = document.getElementById('main-search-input');
@@ -2666,6 +2689,7 @@
       }
       const btnClear = document.getElementById('btn-clear-search');
       if (btnClear) btnClear.style.display = 'none';
+      document.querySelectorAll('.filter-pill[data-tag]').forEach(btn => btn.classList.remove('active'));
       filterJobs();
     }
 
