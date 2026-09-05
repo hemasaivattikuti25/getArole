@@ -54,7 +54,9 @@ export default function ProfilePage() {
     workplaceType: "Hybrid",
     salary_amt: 0,
     salary_curr: "INR",
-    status: "Actively looking"
+    status: "Actively looking",
+    seniority: "Mid-Level",
+    companySize: "Any"
   });
 
   const [savedSuccess, setSavedSuccess] = useState(false);
@@ -162,7 +164,9 @@ export default function ProfilePage() {
       try {
         await apiClient.post("/user/profile", updatedProfile);
         await apiClient.post("/user/preferences", prefs);
-      } catch {}
+      } catch (e) {
+        console.error("API sync error:", e);
+      }
 
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 3500);
@@ -468,6 +472,35 @@ export default function ProfilePage() {
                   className="flex-1 text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-600 bg-white font-mono font-bold text-blue-600"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Seniority Level</label>
+              <select
+                value={prefs.seniority || "Mid-Level"}
+                onChange={(e) => setPrefs({ ...prefs, seniority: e.target.value })}
+                className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-600 bg-white"
+              >
+                <option value="Entry-Level">Entry-Level / Fresher</option>
+                <option value="Mid-Level">Mid-Level</option>
+                <option value="Senior">Senior</option>
+                <option value="Lead/Manager">Lead / Manager</option>
+                <option value="Director+">Director / VP</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Preferred Company Size</label>
+              <select
+                value={prefs.companySize || "Any"}
+                onChange={(e) => setPrefs({ ...prefs, companySize: e.target.value })}
+                className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-600 bg-white"
+              >
+                <option value="Any">Any Size</option>
+                <option value="Startup">Early-Stage Startup (1-50)</option>
+                <option value="Mid-Size">Mid-Size (51-500)</option>
+                <option value="Enterprise">Enterprise (500+)</option>
+              </select>
             </div>
           </div>
         </div>

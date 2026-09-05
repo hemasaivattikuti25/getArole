@@ -15,11 +15,12 @@ export const apiClient = axios.create({
 // Request Interceptor: Attach Auth Tokens if available
 apiClient.interceptors.request.use(
   (config) => {
-    // In a real scenario, you'd get the token from localStorage or Zustand state
-    // const token = localStorage.getItem('auth_token');
-    // if (token) {
-    //   config.headers.Authorization = `Bearer ${token}`;
-    // }
+    if (typeof window !== 'undefined') {
+      const uid = localStorage.getItem('firebase_uid');
+      if (uid) {
+        config.headers['X-Firebase-UID'] = uid;
+      }
+    }
     return config;
   },
   (error) => Promise.reject(error)
