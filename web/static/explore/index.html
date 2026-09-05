@@ -2167,6 +2167,40 @@
       renderModalCities();
     }
 
+    
+    const modalSeniorities = ['Fresher', 'Junior', 'Mid', 'Senior', 'Lead'];
+    const modalCompanySizes = ['Any', 'Startup', 'Mid-Size', 'Enterprise'];
+
+    function renderModalSeniority() {
+      const container = document.getElementById('modal-seniority-chips');
+      if(!container) return;
+      const current = (modalPrefs.seniority || 'mid').toLowerCase();
+      container.innerHTML = modalSeniorities.map(lvl => {
+        const isSel = current === lvl.toLowerCase();
+        return `<div class="choice-chip ${isSel ? 'selected' : ''}" style="padding:6px 12px; font-size:12px;" onclick="toggleModalSeniority('${lvl}')">${lvl} ${isSel ? '✓' : ''}</div>`;
+      }).join('');
+    }
+
+    function toggleModalSeniority(lvl) {
+      modalPrefs.seniority = lvl.toLowerCase();
+      renderModalSeniority();
+    }
+
+    function renderModalCompanySize() {
+      const container = document.getElementById('modal-companySize-chips');
+      if(!container) return;
+      const current = (modalPrefs.companySize || 'Any');
+      container.innerHTML = modalCompanySizes.map(lvl => {
+        const isSel = current === lvl;
+        return `<div class="choice-chip ${isSel ? 'selected' : ''}" style="padding:6px 12px; font-size:12px;" onclick="toggleModalCompanySize('${lvl}')">${lvl} ${isSel ? '✓' : ''}</div>`;
+      }).join('');
+    }
+
+    function toggleModalCompanySize(lvl) {
+      modalPrefs.companySize = lvl;
+      renderModalCompanySize();
+    }
+
     function renderModalExp() {
       const container = document.getElementById('modal-exp-chips');
       container.innerHTML = modalExpLevels.map(lvl => {

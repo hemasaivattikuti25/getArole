@@ -1999,6 +1999,23 @@
           </div>
         </div>
 
+        
+        <!-- SECTION 3.1: SENIORITY LEVEL -->
+        <div>
+          <label style="font-size:13.5px; font-weight:800; color:var(--text-main); display:block; margin-bottom:8px;">📈 3.1 Seniority Level</label>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;" id="modal-seniority-chips">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- SECTION 3.2: COMPANY SIZE -->
+        <div>
+          <label style="font-size:13.5px; font-weight:800; color:var(--text-main); display:block; margin-bottom:8px;">🏢 3.2 Preferred Company Size</label>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;" id="modal-companySize-chips">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
         <!-- SECTION 4: LOCATIONS (INDIA & REMOTE TECH HUBS) -->
         <div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -2367,6 +2384,40 @@
       renderModalCities();
     }
 
+    
+    const modalSeniorities = ['Fresher', 'Junior', 'Mid', 'Senior', 'Lead'];
+    const modalCompanySizes = ['Any', 'Startup', 'Mid-Size', 'Enterprise'];
+
+    function renderModalSeniority() {
+      const container = document.getElementById('modal-seniority-chips');
+      if(!container) return;
+      const current = (modalPrefs.seniority || 'mid').toLowerCase();
+      container.innerHTML = modalSeniorities.map(lvl => {
+        const isSel = current === lvl.toLowerCase();
+        return `<div class="choice-chip ${isSel ? 'selected' : ''}" style="padding:6px 12px; font-size:12px;" onclick="toggleModalSeniority('${lvl}')">${lvl} ${isSel ? '✓' : ''}</div>`;
+      }).join('');
+    }
+
+    function toggleModalSeniority(lvl) {
+      modalPrefs.seniority = lvl.toLowerCase();
+      renderModalSeniority();
+    }
+
+    function renderModalCompanySize() {
+      const container = document.getElementById('modal-companySize-chips');
+      if(!container) return;
+      const current = (modalPrefs.companySize || 'Any');
+      container.innerHTML = modalCompanySizes.map(lvl => {
+        const isSel = current === lvl;
+        return `<div class="choice-chip ${isSel ? 'selected' : ''}" style="padding:6px 12px; font-size:12px;" onclick="toggleModalCompanySize('${lvl}')">${lvl} ${isSel ? '✓' : ''}</div>`;
+      }).join('');
+    }
+
+    function toggleModalCompanySize(lvl) {
+      modalPrefs.companySize = lvl;
+      renderModalCompanySize();
+    }
+
     function renderModalExp() {
       const container = document.getElementById('modal-exp-chips');
       container.innerHTML = modalExpLevels.map(lvl => {
@@ -2497,7 +2548,9 @@
         role: modalPrefs.role || (modalPrefs.roles && modalPrefs.roles[0]) || targetTitle || '',
         specializations: modalPrefs.role ? [modalPrefs.role] : (modalPrefs.roles || []),
         locations: modalPrefs.locations || [],
-        city: (modalPrefs.locations && modalPrefs.locations[0]) || ''
+        city: (modalPrefs.locations && modalPrefs.locations[0]) || '',
+        seniority: modalPrefs.seniority || 'mid',
+        companySize: modalPrefs.companySize || 'Any'
       };
       localStorage.setItem('getarole_prefs', JSON.stringify(fullPrefs));
       
