@@ -70,6 +70,9 @@ export default function ProfilePage() {
       
       if (localProf) {
         const parsed = JSON.parse(localProf);
+        if (parsed.phone === '+91 98765 43210' || parsed.phone === '+91 9876543210') {
+          parsed.phone = '';
+        }
         setProfile((prev: any) => ({ ...prev, ...parsed }));
       } else if (userObj) {
         const u = JSON.parse(userObj);

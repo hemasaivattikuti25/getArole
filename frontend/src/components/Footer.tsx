@@ -6,7 +6,7 @@ import React from "react";
 export default function Footer() {
   return (
 <footer className="global-footer" style={{ 'background': '#ffffff', 'borderTop': '1px solid #e2e8f0', 'padding': '48px 24px 24px', 'marginTop': 'auto', 'fontFamily': '"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif', 'position': 'relative' }}>
-    <style>
+    <style dangerouslySetInnerHTML={{ __html: `
       .global-footer a.footer-nav-link { color: #64748b; text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.15s ease, transform 0.15s ease; display: inline-block; }
       .global-footer a.footer-nav-link:hover { color: #4f46e5 !important; transform: translateX(2px); }
       .footer-top-grid { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1.2fr; gap: 36px; margin-bottom: 36px; min-width: 0; }
@@ -17,7 +17,7 @@ export default function Footer() {
         .footer-top-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
         .footer-bottom-bar { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
       }
-    </style>
+    ` }} />
 
     <div style={{ 'maxWidth': '100%', 'width': '100%', 'boxSizing': 'border-box', 'margin': '0 auto', 'padding': '0 16px' }}>
       
