@@ -232,6 +232,9 @@
         existingProfile = {};
         localStorage.removeItem('getarole_profile');
       }
+      if (existingProfile.phone === '+91 98765 43210' || existingProfile.phone === '+91 9876543210') {
+        existingProfile.phone = '';
+      }
     } catch (_) {}
 
     // Standardize

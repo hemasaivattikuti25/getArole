@@ -2145,7 +2145,7 @@
           </div>
           <div class="form-group">
             <label>Phone Number</label>
-            <input type="tel" id="inp-phone" class="form-control" placeholder="+91 98765 43210">
+            <input type="tel" id="inp-phone" class="form-control" placeholder="e.g., +91 98765 00000">
           </div>
         </div>
         <div class="form-row">
@@ -2850,6 +2850,9 @@
         if (state.profile.name === 'Hemasai Vattikuti' && state.profile.email === 'hemasai@getarole.in') {
           state.profile = {};
           localStorage.removeItem('getarole_profile');
+        }
+        if (state.profile.phone === '+91 98765 43210' || state.profile.phone === '+91 9876543210') {
+          state.profile.phone = '';
         }
 
         // Categorized Skills initialization without fake mock injections
