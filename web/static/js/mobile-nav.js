@@ -471,33 +471,20 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
             Account Settings
           </a>
-          <a href="/crm/" id="mobile-drawer-crm-link" class="mobile-nav-link" style="display:none; color:#4f46e5; font-weight:700;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
-            👑 Master CRM Sheet
-          </a>
+
           <div style="height: 1px; background: #e2e8f0; margin: 8px 0;"></div>
           <a href="#" onclick="typeof openSignOutModal === 'function' ? openSignOutModal() : (typeof safeSignOut === 'function' ? safeSignOut() : (localStorage.removeItem('getarole_user'), localStorage.removeItem('firebase_uid'), sessionStorage.clear(), window.location.href='/'))" class="mobile-nav-link" style="color:#ef4444; font-weight:600;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
             Sign Out
           </a>
-          <a href="#" onclick="typeof openDeleteAccountModal === 'function' ? openDeleteAccountModal() : (window.location.href='/profile/#section-danger-zone')" class="mobile-nav-link" style="color:#dc2626; font-size:13px; font-weight:600;">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-            Delete Account (GDPR)
-          </a>
+
         </nav>
       `;
 
       document.body.appendChild(backdrop);
       document.body.appendChild(drawer);
 
-      try {
-        const u = JSON.parse(localStorage.getItem('getarole_user') || '{}');
-        const adminEmails = ['admingetarole@gmail.com', 'lakshmisatyasrisri@gmail.com', 'hemasai@getarole.in'];
-        if (u.email && adminEmails.includes(u.email.toLowerCase().trim())) {
-          const mCrm = drawer.querySelector('#mobile-drawer-crm-link');
-          if (mCrm) mCrm.style.display = 'flex';
-        }
-      } catch (_) {}
+
 
       drawer.querySelector('.mobile-nav-close-btn').addEventListener('click', toggleDrawer);
     }
