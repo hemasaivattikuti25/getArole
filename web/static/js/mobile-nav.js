@@ -274,13 +274,13 @@
         display: flex !important;
         flex-direction: column !important;
         position: fixed !important;
-        top: 0 !important;
+        top: 56px !important;
         left: 0 !important;
         right: 0 !important;
         bottom: 0 !important;
         width: 100vw !important;
-        height: 100vh !important;
-        height: 100dvh !important;
+        height: calc(100vh - 56px) !important;
+        height: calc(100dvh - 56px) !important;
         z-index: 9999 !important;
         background: #ffffff !important;
         overflow-y: auto !important;
