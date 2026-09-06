@@ -6,7 +6,6 @@ getArole AI — Google SDET Deep Coverage Hardening Suite
 
 import os
 import sys
-import pytest
 import asyncio
 import pymupdf as fitz
 
@@ -23,7 +22,7 @@ from scrapers.linkedin import scrape_single_linkedin_query
 from scrapers.unstop import fetch_unstop_jobs
 from scrapers.matcher import ResumeMatcher
 from scrapers.base import create_scraper_client
-from scrapers.models import JobListing, CandidateProfile
+from scrapers.models import JobListing
 from fastapi.testclient import TestClient
 from web.server import app
 

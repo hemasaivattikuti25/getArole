@@ -4,19 +4,21 @@ import { useState } from "react";
 import { Search, MapPin, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import HeroPreview from "./HeroPreview";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/auth-provider";
 
 export default function Hero() {
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
   const { user, openAuthModal } = useAuth();
+  const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
     if (query) params.set("q", query);
     if (location) params.set("location", location);
-    window.location.href = `/explore?${params.toString()}`;
+    router.push(`/explore?${params.toString()}`);
   };
 
   return (

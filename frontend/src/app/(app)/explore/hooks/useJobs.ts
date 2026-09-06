@@ -30,9 +30,10 @@ export function useJobs(options: UseJobsOptions = {}) {
           const res = await apiClient.get('/jobs');
           if (isMounted) {
             // The API returns { total: 1000, jobs: [...] }
-            let allJobs: Job[] = Array.isArray(res) 
+            const responseData = res as { jobs?: Job[]; data?: Job[] } | null | undefined;
+            const allJobs: Job[] = Array.isArray(res) 
               ? res 
-              : ((res as any)?.jobs || (res as any)?.data || []);
+              : (responseData?.jobs || responseData?.data || []);
             
             let filtered = allJobs;
 

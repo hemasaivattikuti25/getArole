@@ -1,5 +1,3 @@
-import json
-from typing import Dict, Any, Optional
 from domain.models import CandidateScreeningReport, RubricScore
 from services.llm_service import get_llm_service
 

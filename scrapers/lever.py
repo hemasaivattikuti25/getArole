@@ -2,7 +2,6 @@ import asyncio
 import hashlib
 from typing import List, Optional
 import httpx
-from bs4 import BeautifulSoup
 from .models import JobListing
 from .greenhouse import normalize_city, clean_html, INDIAN_LOCATIONS
 from .base import get_scraper_headers, create_scraper_client

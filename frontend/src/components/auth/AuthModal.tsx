@@ -33,9 +33,9 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "signin" }: A
       const hasCloudPrefs = !!localStorage.getItem("getarole_cloud_prefs");
       const onboardingCompleted = localStorage.getItem("getarole_onboarding_completed") === "true";
       if (!hasCloudPrefs && !onboardingCompleted) {
-        window.location.href = "/onboarding/";
+        router.push("/onboarding/");
       } else {
-        window.location.href = "/dashboard/";
+        router.push("/dashboard/");
       }
       onClose();
     } else {
@@ -60,9 +60,9 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "signin" }: A
       const hasCloudPrefs = !!localStorage.getItem("getarole_cloud_prefs");
       const onboardingCompleted = localStorage.getItem("getarole_onboarding_completed") === "true";
       if (!hasCloudPrefs && !onboardingCompleted) {
-        window.location.href = "/onboarding/";
+        router.push("/onboarding/");
       } else {
-        window.location.href = "/dashboard/";
+        router.push("/dashboard/");
       }
       onClose();
     } else {

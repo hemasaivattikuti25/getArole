@@ -1,5 +1,5 @@
 import numpy as np
-from typing import List, Generator
+from typing import List
 from fastembed import TextEmbedding
 from core.config import settings
 

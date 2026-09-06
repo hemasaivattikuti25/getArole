@@ -1,7 +1,6 @@
 import os
 import re
 import pymupdf  # Fast PDF parsing
-from typing import List
 from domain.models import CandidateProfile
 
 COMMON_TECH_SKILLS = [
@@ -32,7 +31,7 @@ class ParserService:
         extracted_skills = [s for s in COMMON_TECH_SKILLS if s in lower_text]
         
         # Name heuristic (first clean line)
-        lines = [l.strip() for l in text.split("\n") if l.strip()]
+        lines = [line.strip() for line in text.split("\n") if line.strip()]
         name = lines[0] if lines and len(lines[0]) < 35 else "Candidate"
         
         # Email & Phone heuristic extraction

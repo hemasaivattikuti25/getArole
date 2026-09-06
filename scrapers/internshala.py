@@ -1,5 +1,6 @@
 import asyncio
 import hashlib
+import logging
 import re
 from typing import List, Optional
 import httpx
@@ -105,8 +106,8 @@ async def scrape_internshala_category(client: httpx.AsyncClient, category: str, 
             )
             listings.append(job_obj)
             
-    except Exception:
-        pass
+    except Exception as e:
+        logging.getLogger("sre.scraper.internshala").debug(f"Internshala category scrape error: {e}")
     
     return listings
 

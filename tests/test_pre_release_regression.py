@@ -20,7 +20,6 @@ import os
 import sys
 import time
 import io
-import pytest
 import pymupdf as fitz
 
 # Ensure workspace root is in python path
@@ -28,9 +27,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fastapi.testclient import TestClient
 from web.server import app
-from scrapers.models import JobListing, CandidateProfile
+from scrapers.models import JobListing
 from scrapers.matcher import ResumeMatcher
-from services.resume_parser_service import ResumeParserService
 
 client = TestClient(app)
 
@@ -75,7 +73,7 @@ def test_reg_03_main_product_semantic_resume_matcher():
     doc = fitz.open()
     page = doc.new_page()
     page.insert_text((50, 50), "Test Candidate\nLead Python SRE\nSkills: Python, FastAPI, Docker, Kubernetes, PostgreSQL\nExperience: Google Staff SRE (2022 - Present)")
-    pdf_bytes = doc.write()
+    doc.write()
     doc.close()
 
     # Match against jobs

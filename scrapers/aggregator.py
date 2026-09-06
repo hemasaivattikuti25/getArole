@@ -1,5 +1,4 @@
 import asyncio
-import json
 from typing import List, Optional
 from .models import JobListing
 from .base import BaseScraper

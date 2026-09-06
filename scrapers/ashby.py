@@ -1,5 +1,6 @@
 import asyncio
 import hashlib
+import logging
 from typing import List, Optional
 import httpx
 from .models import JobListing
@@ -60,8 +61,8 @@ async def scrape_single_ashby_board(client: httpx.AsyncClient, company: str) -> 
             )
             listings.append(job_obj)
             
-    except Exception:
-        pass
+    except Exception as e:
+        logging.getLogger("sre.scraper.ashby").debug(f"Ashby board scrape error for {company}: {e}")
     
     return listings
 

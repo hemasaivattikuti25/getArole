@@ -1,7 +1,5 @@
 import asyncio
-import hashlib
 from typing import List
-import httpx
 from .models import JobListing
 from .greenhouse import normalize_city
 from .base import get_scraper_headers, create_scraper_client

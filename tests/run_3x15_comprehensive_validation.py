@@ -2,22 +2,18 @@ import asyncio
 import os
 import sys
 import io
-import json
 import time
 import zipfile
-import xml.etree.ElementTree as ET
-from typing import Dict, Any, List
 from dotenv import load_dotenv
 
 # Ensure root is in sys.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 load_dotenv(override=True)
 
-from supabase import acreate_client
-from services.supabase_service import get_supabase_service
-from services.resume_parser_service import ResumeParserService
-from services.llm_service import NvidiaLLMService, llm_breaker
-from services.screening_service import ScreeningService
+from supabase import acreate_client  # noqa: E402
+from services.supabase_service import get_supabase_service  # noqa: E402
+from services.resume_parser_service import ResumeParserService  # noqa: E402
+from services.llm_service import NvidiaLLMService, llm_breaker  # noqa: E402
 
 # Report collector
 results = {
@@ -58,7 +54,7 @@ async def run_problem1_tests():
 
     # Case 2: Update existing profile (upsert idempotency)
     t0 = time.time()
-    res2 = await supa.save_user_profile(uid1, {"headline": "Lead Platform Engineer", "phone": "+91 99999 88888"})
+    await supa.save_user_profile(uid1, {"headline": "Lead Platform Engineer", "phone": "+91 99999 88888"})
     prof_check = await supa.load_user_profile(uid1)
     passed = prof_check is not None and prof_check.get("headline") == "Lead Platform Engineer" and prof_check.get("first") == "Alice"
     record_test("problem1_db", "Case 2: Profile Update Idempotency", passed, f"Headline updated while preserving first name: {prof_check.get('headline') if prof_check else None}", time.time() - t0)
@@ -66,7 +62,7 @@ async def run_problem1_tests():
     # Case 3: Profile with social links & URLs
     t0 = time.time()
     uid3 = "test_case3_links"
-    res3 = await supa.save_user_profile(uid3, {
+    await supa.save_user_profile(uid3, {
         "name": "Bob Builder",
         "email": "bob@builder.io",
         "links": {
@@ -82,7 +78,7 @@ async def run_problem1_tests():
     # Case 4: Complex UID formats (hyphens, dots, underscores)
     t0 = time.time()
     uid4 = "usr_google-oauth2.sub_123_456"
-    res4 = await supa.save_user_profile(uid4, {"first": "Charlie", "email": "charlie@test.org"})
+    await supa.save_user_profile(uid4, {"first": "Charlie", "email": "charlie@test.org"})
     check4 = await supa.load_user_profile(uid4)
     passed = check4 is not None and check4.get("email") == "charlie@test.org"
     record_test("problem1_db", "Case 4: Complex UID Sanitization & Persistence", passed, f"Saved & retrieved UID with dashes/dots: {uid4}", time.time() - t0)
@@ -90,7 +86,7 @@ async def run_problem1_tests():
     # Case 5: Insert user preferences (roles array, locations array)
     t0 = time.time()
     uid5 = "test_case5_prefs"
-    res5 = await supa.save_user_preferences(uid5, {
+    await supa.save_user_preferences(uid5, {
         "roles": ["Full-Stack Engineering", "Backend Engineering"],
         "locations": ["Bengaluru", "Remote in India"],
         "roletype": ["Full-Time"],
@@ -102,7 +98,7 @@ async def run_problem1_tests():
 
     # Case 6: User preferences compensation currency & amount
     t0 = time.time()
-    res6 = await supa.save_user_preferences(uid5, {"salary_amt": 2400000, "salary_curr": "INR"})
+    await supa.save_user_preferences(uid5, {"salary_amt": 2400000, "salary_curr": "INR"})
     check6 = await supa.load_user_preferences(uid5)
     passed = check6 is not None and check6.get("salary_amt") == 2400000 and check6.get("salary_curr") == "INR"
     record_test("problem1_db", "Case 6: Compensation Preferences Update", passed, f"Salary: {check6.get('salary_amt') if check6 else None} {check6.get('salary_curr') if check6 else None}", time.time() - t0)
@@ -130,7 +126,7 @@ async def run_problem1_tests():
         "projects": [{"name": "AI Search Engine", "stack": "Python, VectorDB"}],
         "raw_text": "Dan Senior Backend Engineer 5 years experience"
     }
-    res8 = await supa.save_user_resume(uid8, resume_payload)
+    await supa.save_user_resume(uid8, resume_payload)
     check8 = await supa.load_user_resume(uid8)
     passed = check8 is not None and check8.get("filename") == "dan_resume.pdf" and len(check8.get("skills", [])) >= 4
     record_test("problem1_db", "Case 8: User Resume Full Record Upsert", passed, f"Saved resume with {len(check8.get('skills', [])) if check8 else 0} skills & experience JSON", time.time() - t0)
@@ -150,7 +146,7 @@ async def run_problem1_tests():
 
     # Case 11: Direct Supabase PostgREST Delete via anon key
     t0 = time.time()
-    del11 = await client.table("user_profiles").delete().eq("firebase_uid", uid10).execute()
+    await client.table("user_profiles").delete().eq("firebase_uid", uid10).execute()
     chk11 = await client.table("user_profiles").select("*").eq("firebase_uid", uid10).execute()
     passed = len(chk11.data) == 0
     record_test("problem1_db", "Case 11: Direct PostgREST Cloud Deletion", passed, f"Verified 0 rows remaining for {uid10}", time.time() - t0)
@@ -350,7 +346,7 @@ Skills: Python, TypeScript, React, Next.js, Node.js, Express, FastAPI, Django, P
     empty_bytes = b""
     res15 = await parser.process_resume_bytes(empty_bytes, "corrupted.pdf")
     passed = isinstance(res15, dict) and res15.get("skills") == []
-    record_test("problem2_parser", "Case 15: Corrupted / Empty Payload Graceful Degradation", passed, f"Handled without exception, returned safe fallback object", time.time() - t0)
+    record_test("problem2_parser", "Case 15: Corrupted / Empty Payload Graceful Degradation", passed, "Handled without exception, returned safe fallback object", time.time() - t0)
 
 # ==============================================================================
 # PROBLEM 3: AI SCREENING & ASSESSMENT CORRECTNESS (15 CASES)

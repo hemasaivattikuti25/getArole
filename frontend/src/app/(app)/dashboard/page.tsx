@@ -71,17 +71,20 @@ export default function DashboardPage() {
 
   // Load applications from localStorage on mount
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("getarole_tracked_apps");
-      if (saved) {
-        setApplications(JSON.parse(saved));
-      } else {
+    const timer = setTimeout(() => {
+      try {
+        const saved = localStorage.getItem("getarole_tracked_apps");
+        if (saved) {
+          setApplications(JSON.parse(saved));
+        } else {
+          setApplications(DEFAULT_APPLICATIONS);
+          localStorage.setItem("getarole_tracked_apps", JSON.stringify(DEFAULT_APPLICATIONS));
+        }
+      } catch {
         setApplications(DEFAULT_APPLICATIONS);
-        localStorage.setItem("getarole_tracked_apps", JSON.stringify(DEFAULT_APPLICATIONS));
       }
-    } catch {
-      setApplications(DEFAULT_APPLICATIONS);
-    }
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const saveApplications = (newApps: TrackedApplication[]) => {

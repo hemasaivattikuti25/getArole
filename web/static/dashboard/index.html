@@ -2933,7 +2933,7 @@
             <button class="btn-save-job" onclick="toggleSave('${job.id}')">
               ${isSaved ? '★ Saved' : '☆ Save'}
             </button>
-            <a href="${job.url}" target="_blank" class="btn-apply-primary">
+            <a href="${job.url}" target="_blank" class="btn-apply-primary" rel="noopener noreferrer">
               ⚡ Apply Now →
             </a>
           </div>
@@ -3013,7 +3013,7 @@
             <a href="/cover-letter-builder?company=${encodeURIComponent(job.company || '')}&role=${encodeURIComponent(job.title || '')}" class="btn-referral" style="padding:9px 16px; text-decoration:none; font-size:13px; font-weight:700; display:inline-flex; align-items:center; gap:6px; color:var(--primary); background:var(--primary-light); border:1px solid var(--primary-border); border-radius:8px;">
               ✉️ Tailor Cover Letter
             </a>
-            <a href="${job.url}" target="_blank" class="btn-apply-primary" style="padding:10px 22px;">⚡ Apply Now →</a>
+            <a href="${job.url}" target="_blank" class="btn-apply-primary" style="padding:10px 22px;" rel="noopener noreferrer">⚡ Apply Now →</a>
           </div>
         </div>
       `;

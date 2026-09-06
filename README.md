@@ -4,6 +4,7 @@
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-16a34a.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-15803d.svg)](https://fastapi.tiangolo.com)
+[![Next.js](https://img.shields.io/badge/Next.js-14+-000000.svg)](https://nextjs.org/)
 [![ONNX Runtime](https://img.shields.io/badge/ONNX-FastEmbed_Local-0f766e.svg)](https://onnxruntime.ai/)
 [![NVIDIA NIM](https://img.shields.io/badge/NVIDIA_NIM-Llama_3.1_70B-76b900.svg)](https://build.nvidia.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -22,7 +23,9 @@
 
 **getArole AI** is an enterprise-grade job discovery and talent evaluation platform engineered specifically for the modern tech hiring ecosystem. 
 
-Unlike traditional keyword-based ATS systems, getArole utilizes a **3-Stage Hybrid Screening Engine** combining deterministic entity parsing, sub-15ms local ONNX dense vector retrieval, and 70-billion parameter neural reasoning (NVIDIA NIM Llama 3.1 70B) to deliver objective, calibrated candidate-job fit scores.
+Unlike traditional keyword-based ATS systems, getArole utilizes a **3-Stage Hybrid Screening Engine** combining deterministic entity parsing, sub-15ms local ONNX dense vector retrieval, and 70-billion parameter neural reasoning (NVIDIA NIM Llama 3.1 70B) to deliver objective, calibrated candidate-job fit scores. 
+
+Recently, the platform was upgraded to feature a **Next.js App Router Frontend**, providing a modern, static, and highly-performant interface synchronized with the FastAPI backend.
 
 ---
 
@@ -82,7 +85,7 @@ Directly queries public career APIs and job boards in real time without stale da
 ### 4. ✍️ AI Application & Cover Letter Tailor
 - Leverages Llama 3.1 70B on NVIDIA DGX Cloud to generate ATS-optimized resume summary bullets and 3-paragraph tailored cover letters calibrated to each specific role.
 
-### 5. 🌿 Enterprise UI Dashboard (Green & White Theme)
+### 5. 🌿 Enterprise UI Dashboard (Next.js + Vanilla Hybird)
 - **Landing Page (`/`)**: Conversion-optimized landing experience.
 - **7-Step Onboarding (`/onboarding`)**: Interactive timeline, location, resume drop, experience, and compensation selector.
 - **App Dashboard (`/dashboard`)**: Simplify-style Job Explorer with split-pane view, Kanban Application Tracker, and AI Matches view.
@@ -94,22 +97,24 @@ Directly queries public career APIs and job boards in real time without stale da
 | Layer | Technology |
 |---|---|
 | **Backend Framework** | [FastAPI](https://fastapi.tiangolo.com/) + Uvicorn (Asynchronous ASGI) |
+| **Frontend Framework**| [Next.js](https://nextjs.org/) (App Router, Static Export) |
 | **Parsing Engine** | [PyMuPDF](https://pymupdf.readthedocs.io/) (`fitz`) |
 | **Vector Embeddings** | [FastEmbed](https://qdrant.github.io/fastembed/) (`BAAI/bge-small-en-v1.5` ONNX) |
 | **LLM Inference** | [NVIDIA NIM](https://build.nvidia.com/) (`meta/llama-3.1-70b-instruct`) |
 | **Data Contracts** | [Pydantic v2](https://docs.pydantic.dev/) + Settings Management |
 | **Database & Vectors** | SQLite (Local) / Supabase PostgreSQL with `pgvector` (Production) |
-| **Frontend UI** | Vanilla HTML5 / Modern CSS (Custom Glassmorphism Design System) |
+| **Styling** | Tailwind CSS / Custom Glassmorphism Design System |
 
 ---
 
 ## 🚀 Quickstart
 
 ### Prerequisites
+- Node.js 18+ (for Next.js frontend)
 - Python 3.11+
 - Virtual environment (`venv` or `conda`)
 
-### 1. Clone & Setup
+### 1. Clone & Setup Backend
 ```bash
 git clone https://github.com/hemasaivattikuti25/getarole.git
 cd getarole
@@ -127,8 +132,17 @@ NVIDIA_MODEL="meta/llama-3.1-70b-instruct"
 NVIDIA_BASE_URL="https://integrate.api.nvidia.com/v1"
 ```
 
-### 3. Run the Platform
+### 3. Setup Frontend
 ```bash
+cd frontend
+npm install
+npm run build
+```
+*(The build step generates static files in `frontend/out/` which are synced directly into the backend static folder.)*
+
+### 4. Run the Platform
+```bash
+cd ..
 python main.py
 ```
 Open **[http://localhost:8000](http://localhost:8000)** in your browser.

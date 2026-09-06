@@ -1,8 +1,9 @@
+import logging
 import os
 import re
 import pymupdf as fitz  # PyMuPDF
 import numpy as np
-from typing import List, Tuple, Dict, Any
+from typing import List
 from fastembed import TextEmbedding
 from .models import JobListing, CandidateProfile
 
@@ -15,7 +16,10 @@ class ResumeMatcher:
         cache_dir = os.environ.get("FASTEMBED_CACHE_DIR", default_cache)
         try:
             self.embed_model = TextEmbedding(model_name=model_name, cache_dir=cache_dir)
-        except Exception:
+        except Exception as e:
+            logging.getLogger("sre.matcher").warning(
+                f"Failed to load TextEmbedding with cache_dir {cache_dir}: {e}. Falling back to default cache."
+            )
             self.embed_model = TextEmbedding(model_name=model_name)
 
     def extract_text_from_pdf(self, pdf_path: str) -> str:

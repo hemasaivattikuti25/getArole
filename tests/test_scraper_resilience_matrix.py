@@ -28,7 +28,6 @@ from scrapers.ashby import scrape_single_ashby_board
 from scrapers.linkedin import scrape_single_linkedin_query
 from scrapers.internshala import scrape_internshala_category
 from scrapers.unstop import fetch_unstop_jobs
-from scrapers.models import JobListing
 
 # ── 1. User-Agent & Profile Fingerprint Rotation (5 UAs) ─────────────────────
 def test_five_user_agent_profiles_fingerprint_integrity():

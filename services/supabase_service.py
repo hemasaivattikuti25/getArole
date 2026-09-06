@@ -3,15 +3,16 @@ import time
 import asyncio
 import json
 import logging
-from collections import defaultdict
+from collections import OrderedDict
 from typing import List, Dict, Any, Optional
 from dotenv import load_dotenv
-from supabase import create_client, Client
-from scrapers.models import JobListing, CandidateProfile
+from scrapers.models import JobListing
 from domain.models import CandidateScreeningReport
 from core.metrics import SUPABASE_FAILURES_TOTAL, DEPENDENCY_ERRORS_TOTAL, SUPABASE_QUERY_DURATION, CACHE_OPERATIONS
 
 load_dotenv()
+
+logger = logging.getLogger("sre.supabase")
 
 _JOB_WRITE_THROUGH_CACHE: List[Dict[str, Any]] = []
 _CACHE_TIMESTAMP: float = 0.0
@@ -284,10 +285,14 @@ class SupabaseService:
                 flat_profile["loc"] = flat_profile.pop("location")
             if "links" in flat_profile and isinstance(flat_profile["links"], dict):
                 links = flat_profile.get("links") or {}
-                if links.get("linkedin") and "linkedin_url" not in flat_profile: flat_profile["linkedin_url"] = links["linkedin"]
-                if links.get("github") and "github_url" not in flat_profile: flat_profile["github_url"] = links["github"]
-                if links.get("portfolio") and "portfolio_url" not in flat_profile: flat_profile["portfolio_url"] = links["portfolio"]
-                if links.get("other") and "other_url" not in flat_profile: flat_profile["other_url"] = links["other"]
+                if links.get("linkedin") and "linkedin_url" not in flat_profile:
+                    flat_profile["linkedin_url"] = links["linkedin"]
+                if links.get("github") and "github_url" not in flat_profile:
+                    flat_profile["github_url"] = links["github"]
+                if links.get("portfolio") and "portfolio_url" not in flat_profile:
+                    flat_profile["portfolio_url"] = links["portfolio"]
+                if links.get("other") and "other_url" not in flat_profile:
+                    flat_profile["other_url"] = links["other"]
 
             record = {"firebase_uid": firebase_uid}
             for k, v in flat_profile.items():
@@ -360,7 +365,7 @@ class SupabaseService:
                             if isinstance(s, str) and s.startswith("{"):
                                 try:
                                     parsed_skills.append(json.loads(s))
-                                except:
+                                except (json.JSONDecodeError, ValueError):
                                     parsed_skills.append(s)
                             else:
                                 parsed_skills.append(s)
@@ -499,6 +504,7 @@ class SupabaseService:
                         "email": email,
                         "phone": phone,
                         "headline": headline,
+                        "summary": summary,
                         "links": links
                     }
                     clean_prof = {k: v for k, v in profile_patch.items() if v}
@@ -548,7 +554,8 @@ class SupabaseService:
                     # Hydrate contact/header info from user_profiles
                     try:
                         prof = await self.load_user_profile(firebase_uid, augment_resume=False) or {}
-                    except Exception:
+                    except Exception as prof_err:
+                        logger.debug(f"Profile hydration failed in load_user_resume: {prof_err}")
                         prof = {}
                     data["header"] = {
                         "name": prof.get("name") or "",
@@ -833,7 +840,6 @@ class SupabaseService:
 
 # Global User Mutex Registry with Bounded LRU Eviction (Max 5,000 active locks)
 # Prevents memory leak vectors during 24h continuous soak tests
-from collections import OrderedDict
 _USER_LOCKS: OrderedDict = OrderedDict()
 _MAX_MUTEX_LOCKS = 5000
 

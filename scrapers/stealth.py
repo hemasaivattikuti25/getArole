@@ -1,7 +1,7 @@
 import random
 import asyncio
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 
 @dataclass
 class BrowserProfile:

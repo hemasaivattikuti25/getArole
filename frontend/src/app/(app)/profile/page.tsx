@@ -10,20 +10,75 @@ import {
   Mail, 
   Phone, 
   CheckCircle2, 
-  Plus, 
-  Trash2, 
-  ExternalLink,
-  GraduationCap,
-  Award,
-  Scroll,
-  Globe,
-  Share2,
-  FileText
+  Globe
 } from "lucide-react";
 import { apiClient } from "@/lib/api-client";
 
+interface ExperienceItem {
+  company?: string;
+  title?: string;
+  location?: string;
+  start?: string;
+  end?: string;
+  desc?: string;
+}
+
+interface ProjectItem {
+  title?: string;
+  name?: string;
+  demo?: string;
+  github?: string;
+  tags?: string[] | string;
+  desc?: string;
+}
+
+interface EducationItem {
+  school?: string;
+  degree?: string;
+  year?: string;
+  dates?: string;
+  grade?: string;
+  coursework?: string;
+}
+
+interface ProfileData {
+  name: string;
+  headline: string;
+  email: string;
+  phone: string;
+  city: string;
+  location: string;
+  summary: string;
+  skills_languages: string[];
+  skills_frameworks: string[];
+  skills_cloud: string[];
+  skills_tools: string[];
+  skills: string[];
+  experience: ExperienceItem[];
+  projects: ProjectItem[];
+  education: EducationItem[];
+  certifications: unknown[];
+  achievements: unknown[];
+  links: {
+    github: string;
+    linkedin: string;
+    portfolio: string;
+  };
+}
+
+interface PreferencesData {
+  roles: string[];
+  locations: string[];
+  workplaceType: string;
+  salary_amt: number;
+  salary_curr: string;
+  status: string;
+  seniority: string;
+  companySize: string;
+}
+
 export default function ProfilePage() {
-  const [profile, setProfile] = useState<any>({
+  const [profile, setProfile] = useState<ProfileData>({
     name: "",
     headline: "",
     email: "",
@@ -48,7 +103,7 @@ export default function ProfilePage() {
     }
   });
 
-  const [prefs, setPrefs] = useState<any>({
+  const [prefs, setPrefs] = useState<PreferencesData>({
     roles: [],
     locations: [],
     workplaceType: "Hybrid",
@@ -63,30 +118,33 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    try {
-      const localProf = localStorage.getItem("getarole_profile");
-      const localPrefs = localStorage.getItem("getarole_prefs");
-      const userObj = localStorage.getItem("getarole_user");
-      
-      if (localProf) {
-        const parsed = JSON.parse(localProf);
-        if (parsed.phone === '+91 98765 43210' || parsed.phone === '+91 9876543210') {
-          parsed.phone = '';
+    const timer = setTimeout(() => {
+      try {
+        const localProf = localStorage.getItem("getarole_profile");
+        const localPrefs = localStorage.getItem("getarole_prefs");
+        const userObj = localStorage.getItem("getarole_user");
+        
+        if (localProf) {
+          const parsed = JSON.parse(localProf);
+          if (parsed.phone === '+91 98765 43210' || parsed.phone === '+91 9876543210') {
+            parsed.phone = '';
+          }
+          setProfile((prev) => ({ ...prev, ...parsed }));
+        } else if (userObj) {
+          const u = JSON.parse(userObj);
+          if (u.displayName || u.name) {
+            setProfile((prev) => ({ ...prev, name: u.displayName || u.name, email: u.email || prev.email }));
+          }
         }
-        setProfile((prev: any) => ({ ...prev, ...parsed }));
-      } else if (userObj) {
-        const u = JSON.parse(userObj);
-        if (u.displayName || u.name) {
-          setProfile((prev: any) => ({ ...prev, name: u.displayName || u.name, email: u.email || prev.email }));
-        }
-      }
 
-      if (localPrefs) {
-        setPrefs((prev: any) => ({ ...prev, ...JSON.parse(localPrefs) }));
+        if (localPrefs) {
+          setPrefs((prev) => ({ ...prev, ...JSON.parse(localPrefs) }));
+        }
+      } catch (e) {
+        console.warn("Storage load error:", e);
       }
-    } catch (e) {
-      console.warn("Storage load error:", e);
-    }
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -109,7 +167,7 @@ export default function ProfilePage() {
 
       // Also compile directly to getarole_resume_v2 for LaTeX Resume Builder
       try {
-        let R = JSON.parse(localStorage.getItem("getarole_resume_v2") || "{}");
+        const R = JSON.parse(localStorage.getItem("getarole_resume_v2") || "{}");
         if (!R.header) R.header = {};
         if (!R.summary) R.summary = {};
 
@@ -134,7 +192,7 @@ export default function ProfilePage() {
           { label: "Developer Tools", items: (updatedProfile.skills_tools || []).join(", ") }
         ].filter(g => g.items && g.items.trim());
 
-        R.experience = (updatedProfile.experience || []).map((exp: any) => ({
+        R.experience = (updatedProfile.experience || []).map((exp) => ({
           company: exp.company || "",
           title: exp.title || "",
           location: exp.location || "",
@@ -142,18 +200,18 @@ export default function ProfilePage() {
           bullets: exp.desc ? exp.desc.split("\n").filter((b: string) => b.trim()).map((b: string) => b.replace(/^•\s*/, "")) : []
         }));
 
-        R.projects = (updatedProfile.projects || []).map((p: any) => ({
-          name: p.title || "",
+        R.projects = (updatedProfile.projects || []).map((p) => ({
+          name: p.title || p.name || "",
           liveLink: p.demo || "",
           githubLink: p.github || "",
           stack: Array.isArray(p.tags) ? p.tags.join(", ") : (p.tags || ""),
           bullets: p.desc ? p.desc.split("\n").filter((b: string) => b.trim()).map((b: string) => b.replace(/^•\s*/, "")) : []
         }));
 
-        R.education = (updatedProfile.education || []).map((ed: any) => ({
+        R.education = (updatedProfile.education || []).map((ed) => ({
           school: ed.school || "",
           degree: ed.degree || "",
-          dates: ed.year || "",
+          dates: ed.year || ed.dates || "",
           grade: ed.grade || "",
           coursework: ed.coursework || ""
         }));
@@ -162,7 +220,7 @@ export default function ProfilePage() {
         R.achievements = updatedProfile.achievements || [];
 
         localStorage.setItem("getarole_resume_v2", JSON.stringify(R));
-      } catch (err) {}
+      } catch {}
 
       try {
         await apiClient.post("/user/profile", updatedProfile);

@@ -1,20 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
 
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <title>getArole — ATS Resume & Cover Letter Architect</title>
-  <meta name="description"
-    content="Official 1-Page ATS Resume and AI Tailored Cover Letter Builder synchronized directly with candidate profile data.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
-    rel="stylesheet">
-  <script src="/js/resume-utils.js"></script>
-  <script src="/js/storage-sync.js"></script>
-  <script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+<title>getArole — ATS Resume &amp; Cover Letter Architect</title>
+<meta content="Official 1-Page ATS Resume and AI Tailored Cover Letter Builder synchronized directly with candidate profile data." name="description"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Outfit:wght@600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<script src="/js/resume-utils.js"></script>
+<script src="/js/storage-sync.js"></script>
+<script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();
     function setResumeMobileTab(mode) {
       const btnEdit = document.getElementById('btn-tab-edit');
       const btnPrev = document.getElementById('btn-tab-preview');
@@ -32,15 +29,15 @@
     }
     
   </script>
-  <style>
+<style>
     :root {
-      --pr: #4f46e5;
-      --prh: #4338ca;
-      --prl: #eef2ff;
-      --prb: #c7d2fe;
+      --pr: #0ea5e9;
+      --prh: #0284c7;
+      --prl: #e0f2fe;
+      --prb: #bae6fd;
       --sf: #fff;
-      --bg: #f8fafc;
-      --bd: #e2e8f0;
+      --bg: #f9fafb;
+      --bd: #e5e7eb;
       --bds: #cbd5e1;
       --tx: #0f172a;
       --txm: #475569;
@@ -1771,65 +1768,335 @@
       }
     }
 
-  </style>
-
-  <link rel="stylesheet" href="/css/global-aurora.css">
+  
+    .ly {
+      display: grid;
+      grid-template-columns: 360px 1fr 340px;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    
+    .left-col {
+      background: #ffffff;
+      border-right: 1px solid var(--bd);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    
+    .left-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--bd);
+      padding: 12px 16px 0;
+      gap: 20px;
+      flex-shrink: 0;
+    }
+    .lt-btn {
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--txm);
+      padding-bottom: 12px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .lt-btn.active {
+      color: var(--tx);
+      border-bottom-color: var(--tx);
+    }
+    
+    .acc-list {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      padding-bottom: 100px;
+    }
+    
+    .acc-item {
+      border: 1px solid var(--bd);
+      border-radius: 10px;
+      background: #ffffff;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+      transition: all 0.2s;
+    }
+    .acc-item.open {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-color: var(--prb);
+    }
+    
+    .acc-header {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      cursor: pointer;
+      gap: 10px;
+      user-select: none;
+    }
+    .acc-header:hover {
+      background: #f9fafb;
+    }
+    
+    .drag-handle {
+      color: #cbd5e1;
+      font-size: 14px;
+      letter-spacing: -2px;
+      cursor: grab;
+      margin-right: 4px;
+    }
+    .acc-icon { font-size: 16px; }
+    .acc-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--tx);
+      flex: 1;
+    }
+    .acc-arrow {
+      color: var(--txs);
+      font-size: 18px;
+      transition: transform 0.2s;
+    }
+    .acc-item.open .acc-arrow {
+      transform: rotate(90deg);
+    }
+    
+    .pn-acc {
+      padding: 0 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      border-top: 1px solid var(--bd);
+      margin-top: 4px;
+      padding-top: 16px;
+    }
+    
+    .right-col {
+      background: #ffffff;
+      border-left: 1px solid var(--bd);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .rc-tabs {
+      display: flex;
+      padding: 12px 16px 0;
+      gap: 20px;
+      border-bottom: 1px solid var(--bd);
+      justify-content: center;
+      background: #f9fafb;
+    }
+    .rc-btn {
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--txm);
+      padding-bottom: 12px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rc-btn.active {
+      color: var(--tx);
+      border-bottom-color: var(--tx);
+    }
+    .beta-badge {
+      font-size: 10px;
+      background: var(--prl);
+      color: var(--pr);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 800;
+    }
+    .rc-content {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .rc-card {
+      background: #ffffff;
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+    .rc-card label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--tx);
+      margin-bottom: 6px;
+    }
+    .rc-or {
+      text-align: center;
+      font-size: 12px;
+      color: var(--txs);
+      margin: 12px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .btn-done {
+      width: 100%;
+      padding: 10px;
+      background: #e5e7eb;
+      color: #9ca3af;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      margin-top: 12px;
+      cursor: not-allowed;
+    }
+    .score-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 12px solid #0ea5e9;
+      margin: 20px auto 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .score-val {
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--tx);
+    }
+    .score-sub {
+      font-size: 11px;
+      color: var(--txm);
+      font-weight: 600;
+    }
+    .score-card h3 {
+      font-size: 15px;
+      font-weight: 800;
+      text-align: center;
+    }
+    
+    /* Hide old sn and ep */
+    .sn, .ep { display: none !important; }
+    
+    /* Top Bar Updates */
+    .tb { background: #ffffff; border-bottom: 1px solid var(--bd); padding: 0 16px; height: 56px; }
+    .bi { background: var(--pr); border-radius: 4px; width: 24px; height: 24px; font-size: 12px; }
+    
+    /* Middle Preview Column Tweaks */
+    .pv-wrap { background: #e5e7eb; position: relative; }
+    .toolbar-bottom {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ffffff;
+      border: 1px solid var(--bd);
+      border-radius: 20px;
+      padding: 6px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      z-index: 100;
+    }
+    .tb-btn {
+      background: none;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--txm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tb-btn:hover { color: var(--tx); }
+    
+    .template-card {
+        flex: 1; border: 1.5px solid transparent; border-radius: 8px; cursor: pointer; transition: 0.2s;
+    }
+    .template-card:hover { border-color: var(--prb); }
+    .template-card.active { border-color: var(--pr); color: var(--pr); }
+    
+    /* Classic Template is the default */
+    .latex-doc.classic .lr-sec-title { border-bottom: 1px solid #000; }
+    
+    /* Accent Template */
+    .latex-doc.accent .lr-sec-title { border-bottom: 2px solid var(--pr); color: var(--pr); }
+    .latex-doc.accent .lr-name { color: var(--pr); font-weight: 900; text-transform: uppercase; }
+    
+    /* Minimalist Template */
+    .latex-doc.minimalist .lr-sec-title { border-bottom: none; text-align: right; padding-right: 16px; border-right: 2px solid #e2e8f0; width: 120px; float: left; clear: left; margin-bottom: 20px; }
+    .latex-doc.minimalist .lr-entry { margin-left: 140px; margin-bottom: 20px; }
+    .latex-doc.minimalist .lr-name { text-align: left !important; }
+    .latex-doc.minimalist .lr-contacts { text-align: left !important; }
+    
+    .eye-icon { cursor: pointer; font-size: 16px; filter: grayscale(1); opacity: 0.5; transition: 0.2s; }
+    .eye-icon:hover { opacity: 1; filter: grayscale(0); }
+    .eye-icon.hidden { opacity: 0.2; }
+    
+    .section-order-item {
+        display: flex; align-items: center; justify-content: space-between; padding: 10px 14px;
+        background: #fff; border: 1px solid var(--bd); border-radius: 6px; margin-bottom: 8px;
+    }
+    </style>
+<link href="/css/global-aurora.css" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="/js/mobile-nav.js?v=3"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="/js/mobile-nav.js?v=3"></script>
 </head>
-
 <body>
-  <div class="ambient-glow-wrap" aria-hidden="true">
-    <div class="ambient-orb orb-1"></div>
-    <div class="ambient-orb orb-2"></div>
-    <div class="ambient-orb orb-3"></div>
-  </div>
-  <div class="landing-blueprint-grid" aria-hidden="true"></div>
-  <!-- WCAG 2.4.1 Bypass Blocks -->
-  <a href="#main-content" class="skip-link">Skip to main content</a>
-
-  <!-- ════════ TOP BAR ════════ -->
-    <!-- ════════════════════ UNIFORM GLOBAL HEADER ════════════════════ -->
-    <header style="position: sticky; top: 0; z-index: 999 !important; width: 100%;">
-    <div class="header-inner">
-      <div class="brand-group">
-        <a href="/dashboard/" class="brand-logo">
-          <img src="/logo.svg" alt="getArole" style="width:34px;height:34px;object-fit:contain;">
-          <span class="brand-title">get<span>A</span>role</span>
-        </a>
-
-        <nav class="nav-tabs" style="overflow:visible !important;">
-          <a class="nav-tab active" href="/dashboard/" id="tab-btn-home">Overview</a>
-          <a class="nav-tab" href="/matches/" id="tab-btn-matches">Matches</a>
-          <a class="nav-tab" href="/explore/" id="tab-btn-jobs">Explore Jobs</a>
-          <div class="nav-dropdown" style="position:relative; display:inline-block;" onmouseenter="this.querySelector('.nav-dropdown-menu').style.display='flex'" onmouseleave="this.querySelector('.nav-dropdown-menu').style.display='none'">
-            <a class="nav-tab nav-dropdown-btn" style="cursor:pointer; display:flex; align-items:center; gap:4px; margin:0;" onclick="const m = this.nextElementSibling; m.style.display = m.style.display === 'flex' ? 'none' : 'flex';">CV & CL ▼</a>
-            <div class="nav-dropdown-menu" style="position:absolute; top:100%; left:0; width:160px; background:var(--surface, #ffffff); border:1px solid var(--border, #e2e8f0); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.1); padding:8px; display:none; flex-direction:column; gap:4px; z-index:999999; text-align:left;">
-              <a href="/resume-builder/" class="nav-dropdown-item" style="padding:8px 12px; border-radius:6px; font-size:13.5px; font-weight:600; color:#0f172a; text-decoration:none; display:flex; align-items:center; gap:8px;" onmouseover="this.style.background='#f8fafc'; this.style.color='#4f46e5'" onmouseout="this.style.background='transparent'; this.style.color='#0f172a'">📄 Resume</a>
-              <a href="/cover-letter-builder/" class="nav-dropdown-item" style="padding:8px 12px; border-radius:6px; font-size:13.5px; font-weight:600; color:#0f172a; text-decoration:none; display:flex; align-items:center; gap:8px;" onmouseover="this.style.background='#f8fafc'; this.style.color='#4f46e5'" onmouseout="this.style.background='transparent'; this.style.color='#0f172a'">✉️ Cover Letter</a>
-            </div>
-          </div>
-        </nav>
-      </div>
-
-      <div class="header-actions">
-        <div class="user-profile-btn" onclick="document.getElementById('user-dropdown') && document.getElementById('user-dropdown').classList.toggle('show')">
-          <div class="user-avatar" id="nav-avatar">U</div>
-          <span class="user-name-text" id="nav-username" style="display: none !important;">User</span>
-          <span style="font-size: 10px; color: var(--text-subtle, #94a3b8)">▼</span>
-
-          <div class="user-dropdown" id="user-dropdown">
-            <a href="/profile/" class="dropdown-item">👤 Profile</a>
-            <a href="/settings/" class="dropdown-item">⚙️ Settings</a>
-            <div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
-            <a href="#" onclick="openSignOutModal(); return false;" class="dropdown-item" style="color:#ef4444; font-weight:600;">🚪 Sign Out</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
-
+<div aria-hidden="true" class="ambient-glow-wrap">
+<div class="ambient-orb orb-1"></div>
+<div class="ambient-orb orb-2"></div>
+<div class="ambient-orb orb-3"></div>
+</div>
+<div aria-hidden="true" class="landing-blueprint-grid"></div>
+<!-- WCAG 2.4.1 Bypass Blocks -->
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<!-- ════════ TOP BAR ════════ -->
+<!-- ════════════════════ UNIFORM GLOBAL HEADER ════════════════════ -->
+<header style="position: sticky; top: 0; z-index: 999 !important; width: 100%;">
+<div class="header-inner">
+<div class="brand-group">
+<a class="brand-logo" href="/dashboard/">
+<img alt="getArole" src="/logo.svg" style="width:34px;height:34px;object-fit:contain;"/>
+<span class="brand-title">get<span>A</span>role</span>
+</a>
+<nav class="nav-tabs" style="overflow:visible !important;">
+<a class="nav-tab active" href="/dashboard/" id="tab-btn-home">Overview</a>
+<a class="nav-tab" href="/matches/" id="tab-btn-matches">Matches</a>
+<a class="nav-tab" href="/explore/" id="tab-btn-jobs">Explore Jobs</a>
+<div class="nav-dropdown" onmouseenter="this.querySelector('.nav-dropdown-menu').style.display='flex'" onmouseleave="this.querySelector('.nav-dropdown-menu').style.display='none'" style="position:relative; display:inline-block;">
+<a class="nav-tab nav-dropdown-btn" onclick="const m = this.nextElementSibling; m.style.display = m.style.display === 'flex' ? 'none' : 'flex';" style="cursor:pointer; display:flex; align-items:center; gap:4px; margin:0;">CV &amp; CL ▼</a>
+<div class="nav-dropdown-menu" style="position:absolute; top:100%; left:0; width:160px; background:var(--surface, #ffffff); border:1px solid var(--border, #e2e8f0); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.1); padding:8px; display:none; flex-direction:column; gap:4px; z-index:999999; text-align:left;">
+<a class="nav-dropdown-item" href="/resume-builder/" onmouseout="this.style.background='transparent'; this.style.color='#0f172a'" onmouseover="this.style.background='#f8fafc'; this.style.color='#4f46e5'" style="padding:8px 12px; border-radius:6px; font-size:13.5px; font-weight:600; color:#0f172a; text-decoration:none; display:flex; align-items:center; gap:8px;">📄 Resume</a>
+<a class="nav-dropdown-item" href="/cover-letter-builder/" onmouseout="this.style.background='transparent'; this.style.color='#0f172a'" onmouseover="this.style.background='#f8fafc'; this.style.color='#4f46e5'" style="padding:8px 12px; border-radius:6px; font-size:13.5px; font-weight:600; color:#0f172a; text-decoration:none; display:flex; align-items:center; gap:8px;">✉️ Cover Letter</a>
+</div>
+</div>
+</nav>
+</div>
+<div class="header-actions">
+<div class="user-profile-btn" onclick="document.getElementById('user-dropdown') &amp;&amp; document.getElementById('user-dropdown').classList.toggle('show')">
+<div class="user-avatar" id="nav-avatar">U</div>
+<span class="user-name-text" id="nav-username" style="display: none !important;">User</span>
+<span style="font-size: 10px; color: var(--text-subtle, #94a3b8)">▼</span>
+<div class="user-dropdown" id="user-dropdown">
+<a class="dropdown-item" href="/profile/">👤 Profile</a>
+<a class="dropdown-item" href="/settings/">⚙️ Settings</a>
+<div style="height:1px; background:var(--border, #e2e8f0); margin:4px 0;"></div>
+<a class="dropdown-item" href="#" onclick="openSignOutModal(); return false;" style="color:#ef4444; font-weight:600;">🚪 Sign Out</a>
+</div>
+</div>
+</div>
+</div>
+</header>
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const path = window.location.pathname;
@@ -1852,317 +2119,233 @@
     });
   });
 </script>
-
-
-  <!-- Mobile Edit Form / Live Preview Switcher -->
-  <div class="mobile-view-tabs">
-    <button id="btn-tab-edit" class="btn-view-tab active" type="button" onclick="setResumeMobileTab('edit')">✏️ Edit Form</button>
-    <button id="btn-tab-preview" class="btn-view-tab" type="button" onclick="setResumeMobileTab('preview')">👁️ Live Resume Preview</button>
-  </div>
-
-  <!-- ════════ THREE COLUMN LAYOUT ════════ -->
-  <main class="ly" id="main-content">
-    <!-- 1. SECTIONS SIDEBAR -->
-    <aside class="sn">
-      <div class="snl">Document Sections</div>
-      <div class="si active" id="nav-header" onclick="gS('header')"><span class="sic">👤</span>1. Contact &amp; Header<span class="dot done" id="dot-header"></span></div>
-      <div class="si" id="nav-summary" onclick="gS('summary')"><span class="sic">📝</span>2. Executive Summary<span class="dot done" id="dot-summary"></span></div>
-      <div class="si" id="nav-skills" onclick="gS('skills')"><span class="sic">⚡</span>3. Technical Competencies<span class="dot done" id="dot-skills"></span></div>
-      <div class="si" id="nav-exp" onclick="gS('exp')"><span class="sic">💼</span>4. Professional Experience<span class="dot done" id="dot-exp"></span></div>
-      <div class="si" id="nav-proj" onclick="gS('proj')"><span class="sic">🚀</span>5. Technical Projects<span class="dot done" id="dot-proj"></span></div>
-      <div class="si" id="nav-achieve" onclick="gS('achieve')"><span class="sic">🏅</span>6. Key Achievements<span class="dot done" id="dot-achieve"></span></div>
-      <div class="si" id="nav-certs" onclick="gS('certs')"><span class="sic">🏆</span>7. Certifications &amp; Licenses<span class="dot done" id="dot-certs"></span></div>
-      <div class="si" id="nav-edu" onclick="gS('edu')"><span class="sic">🎓</span>8. Academic Credentials<span class="dot done" id="dot-edu"></span></div>
-
-      <div class="snl" style="margin-top:10px;">AI Optimization &amp; Analysis</div>
-      <div class="si" id="nav-ats" onclick="gS('ats')"><span class="sic">📊</span>9. ATS Compatibility Score</div>
-      <div class="si" id="nav-tailor" onclick="gS('tailor')"><span class="sic">🎯</span>10. Role &amp; Keyword Matcher</div>
-    </aside>
-
-    <!-- 2. FORM EDITOR COLUMN -->
-    <div class="ep">
-      <div class="eh">
-        <div>
-          <h2 id="ed-t">1. Contact &amp; Header Information</h2>
-          <p id="ed-s">Personal links, phone number, email &amp; professional portfolio</p>
-        </div>
-        <span
-          style="font-size:11px;font-weight:700;color:var(--txs);background:var(--bg);padding:3px 8px;border-radius:6px;"
-          id="asv">✓ Saved</span>
-      </div>
-
-      <div class="eb">
-        <!-- 1. HEADER & INFO -->
-        <div class="pn active" id="panel-header">
-          <div class="fg"><label>Full Name</label><input class="fi" id="ffn" placeholder="e.g. Arjun Mehta"
-              oninput="ud('header','name',this.value)"></div>
-          <div class="fr2">
-            <div class="fg"><label>Phone Number</label><input class="fi" id="fph" placeholder="e.g., +91 98765 00000"
-                oninput="ud('header','phone',this.value)"></div>
-            <div class="fg"><label>Email Address</label><input class="fi" id="fem" type="email"
-                placeholder="you@example.com" oninput="ud('header','email',this.value)"></div>
-          </div>
-          <div class="fr2">
-            <div class="fg"><label>LinkedIn Handle / URL</label><input class="fi" id="fli"
-                placeholder="linkedin.com/in/yourhandle" oninput="ud('header','linkedin',this.value)"></div>
-            <div class="fg"><label>GitHub Handle / URL</label><input class="fi" id="fgh"
-                placeholder="github.com/yourhandle" oninput="ud('header','github',this.value)"></div>
-          </div>
-          <div class="fg"><label>Personal Portfolio / Website</label><input class="fi" id="fpo"
-              placeholder="yourportfolio.dev" oninput="ud('header','portfolio',this.value)"></div>
-        </div>
-
-        <!-- 2. SUMMARY -->
-        <div class="pn" id="panel-summary">
-          <div class="fg">
-            <label>Summary Statement</label>
-            <textarea class="ft" id="fsu" rows="4" style="min-height:95px;"
-              placeholder="Backend Applied AI Engineer building scalable, high-availability distributed systems..."
-              oninput="ud('summary','text',this.value)"></textarea>
-          </div>
-
-          <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-top:4px;">
-            <div style="font-size:12px;font-weight:700;color:var(--txm);margin-bottom:8px;">AI Tone &amp; Style Synthesizer:</div>
-            <div class="template-presets-bar" style="margin-bottom:10px;">
-              <button class="btn-template-preset active" id="sum-style-technical" onclick="selectSummaryStyle('technical')">🎯 Technical Specialist</button>
-              <button class="btn-template-preset" id="sum-style-fresher" onclick="selectSummaryStyle('fresher')">🎓 Fresher / Graduate</button>
-              <button class="btn-template-preset" id="sum-style-leadership" onclick="selectSummaryStyle('leadership')">🚀 Engineering Lead</button>
-              <button class="btn-template-preset" id="sum-style-general" onclick="selectSummaryStyle('general')">💼 General Professional</button>
-            </div>
-            <div class="fg" style="margin-bottom:10px;">
-              <label>Personalized AI Instructions &amp; Career Focus (Optional)</label>
-              <input class="fi" id="ai-summary-custom-prompt" placeholder="e.g. 'Transitioning into Applied AI', 'Emphasize startup leadership &amp; open-source', 'Focus on FinTech payments'..." style="background:#fff;">
-            </div>
-            <button class="btp" onclick="genSum()">✨ Synthesize Personalized Summaries</button>
-            <div id="ai-summary-results" style="display:none;margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
-          </div>
-        </div>
-
-        <!-- 3. TECHNICAL SKILLS -->
-        <div class="pn" id="panel-skills">
-          <div style="background:linear-gradient(135deg, rgba(79,70,229,0.06), rgba(99,102,241,0.03));border:1px solid var(--prb);border-radius:10px;padding:12px;margin-bottom:12px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-              <div style="font-size:12.5px;font-weight:800;color:var(--pr);">✨ AI Industry Skills Recommender</div>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-              <input class="fi" id="ai-skills-role-input" placeholder="Target Role (e.g. Full-Stack / Backend / DevOps / AI Engineer)" style="background:#fff;flex:1;min-width:200px;">
-              <input class="fi" id="ai-skills-focus-input" placeholder="Specific Focus (e.g. LLM Agents / Cloud)" style="background:#fff;flex:1;min-width:180px;">
-              <button class="btp" onclick="aiSuggestSkills()" style="white-space:nowrap;padding:7px 14px;">Suggest Skills</button>
-            </div>
-            <div id="ai-skills-results" style="display:none;margin-top:10px;"></div>
-          </div>
-
-          <div style="font-size:12.5px;color:var(--txm);line-height:1.45;margin-bottom:8px;">
+<!-- Mobile Edit Form / Live Preview Switcher -->
+<div class="mobile-view-tabs">
+<button class="btn-view-tab active" id="btn-tab-edit" onclick="setResumeMobileTab('edit')" type="button">✏️ Edit Form</button>
+<button class="btn-view-tab" id="btn-tab-preview" onclick="setResumeMobileTab('preview')" type="button">👁️ Live Resume Preview</button>
+</div>
+<!-- ════════ THREE COLUMN LAYOUT ════════ -->
+<main class="ly" id="main-content"><div class="left-col">
+<div class="left-tabs">
+<button class="lt-btn active" onclick="switchLeftTab('editor')">Editor</button>
+<button class="lt-btn" onclick="switchLeftTab('layout')">Layout</button>
+<button class="lt-btn" onclick="switchLeftTab('ai')">AI Settings</button>
+</div>
+<div class="acc-list"><div class="acc-item">
+<div class="acc-header" onclick="toggleAcc('header')">
+<div class="drag-handle">⋮⋮</div>
+<div class="acc-icon">👤</div>
+<div class="acc-title">Resume Header</div>
+<div class="acc-arrow">›</div>
+</div>
+<div class="pn-acc" id="panel-header" style="display: none;">
+<div class="fg"><label>Full Name</label><input class="fi" id="ffn" oninput="ud('header','name',this.value)" placeholder="e.g. Arjun Mehta"/></div>
+<div class="fr2">
+<div class="fg"><label>Phone Number</label><input class="fi" id="fph" oninput="ud('header','phone',this.value)" placeholder="e.g., +91 98765 00000"/></div>
+<div class="fg"><label>Email Address</label><input class="fi" id="fem" oninput="ud('header','email',this.value)" placeholder="you@example.com" type="email"/></div>
+</div>
+<div class="fr2">
+<div class="fg"><label>LinkedIn Handle / URL</label><input class="fi" id="fli" oninput="ud('header','linkedin',this.value)" placeholder="linkedin.com/in/yourhandle"/></div>
+<div class="fg"><label>GitHub Handle / URL</label><input class="fi" id="fgh" oninput="ud('header','github',this.value)" placeholder="github.com/yourhandle"/></div>
+</div>
+<div class="fg"><label>Personal Portfolio / Website</label><input class="fi" id="fpo" oninput="ud('header','portfolio',this.value)" placeholder="yourportfolio.dev"/></div>
+</div></div><div class="acc-item">
+<div class="acc-header" onclick="toggleAcc('summary')">
+<div class="drag-handle">⋮⋮</div>
+<div class="acc-icon">📝</div>
+<div class="acc-title">Professional Summary</div>
+<div class="acc-arrow">›</div>
+</div>
+<div class="pn-acc" id="panel-summary" style="display: none;">
+<div class="fg">
+<label>Summary Statement</label>
+<textarea class="ft" id="fsu" oninput="ud('summary','text',this.value)" placeholder="Backend Applied AI Engineer building scalable, high-availability distributed systems..." rows="4" style="min-height:95px;"></textarea>
+</div>
+<div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-top:4px;">
+<div style="font-size:12px;font-weight:700;color:var(--txm);margin-bottom:8px;">AI Tone &amp; Style Synthesizer:</div>
+<div class="template-presets-bar" style="margin-bottom:10px;">
+<button class="btn-template-preset active" id="sum-style-technical" onclick="selectSummaryStyle('technical')">🎯 Technical Specialist</button>
+<button class="btn-template-preset" id="sum-style-fresher" onclick="selectSummaryStyle('fresher')">🎓 Fresher / Graduate</button>
+<button class="btn-template-preset" id="sum-style-leadership" onclick="selectSummaryStyle('leadership')">🚀 Engineering Lead</button>
+<button class="btn-template-preset" id="sum-style-general" onclick="selectSummaryStyle('general')">💼 General Professional</button>
+</div>
+<div class="fg" style="margin-bottom:10px;">
+<label>Personalized AI Instructions &amp; Career Focus (Optional)</label>
+<input class="fi" id="ai-summary-custom-prompt" placeholder="e.g. 'Transitioning into Applied AI', 'Emphasize startup leadership &amp; open-source', 'Focus on FinTech payments'..." style="background:#fff;"/>
+</div>
+<button class="btp" onclick="genSum()">✨ Synthesize Personalized Summaries</button>
+<div id="ai-summary-results" style="display:none;margin-top:12px;display:flex;flex-direction:column;gap:8px;"></div>
+</div>
+</div></div><div class="acc-item">
+<div class="acc-header" onclick="toggleAcc('skills')">
+<div class="drag-handle">⋮⋮</div>
+<div class="acc-icon">⚡</div>
+<div class="acc-title">Skills</div>
+<div class="acc-arrow">›</div>
+</div>
+<div class="pn-acc" id="panel-skills" style="display: none;">
+<div style="background:linear-gradient(135deg, rgba(79,70,229,0.06), rgba(99,102,241,0.03));border:1px solid var(--prb);border-radius:10px;padding:12px;margin-bottom:12px;">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+<div style="font-size:12.5px;font-weight:800;color:var(--pr);">✨ AI Industry Skills Recommender</div>
+</div>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+<input class="fi" id="ai-skills-role-input" placeholder="Target Role (e.g. Full-Stack / Backend / DevOps / AI Engineer)" style="background:#fff;flex:1;min-width:200px;"/>
+<input class="fi" id="ai-skills-focus-input" placeholder="Specific Focus (e.g. LLM Agents / Cloud)" style="background:#fff;flex:1;min-width:180px;"/>
+<button class="btp" onclick="aiSuggestSkills()" style="white-space:nowrap;padding:7px 14px;">Suggest Skills</button>
+</div>
+<div id="ai-skills-results" style="display:none;margin-top:10px;"></div>
+</div>
+<div style="font-size:12.5px;color:var(--txm);line-height:1.45;margin-bottom:8px;">
             Add custom skill groups matching your profile (e.g. <em>Languages</em>, <em>Frameworks</em>, <em>Design &amp; Prototyping</em>, <em>Core Engineering</em>).
           </div>
-          <div id="skills-categories-container" style="display:flex;flex-direction:column;gap:10px;"></div>
-          <button class="bad" onclick="addSkillCat()">+ Add Skill Category</button>
-        </div>
-
-        <!-- 4. EXPERIENCE -->
-        <div class="pn" id="panel-exp">
-          <div id="ec"></div>
-          <button class="bad" onclick="addExp()">+ Add Work Experience</button>
-        </div>
-
-        <!-- 5. PROJECTS -->
-        <div class="pn" id="panel-proj">
-          <div id="pc"></div>
-          <button class="bad" onclick="addProj()">+ Add Project</button>
-        </div>
-
-        <!-- 6. ACHIEVEMENTS -->
-        <div class="pn" id="panel-achieve">
-          <div id="ac-cont"></div>
-          <button class="bad" onclick="addAchieve()">+ Add Achievement</button>
-        </div>
-
-        <!-- 7. CERTIFICATIONS -->
-        <div class="pn" id="panel-certs">
-          <div id="cc"></div>
-          <button class="bad" onclick="addCert()">+ Add Certification</button>
-        </div>
-
-        <!-- 8. EDUCATION -->
-        <div class="pn" id="panel-edu">
-          <div id="edc"></div>
-          <button class="bad" onclick="addEdu()">+ Add Education</button>
-        </div>
-
-        <!-- CL: TARGET ROLE & COMPANY -->
-        <div class="pn" id="panel-cl-target">
-          <div class="template-presets-bar">
-            <button class="btn-template-preset active" id="cl-preset-professional" onclick="applyCoverLetterPreset('professional')">💼 General Professional</button>
-            <button class="btn-template-preset" id="cl-preset-fresher" onclick="applyCoverLetterPreset('fresher')">🎓 Fresher / Graduate</button>
-            <button class="btn-template-preset" id="cl-preset-technical" onclick="applyCoverLetterPreset('technical')">🚀 High-Impact Technical</button>
-            <button class="btn-template-preset" id="cl-preset-referral" onclick="applyCoverLetterPreset('referral')">🤝 Referral Outreach</button>
-          </div>
-
-          <div class="fr2">
-            <div class="fg">
-              <label>Target Company</label>
-              <input class="fi" id="fcl-comp" placeholder="e.g. Razorpay / Microsoft / Swiggy" oninput="udCL('company',this.value)">
-            </div>
-            <div class="fg">
-              <label>Target Role Title</label>
-              <input class="fi" id="fcl-role" placeholder="e.g. Software Engineer / Frontend Developer" oninput="udCL('role',this.value)">
-            </div>
-          </div>
-
-          <div class="fr2">
-            <div class="fg">
-              <label>Hiring Manager / Team</label>
-              <input class="fi" id="fcl-mgr" placeholder="e.g. Hiring Team / Engineering Manager" oninput="udCL('manager',this.value)">
-            </div>
-            <div class="fg">
-              <label>Letter Date</label>
-              <div style="display:flex;gap:6px;align-items:center;">
-                <select class="fi-sel" id="fcl-date-month" onchange="uCLDate('month', this.value)" style="flex:1;">
-                  <option value="">Month</option>
-                </select>
-                <select class="fi-sel" id="fcl-date-year" onchange="uCLDate('year', this.value)" style="flex:1;">
-                  <option value="">Year</option>
-                </select>
-                <button class="bto" type="button" onclick="setCLTodayDate()" style="padding:6px 10px;font-size:11.5px;white-space:nowrap;" title="Set to Today's Date">Today</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="fg">
-            <label>Personalized AI Instructions &amp; Talking Points (Optional)</label>
-            <textarea class="ft" id="fcl-custom-prompt" rows="2" style="min-height:55px;"
-              placeholder="e.g. 'Mention I was referred by Alex', 'Highlight my passion for developer tooling and APIs', 'Keep tone punchy &amp; direct'..."></textarea>
-          </div>
-
-          <div class="fg">
-            <label>Target Job Description (Optional for Deep Keyword Tailoring)</label>
-            <textarea class="ft" id="fcl-jd" rows="3" style="min-height:75px;"
-              placeholder="Paste job description snippets here to tailor letter keywords &amp; requirements..."
-              oninput="udCL('jd',this.value)"></textarea>
-          </div>
-
-          <div style="display:flex;gap:10px;align-items:center;margin-top:4px;">
-            <button class="btp" onclick="aiGenerateCoverLetter()">✨ Generate Personalized Cover Letter</button>
-            <button class="bto" onclick="gS('cl-body')">Edit Letter Content →</button>
-          </div>
-        </div>
-
-        <!-- CL: LETTER BODY CONTENT -->
-        <div class="pn" id="panel-cl-body">
-          <div class="template-presets-bar">
-            <button class="btn-template-preset" onclick="applyCoverLetterPreset('professional')">💼 Professional</button>
-            <button class="btn-template-preset" onclick="applyCoverLetterPreset('fresher')">🎓 Fresher</button>
-            <button class="btn-template-preset" onclick="applyCoverLetterPreset('technical')">🚀 Technical</button>
-            <button class="btn-template-preset" onclick="applyCoverLetterPreset('referral')">🤝 Referral</button>
-          </div>
-
-          <div class="fg">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-              <label>Cover Letter Body</label>
-              <span style="font-size:11.5px;color:var(--txs);" id="cl-word-count">0 words</span>
-            </div>
-            <textarea class="ft" id="fcl-text" rows="14" style="min-height:280px;font-size:13px;line-height:1.6;"
-              placeholder="Dear Hiring Team,&#10;&#10;I am writing to express my strong enthusiasm..."
-              oninput="handleCLTextInput(this.value)"></textarea>
-          </div>
-
-          <!-- AI Polish Toolbar -->
-          <div style="background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:12px;margin-top:6px;display:flex;flex-direction:column;gap:8px;">
-            <div style="font-size:11.5px;font-weight:700;color:var(--txm);">✨ Quick Tone Polish:</div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button class="ai-quick-btn" onclick="aiPolishCL('concise')">✂️ Make Concise</button>
-              <button class="ai-quick-btn" onclick="aiPolishCL('technical')">📊 Emphasize Metrics</button>
-              <button class="ai-quick-btn" onclick="aiPolishCL('executive')">💎 Executive Tone</button>
-              <button class="ai-quick-btn" onclick="aiPolishCL('fix_grammar')">🔍 Fix Grammar &amp; Flow</button>
-            </div>
-            <div style="display:flex;gap:6px;margin-top:4px;">
-              <input class="fi" id="cl-custom-polish-input" placeholder="Personalized instruction (e.g. 'Emphasize my distributed database experience', 'Make conclusion bolder')..." style="background:#fff;">
-              <button class="btp" onclick="aiPolishCLCustom()" style="white-space:nowrap;padding:6px 14px;">✨ Polish with Prompt</button>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:10px;align-items:center;margin-top:10px;">
-            <button class="btp" onclick="aiGenerateCoverLetter()">✨ Regenerate Full Letter</button>
-            <button class="bto" onclick="resetToCurrentPreset()">Reset to Preset</button>
-          </div>
-        </div>
-
-        <!-- AI: ATS CHECK -->
-        <div class="pn" id="panel-ats">
-          <div class="ac">
-            <div class="ach">
-              <div>
-                <div style="font-size:14px;font-weight:800;">ATS Parse &amp; Impact Score</div>
-                <div style="font-size:12px;color:var(--txm);margin-top:2px;">Real-time analysis of keywords, typography &amp; quantifiable metrics</div>
-              </div>
-              <div class="acn" id="ats-n">100%</div>
-            </div>
-            <div class="abb">
-              <div class="abf" id="ats-b" style="width:100%"></div>
-            </div>
-            <div class="ats-tips" id="ats-t"></div>
-          </div>
-        </div>
-
-        <!-- AI: JOB TAILOR -->
-        <div class="pn" id="panel-tailor">
-          <div class="fg">
-            <label>Target Job Description</label>
-            <textarea class="ft" id="fjd" rows="5" style="min-height:110px;"
-              placeholder="Paste the target job description to match keywords, calculate ATS match score, and generate tailored bullet points..."></textarea>
-          </div>
-          <div class="fg">
-            <label>Personalized AI Tailoring Instructions (Optional)</label>
-            <input class="fi" id="fjd-custom-prompt" placeholder="e.g. 'Prioritize my Kubernetes and Go experience', 'Tailor for an early-stage startup'...">
-          </div>
-          <button class="btp" onclick="tailorR()">✨ Run ATS Match &amp; Personalized Keyword Analysis</button>
-          <div id="tout" style="display:none;margin-top:14px;"></div>
-        </div>
+<div id="skills-categories-container" style="display:flex;flex-direction:column;gap:10px;"></div>
+<button class="bad" onclick="addSkillCat()">+ Add Skill Category</button>
+</div></div><div class="acc-item">
+<div class="acc-header" onclick="toggleAcc('exp')">
+<div class="drag-handle">⋮⋮</div>
+<div class="acc-icon">💼</div>
+<div class="acc-title">Professional Experience</div>
+<div class="acc-arrow">›</div>
+</div>
+<div class="pn-acc" id="panel-exp" style="display: none;">
+<div id="ec"></div>
+<button class="bad" onclick="addExp()">+ Add Work Experience</button>
+</div></div><div class="acc-item">
+<div class="acc-header" onclick="toggleAcc('proj')">
+<div class="drag-handle">⋮⋮</div>
+<div class="acc-icon">🚀</div>
+<div class="acc-title">Technical Projects</div>
+<div class="acc-arrow">›</div>
+</div>
+<div class="pn-acc" id="panel-proj" style="display: none;">
+<div id="pc"></div>
+<button class="bad" onclick="addProj()">+ Add Project</button>
+</div></div><div class="acc-item">
+<div class="acc-header" onclick="toggleAcc('achieve')">
+<div class="drag-handle">⋮⋮</div>
+<div class="acc-icon">🏅</div>
+<div class="acc-title">Key Achievements</div>
+<div class="acc-arrow">›</div>
+</div>
+<div class="pn-acc" id="panel-achieve" style="display: none;">
+<div id="ac-cont"></div>
+<button class="bad" onclick="addAchieve()">+ Add Achievement</button>
+</div></div><div class="acc-item">
+<div class="acc-header" onclick="toggleAcc('certs')">
+<div class="drag-handle">⋮⋮</div>
+<div class="acc-icon">🏆</div>
+<div class="acc-title">Certifications &amp; Licenses</div>
+<div class="acc-arrow">›</div>
+</div>
+<div class="pn-acc" id="panel-certs" style="display: none;">
+<div id="cc"></div>
+<button class="bad" onclick="addCert()">+ Add Certification</button>
+</div></div><div class="acc-item">
+<div class="acc-header" onclick="toggleAcc('edu')">
+<div class="drag-handle">⋮⋮</div>
+<div class="acc-icon">🎓</div>
+<div class="acc-title">Education</div>
+<div class="acc-arrow">›</div>
+</div>
+<div class="pn-acc" id="panel-edu" style="display: none;">
+<div id="edc"></div>
+<button class="bad" onclick="addEdu()">+ Add Education</button>
+</div></div>
+<div style="padding: 16px;">
+<button style="width:100%; padding:14px; background:#fff; border:1.5px dashed var(--bd); border-radius:10px; color:var(--txm); font-weight:700; cursor:pointer;">
+            + Add Custom Section
+        </button>
+<button onclick="loadDataFromProfile(); rp(); uAts(); toast('Reset to profile data');" style="width:100%; margin-top:10px; padding:14px; background:#f9fafb; border:1px solid var(--bd); border-radius:10px; color:var(--txm); font-weight:700; cursor:pointer;">
+            ↺ Reset to Profile
+        </button>
+</div>
+</div>
+<div class="layout-panel" id="layout-panel" style="display: none; padding: 16px;">
+<div style="font-size:12px; font-weight:700; color:var(--txm); margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">Templates</div>
+<div style="display:flex; gap:10px; margin-bottom: 24px;">
+<div class="template-card active" onclick="setTemplate('classic', this)">
+<div style="width:100%; height:80px; background:#e2e8f0; border-radius:4px; margin-bottom:6px;"></div>
+<div style="font-size:12px; font-weight:600; text-align:center;">Classic</div>
+</div>
+<div class="template-card" onclick="setTemplate('accent', this)">
+<div style="width:100%; height:80px; background:#e0f2fe; border-radius:4px; margin-bottom:6px;"></div>
+<div style="font-size:12px; font-weight:600; text-align:center;">Accent</div>
+</div>
+<div class="template-card" onclick="setTemplate('minimalist', this)">
+<div style="width:100%; height:80px; background:#fff; border:1px solid #e5e7eb; border-radius:4px; margin-bottom:6px;"></div>
+<div style="font-size:12px; font-weight:600; text-align:center;">Minimalist</div>
+</div>
+</div>
+<div style="font-size:12px; font-weight:700; color:var(--txm); margin-bottom:12px; text-transform:uppercase; letter-spacing:1px;">Section Order &amp; Display</div>
+<div class="section-order-list" id="section-order-list">
+<!-- Populated by JS -->
+</div>
+</div>
+</div><div class="pv" style="background: #e5e7eb;">
+<div class="pvl">
+<span></span> <span id="doc-mode-label">1-Page ATS Resume</span> — Live A4 Preview
       </div>
-    </div>
-
-    <!-- 3. LIVE PREVIEW COLUMN -->
-    <div class="pv">
-      <div class="pvl">
-        <span></span> <span id="doc-mode-label">1-Page ATS Resume</span> &mdash; Live A4 Preview
-      </div>
-      <div class="a4w">
-        <div id="rp"></div>
-      </div>
-    </div>
-  </main>
-  
-
-
-  <!-- AI BULLET OPTIMIZER MODAL -->
-  <div class="ai-modal-overlay" id="ai-bullet-modal">
-    <div class="ai-modal-card">
-      <div class="ai-modal-header">
-        <div class="ai-modal-title">✨ AI Personalized Bullet Point Optimizer</div>
-        <button class="brm" onclick="closeAIBulletModal()" style="font-size:13px;padding:4px 8px;">✕ Close</button>
-      </div>
-      <div class="ai-modal-body">
-        <div style="font-size:12.5px;color:var(--txm);background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--bd);">
-          <strong style="color:var(--tx);">Original:</strong> <span id="ai-modal-orig" style="color:var(--txs);"></span>
-        </div>
-
-        <!-- Personalized prompt input inside modal -->
-        <div style="display:flex;gap:6px;align-items:center;">
-          <input class="fi" id="ai-bullet-custom-prompt" placeholder="Personalized focus (e.g. 'Quantify with cost savings', 'Highlight Kafka &amp; scalability')..." style="font-size:12.5px;background:#fff;">
-          <button class="bad" onclick="enhBWithCustomPrompt()" style="padding:7px 12px;white-space:nowrap;margin:0;border-color:var(--pr);color:var(--pr);">✨ Refine</button>
-        </div>
-
-        <div id="ai-modal-variations" style="display:flex;flex-direction:column;gap:12px;">
-          <!-- Injected via JS -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="pw" style="display:none;"></div>
-  <div id="toast"></div>
-
-  <script>
+<div class="a4w">
+<div id="rp"></div>
+</div>
+<div class="toolbar-bottom">
+<button class="tb-btn" onclick="scale()">⛶ Fit to Page</button>
+<div style="width:1px; height:16px; background:var(--bd);"></div>
+<button class="tb-btn">✨ Ask AI...</button>
+<div style="width:1px; height:16px; background:var(--bd);"></div>
+<button class="tb-btn">🔍 89%</button>
+</div>
+</div><div class="right-col">
+<div class="rc-tabs">
+<button class="rc-btn active">Resume Score</button>
+<button class="rc-btn">Chat <span class="beta-badge">Beta</span></button>
+</div>
+<div class="rc-content">
+<div class="rc-card">
+<label>Select job from tracker</label>
+<select class="fi"><option>Search a job</option></select>
+<div class="rc-or">or enter manually</div>
+<label>Job Title</label>
+<input class="fi" placeholder="Add Job Title" type="text"/>
+<label style="margin-top:10px;">Job Description</label>
+<textarea class="ft" placeholder="Paste the job description here..."></textarea>
+<button class="btn-done">Done</button>
+</div>
+<div class="rc-card score-card">
+<h3>Resume Score</h3>
+<div class="score-circle">
+<div class="score-val" id="ats-n">79</div>
+<div class="score-sub">issues found</div>
+</div>
+<div id="ats-t" style="margin-top:20px; font-size:13px;"></div>
+</div>
+</div>
+</div></main>
+<!-- AI BULLET OPTIMIZER MODAL -->
+<div class="ai-modal-overlay" id="ai-bullet-modal">
+<div class="ai-modal-card">
+<div class="ai-modal-header">
+<div class="ai-modal-title">✨ AI Personalized Bullet Point Optimizer</div>
+<button class="brm" onclick="closeAIBulletModal()" style="font-size:13px;padding:4px 8px;">✕ Close</button>
+</div>
+<div class="ai-modal-body">
+<div style="font-size:12.5px;color:var(--txm);background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--bd);">
+<strong style="color:var(--tx);">Original:</strong> <span id="ai-modal-orig" style="color:var(--txs);"></span>
+</div>
+<!-- Personalized prompt input inside modal -->
+<div style="display:flex;gap:6px;align-items:center;">
+<input class="fi" id="ai-bullet-custom-prompt" placeholder="Personalized focus (e.g. 'Quantify with cost savings', 'Highlight Kafka &amp; scalability')..." style="font-size:12.5px;background:#fff;"/>
+<button class="bad" onclick="enhBWithCustomPrompt()" style="padding:7px 12px;white-space:nowrap;margin:0;border-color:var(--pr);color:var(--pr);">✨ Refine</button>
+</div>
+<div id="ai-modal-variations" style="display:flex;flex-direction:column;gap:12px;">
+<!-- Injected via JS -->
+</div>
+</div>
+</div>
+</div>
+<div id="pw" style="display:none;"></div>
+<div id="toast"></div>
+<script>
     /* ═════════════════════════════════════════════════════════════════
        MASTER DATA MODEL: 1. ATS RESUME & 2. TAILORED COVER LETTER
     ═════════════════════════════════════════════════════════════════ */
@@ -2753,9 +2936,9 @@ ${r.header?.name || 'Candidate Name'}`
       const contacts = [
         h.phone && `<span>${h.phone}</span>`,
         h.email && `<a href="mailto:${h.email}">Email</a>`,
-        h.linkedin && `<a href="${h.linkedin.startsWith('http') ? h.linkedin : 'https://' + h.linkedin}" target="_blank">LinkedIn</a>`,
-        h.github && `<a href="${h.github.startsWith('http') ? h.github : 'https://' + h.github}" target="_blank">GitHub</a>`,
-        h.portfolio && `<a href="${h.portfolio.startsWith('http') ? h.portfolio : 'https://' + h.portfolio}" target="_blank">${h.portfolio.replace(/^https?:\/\//, '')}</a>`
+        h.linkedin && `<a href="${h.linkedin.startsWith('http') ? h.linkedin : 'https://' + h.linkedin}" target="_blank" rel="noopener noreferrer">LinkedIn</a>`,
+        h.github && `<a href="${h.github.startsWith('http') ? h.github : 'https://' + h.github}" target="_blank" rel="noopener noreferrer">GitHub</a>`,
+        h.portfolio && `<a href="${h.portfolio.startsWith('http') ? h.portfolio : 'https://' + h.portfolio}" target="_blank" rel="noopener noreferrer">${h.portfolio.replace(/^https?:\/\//, '')}</a>`
       ].filter(Boolean);
 
       if (docMode === 'cover_letter') {
@@ -2763,7 +2946,7 @@ ${r.header?.name || 'Candidate Name'}`
         const paragraphs = (cl.body || '').split('\n\n').filter(Boolean);
 
         container.innerHTML = `
-      <div class="latex-doc">
+      <div class="latex-doc ${R.template || 'classic'}">
         <!-- Letterhead -->
         <div class="cl-header-box">
           <div class="lr-name" style="font-size:24pt;text-align:center;">${h.name || 'Your Full Name'}</div>
@@ -2796,7 +2979,7 @@ ${r.header?.name || 'Candidate Name'}`
       } else {
         // 1-PAGE ATS RESUME - Filter only populated sections for freshers & professionals alike
         const validExp = (R.experience || []).filter(e => (e.company && e.company.trim()) || (e.title && e.title.trim()));
-        const expHtml = validExp.length > 0 ? `
+        const expHtml = (validExp.length > 0 && !(R.hidden_sections && R.hidden_sections.exp)) ? `
           <div class="lr-sec">
             <div class="lr-sec-title">EXPERIENCE</div>
             ${validExp.map(e => `
@@ -2815,7 +2998,7 @@ ${r.header?.name || 'Candidate Name'}`
         ` : '';
 
         const validProjects = (R.projects || []).filter(p => (p.name && p.name.trim()));
-        const projHtml = validProjects.length > 0 ? `
+        const projHtml = (validProjects.length > 0 && !(R.hidden_sections && R.hidden_sections.proj)) ? `
           <div class="lr-sec">
             <div class="lr-sec-title">PROJECTS</div>
             ${validProjects.map(p => `
@@ -2824,8 +3007,8 @@ ${r.header?.name || 'Candidate Name'}`
                   <div>
                     <span class="lr-org">${esc(p.name)}</span>
                     <span class="lr-links">
-                      ${p.liveLink ? `<a href="${esc(p.liveLink)}" target="_blank">Live</a>` : ''}
-                      ${p.githubLink ? `<a href="${esc(p.githubLink)}" target="_blank">GitHub</a>` : ''}
+                      ${p.liveLink ? `<a href="${esc(p.liveLink)}" target="_blank" rel="noopener noreferrer">Live</a>` : ''}
+                      ${p.githubLink ? `<a href="${esc(p.githubLink)}" target="_blank" rel="noopener noreferrer">GitHub</a>` : ''}
                     </span>
                   </div>
                   <span class="lr-date">${esc(getFormattedDate(p))}</span>
@@ -2898,7 +3081,7 @@ ${r.header?.name || 'Candidate Name'}`
         ` : '';
 
         container.innerHTML = `
-      <div class="latex-doc">
+      <div class="latex-doc ${R.template || 'classic'}">
         <!-- 1. Header -->
         <div class="lr-header">
           <div class="lr-name">${h.name || 'Your Full Name'}</div>
@@ -3006,66 +3189,6 @@ ${r.header?.name || 'Candidate Name'}`
     }
     function uad(s, i, k, v) { if (R[s][i]) R[s][i][k] = v; rp(); ss(); }
     function ubl(s, i, bi, v) { if (R[s][i] && R[s][i].bullets) R[s][i].bullets[bi] = v; rp(); ss(); }
-    // ── UNIVERSAL ATS RAW TEXT GENERATOR ──
-
-      const exp = (Array.isArray(r.experience) && r.experience.length) ? r.experience : (Array.isArray(p.experience) ? p.experience : []);
-      if (exp.length) {
-        lines.push('\nWORK EXPERIENCE:');
-        exp.forEach(e => {
-          const title = e.title || 'Role';
-          const comp = e.company || 'Company';
-          const dates = e.dates || `${e.start || e.start_year || ''} - ${e.end || e.end_year || 'Present'}`;
-          const locStr = e.location ? ` | ${e.location}` : '';
-          lines.push(`- ${title} at ${comp} (${dates}${locStr})`);
-          const bullets = Array.isArray(e.bullets) ? e.bullets : (e.desc ? e.desc.split('\n').filter(Boolean) : []);
-          bullets.forEach(b => {
-            lines.push(`  • ${String(b).replace(/^[•\-\*\s]+/, '').trim()}`);
-          });
-        });
-      }
-
-      const edu = (Array.isArray(r.education) && r.education.length) ? r.education : (Array.isArray(p.education) ? p.education : []);
-      if (edu.length) {
-        lines.push('\nEDUCATION:');
-        edu.forEach(ed => {
-          const deg = ed.degree || 'Degree';
-          const sch = ed.school || 'University';
-          const yr = ed.dates || ed.year || '';
-          const gr = ed.grade ? ` (GPA/Grade: ${ed.grade})` : '';
-          lines.push(`- ${deg} - ${sch} (${yr})${gr}`);
-          if (ed.coursework) lines.push(`  Coursework: ${ed.coursework}`);
-        });
-      }
-
-      const proj = (Array.isArray(r.projects) && r.projects.length) ? r.projects : (Array.isArray(p.projects) ? p.projects : []);
-      if (proj.length) {
-        lines.push('\nPROJECTS:');
-        proj.forEach(pr => {
-          const pTitle = pr.name || pr.title || 'Project';
-          const stack = pr.stack || (Array.isArray(pr.tags) ? pr.tags.join(', ') : '');
-          lines.push(`- ${pTitle}${stack ? ` [${stack}]` : ''}`);
-          if (pr.liveLink || pr.demo) lines.push(`  Demo: ${pr.liveLink || pr.demo}`);
-          if (pr.githubLink || pr.github) lines.push(`  GitHub: ${pr.githubLink || pr.github}`);
-          const pBullets = Array.isArray(pr.bullets) ? pr.bullets : (pr.desc ? pr.desc.split('\n').filter(Boolean) : []);
-          pBullets.forEach(b => {
-            lines.push(`  • ${String(b).replace(/^[•\-\*\s]+/, '').trim()}`);
-          });
-        });
-      }
-
-      const certs = (Array.isArray(r.certifications) && r.certifications.length) ? r.certifications : (Array.isArray(p.certifications) ? p.certifications : []);
-      if (certs.length) {
-        lines.push('\nCERTIFICATIONS:');
-        certs.forEach(c => {
-          const cName = typeof c === 'string' ? c : (c.name || c.title || '');
-          const cOrg = c.issuer || c.org ? ` - ${c.issuer || c.org}` : '';
-          const cDate = c.date || c.year ? ` (${c.date || c.year})` : '';
-          lines.push(`- ${cName}${cOrg}${cDate}`);
-        });
-      }
-
-      return lines.join('\n');
-    }
 
     function ss() {
       clearTimeout(st);
@@ -3947,7 +4070,7 @@ ${r.header?.name || 'Candidate Name'}`
       else tips.push('Include at least one web handle (LinkedIn, GitHub or Portfolio)');
 
       // 2. Summary checks (max 15)
-      const sText = (R.summary && R.summary.text) ? R.summary.text.trim() : '';
+      const sText = (R.summary && R.summary.text && !(R.hidden_sections && R.hidden_sections.summary)) ? R.summary.text.trim() : '';
       if (sText.length > 30) {
         score += 15;
       } else {
@@ -3955,7 +4078,7 @@ ${r.header?.name || 'Candidate Name'}`
       }
 
       // 3. Skills checks (max 20)
-      const validSkills = Array.isArray(R.skills) ? R.skills.filter(s => s.label && s.items) : [];
+      const validSkills = (Array.isArray(R.skills) && !(R.hidden_sections && R.hidden_sections.skills)) ? R.skills.filter(s => s.label && s.items) : [];
       if (validSkills.length >= 3) score += 20;
       else if (validSkills.length >= 1) {
         score += 12;
@@ -4000,7 +4123,7 @@ ${r.header?.name || 'Candidate Name'}`
       else tips.push('Begin bullet points with strong action verbs (Engineered, Architected, Scaled)');
 
       // 5. Education & Credentials (max 20)
-      const validEdu = (R.education || []).filter(e => e.school || e.degree);
+      const validEdu = (!(R.hidden_sections && R.hidden_sections.edu) && R.education) ? R.education.filter(e => e.school || e.degree) : [];
       if (validEdu.length >= 1) score += 15;
       else tips.push('Add your degree and university credentials in the Education section');
 
@@ -4093,8 +4216,7 @@ ${r.header?.name || 'Candidate Name'}`
     rp();
     uAts();
   </script>
-
-  <script>
+<script>
     function updateNavUser() {
       try {
         const userObj = JSON.parse(localStorage.getItem('getarole_user') || '{}');
@@ -4118,9 +4240,7 @@ ${r.header?.name || 'Candidate Name'}`
       updateNavUser();
     }
   </script>
-
-
-  <script>
+<script>
     // CINEMATIC ANIMATIONS
     document.addEventListener("DOMContentLoaded", () => {
       if (typeof gsap !== 'undefined') {
@@ -4137,7 +4257,95 @@ ${r.header?.name || 'Candidate Name'}`
       }
     });
   </script>
-  </body>
+<script>
+    function toggleAcc(key) {
+        document.querySelectorAll('.acc-item').forEach(el => {
+            if(el === event.currentTarget.closest('.acc-item')) return;
+            el.classList.remove('open');
+            const p = el.querySelector('.pn-acc');
+            if(p) p.style.display = 'none';
+        });
+        
+        const item = event.currentTarget.closest('.acc-item');
+        if(item) {
+            item.classList.toggle('open');
+            const p = item.querySelector('.pn-acc');
+            if(p) {
+                p.style.display = item.classList.contains('open') ? 'flex' : 'none';
+            }
+        }
+    }
+    
+    // Check if gS needs overriding
+    window.gS = function(n) {
+        // gS used to open the old panels. Now we can route it to toggleAcc if called from JS
+        // But since we removed the sidebar, toggleAcc is used directly.
+        if (n === 'ats') uAts();
+    };
+    </script>
 
-
+<script>
+    function switchLeftTab(tab) {
+        document.querySelectorAll('.lt-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('.acc-list').style.display = 'none';
+        document.getElementById('layout-panel').style.display = 'none';
+        
+        if (tab === 'editor') {
+            document.querySelectorAll('.lt-btn')[0].classList.add('active');
+            document.querySelector('.acc-list').style.display = 'flex';
+        } else if (tab === 'layout') {
+            document.querySelectorAll('.lt-btn')[1].classList.add('active');
+            document.getElementById('layout-panel').style.display = 'block';
+            renderSectionOrder();
+        } else {
+            document.querySelectorAll('.lt-btn')[2].classList.add('active');
+        }
+    }
+    
+    let currentTemplate = 'classic';
+    function setTemplate(tmp, el) {
+        document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+        currentTemplate = tmp;
+        R.template = tmp;
+        localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
+        if (window.getAroleSync) window.getAroleSync.syncUserResume(R);
+        rp();
+    }
+    
+    function renderSectionOrder() {
+        const sections = [
+            { key: 'header', label: 'Resume Header' },
+            { key: 'summary', label: 'Professional Summary' },
+            { key: 'exp', label: 'Professional Experience' },
+            { key: 'proj', label: 'Projects' },
+            { key: 'edu', label: 'Education' },
+            { key: 'skills', label: 'Skills' }
+        ];
+        
+        const list = document.getElementById('section-order-list');
+        list.innerHTML = '';
+        sections.forEach(s => {
+            const isHidden = R.hidden_sections && R.hidden_sections[s.key];
+            list.innerHTML += `
+            <div class="section-order-item">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="drag-handle">⋮⋮</div>
+                    <div style="font-size:13px; font-weight:600;">${s.label}</div>
+                </div>
+                <div class="eye-icon ${isHidden ? 'hidden' : ''}" onclick="toggleSectionVis('${s.key}')">👁️</div>
+            </div>`;
+        });
+    }
+    
+    function toggleSectionVis(key) {
+        if (!R.hidden_sections) R.hidden_sections = {};
+        R.hidden_sections[key] = !R.hidden_sections[key];
+        localStorage.setItem('getarole_resume_v2', JSON.stringify(R));
+        if (window.getAroleSync) window.getAroleSync.syncUserResume(R);
+        renderSectionOrder();
+        rp();
+    }
+    </script>
+</body>
 </html>

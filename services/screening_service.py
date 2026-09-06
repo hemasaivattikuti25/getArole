@@ -1,6 +1,6 @@
 from typing import List, Tuple
-from domain.models import CandidateScreeningReport, RubricScore, CandidateProfile
-from .parser_service import ParserService, COMMON_TECH_SKILLS
+from domain.models import CandidateScreeningReport, RubricScore
+from .parser_service import ParserService
 from .embedding_service import embedding_service
 from .llm_service import get_llm_service
 

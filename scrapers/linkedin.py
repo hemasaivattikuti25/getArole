@@ -1,6 +1,6 @@
 import asyncio
 import hashlib
-from typing import List, Optional
+from typing import List
 import httpx
 from bs4 import BeautifulSoup
 from .models import JobListing

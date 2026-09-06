@@ -6,7 +6,6 @@ import ExploreFilters, { ExploreFiltersState } from "./components/ExploreFilters
 import JobCard from "./components/JobCard";
 import JobDrawer from "./components/JobDrawer";
 import { useJobs } from "./hooks/useJobs";
-import BackgroundAurora from "@/components/BackgroundAurora"; // Ensure aurora shines through if layout doesn't provide it
 
 export default function ExplorePage() {
   const [filters, setFilters] = useState<ExploreFiltersState>({

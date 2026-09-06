@@ -1,6 +1,6 @@
 import os
 import sys
-import asyncio
+import urllib.parse
 import concurrent.futures
 from fastapi.testclient import TestClient
 
@@ -8,7 +8,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from web.server import app
+from web.server import app  # noqa: E402
 
 client = TestClient(app)
 
@@ -26,7 +26,6 @@ def test_get_jobs_extremely_long_query():
     response = client.get(f"/api/jobs?query={long_str}&location=remote")
     assert response.status_code == 200
 
-import urllib.parse
 
 def test_get_jobs_special_characters_sql_xss_path_traversal():
     """Test XSS tags, SQL injection, null bytes, and path traversal strings."""

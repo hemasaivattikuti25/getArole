@@ -7,20 +7,15 @@ import {
   Building2, 
   MapPin, 
   CheckCircle2, 
-  AlertCircle, 
   ExternalLink,
-  Upload,
   Filter,
   FileText
 } from "lucide-react";
 import { useJobs } from "../explore/hooks/useJobs";
-import { Job } from "@/lib/types";
 
 export default function MatchesPage() {
   const { jobs, loading } = useJobs();
   const [minScore, setMinScore] = useState<number>(75);
-  const [selectedRole, setSelectedRole] = useState<string>("All");
-  const [resumeUploaded, setResumeUploaded] = useState(false);
   const [userSkills, setUserSkills] = useState<string[]>([
     "React.js",
     "TypeScript",
@@ -32,16 +27,18 @@ export default function MatchesPage() {
   ]);
 
   useEffect(() => {
-    const saved = localStorage.getItem("getarole_resume_v2");
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.skills && Array.isArray(parsed.skills)) {
-          setUserSkills(parsed.skills);
-        }
-        setResumeUploaded(true);
-      } catch {}
-    }
+    const timer = setTimeout(() => {
+      const saved = localStorage.getItem("getarole_resume_v2");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.skills && Array.isArray(parsed.skills)) {
+            setUserSkills(parsed.skills);
+          }
+        } catch {}
+      }
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   // Compute match score and skills for each job

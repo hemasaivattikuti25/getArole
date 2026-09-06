@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import React from "react";
 
 export default function Footer() {
   return (
 <footer className="global-footer" style={{ 'background': '#ffffff', 'borderTop': '1px solid #e2e8f0', 'padding': '48px 24px 24px', 'marginTop': 'auto', 'fontFamily': '"Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif', 'position': 'relative' }}>
-    <style dangerouslySetInnerHTML={{ __html: `
+    <style>{`
       .global-footer a.footer-nav-link { color: #64748b; text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.15s ease, transform 0.15s ease; display: inline-block; }
       .global-footer a.footer-nav-link:hover { color: #4f46e5 !important; transform: translateX(2px); }
       .footer-top-grid { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1.2fr; gap: 36px; margin-bottom: 36px; min-width: 0; }
@@ -17,7 +18,7 @@ export default function Footer() {
         .footer-top-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
         .footer-bottom-bar { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
       }
-    ` }} />
+    `}</style>
 
     <div style={{ 'maxWidth': '100%', 'width': '100%', 'boxSizing': 'border-box', 'margin': '0 auto', 'padding': '0 16px' }}>
       
@@ -26,10 +27,10 @@ export default function Footer() {
         
         {/*  Col 1: Brand & Founder Identity  */}
         <div style={{ 'display': 'flex', 'flexDirection': 'column', 'gap': '16px' }}>
-          <a href="/" className="brand-group" style={{ 'display': 'inline-flex', 'alignItems': 'center', 'gap': '10px', 'textDecoration': 'none' }}>
-            <img src="/logo.svg" alt="getArole Logo" style={{ 'width': '34px', 'height': '34px', 'borderRadius': '9px', 'boxShadow': '0 3px 10px rgba(79,70,229,0.2)', 'flexShrink': '0' }} />
+          <Link href="/" className="brand-group" style={{ 'display': 'inline-flex', 'alignItems': 'center', 'gap': '10px', 'textDecoration': 'none' }}>
+            <Image src="/logo.svg" alt="getArole Logo" width={34} height={34} style={{ 'width': '34px', 'height': '34px', 'borderRadius': '9px', 'boxShadow': '0 3px 10px rgba(79,70,229,0.2)', 'flexShrink': '0' }} />
             <span style={{ 'fontFamily': '"Outfit", sans-serif', 'fontSize': '22px', 'fontWeight': '800', 'color': '#0f172a', 'letterSpacing': '-0.03em' }}>get<span style={{ 'color': '#4f46e5' }}>A</span>role</span>
-          </a>
+          </Link>
 
           <p style={{ 'fontSize': '13px', 'color': '#475569', 'lineHeight': '1.6', 'maxWidth': '340px', 'margin': '0' }}>
             Job discovery and application management platform indexing verified opportunities directly from official company career portals.
@@ -38,7 +39,7 @@ export default function Footer() {
           {/*  Founder Spotlight Card (Factual & Enterprise)  */}
           <div style={{ 'background': '#f8fafc', 'border': '1px solid #e2e8f0', 'borderRadius': '14px', 'padding': '14px 16px', 'maxWidth': '390px', 'boxShadow': '0 2px 6px rgba(0,0,0,0.02)', 'display': 'flex', 'alignItems': 'flex-start', 'gap': '14px' }}>
             <div style={{ 'position': 'relative', 'flexShrink': '0' }}>
-              <img src="/founder.png" alt="getArole Team" style={{ 'width': '48px', 'height': '48px', 'borderRadius': '50%', 'objectFit': 'cover', 'border': '2px solid #4f46e5', 'boxShadow': '0 2px 6px rgba(79,70,229,0.2)' }} />
+              <Image src="/founder.png" alt="getArole Team" width={48} height={48} style={{ 'width': '48px', 'height': '48px', 'borderRadius': '50%', 'objectFit': 'cover', 'border': '2px solid #4f46e5', 'boxShadow': '0 2px 6px rgba(79,70,229,0.2)' }} />
               <span style={{ 'position': 'absolute', 'bottom': '0', 'right': '0', 'width': '12px', 'height': '12px', 'background': '#22c55e', 'border': '2px solid #ffffff', 'borderRadius': '50%' }} title="Active Founder"></span>
             </div>
             <div style={{ 'minWidth': '0', 'flex': '1' }}>

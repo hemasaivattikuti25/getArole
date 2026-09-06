@@ -1,14 +1,13 @@
 import os
 import sys
-import asyncio
 from fastapi.testclient import TestClient
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from web.server import app
-from services.supabase_service import get_user_lock
+from web.server import app  # noqa: E402
+from services.supabase_service import get_user_lock  # noqa: E402
 
 client = TestClient(app)
 

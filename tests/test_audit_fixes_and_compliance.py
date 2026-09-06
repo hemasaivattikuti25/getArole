@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 
 from web.server import app
 from services.resume_parser_service import ResumeParserService
-from services.supabase_service import SupabaseService, _JOB_WRITE_THROUGH_CACHE
+from services.supabase_service import SupabaseService
 
 client = TestClient(app)
 

@@ -1,5 +1,6 @@
 import asyncio
 import hashlib
+import logging
 from typing import List, Optional
 import httpx
 from bs4 import BeautifulSoup
@@ -97,8 +98,8 @@ async def scrape_single_greenhouse_board(client: httpx.AsyncClient, company: str
             )
             listings.append(job_obj)
             
-    except Exception:
-        pass
+    except Exception as e:
+        logging.getLogger("sre.scraper.greenhouse").debug(f"Greenhouse board scrape error for {company}: {e}")
     
     return listings
 

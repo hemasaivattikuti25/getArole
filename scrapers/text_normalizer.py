@@ -2,8 +2,8 @@ import html
 import re
 import unicodedata
 from datetime import datetime, timezone, timedelta
-from typing import Optional, Dict, Any, List, Union
-from bs4 import BeautifulSoup, Tag, NavigableString
+from typing import Optional, Dict, Any, Union
+from bs4 import BeautifulSoup, Tag
 
 def clean_text(raw: Optional[Union[str, bytes]]) -> str:
     """

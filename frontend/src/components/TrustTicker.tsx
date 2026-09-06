@@ -1,6 +1,6 @@
 "use client";
 
-import { ShieldCheck, Sparkles } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 
 const PLATFORMS = [

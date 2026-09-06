@@ -11,7 +11,6 @@ Validates:
 - Deep clone fallback integrity (classes, functions, undefined)
 """
 import os
-from bs4 import BeautifulSoup
 
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "..", "web", "static")
 

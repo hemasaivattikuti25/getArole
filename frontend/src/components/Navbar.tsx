@@ -4,11 +4,14 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { useAuth } from "@/providers/auth-provider";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, openAuthModal } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,10 +23,10 @@ export default function Navbar() {
 
   // Auto-redirect logged-in users away from the marketing landing page
   useEffect(() => {
-    if (user && window.location.pathname === "/") {
-      window.location.href = "/dashboard/";
+    if (user && pathname === "/") {
+      router.push("/dashboard/");
     }
-  }, [user]);
+  }, [user, pathname, router]);
 
   return (
     <header

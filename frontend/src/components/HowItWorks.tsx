@@ -1,7 +1,5 @@
 "use client";
 
-import { FileText, CheckCircle2, ArrowRight } from "lucide-react";
-
 export default function HowItWorks() {
   const steps = [
     {

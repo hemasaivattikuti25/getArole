@@ -179,6 +179,40 @@
       0% { transform: translate(0, 0) scale(1); }
       100% { transform: translate(-5vw, -5vw) scale(1.1); }
     }
+
+      body.mobile-jd-open .jd-sticky-header {
+        position: sticky !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 99999 !important;
+        background: #ffffff !important;
+        padding: 12px 16px !important;
+        margin: 0 !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        display: block !important;
+        height: auto !important;
+        min-height: 50px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+      body.mobile-jd-open .top-action-bar {
+        display: flex !important;
+        width: 100% !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+      }
+      body.mobile-jd-open .referral-dropdown {
+        position: fixed !important;
+        top: 120px !important; /* Force it below the header on mobile */
+        left: 16px !important;
+        right: 16px !important;
+        width: auto !important;
+        z-index: 999999 !important;
+        max-height: calc(100vh - 140px) !important;
+        overflow-y: auto !important;
+      }
+
 </style>
 
 
@@ -212,7 +246,41 @@
         .footer-top-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
         .footer-bottom-bar { flex-direction: column !important; align-items: flex-start !important; gap: 12px !important; }
       }
-    </style>
+    
+      body.mobile-jd-open .jd-sticky-header {
+        position: sticky !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 99999 !important;
+        background: #ffffff !important;
+        padding: 12px 16px !important;
+        margin: 0 !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        display: block !important;
+        height: auto !important;
+        min-height: 50px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+      }
+      body.mobile-jd-open .top-action-bar {
+        display: flex !important;
+        width: 100% !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+      }
+      body.mobile-jd-open .referral-dropdown {
+        position: fixed !important;
+        top: 120px !important; /* Force it below the header on mobile */
+        left: 16px !important;
+        right: 16px !important;
+        width: auto !important;
+        z-index: 999999 !important;
+        max-height: calc(100vh - 140px) !important;
+        overflow-y: auto !important;
+      }
+
+</style>
 
     <div style="max-width: 100%; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 0 16px;">
       

@@ -34,3 +34,11 @@ build/
 dist/
 *.egg-info/
 .pytest_cache/
+.ruff_cache/
+
+# Scratch & Local Logs
+scratch/
+deep_audit.txt
+onboarding_log.txt
+checkpoint_run_state.json
+

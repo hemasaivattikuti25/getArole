@@ -2657,7 +2657,7 @@
           </button>
         </div>
         <div style="display: flex; align-items: center; gap: 8px;">
-          <a href="/resume-builder/" target="_blank" style="text-decoration: none; font-size: 12px; font-weight: 700; color: #4f46e5; display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 6px; background: #eef2ff;">
+          <a href="/resume-builder/" target="_blank" style="text-decoration: none; font-size: 12px; font-weight: 700; color: #4f46e5; display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 6px; background: #eef2ff;" rel="noopener noreferrer">
             <span>🛠️</span> Open in LaTeX Builder ↗
           </a>
         </div>
@@ -3082,7 +3082,7 @@
             <div class="skill-category-block" style="padding:10px 16px;">
               <div class="skill-category-header" style="margin-bottom:6px;"><span>${p.icon}</span> ${p.label}</div>
               <div style="font-size:13px;">
-                ${url ? `<a href="${escapeHTML(url)}" target="_blank" style="color:var(--primary); text-decoration:none;">${escapeHTML(url)}</a>` : '<span style="color:transparent; user-select:none;">_</span>'}
+                ${url ? `<a href="${escapeHTML(url)}" target="_blank" style="color:var(--primary); text-decoration:none;" rel="noopener noreferrer">${escapeHTML(url)}</a>` : '<span style="color:transparent; user-select:none;">_</span>'}
               </div>
             </div>
           `;
@@ -4669,15 +4669,15 @@
       if (candPhone) contactItems.push(escapeHTML(candPhone));
       if (links.linkedin) {
         const clean = links.linkedin.replace(/^https?:\/\/(www\.)?/, '');
-        contactItems.push(`<a href="${escapeHTML(links.linkedin)}" target="_blank" style="color:#000000; text-decoration:none; border-bottom:1px dotted #000;">${escapeHTML(clean)}</a>`);
+        contactItems.push(`<a href="${escapeHTML(links.linkedin)}" target="_blank" style="color:#000000; text-decoration:none; border-bottom:1px dotted #000;" rel="noopener noreferrer">${escapeHTML(clean)}</a>`);
       }
       if (links.github) {
         const clean = links.github.replace(/^https?:\/\/(www\.)?/, '');
-        contactItems.push(`<a href="${escapeHTML(links.github)}" target="_blank" style="color:#000000; text-decoration:none; border-bottom:1px dotted #000;">${escapeHTML(clean)}</a>`);
+        contactItems.push(`<a href="${escapeHTML(links.github)}" target="_blank" style="color:#000000; text-decoration:none; border-bottom:1px dotted #000;" rel="noopener noreferrer">${escapeHTML(clean)}</a>`);
       }
       if (links.portfolio) {
         const clean = links.portfolio.replace(/^https?:\/\/(www\.)?/, '');
-        contactItems.push(`<a href="${escapeHTML(links.portfolio)}" target="_blank" style="color:#000000; text-decoration:none; border-bottom:1px dotted #000;">${escapeHTML(clean)}</a>`);
+        contactItems.push(`<a href="${escapeHTML(links.portfolio)}" target="_blank" style="color:#000000; text-decoration:none; border-bottom:1px dotted #000;" rel="noopener noreferrer">${escapeHTML(clean)}</a>`);
       }
 
       // Skills categories
@@ -4801,8 +4801,8 @@
                   ${projStack ? `<span style="font-size: 12px; font-style: italic; color: #000000; margin-left: 6px;">| ${escapeHTML(projStack)}</span>` : ''}
                 </div>
                 <div style="display: flex; gap: 8px; font-size: 11.5px;">
-                  ${(proj.demo || proj.liveLink) ? `<a href="${escapeHTML(proj.demo || proj.liveLink)}" target="_blank" style="color: #000000; text-decoration: none; border-bottom: 1px dotted #000;">[Demo]</a>` : ''}
-                  ${(proj.github || proj.githubLink) ? `<a href="${escapeHTML(proj.github || proj.githubLink)}" target="_blank" style="color: #000000; text-decoration: none; border-bottom: 1px dotted #000;">[Code]</a>` : ''}
+                  ${(proj.demo || proj.liveLink) ? `<a href="${escapeHTML(proj.demo || proj.liveLink)}" target="_blank" style="color: #000000; text-decoration: none; border-bottom: 1px dotted #000;" rel="noopener noreferrer">[Demo]</a>` : ''}
+                  ${(proj.github || proj.githubLink) ? `<a href="${escapeHTML(proj.github || proj.githubLink)}" target="_blank" style="color: #000000; text-decoration: none; border-bottom: 1px dotted #000;" rel="noopener noreferrer">[Code]</a>` : ''}
                 </div>
               </div>
           `;

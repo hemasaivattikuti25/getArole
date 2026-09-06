@@ -1,4 +1,5 @@
 import os
+import logging
 import shutil
 import tempfile
 import uuid
@@ -52,5 +53,5 @@ async def screen_resumes(
             if os.path.exists(p):
                 try:
                     os.remove(p)
-                except Exception:
-                    pass
+                except Exception as e:
+                    logging.getLogger("sre.screener").debug(f"Failed to remove temp file {p}: {e}")

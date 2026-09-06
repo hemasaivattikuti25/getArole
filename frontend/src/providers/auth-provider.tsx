@@ -7,6 +7,7 @@ import {
   signInWithPopup, 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword,
+  updateProfile,
   signOut,
   onAuthStateChanged,
   User as FirebaseUser
@@ -152,6 +153,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signupWithEmail = async (email: string, pass: string, name?: string): Promise<AuthResult> => {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, pass);
+      if (name && result.user) {
+        try {
+          await updateProfile(result.user, { displayName: name });
+        } catch {}
+      }
       await handleUserSession(result.user);
       return { success: true, user: result.user as unknown as AuthUser };
     } catch (err: unknown) {

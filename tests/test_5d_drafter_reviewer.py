@@ -8,8 +8,7 @@ from fastapi.testclient import TestClient
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from web.server import app
-from services.llm_service import get_llm_service, NvidiaLLMService
-from services.screening_service import ScreeningService
+from services.llm_service import NvidiaLLMService
 
 client = TestClient(app)
 

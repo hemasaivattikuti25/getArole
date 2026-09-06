@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Sparkles, Download, ExternalLink, RefreshCw, FileText, ArrowUpRight } from "lucide-react";
+import { Sparkles, ArrowUpRight } from "lucide-react";
 
 export default function ResumeBuilderPage() {
   const [iframeLoaded, setIframeLoaded] = useState(false);

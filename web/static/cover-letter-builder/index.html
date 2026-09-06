@@ -1792,9 +1792,9 @@ Sincerely,
       const contactBadges = [
         phone,
         email ? `<a href="mailto:${email}">${email}</a>` : '',
-        linkedin ? `<a href="${linkedin.startsWith('http') ? linkedin : 'https://' + linkedin}" target="_blank">${linkedin.replace(/^https?:\/\//, '')}</a>` : '',
-        github ? `<a href="${github.startsWith('http') ? github : 'https://' + github}" target="_blank">${github.replace(/^https?:\/\//, '')}</a>` : '',
-        portfolio ? `<a href="${portfolio.startsWith('http') ? portfolio : 'https://' + portfolio}" target="_blank">${portfolio.replace(/^https?:\/\//, '')}</a>` : ''
+        linkedin ? `<a href="${linkedin.startsWith('http') ? linkedin : 'https://' + linkedin}" target="_blank" rel="noopener noreferrer">${linkedin.replace(/^https?:\/\//, '')}</a>` : '',
+        github ? `<a href="${github.startsWith('http') ? github : 'https://' + github}" target="_blank" rel="noopener noreferrer">${github.replace(/^https?:\/\//, '')}</a>` : '',
+        portfolio ? `<a href="${portfolio.startsWith('http') ? portfolio : 'https://' + portfolio}" target="_blank" rel="noopener noreferrer">${portfolio.replace(/^https?:\/\//, '')}</a>` : ''
       ].filter(Boolean).join(' &bull; ');
 
       const bodyContent = (CL.body || COVER_LETTER_PRESETS.professional)

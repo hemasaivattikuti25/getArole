@@ -3,9 +3,8 @@ import os
 import sys
 import uuid
 import json
-import hashlib
 from datetime import datetime, timezone, timedelta
-from typing import List, Dict, Any, Optional
+from typing import Any
 from dotenv import load_dotenv
 
 # Ensure root workspace and current directory are on sys.path
@@ -17,21 +16,19 @@ for p in [CURRENT_DIR, PROJECT_ROOT]:
 
 load_dotenv(os.path.join(PROJECT_ROOT, ".env"))
 
-from supabase import create_client, Client
-from enterprise_scrapers.workday import WorkdayScraper
-from enterprise_scrapers.indian_it import IndianITScraper
-from scrapers.greenhouse import scrape_all_greenhouse_jobs
-from scrapers.lever import scrape_all_lever_jobs
-from scrapers.ashby import scrape_all_ashby_jobs
-from scrapers.text_normalizer import (
+from supabase import create_client, Client  # noqa: E402
+from enterprise_scrapers.workday import WorkdayScraper  # noqa: E402
+from enterprise_scrapers.indian_it import IndianITScraper  # noqa: E402
+from scrapers.greenhouse import scrape_all_greenhouse_jobs  # noqa: E402
+from scrapers.lever import scrape_all_lever_jobs  # noqa: E402
+from scrapers.ashby import scrape_all_ashby_jobs  # noqa: E402
+from scrapers.text_normalizer import (  # noqa: E402
     clean_text,
     normalize_job_url,
     sanitize_job_description,
     semantic_dedup_key,
-    generate_idempotent_job_id,
-    validate_job_listing_assertions
+    generate_idempotent_job_id
 )
-from scrapers.models import JobListing
 
 PIPELINE_VERSION = "v2.5-enterprise-lineage"
 CHECKPOINT_FILE = os.path.join(CURRENT_DIR, "checkpoint_run_state.json")
@@ -170,9 +167,9 @@ async def run_scrapers():
             seen.add(s_key)
             deduped_jobs.append(j)
 
-    print(f"\n=================================================")
+    print("\n=================================================")
     print(f"📊 TOTAL UNIQUE JOBS SCRAPED ACROSS TOP 25: {len(deduped_jobs)}")
-    print(f"=================================================")
+    print("=================================================")
     
     # Initialize Database
     try:

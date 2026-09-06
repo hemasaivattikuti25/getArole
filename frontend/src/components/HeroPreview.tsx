@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, MapPin, Sparkles, ExternalLink } from "lucide-react";
+import { CheckCircle2, MapPin, ExternalLink } from "lucide-react";
 
 interface JobMatch {
   id: string;

@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Job } from "@/lib/types";
 
@@ -14,7 +15,16 @@ export default function JobCard({ job, onClick, index }: JobCardProps) {
   
   // Calculate mock fit score if user profile exists (we'll assume exists for now for UI purposes)
   const hasProf = typeof window !== 'undefined' && localStorage.getItem('getarole_resume_v2');
-  const fitScore = job.fit_score ? Math.round(job.fit_score) : Math.floor(Math.random() * 30) + 70;
+  const fitScore = useMemo(() => {
+    if (job.fit_score) return Math.round(job.fit_score);
+    const key = (job.id || job.title || "job") + (job.company || "");
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = (hash << 5) - hash + key.charCodeAt(i);
+      hash |= 0;
+    }
+    return 72 + (Math.abs(hash) % 24);
+  }, [job.fit_score, job.id, job.title, job.company]);
 
   return (
     <motion.div

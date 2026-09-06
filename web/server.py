@@ -1,25 +1,28 @@
 import asyncio
+from contextlib import asynccontextmanager
 import json
 import logging
 import os
-import shutil
 import tempfile
-from typing import List, Optional, Dict, Any, Tuple
-from fastapi import FastAPI, UploadFile, File, Form, Query, HTTPException, Body, Request, Header, Response
+from typing import List, Optional, Dict, Any
+from fastapi import FastAPI, UploadFile, File, Query, HTTPException, Body, Request, Header, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 
-from scrapers.models import JobListing, CandidateProfile
+from scrapers.models import JobListing
 from scrapers.aggregator import JobAggregator
 from scrapers.matcher import ResumeMatcher
 from services.llm_service import get_llm_service, NvidiaLLMService
 from services.supabase_service import get_supabase_service, get_user_lock
+from services.resume_parser_service import get_resume_parser_service
+from services.embedding_service import embedding_service
 from core.logging_config import configure_logging
 from core.observability_middleware import ObservabilityMiddleware
-from core.security import enforce_ai_rate_limit, extract_authenticated_uid, verify_crm_admin_access, is_crm_admin_authorized
+from core.security import enforce_ai_rate_limit, extract_authenticated_uid, verify_crm_admin_access
 
 # Initialize Structured JSON logging
 configure_logging()
@@ -174,8 +177,8 @@ def load_cached_jobs() -> List[JobListing]:
                     if jobs:
                         AGGREGATOR.cached_jobs = jobs
                         return jobs
-            except Exception:
-                pass
+            except Exception as e:
+                logging.getLogger("sre.server").debug(f"Failed to read cache file {fp}: {e}")
 
     # 2. Fallback: direct Supabase REST API (sync httpx)
     try:
@@ -185,8 +188,8 @@ def load_cached_jobs() -> List[JobListing]:
             for item in raw_jobs:
                 try:
                     jobs.append(JobListing(**item))
-                except Exception:
-                    pass
+                except Exception as e:
+                    logging.getLogger("sre.server").debug(f"Failed to deserialize job item: {e}")
             if jobs:
                 AGGREGATOR.cached_jobs = jobs
                 return jobs
@@ -207,8 +210,8 @@ async def periodic_scraper_loop():
                     try:
                         with open(save_path, "w", encoding="utf-8") as f:
                             json.dump([j.model_dump() for j in jobs], f, indent=2)
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logging.getLogger("sre.server").warning(f"Failed to persist jobs cache to {save_path}: {e}")
                 
                 # Sync to Supabase PostgreSQL
                 try:
@@ -224,7 +227,6 @@ async def periodic_scraper_loop():
         # Wait 30 minutes (1800 seconds) before next automated run
         await asyncio.sleep(1800)
 
-from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app_instance: FastAPI):
@@ -295,7 +297,6 @@ async def get_jobs(
     # If still empty, fetch directly from Supabase REST (always reliable)
     if not jobs:
         try:
-            import asyncio
             raw_jobs = await asyncio.get_event_loop().run_in_executor(
                 None, lambda: _fetch_jobs_from_supabase_rest(limit)
             )
@@ -304,8 +305,8 @@ async def get_jobs(
                 for item in raw_jobs:
                     try:
                         jobs_out.append(JobListing(**item))
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logging.getLogger("sre.server").debug(f"Failed to deserialize job listing: {e}")
                 AGGREGATOR.cached_jobs = jobs_out
                 jobs = jobs_out
         except Exception as e:
@@ -344,8 +345,8 @@ async def get_all_candidates(
                         candidates = json.load(f)
                         if candidates:
                             break
-                except Exception:
-                    pass
+                except Exception as e:
+                    logging.getLogger("sre.server").debug(f"Failed to read candidates cache {fp}: {e}")
 
     return {
         "total_candidates": len(candidates),
@@ -804,7 +805,7 @@ async def generate_cover_letter_api(req: CoverLetterRequest, request: Request):
 
     try:
         async def event_generator():
-            yield f": ping\n\n"
+            yield ": ping\n\n"
             try:
                 # Attempt live LLM streaming
                 stream_gen = llm.a_stream_chat(
@@ -1202,8 +1203,6 @@ async def delete_user_account_endpoint(request: Request, x_firebase_uid: Optiona
         return JSONResponse({"status": "ok" if success else "error", "message": "Account data purged successfully."})
 
 
-from services.resume_parser_service import get_resume_parser_service
-
 # ── Resume Parsing & PDF Matcher Endpoints ──────────────────────────────
 @app.post("/api/match-resume")
 @app.post("/api/parse-resume")
@@ -1247,9 +1246,6 @@ async def serve_settings():
     settings_file = os.path.join(STATIC_DIR, "settings", "index.html")
     return render_template(settings_file)
 
-
-from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
-from services.embedding_service import embedding_service
 
 @app.get("/metrics")
 async def metrics_endpoint():

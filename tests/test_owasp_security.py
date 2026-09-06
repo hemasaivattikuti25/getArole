@@ -6,8 +6,8 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from web.server import app
-from core.security import SlidingWindowRateLimiter, sanitize_auth_identifier
+from web.server import app  # noqa: E402
+from core.security import SlidingWindowRateLimiter, sanitize_auth_identifier  # noqa: E402
 
 client = TestClient(app)
 

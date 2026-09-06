@@ -1112,9 +1112,9 @@
             </td>
             <td>
               <div style="display:flex;gap:6px;">
-                ${u.linkedin ? `<a href="${escapeHTML(u.linkedin)}" target="_blank" class="btn-action" title="LinkedIn">🔗 In</a>` : ''}
-                ${u.github ? `<a href="${escapeHTML(u.github)}" target="_blank" class="btn-action" title="GitHub">🐙 Git</a>` : ''}
-                ${u.portfolio ? `<a href="${escapeHTML(u.portfolio)}" target="_blank" class="btn-action" title="Portfolio">🌐 Web</a>` : ''}
+                ${u.linkedin ? `<a href="${escapeHTML(u.linkedin)}" target="_blank" rel="noopener noreferrer" class="btn-action" title="LinkedIn">🔗 In</a>` : ''}
+                ${u.github ? `<a href="${escapeHTML(u.github)}" target="_blank" rel="noopener noreferrer" class="btn-action" title="GitHub">🐙 Git</a>` : ''}
+                ${u.portfolio ? `<a href="${escapeHTML(u.portfolio)}" target="_blank" rel="noopener noreferrer" class="btn-action" title="Portfolio">🌐 Web</a>` : ''}
                 ${(!u.linkedin && !u.github && !u.portfolio) ? '<span style="color:#cbd5e1;font-size:0.78rem;">-</span>' : ''}
               </div>
             </td>

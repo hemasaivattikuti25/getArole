@@ -2,9 +2,8 @@ import re
 import time
 import logging
 from collections import defaultdict
-from typing import Optional, Dict, Tuple, Any
+from typing import Optional, Dict, Tuple
 from fastapi import Request, HTTPException, status
-from fastapi.responses import JSONResponse
 
 logger = logging.getLogger("sre.security")
 

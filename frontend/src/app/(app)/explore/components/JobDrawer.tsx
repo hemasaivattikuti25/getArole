@@ -122,7 +122,7 @@ export default function JobDrawer({ job, isOpen, onClose }: JobDrawerProps) {
                 <h3 className="text-[13px] font-bold text-slate-800 uppercase tracking-wider mb-4">Role Overview</h3>
                 <div className="prose prose-slate prose-sm max-w-none text-slate-600 leading-relaxed">
                   {job.description ? (
-                    <div dangerouslySetInnerHTML={{ __html: job.description.replace(/\n/g, '<br/>') }} />
+                    <p className="whitespace-pre-line">{job.description}</p>
                   ) : (
                     <p className="italic text-slate-400">No detailed description provided for this role.</p>
                   )}

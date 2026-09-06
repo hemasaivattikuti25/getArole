@@ -1,12 +1,14 @@
 import asyncio
 import io
-import json
+import logging
 import re
 import zipfile
 import xml.etree.ElementTree as ET
-import fitz  # PyMuPDF
+import pymupdf as fitz
 from typing import Dict, Any, List, Tuple
 from services.llm_service import NvidiaLLMService
+
+logger = logging.getLogger("sre.resume_parser")
 
 class ResumeParserService:
     """
@@ -36,9 +38,9 @@ class ResumeParserService:
             with fitz.open(stream=pdf_bytes, filetype="pdf") as doc:
                 for p in doc:
                     pages_text.append(p.get_text())
-                    for l in p.get_links():
-                        if l.get("uri"):
-                            pdf_links.append(l.get("uri"))
+                    for link in p.get_links():
+                        if link.get("uri"):
+                            pdf_links.append(link.get("uri"))
         except Exception as e:
             print(f"[ResumeParserService PDF Parse Notice] {e}")
             # Fallback to DOCX parser if user provided a docx renamed as .pdf
@@ -50,8 +52,8 @@ class ResumeParserService:
                 raw_text = pdf_bytes.decode("utf-8", errors="ignore").strip()
                 if len(raw_text) > 10:
                     return raw_text, []
-            except Exception:
-                pass
+            except Exception as decode_err:
+                print(f"[ResumeParserService Fallback Text Decode Notice] {decode_err}")
         
         text = "\n".join(pages_text).strip()
         if pdf_links:
@@ -70,8 +72,8 @@ class ResumeParserService:
                 decoded = file_bytes.decode("utf-8", errors="replace").strip()
                 if decoded:
                     return decoded, []
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug(f"Failed decoding text document: {e}")
         return self.parse_pdf_bytes(file_bytes)
 
     def _is_safe_url(self, url: str) -> bool:
@@ -196,23 +198,23 @@ class ResumeParserService:
         company_indicators = ["ltd", "inc", "corp", "llc", "pvt", "gmbh", "technologies", "solutions", "laboratory", "labs", "lab", "organization", "foundation", "company", "group", "services", "systems", "agency", "studio", "studios", "ventures", "partners", "global", "co."]
         role_indicators = ["intern", "engineer", "developer", "manager", "lead", "architect", "analyst", "designer", "consultant", "director", "officer", "specialist", "associate", "head", "cto", "ceo", "vp", "founder"]
 
-        for l in lines:
-            is_bullet = l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*")
-            has_date = bool(month_pattern.search(l)) or bool(date_pattern.search(l))
-            lower_l = l.lower()
-            is_company = any(ci in lower_l for ci in company_indicators) and len(l) < 120
-            is_role = any(ri in lower_l for ri in role_indicators) and len(l) < 120
+        for line in lines:
+            is_bullet = line.startswith("•") or line.startswith("-") or line.startswith("·") or line.startswith("*")
+            has_date = bool(month_pattern.search(line)) or bool(date_pattern.search(line))
+            lower_line = line.lower()
+            is_company = any(ci in lower_line for ci in company_indicators) and len(line) < 120
+            is_role = any(ri in lower_line for ri in role_indicators) and len(line) < 120
 
             if is_bullet:
-                bullet = l.lstrip("•-·* ").strip()
+                bullet = line.lstrip("•-·* ").strip()
                 if curr_exp and bullet:
                     curr_exp["bullets"].append(bullet)
                     curr_exp["desc"] = "\n".join(curr_exp["bullets"])
             elif has_date and curr_exp and not curr_exp.get("dates"):
-                date_part = l
+                date_part = line
                 loc_part = ""
-                if "|" in l:
-                    parts = [p.strip() for p in l.split("|") if p.strip()]
+                if "|" in line:
+                    parts = [p.strip() for p in line.split("|") if p.strip()]
                     date_part = next((p for p in parts if month_pattern.search(p) or date_pattern.search(p)), parts[0])
                     loc_part = next((p for p in parts if p != date_part), "")
                 curr_exp["dates"] = date_part
@@ -225,8 +227,8 @@ class ResumeParserService:
                 title = ""
                 company = ""
                 location = ""
-                if "|" in l:
-                    parts = [p.strip() for p in l.split("|") if p.strip()]
+                if "|" in line:
+                    parts = [p.strip() for p in line.split("|") if p.strip()]
                     for p in parts:
                         p_low = p.lower()
                         if any(ri in p_low for ri in role_indicators) and not title:
@@ -239,23 +241,26 @@ class ResumeParserService:
                             company = p
                         elif not location:
                             location = p
-                elif " at " in l:
-                    parts = l.split(" at ", 1)
+                elif " at " in line:
+                    parts = line.split(" at ", 1)
                     title = parts[0].strip()
                     company = parts[1].strip()
                 else:
                     if is_role and not is_company:
-                        title = l
+                        title = line
                     else:
-                        company = l
+                        company = line
 
                 if curr_exp and len(curr_exp.get("bullets", [])) == 0 and not curr_exp.get("dates"):
-                    if title and not curr_exp.get("title"): curr_exp["title"] = title
-                    if company and not curr_exp.get("company"): curr_exp["company"] = company
-                    if location and not curr_exp.get("location"): curr_exp["location"] = location
+                    if title and not curr_exp.get("title"):
+                        curr_exp["title"] = title
+                    if company and not curr_exp.get("company"):
+                        curr_exp["company"] = company
+                    if location and not curr_exp.get("location"):
+                        curr_exp["location"] = location
                 else:
                     curr_exp = {
-                        "company": company or (l if not title else "Company"),
+                        "company": company or (line if not title else "Company"),
                         "title": title or ("Engineer" if is_role else ""),
                         "location": location,
                         "type": "Full-time",
@@ -266,9 +271,9 @@ class ResumeParserService:
                         "desc": ""
                     }
                     fb_exp.append(curr_exp)
-            elif not curr_exp and not is_bullet and len(l) < 120:
+            elif not curr_exp and not is_bullet and len(line) < 120:
                 curr_exp = {
-                    "company": l,
+                    "company": line,
                     "title": "",
                     "location": "",
                     "type": "Full-time",
@@ -279,8 +284,8 @@ class ResumeParserService:
                     "desc": ""
                 }
                 fb_exp.append(curr_exp)
-            elif curr_exp and not curr_exp.get("title") and not is_bullet and len(l) < 100:
-                curr_exp["title"] = l
+            elif curr_exp and not curr_exp.get("title") and not is_bullet and len(line) < 100:
+                curr_exp["title"] = line
 
         for e in fb_exp:
             if not e.get("desc") and e.get("bullets"):
@@ -299,15 +304,15 @@ class ResumeParserService:
         curr_proj = None
         noise_words = {"Live", "GitHub", "Demo", "Link", "Source", "Code", "View", "Website", "Repo", "App"}
         
-        for l in lines:
-            is_bullet = l.startswith("•") or l.startswith("-") or l.startswith("·") or l.startswith("*")
-            is_url = l.startswith("http") or l.startswith("www.") or "://" in l
-            is_noise = l.strip() in noise_words
-            is_year_only = bool(re.match(r'^\d{4}(\s*[-–—]\s*(Present|\d{4}))?$', l.strip()))
-            is_tech_stack = "·" in l and len(l.split("·")) >= 3
+        for line in lines:
+            is_bullet = line.startswith("•") or line.startswith("-") or line.startswith("·") or line.startswith("*")
+            is_url = line.startswith("http") or line.startswith("www.") or "://" in line
+            is_noise = line.strip() in noise_words
+            is_year_only = bool(re.match(r'^\d{4}(\s*[-–—]\s*(Present|\d{4}))?$', line.strip()))
+            is_tech_stack = "·" in line and len(line.split("·")) >= 3
             
             if is_bullet:
-                bullet = l.lstrip("•-·* ").strip()
+                bullet = line.lstrip("•-·* ").strip()
                 if curr_proj and bullet:
                     curr_proj["bullets"].append(bullet)
                     if not curr_proj["description"]:
@@ -315,30 +320,30 @@ class ResumeParserService:
                     curr_proj["desc"] = "\n".join(curr_proj["bullets"])
             elif is_noise or is_year_only or is_url:
                 if is_url and curr_proj and not curr_proj.get("link"):
-                    curr_proj["link"] = l
-                    curr_proj["demo"] = l
+                    curr_proj["link"] = line
+                    curr_proj["demo"] = line
                 continue
             elif is_tech_stack and curr_proj:
-                curr_proj["tech"] = l
-                curr_proj["stack"] = l
+                curr_proj["tech"] = line
+                curr_proj["stack"] = line
                 continue
             elif not is_bullet and not is_noise and not is_year_only and not is_tech_stack:
-                l_stripped = l.strip()
-                word_count = len(l_stripped.split())
-                starts_upper = l_stripped[0].isupper() if l_stripped else False
-                if word_count <= 6 and starts_upper and not l_stripped.endswith(".") and not l_stripped.startswith("for ") and not l_stripped.startswith("and "):
+                line_stripped = line.strip()
+                word_count = len(line_stripped.split())
+                starts_upper = line_stripped[0].isupper() if line_stripped else False
+                if word_count <= 6 and starts_upper and not line_stripped.endswith(".") and not line_stripped.startswith("for ") and not line_stripped.startswith("and "):
                     if curr_proj and len(curr_proj["bullets"]) > 0:
-                        curr_proj = {"name": l_stripped, "title": l_stripped, "description": "", "desc": "", "link": "", "demo": "", "bullets": []}
+                        curr_proj = {"name": line_stripped, "title": line_stripped, "description": "", "desc": "", "link": "", "demo": "", "bullets": []}
                         fb_proj.append(curr_proj)
                     elif not curr_proj:
-                        curr_proj = {"name": l_stripped, "title": l_stripped, "description": "", "desc": "", "link": "", "demo": "", "bullets": []}
+                        curr_proj = {"name": line_stripped, "title": line_stripped, "description": "", "desc": "", "link": "", "demo": "", "bullets": []}
                         fb_proj.append(curr_proj)
                     else:
-                        curr_proj["description"] = (curr_proj["description"] + " " + l_stripped).strip()
+                        curr_proj["description"] = (curr_proj["description"] + " " + line_stripped).strip()
                         curr_proj["desc"] = curr_proj["description"]
                 else:
                     if curr_proj:
-                        curr_proj["description"] = (curr_proj["description"] + " " + l_stripped).strip()
+                        curr_proj["description"] = (curr_proj["description"] + " " + line_stripped).strip()
                         curr_proj["desc"] = curr_proj["description"]
         return fb_proj
 
@@ -349,21 +354,21 @@ class ResumeParserService:
         school_keywords = ["university", "institute", "institution", "college", "school", "academy", "polytechnic", "conservatory", "faculty"]
         degree_keywords = ["b.tech", "b.e", "b.s", "b.a", "m.tech", "m.s", "m.a", "ph.d", "phd", "bachelor", "master", "doctorate", "diploma", "degree", "major", "engineering"]
         
-        for l in lines:
-            if l.startswith("http") or l.startswith("mailto:") or "://" in l or l.startswith("==="):
+        for line in lines:
+            if line.startswith("http") or line.startswith("mailto:") or "://" in line or line.startswith("==="):
                 continue
             
-            lower_l = l.lower()
-            is_school = any(k in lower_l for k in school_keywords)
-            is_degree = any(k in lower_l for k in degree_keywords)
-            has_year = bool(re.search(r'20\d{2}', l))
+            lower_line = line.lower()
+            is_school = any(k in lower_line for k in school_keywords)
+            is_degree = any(k in lower_line for k in degree_keywords)
+            has_year = bool(re.search(r'20\d{2}', line))
 
             line_school = ""
             line_degree = ""
             line_year = ""
 
-            if "|" in l:
-                parts = [p.strip() for p in l.split("|") if p.strip()]
+            if "|" in line:
+                parts = [p.strip() for p in line.split("|") if p.strip()]
                 for p in parts:
                     p_low = p.lower()
                     if any(k in p_low for k in school_keywords) and not line_school:
@@ -374,11 +379,11 @@ class ResumeParserService:
                         line_year = p
             else:
                 if is_school:
-                    line_school = l
+                    line_school = line
                 elif is_degree:
-                    line_degree = l
+                    line_degree = line
                 if has_year:
-                    year_match = re.search(r'(?:20\d{2}\s*[-–—]\s*(?:20\d{2}|Present)|\b20\d{2}\b)', l)
+                    year_match = re.search(r'(?:20\d{2}\s*[-–—]\s*(?:20\d{2}|Present)|\b20\d{2}\b)', line)
                     if year_match:
                         line_year = year_match.group(0)
 
@@ -397,16 +402,16 @@ class ResumeParserService:
                         curr_edu["year"] = line_year
                 else:
                     curr_edu = {
-                        "school": line_school or (l if is_school else "University"),
-                        "degree": line_degree or (l if is_degree else "Degree"),
+                        "school": line_school or (line if is_school else "University"),
+                        "degree": line_degree or (line if is_degree else "Degree"),
                         "year": line_year
                     }
                     fb_edu.append(curr_edu)
-            elif curr_edu and len(l) < 120:
+            elif curr_edu and len(line) < 120:
                 if not curr_edu.get("degree") or curr_edu.get("degree") == "Degree":
-                    curr_edu["degree"] = l
+                    curr_edu["degree"] = line
                 elif not curr_edu.get("school") or curr_edu.get("school") == "University":
-                    curr_edu["school"] = l
+                    curr_edu["school"] = line
 
         for ed in fb_edu:
             if (not ed.get("school") or ed.get("school") == "University") and ed.get("degree"):
@@ -419,13 +424,13 @@ class ResumeParserService:
 
     def parse_sections_fallback(self, text: str) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], List[Dict[str, Any]]]:
         """Universal section fallback classifier split into modular helpers."""
-        sec_lines = [l.strip() for l in text.splitlines() if l.strip()]
+        sec_lines = [line.strip() for line in text.splitlines() if line.strip()]
         sections = {}
         curr_sec = "HEADER"
         sections[curr_sec] = []
 
-        for l in sec_lines:
-            u = l.upper().strip(":")
+        for line in sec_lines:
+            u = line.upper().strip(":")
             if u in ["EXPERIENCE", "WORK EXPERIENCE", "EMPLOYMENT", "EMPLOYMENT HISTORY", "WORK HISTORY"]:
                 curr_sec = "EXPERIENCE"
                 sections[curr_sec] = []
@@ -439,7 +444,7 @@ class ResumeParserService:
                 curr_sec = "OTHER_" + u
                 sections[curr_sec] = []
             else:
-                sections.setdefault(curr_sec, []).append(l)
+                sections.setdefault(curr_sec, []).append(line)
 
         fb_exp = self._parse_experience_lines(sections.get("EXPERIENCE", []))
         fb_proj = self._parse_projects_lines(sections.get("PROJECTS", []))
@@ -554,13 +559,13 @@ Return valid JSON with exact structure:
         # Heuristic candidate name ignoring common headers/watermarks
         ignore_names = {"resume", "curriculum vitae", "cv", "confidential", "profile", "page 1", "contact", "summary", "experience", "education"}
         candidate_name = "Candidate"
-        for l in lines[:5]:
-            l_clean = l.strip()
+        for line in lines[:5]:
+            line_clean = line.strip()
             # If line has pipe (e.g. "Jane Doe | Software Engineer"), take first part
-            if "|" in l_clean:
-                l_clean = l_clean.split("|")[0].strip()
-            if l_clean.lower() not in ignore_names and len(l_clean.split()) <= 4 and re.match(r'^[A-Za-z\s.\'-]+$', l_clean) and len(l_clean) >= 3:
-                candidate_name = l_clean
+            if "|" in line_clean:
+                line_clean = line_clean.split("|")[0].strip()
+            if line_clean.lower() not in ignore_names and len(line_clean.split()) <= 4 and re.match(r'^[A-Za-z\s.\'-]+$', line_clean) and len(line_clean) >= 3:
+                candidate_name = line_clean
                 break
         
         email = email_match.group(0) if email_match else ""
@@ -569,34 +574,34 @@ Return valid JSON with exact structure:
         
         # Heuristic candidate headline / title
         headline = "Software Engineer"
-        for l in lines[1:5]:
-            l_clean = l.strip()
-            if len(l_clean) < 60 and "@" not in l_clean and not re.search(r'\d{5}', l_clean) and not l_clean.startswith("http") and "|" not in l_clean:
-                if any(ri in l_clean.lower() for ri in ["engineer", "developer", "architect", "lead", "manager", "specialist", "scientist", "analyst", "designer", "consultant"]):
-                    headline = l_clean
+        for line in lines[1:5]:
+            line_clean = line.strip()
+            if len(line_clean) < 60 and "@" not in line_clean and not re.search(r'\d{5}', line_clean) and not line_clean.startswith("http") and "|" not in line_clean:
+                if any(ri in line_clean.lower() for ri in ["engineer", "developer", "architect", "lead", "manager", "specialist", "scientist", "analyst", "designer", "consultant"]):
+                    headline = line_clean
                     break
 
         # Extract real summary from explicit section if present
         summary = ""
         in_summary = False
         summary_lines = []
-        for l in lines:
-            u = l.upper().strip(":")
+        for line in lines:
+            u = line.upper().strip(":")
             if u in ["SUMMARY", "PROFESSIONAL SUMMARY", "EXECUTIVE SUMMARY", "ABOUT ME", "PROFILE SUMMARY", "CAREER SUMMARY"]:
                 in_summary = True
                 continue
             elif in_summary:
                 if u in ["EXPERIENCE", "WORK EXPERIENCE", "EMPLOYMENT", "SKILLS", "TECHNICAL SKILLS", "EDUCATION", "PROJECTS", "CERTIFICATIONS", "LANGUAGES", "ACHIEVEMENTS"]:
                     break
-                if not any(k in l.lower() for k in ["@", "linkedin.com", "github.com", "tel:"]):
-                    summary_lines.append(l)
+                if not any(k in line.lower() for k in ["@", "linkedin.com", "github.com", "tel:"]):
+                    summary_lines.append(line)
         if summary_lines:
             summary = " ".join(summary_lines).strip()
         if not summary:
             # Fallback if no explicit section
-            for l in lines[1:6]:
-                if len(l) > 35 and "@" not in l and "|" not in l and not re.search(r'\d{7}', l) and not l.startswith("http"):
-                    summary = l
+            for line in lines[1:6]:
+                if len(line) > 35 and "@" not in line and "|" not in line and not re.search(r'\d{7}', line) and not line.startswith("http"):
+                    summary = line
                     break
 
         llm_parsed = await self._call_llm_parser(text) if use_llm else {}
@@ -614,10 +619,14 @@ Return valid JSON with exact structure:
             elif len(name_parts) == 1:
                 first_name = first_name or name_parts[0]
 
-        if llm_parsed.get("headline"): headline = llm_parsed["headline"]
-        if llm_parsed.get("summary"): summary = llm_parsed["summary"]
-        if llm_parsed.get("email"): email = llm_parsed["email"]
-        if llm_parsed.get("phone"): phone = llm_parsed["phone"]
+        if llm_parsed.get("headline"):
+            headline = llm_parsed["headline"]
+        if llm_parsed.get("summary"):
+            summary = llm_parsed["summary"]
+        if llm_parsed.get("email"):
+            email = llm_parsed["email"]
+        if llm_parsed.get("phone"):
+            phone = llm_parsed["phone"]
         if llm_parsed.get("skills"):
             extracted_skills = sorted(list(set(extracted_skills + [s for s in llm_parsed["skills"] if isinstance(s, str)])))
 
@@ -630,23 +639,26 @@ Return valid JSON with exact structure:
         projects_list = llm_parsed.get("projects") or []
 
         fb_exp, fb_edu, fb_proj = await asyncio.to_thread(self.parse_sections_fallback, text)
-        if not experience_list and fb_exp: experience_list = fb_exp
-        if not education_list and fb_edu: education_list = fb_edu
-        if not projects_list and fb_proj: projects_list = fb_proj
+        if not experience_list and fb_exp:
+            experience_list = fb_exp
+        if not education_list and fb_edu:
+            education_list = fb_edu
+        if not projects_list and fb_proj:
+            projects_list = fb_proj
 
         location = llm_parsed.get("location", "India")
         # Check text for location hint if fallback
         if location == "India":
-            for l in lines[:6]:
-                if any(ci in l.lower() for ci in ["bangalore", "bengaluru", "hyderabad", "mumbai", "pune", "delhi", "chennai", "noida", "gurgaon", "san francisco", "new york", "london", "singapore", "remote"]):
-                    if "|" in l:
-                        parts = [p.strip() for p in l.split("|")]
+            for line in lines[:6]:
+                if any(ci in line.lower() for ci in ["bangalore", "bengaluru", "hyderabad", "mumbai", "pune", "delhi", "chennai", "noida", "gurgaon", "san francisco", "new york", "london", "singapore", "remote"]):
+                    if "|" in line:
+                        parts = [p.strip() for p in line.split("|")]
                         for p in parts:
                             if any(ci in p.lower() for ci in ["bangalore", "bengaluru", "hyderabad", "mumbai", "pune", "delhi", "chennai", "noida", "gurgaon", "san francisco", "new york", "london", "singapore", "remote"]):
                                 location = p
                                 break
                     else:
-                        location = l
+                        location = line
                     break
 
         candidate_profile = {

@@ -1,15 +1,13 @@
 import os
-import random
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional
 import httpx
 from scrapers.models import JobListing
 from scrapers.stealth import (
     BrowserProfile,
     BROWSER_PROFILES,
     get_random_profile,
-    get_profile_headers,
-    async_rate_limit_delay
+    get_profile_headers
 )
 
 USER_AGENTS = [p.user_agent for p in BROWSER_PROFILES]

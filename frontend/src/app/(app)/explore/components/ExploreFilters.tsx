@@ -1,7 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
-
 export type ExploreFiltersState = {
   locations: string[];
   roles: string[];
@@ -25,19 +23,16 @@ const ROLES = [
 
 const WORKPLACE_TYPES = ["Remote", "Hybrid", "On-site"];
 
-export default function ExploreFilters({ filters, setFilters, isMobile = false }: ExploreFiltersProps) {
-  
-  const toggleFilter = (key: keyof ExploreFiltersState, value: string) => {
-    setFilters(prev => {
-      const current = prev[key];
-      if (current.includes(value)) {
-        return { ...prev, [key]: current.filter(v => v !== value) };
-      }
-      return { ...prev, [key]: [...current, value] };
-    });
-  };
+interface FilterGroupProps {
+  title: string;
+  options: string[];
+  filterKey: keyof ExploreFiltersState;
+  filters: ExploreFiltersState;
+  onToggle: (key: keyof ExploreFiltersState, value: string) => void;
+}
 
-  const FilterGroup = ({ title, options, filterKey }: { title: string, options: string[], filterKey: keyof ExploreFiltersState }) => (
+function FilterGroup({ title, options, filterKey, filters, onToggle }: FilterGroupProps) {
+  return (
     <div className="mb-6">
       <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3">{title}</h3>
       <div className="flex flex-wrap gap-2">
@@ -46,7 +41,7 @@ export default function ExploreFilters({ filters, setFilters, isMobile = false }
           return (
             <button
               key={opt}
-              onClick={() => toggleFilter(filterKey, opt)}
+              onClick={() => onToggle(filterKey, opt)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 border ${
                 isActive 
                   ? "bg-indigo-50 border-indigo-200 text-indigo-700 shadow-sm" 
@@ -60,6 +55,19 @@ export default function ExploreFilters({ filters, setFilters, isMobile = false }
       </div>
     </div>
   );
+}
+
+export default function ExploreFilters({ filters, setFilters, isMobile = false }: ExploreFiltersProps) {
+  
+  const toggleFilter = (key: keyof ExploreFiltersState, value: string) => {
+    setFilters(prev => {
+      const current = prev[key];
+      if (current.includes(value)) {
+        return { ...prev, [key]: current.filter(v => v !== value) };
+      }
+      return { ...prev, [key]: [...current, value] };
+    });
+  };
 
   return (
     <div className={`flex flex-col ${!isMobile ? "sticky top-[100px]" : ""}`}>
@@ -74,11 +82,11 @@ export default function ExploreFilters({ filters, setFilters, isMobile = false }
       </div>
 
       <div className="bg-white/60 backdrop-blur-xl border border-slate-200/60 rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-        <FilterGroup title="Workplace" options={WORKPLACE_TYPES} filterKey="workplaceType" />
+        <FilterGroup title="Workplace" options={WORKPLACE_TYPES} filterKey="workplaceType" filters={filters} onToggle={toggleFilter} />
         <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent mb-6"></div>
-        <FilterGroup title="Roles" options={ROLES} filterKey="roles" />
+        <FilterGroup title="Roles" options={ROLES} filterKey="roles" filters={filters} onToggle={toggleFilter} />
         <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent mb-6"></div>
-        <FilterGroup title="Top Locations" options={INDIAN_CITIES} filterKey="locations" />
+        <FilterGroup title="Top Locations" options={INDIAN_CITIES} filterKey="locations" filters={filters} onToggle={toggleFilter} />
       </div>
     </div>
   );

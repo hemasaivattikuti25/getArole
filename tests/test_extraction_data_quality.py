@@ -1,6 +1,5 @@
 import os
 import sys
-import unittest
 from datetime import datetime, timezone
 from bs4 import BeautifulSoup
 
@@ -8,8 +7,8 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
-from scrapers.models import JobListing
-from scrapers.text_normalizer import (
+from scrapers.models import JobListing  # noqa: E402
+from scrapers.text_normalizer import (  # noqa: E402
     clean_text,
     decode_html_bytes,
     extract_dom_text,
@@ -294,7 +293,7 @@ def test_dq_15_semantic_dedup_and_idempotency():
     """
     from scrapers.text_normalizer import semantic_dedup_key, generate_idempotent_job_id
     key1 = semantic_dedup_key("Postman", "Senior Backend Engineer (Remote)")
-    key2 = semantic_dedup_key("Postman Inc.", "Senior Backend Engineer - Remote / India")
+    semantic_dedup_key("Postman Inc.", "Senior Backend Engineer - Remote / India")
     # Clean keys both normalize to company and core title words
     assert "postman" in key1
     assert "seniorbackendengineer" in key1

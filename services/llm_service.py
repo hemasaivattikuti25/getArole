@@ -1,14 +1,18 @@
 import os
 import re
 import json
+import logging
+import concurrent.futures
 import httpx
+import asyncio
 from typing import Dict, Any, Optional, List
 from dotenv import load_dotenv
-
-load_dotenv()
-
 from core.circuit_breaker import AsyncCircuitBreaker
 from core.metrics import LLM_FALLBACK_TOTAL
+
+logger = logging.getLogger("sre.llm")
+
+load_dotenv()
 
 llm_breaker = AsyncCircuitBreaker("nvidia_nim", fail_max=5, reset_timeout=20.0)
 
@@ -180,8 +184,8 @@ Respond ONLY in valid JSON:
                     if json_match:
                         try:
                             parsed = json.loads(json_match.group(1), strict=False)
-                        except Exception:
-                            pass
+                        except (json.JSONDecodeError, ValueError) as json_err:
+                            logger.debug(f"Regex JSON fallback parse error: {json_err}")
                 if not parsed or not isinstance(parsed, dict):
                     raise ValueError(f"Could not parse valid JSON from LLM output: {content[:150]}")
                 break
@@ -397,7 +401,7 @@ Respond ONLY in valid JSON:
         # Direct parse attempt (with strict=False to handle literal newlines/tabs inside JSON strings)
         try:
             return json.loads(cleaned, strict=False)
-        except Exception:
+        except (json.JSONDecodeError, ValueError):
             pass
 
         # Check for JSON object braces
@@ -406,7 +410,7 @@ Respond ONLY in valid JSON:
         if start_obj != -1 and end_obj > start_obj:
             try:
                 return json.loads(cleaned[start_obj:end_obj], strict=False)
-            except Exception:
+            except (json.JSONDecodeError, ValueError):
                 pass
 
         # Check for JSON array brackets
@@ -415,14 +419,12 @@ Respond ONLY in valid JSON:
         if start_arr != -1 and end_arr > start_arr:
             try:
                 return json.loads(cleaned[start_arr:end_arr], strict=False)
-            except Exception:
+            except (json.JSONDecodeError, ValueError):
                 pass
 
         return None
 
     def evaluate_candidate_match(self, *args, **kwargs):
-        import asyncio
-        import concurrent.futures
         try:
             loop = asyncio.get_running_loop()
         except RuntimeError:
@@ -433,8 +435,6 @@ Respond ONLY in valid JSON:
         return asyncio.run(self.a_evaluate_candidate_match(*args, **kwargs))
 
     def generate_tailored_application(self, *args, **kwargs):
-        import asyncio
-        import concurrent.futures
         try:
             loop = asyncio.get_running_loop()
         except RuntimeError:

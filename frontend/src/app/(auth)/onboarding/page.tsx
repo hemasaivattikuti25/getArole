@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Sparkles, ArrowRight, CheckCircle2, Building2, MapPin, Upload, Briefcase } from "lucide-react";
+import { Sparkles, ArrowRight, Briefcase } from "lucide-react";
 import BackgroundAurora from "@/components/BackgroundAurora";
 
 export default function OnboardingPage() {
@@ -14,7 +14,7 @@ export default function OnboardingPage() {
   const [locations, setLocations] = useState<string[]>(["Bengaluru", "Remote"]);
   const [skills, setSkills] = useState<string[]>([]);
   const [newSkill, setNewSkill] = useState("");
-  const [workplaceType, setWorkplaceType] = useState("Hybrid");
+  const [workplaceType] = useState("Hybrid");
   const [saving, setSaving] = useState(false);
 
   const toggleLocation = (loc: string) => {

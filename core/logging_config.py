@@ -124,8 +124,8 @@ def configure_logging(level: int = logging.INFO):
 
     # Attach filter to SRE loggers specifically
     for name in ["sre.access", "sre.database", "sre.security", "sre.llm", "sre.scrapers"]:
-        l = logging.getLogger(name)
-        l.addFilter(pii_filter)
+        sre_logger = logging.getLogger(name)
+        sre_logger.addFilter(pii_filter)
 
     logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
     logging.getLogger("httpx").setLevel(logging.WARNING)

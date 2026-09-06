@@ -1,15 +1,11 @@
 import asyncio
 import hashlib
-import json
-import uuid
-import re
-from typing import List, Dict, Any
+from typing import List, Dict
 import httpx
 from bs4 import BeautifulSoup
 
 from scrapers.models import JobListing
 from scrapers.base import get_scraper_headers, create_scraper_client
-from scrapers.greenhouse import normalize_city
 
 class IndianITScraper:
     def __init__(self):

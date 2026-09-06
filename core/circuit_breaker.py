@@ -5,7 +5,7 @@ Production-grade Asyncio-native Circuit Breaker for modern Python.
 import time
 import asyncio
 import logging
-from typing import Callable, Any, Optional
+from typing import Optional
 from core.metrics import CIRCUIT_BREAKER_STATE, DEPENDENCY_ERRORS_TOTAL
 
 logger = logging.getLogger("sre.circuit_breaker")
