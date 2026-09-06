@@ -287,6 +287,9 @@
         -webkit-overflow-scrolling: touch !important;
         padding: 0 16px 80px !important;
       }
+            body.mobile-jd-open .mobile-jd-back-btn {
+        display: flex !important;
+      }
       body.mobile-jd-open .jd-sticky-header {
         position: sticky !important;
         top: 0 !important;
