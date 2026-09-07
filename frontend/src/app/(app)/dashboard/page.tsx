@@ -30,36 +30,6 @@ interface TrackedApplication {
   notes?: string;
 }
 
-const DEFAULT_APPLICATIONS: TrackedApplication[] = [
-  {
-    id: "app-1",
-    title: "Senior Frontend Engineer",
-    company: "Razorpay",
-    location: "Bengaluru (Hybrid)",
-    status: "Interview",
-    date: "Sep 2, 2026",
-    url: "https://razorpay.com/jobs",
-  },
-  {
-    id: "app-2",
-    title: "Full Stack Developer",
-    company: "Swiggy",
-    location: "Bengaluru",
-    status: "Applied",
-    date: "Aug 29, 2026",
-    url: "https://swiggy.com/careers",
-  },
-  {
-    id: "app-3",
-    title: "Software Engineer III - Cloud",
-    company: "Google India",
-    location: "Hyderabad",
-    status: "Saved",
-    date: "Aug 28, 2026",
-    url: "https://careers.google.com",
-  },
-];
-
 export default function DashboardPage() {
   const [applications, setApplications] = useState<TrackedApplication[]>([]);
   const [activeTab, setActiveTab] = useState<string>("All");
@@ -75,13 +45,18 @@ export default function DashboardPage() {
       try {
         const saved = localStorage.getItem("getarole_tracked_apps");
         if (saved) {
-          setApplications(JSON.parse(saved));
+          const parsed = JSON.parse(saved);
+          // Purge legacy mock data
+          const realApps = Array.isArray(parsed) 
+            ? parsed.filter((a) => a && a.id !== "app-1" && a.id !== "app-2" && a.id !== "app-3")
+            : [];
+          setApplications(realApps);
+          localStorage.setItem("getarole_tracked_apps", JSON.stringify(realApps));
         } else {
-          setApplications(DEFAULT_APPLICATIONS);
-          localStorage.setItem("getarole_tracked_apps", JSON.stringify(DEFAULT_APPLICATIONS));
+          setApplications([]);
         }
       } catch {
-        setApplications(DEFAULT_APPLICATIONS);
+        setApplications([]);
       }
     }, 0);
     return () => clearTimeout(timer);
@@ -385,7 +360,7 @@ export default function DashboardPage() {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Senior Frontend Developer"
+                  placeholder="Job Title"
                   value={newRole.title}
                   onChange={(e) => setNewRole({ ...newRole, title: e.target.value })}
                   className="w-full text-sm px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0062e3]"
@@ -396,7 +371,7 @@ export default function DashboardPage() {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Stripe, Razorpay"
+                  placeholder="Company Name"
                   value={newRole.company}
                   onChange={(e) => setNewRole({ ...newRole, company: e.target.value })}
                   className="w-full text-sm px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0062e3]"
@@ -406,7 +381,7 @@ export default function DashboardPage() {
                 <label className="block text-xs font-semibold text-slate-700 mb-1">Location</label>
                 <input
                   type="text"
-                  placeholder="e.g. Bengaluru, Remote"
+                  placeholder="Location"
                   value={newRole.location}
                   onChange={(e) => setNewRole({ ...newRole, location: e.target.value })}
                   className="w-full text-sm px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0062e3]"

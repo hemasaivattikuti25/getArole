@@ -158,7 +158,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "signin" }: A
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Alex Johnson"
+                placeholder="Full Name"
                 className="w-full text-sm px-3.5 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0062e3]"
               />
             </div>
@@ -171,7 +171,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "signin" }: A
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
+              placeholder="Email address"
               className="w-full text-sm px-3.5 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0062e3]"
             />
           </div>
@@ -184,7 +184,7 @@ export default function AuthModal({ isOpen, onClose, defaultMode = "signin" }: A
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder="Password"
               className="w-full text-sm px-3.5 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0062e3]"
             />
           </div>

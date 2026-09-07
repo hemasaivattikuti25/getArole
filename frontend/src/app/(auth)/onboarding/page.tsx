@@ -110,7 +110,7 @@ export default function OnboardingPage() {
                     type="text"
                     value={targetRole}
                     onChange={(e) => setTargetRole(e.target.value)}
-                    placeholder="e.g. Software Engineer, Frontend Developer"
+                    placeholder="Target Job Title"
                     className="w-full text-sm px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-[#0062e3]"
                   />
                 </div>
@@ -213,7 +213,7 @@ export default function OnboardingPage() {
                   <div className="flex items-center gap-2">
                     <input
                       type="text"
-                      placeholder="e.g. Next.js, Docker, AWS"
+                      placeholder="Enter skill name (press Enter)"
                       value={newSkill}
                       onChange={(e) => setNewSkill(e.target.value)}
                       onKeyDown={(e) => {

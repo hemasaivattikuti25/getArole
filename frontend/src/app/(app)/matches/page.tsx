@@ -18,20 +18,10 @@ import { extractSkillStrings } from "@/lib/skills-utils";
 import { Job } from "@/lib/types";
 import JobDrawer from "../explore/components/JobDrawer";
 
-const DEFAULT_SKILLS = [
-  "React.js",
-  "TypeScript",
-  "Node.js",
-  "FastAPI",
-  "PostgreSQL",
-  "Docker",
-  "Tailwind CSS",
-];
-
 export default function MatchesPage() {
   const { jobs, loading } = useJobs();
   const [minScore, setMinScore] = useState<number>(75);
-  const [userSkills, setUserSkills] = useState<string[]>(DEFAULT_SKILLS);
+  const [userSkills, setUserSkills] = useState<string[]>([]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   useEffect(() => {
@@ -82,6 +72,18 @@ export default function MatchesPage() {
     const jobSkills = extractSkillStrings(job.skills);
     const jobText = `${jobTitle} ${jobDesc} ${jobSkills.join(" ")}`.toLowerCase();
 
+    if (userSkills.length === 0) {
+      return {
+        ...job,
+        title: jobTitle || "Developer Opportunity",
+        company: typeof job.company === "string" ? job.company : "Tech Enterprise",
+        description: jobDesc,
+        fit_score: null,
+        matched_skills: [],
+        missing_skills: [],
+      };
+    }
+
     const matched = userSkills.filter(
       (s) => typeof s === "string" && s.trim().length > 0 && jobText.includes(s.toLowerCase())
     );
@@ -89,24 +91,25 @@ export default function MatchesPage() {
       .filter((s) => typeof s === "string" && s.trim().length > 0 && !jobText.includes(s.toLowerCase()))
       .slice(0, 3);
 
-    // Deterministic match score based on overlap
-    const calculatedScore = Math.min(
-      98,
-      Math.max(70, Math.round(75 + (matched.length / (userSkills.length || 1)) * 24))
-    );
+    const relevantTargetCount = jobSkills.length > 0 ? jobSkills.length : Math.min(5, userSkills.length);
+    const calculatedScore = matched.length === 0 
+      ? 0 
+      : Math.min(99, Math.round((matched.length / relevantTargetCount) * 100));
 
     return {
       ...job,
       title: jobTitle || "Developer Opportunity",
       company: typeof job.company === "string" ? job.company : "Tech Enterprise",
       description: jobDesc,
-      fit_score: typeof job.fit_score === "number" ? job.fit_score : calculatedScore,
+      fit_score: calculatedScore,
       matched_skills: matched,
       missing_skills: missing,
     };
   });
 
-  const filteredMatches = matchedJobs.filter((j) => (j.fit_score || 0) >= minScore);
+  const filteredMatches = userSkills.length === 0
+    ? matchedJobs
+    : matchedJobs.filter((j) => (j.fit_score || 0) >= minScore);
 
   return (
     <div className="relative min-h-screen pt-8 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
@@ -143,36 +146,67 @@ export default function MatchesPage() {
         </div>
       </div>
 
-      {/* ── Profile Skills Banner ── */}
-      <div className="bg-white/70 backdrop-blur-xl border border-slate-200/80 rounded-2xl p-5 mb-8 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Active Screening Skills:
-            </span>
-            <div className="flex flex-wrap gap-1.5 mt-2">
-              {userSkills.map((skill, idx) => {
-                const label = typeof skill === "string" ? skill : String(skill || "");
-                return (
+      {/* ── Profile Skills Banner / Setup Prompt ── */}
+      {userSkills.length > 0 ? (
+        <div className="bg-white/70 backdrop-blur-xl border border-slate-200/80 rounded-2xl p-5 mb-8 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Active Screening Skills ({userSkills.length}):
+              </span>
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {userSkills.map((skill, idx) => (
                   <span
-                    key={`${label}-${idx}`}
+                    key={`${skill}-${idx}`}
                     className="px-2.5 py-1 bg-white text-slate-700 rounded-lg border border-slate-200 text-xs font-semibold shadow-2xs"
                   >
-                    {label}
+                    {skill}
                   </span>
-                );
-              })}
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="text-right flex-shrink-0">
-            <span className="text-xs text-slate-400">Screening Status</span>
-            <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full mt-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Live Synced</span>
+            <div className="text-right flex-shrink-0">
+              <span className="text-xs text-slate-400">Screening Status</span>
+              <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full mt-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Live Synced</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="bg-gradient-to-r from-blue-50/80 via-indigo-50/60 to-purple-50/80 border border-blue-200/80 rounded-2xl p-5 mb-8 shadow-xs">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-[#0062e3] text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm sm:text-base font-bold text-slate-900 font-outfit">
+                  Add Skills or Upload Resume to Activate Match Scoring
+                </h3>
+                <p className="text-xs text-slate-600 mt-0.5 max-w-xl">
+                  Set your verified technical skills to calculate precision match scores and missing keyword gaps across 1,000+ live roles.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2.5 shrink-0">
+              <Link
+                href="/profile"
+                className="px-3.5 py-2 bg-[#0062e3] hover:bg-blue-600 text-white rounded-xl text-xs font-bold shadow-xs transition-colors"
+              >
+                Set Profile Skills
+              </Link>
+              <Link
+                href="/resume-builder"
+                className="px-3.5 py-2 bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold shadow-2xs transition-colors"
+              >
+                Upload Resume
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Filters & Threshold ── */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6 bg-white/50 backdrop-blur-md p-4 rounded-xl border border-slate-200/60">
@@ -248,36 +282,64 @@ export default function MatchesPage() {
                   </div>
 
                   <div className="flex flex-col items-end flex-shrink-0">
-                    <span className="font-mono text-sm font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 shadow-2xs">
-                      {job.fit_score}%
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-semibold mt-0.5">Match Fit</span>
+                    {typeof job.fit_score === "number" ? (
+                      <>
+                        <span className="font-mono text-sm font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 shadow-2xs">
+                          {job.fit_score}%
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-semibold mt-0.5">Match Fit</span>
+                      </>
+                    ) : (
+                      <span className="text-[11px] font-bold text-[#0062e3] bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200/80 shadow-2xs">
+                        Verified Live
+                      </span>
+                    )}
                   </div>
                 </div>
 
-                {/* Matched Competencies */}
+                {/* Matched Competencies or Required Stack */}
                 <div className="mt-3.5 pt-3 border-t border-slate-100">
-                  <div className="flex items-center gap-1 text-xs font-semibold text-emerald-700 mb-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Matched Competencies:</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1">
-                    {job.matched_skills && job.matched_skills.length > 0 ? (
-                      job.matched_skills.map((s, sIdx) => {
-                        const sLabel = typeof s === "string" ? s : String(s || "");
-                        return (
-                          <span
-                            key={`${job.id}-${sLabel}-${sIdx}`}
-                            className="text-xs bg-emerald-50 text-emerald-800 font-medium px-2 py-0.5 rounded border border-emerald-200/80"
-                          >
-                            {sLabel}
-                          </span>
-                        );
-                      })
-                    ) : (
-                      <span className="text-xs text-slate-400">Core software fundamentals aligned</span>
-                    )}
-                  </div>
+                  {typeof job.fit_score === "number" && job.matched_skills && job.matched_skills.length > 0 ? (
+                    <>
+                      <div className="flex items-center gap-1 text-xs font-semibold text-emerald-700 mb-1.5">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>Matched Competencies:</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {job.matched_skills.map((s, sIdx) => {
+                          const sLabel = typeof s === "string" ? s : String(s || "");
+                          return (
+                            <span
+                              key={`${job.id}-${sLabel}-${sIdx}`}
+                              className="text-xs bg-emerald-50 text-emerald-800 font-medium px-2 py-0.5 rounded border border-emerald-200/80"
+                            >
+                              {sLabel}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-xs font-semibold text-slate-500 mb-1.5">
+                        <span>Required Stack:</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {extractSkillStrings(job.skills).length > 0 ? (
+                          extractSkillStrings(job.skills).slice(0, 4).map((s, sIdx) => (
+                            <span
+                              key={`${job.id}-${s}-${sIdx}`}
+                              className="text-xs bg-slate-100 text-slate-700 font-medium px-2 py-0.5 rounded border border-slate-200/80"
+                            >
+                              {s}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-xs text-slate-400">Software Engineering</span>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 {/* Job Description (JD) Sneak Peek */}

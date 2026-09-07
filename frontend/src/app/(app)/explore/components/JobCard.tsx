@@ -14,18 +14,46 @@ interface JobCardProps {
 export default function JobCard({ job, onClick, index }: JobCardProps) {
   const compInitial = job.company ? job.company[0].toUpperCase() : 'G';
   
-  // Calculate mock fit score if user profile exists (we'll assume exists for now for UI purposes)
-  const hasProf = typeof window !== 'undefined' && localStorage.getItem('getarole_resume_v2');
-  const fitScore = useMemo(() => {
-    if (job.fit_score) return Math.round(job.fit_score);
-    const key = (job.id || job.title || "job") + (job.company || "");
-    let hash = 0;
-    for (let i = 0; i < key.length; i++) {
-      hash = (hash << 5) - hash + key.charCodeAt(i);
-      hash |= 0;
-    }
-    return 72 + (Math.abs(hash) % 24);
-  }, [job.fit_score, job.id, job.title, job.company]);
+  // Calculate real match score based on user's actual profile skills (zero fake/mock values)
+  const realScore = useMemo(() => {
+    if (typeof job.fit_score === 'number') return Math.round(job.fit_score);
+    if (typeof window === 'undefined') return null;
+
+    let userSkills: string[] = [];
+    try {
+      const savedResume = localStorage.getItem('getarole_resume_v2');
+      if (savedResume) {
+        const parsed = JSON.parse(savedResume);
+        if (parsed.skills) userSkills = extractSkillStrings(parsed.skills);
+      }
+      if (userSkills.length === 0) {
+        const savedProfile = localStorage.getItem('getarole_profile');
+        if (savedProfile) {
+          const prof = JSON.parse(savedProfile);
+          const profSkills = [
+            ...(prof.skills || []),
+            ...(prof.skills_languages || []),
+            ...(prof.skills_frameworks || []),
+            ...(prof.skills_cloud || []),
+            ...(prof.skills_tools || []),
+          ];
+          userSkills = extractSkillStrings(profSkills);
+        }
+      }
+    } catch {}
+
+    if (userSkills.length === 0) return null;
+
+    const jobTitle = typeof job.title === 'string' ? job.title : '';
+    const jobDesc = typeof job.description === 'string' ? job.description : '';
+    const jobSkills = extractSkillStrings(job.skills);
+    const jobText = `${jobTitle} ${jobDesc} ${jobSkills.join(' ')}`.toLowerCase();
+
+    const matched = userSkills.filter((s) => typeof s === 'string' && s.trim().length > 0 && jobText.includes(s.toLowerCase()));
+    if (matched.length === 0) return null;
+
+    return Math.min(98, Math.max(65, Math.round(65 + (matched.length / (userSkills.length || 1)) * 33)));
+  }, [job]);
 
   return (
     <motion.div
@@ -44,9 +72,9 @@ export default function JobCard({ job, onClick, index }: JobCardProps) {
           <h3 className="text-base font-bold text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis pr-4 group-hover:text-indigo-600 transition-colors">
             {job.title}
           </h3>
-          {hasProf && (
+          {realScore !== null && (
             <div className="font-mono text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded flex-shrink-0 border border-emerald-100">
-              {fitScore}% Match
+              {realScore}% Match
             </div>
           )}
         </div>

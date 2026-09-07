@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CheckCircle2, MapPin, ExternalLink } from "lucide-react";
 
 interface JobMatch {
@@ -59,6 +59,34 @@ export default function HeroPreview() {
   const [activeJobId, setActiveJobId] = useState<string>("rzp-1");
   const selectedJob = SAMPLE_JOBS.find((j) => j.id === activeJobId) || SAMPLE_JOBS[0];
 
+  const [candidateName, setCandidateName] = useState("Candidate Profile");
+  const [candidateRole, setCandidateRole] = useState("Software Engineer");
+  const [candidateLocation, setCandidateLocation] = useState("India");
+
+  useEffect(() => {
+    try {
+      const p = localStorage.getItem("getarole_profile");
+      const u = localStorage.getItem("getarole_user");
+      if (p) {
+        const parsed = JSON.parse(p);
+        if (parsed.name) setCandidateName(parsed.name);
+        if (parsed.headline) setCandidateRole(parsed.headline);
+        if (parsed.location || parsed.city) setCandidateLocation(parsed.location || parsed.city);
+      } else if (u) {
+        const parsed = JSON.parse(u);
+        if (parsed.displayName || parsed.name) setCandidateName(parsed.displayName || parsed.name);
+      }
+    } catch {}
+  }, []);
+
+  const initials = candidateName
+    .split(" ")
+    .filter(Boolean)
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase() || "CP";
+
   return (
     <div className="w-full max-w-4xl mx-auto mt-7 md:mt-9">
       {/* ═════════ MACOS WINDOW FRAME ═════════ */}
@@ -90,15 +118,17 @@ export default function HeroPreview() {
 
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm shadow-xs flex-shrink-0">
-                AJ
+                {initials}
               </div>
               <div>
-                <h4 className="font-bold text-slate-900 text-sm leading-tight">Alex Johnson</h4>
-                <p className="text-xs text-slate-500 font-medium">Software Engineer • 2.5 yrs exp</p>
-                <div className="flex items-center gap-1 text-slate-400 text-[11px] mt-0.5">
-                  <MapPin className="w-3 h-3" />
-                  <span>Bengaluru, India</span>
-                </div>
+                <h4 className="font-bold text-slate-900 text-sm leading-tight">{candidateName}</h4>
+                <p className="text-xs text-slate-500 font-medium">{candidateRole}</p>
+                {candidateLocation && (
+                  <div className="flex items-center gap-1 text-slate-400 text-[11px] mt-0.5">
+                    <MapPin className="w-3 h-3" />
+                    <span>{candidateLocation}</span>
+                  </div>
+                )}
               </div>
             </div>
 

@@ -260,18 +260,24 @@ export default function ProfilePage() {
                 {profile.headline}
               </p>
               <div className="flex flex-wrap items-center gap-3 mt-3 text-xs font-medium text-slate-600">
-                <span className="flex items-center gap-1 bg-slate-100/80 px-2.5 py-1 rounded-md">
-                  <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                  {profile.location || profile.city || "Bengaluru, India"}
-                </span>
-                <span className="flex items-center gap-1 bg-slate-100/80 px-2.5 py-1 rounded-md">
-                  <Mail className="w-3.5 h-3.5 text-slate-400" />
-                  {profile.email}
-                </span>
-                <span className="flex items-center gap-1 bg-slate-100/80 px-2.5 py-1 rounded-md">
-                  <Phone className="w-3.5 h-3.5 text-slate-400" />
-                  {profile.phone}
-                </span>
+                {(profile.location || profile.city) && (
+                  <span className="flex items-center gap-1 bg-slate-100/80 px-2.5 py-1 rounded-md">
+                    <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                    {profile.location || profile.city}
+                  </span>
+                )}
+                {profile.email && (
+                  <span className="flex items-center gap-1 bg-slate-100/80 px-2.5 py-1 rounded-md">
+                    <Mail className="w-3.5 h-3.5 text-slate-400" />
+                    {profile.email}
+                  </span>
+                )}
+                {profile.phone && (
+                  <span className="flex items-center gap-1 bg-slate-100/80 px-2.5 py-1 rounded-md">
+                    <Phone className="w-3.5 h-3.5 text-slate-400" />
+                    {profile.phone}
+                  </span>
+                )}
               </div>
             </div>
 
@@ -528,7 +534,8 @@ export default function ProfilePage() {
                 </select>
                 <input
                   type="number"
-                  value={prefs.salary_amt || 1500000}
+                  value={prefs.salary_amt || ""}
+                  placeholder="0"
                   onChange={(e) => setPrefs({ ...prefs, salary_amt: parseInt(e.target.value, 10) || 0 })}
                   className="flex-1 text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-600 bg-white font-mono font-bold text-blue-600"
                 />

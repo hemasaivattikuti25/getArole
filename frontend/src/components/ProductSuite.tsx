@@ -136,8 +136,8 @@ export default function ProductSuite() {
 
             <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200 font-serif">
               <div className="text-center border-b border-slate-400 pb-3 mb-3">
-                <div className="text-lg font-bold tracking-wider text-slate-900">ALEX JOHNSON</div>
-                <div className="text-xs text-slate-500 mt-0.5">alex@getarole.in | Bengaluru, India | linkedin.com/in/alex</div>
+                <div className="text-lg font-bold tracking-wider text-slate-900 uppercase">Candidate Resume Preview</div>
+                <div className="text-xs text-slate-500 mt-0.5">ATS-Optimized Formatting • LaTeX Clean Typographic Layout</div>
               </div>
               <div className="text-xs font-bold border-b border-slate-400 pb-1 mb-2 text-slate-900 tracking-wider">
                 EXPERIENCE

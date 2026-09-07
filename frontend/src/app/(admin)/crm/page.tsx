@@ -24,78 +24,48 @@ interface Candidate {
   github?: string;
 }
 
-const INITIAL_CANDIDATES: Candidate[] = [
-  {
-    id: "cand_01",
-    name: "Aarav Sharma",
-    email: "aarav.sharma@techlead.io",
-    phone: "+91 98450 11223",
-    role: "Senior Distributed Systems Engineer",
-    location: "Bengaluru, India",
-    skills: ["Go", "Kubernetes", "Kafka", "PostgreSQL", "gRPC"],
-    matchScore: 94,
-    status: "Shortlisted",
-    dateApplied: "2026-09-05",
-    experienceYears: 6,
-    bio: "Built payment routing infrastructure handling 35k req/s at Razorpay. Obsessed with p99 latency reduction and zero-allocation networking in Go.",
-    linkedin: "https://linkedin.com/in/aarav-sharma-lead",
-    github: "https://github.com/aarav-infra"
-  },
-  {
-    id: "cand_02",
-    name: "Priya Venkatesh",
-    email: "priya.v@cloudarch.com",
-    phone: "+91 97110 44556",
-    role: "Lead Full-Stack Architect",
-    location: "Hyderabad, India",
-    skills: ["React 19", "Next.js", "TypeScript", "Python", "FastAPI"],
-    matchScore: 89,
-    status: "Interviewing",
-    dateApplied: "2026-09-04",
-    experienceYears: 5,
-    bio: "Full-stack lead specializing in enterprise design systems and async telemetry. Architected server-driven UI engines used by 2M+ active shoppers.",
-    linkedin: "https://linkedin.com/in/priya-venkatesh",
-    github: "https://github.com/priyav-dev"
-  },
-  {
-    id: "cand_03",
-    name: "Rohan Mukherjee",
-    email: "rohan.m@datamind.ai",
-    phone: "+91 91234 56789",
-    role: "Senior ML Infrastructure Engineer",
-    location: "Remote in India",
-    skills: ["PyTorch", "vLLM", "Docker", "Triton", "Ray"],
-    matchScore: 92,
-    status: "Offered",
-    dateApplied: "2026-09-02",
-    experienceYears: 7,
-    bio: "Deployed large-scale LLM inference pipelines with speculative decoding on Nvidia H100 clusters, cutting token generation latency by 45%.",
-    linkedin: "https://linkedin.com/in/rohan-mukherjee-ai",
-    github: "https://github.com/rohan-tensor"
-  },
-  {
-    id: "cand_04",
-    name: "Ananya Iyer",
-    email: "ananya.iyer@cloudsec.in",
-    phone: "+91 99887 66554",
-    role: "DevSecOps / SRE Lead",
-    location: "Pune, India",
-    skills: ["Terraform", "AWS", "Prometheus", "Vault", "Linux"],
-    matchScore: 86,
-    status: "Applied",
-    dateApplied: "2026-09-06",
-    experienceYears: 4,
-    bio: "Secured multi-region Kubernetes clusters across PCI-DSS compliant financial services. Automated zero-trust identity pipelines using HashiCorp Vault.",
-    linkedin: "https://linkedin.com/in/ananya-iyer-sre",
-    github: "https://github.com/ananya-secops"
-  }
-];
-
 export default function CrmPage() {
-  const [candidates, setCandidates] = useState<Candidate[]>(INITIAL_CANDIDATES);
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
+
+  React.useEffect(() => {
+    try {
+      const stored = localStorage.getItem("getarole_candidates");
+      if (stored) {
+        setCandidates(JSON.parse(stored));
+      } else {
+        const prof = localStorage.getItem("getarole_profile");
+        if (prof) {
+          const p = JSON.parse(prof);
+          if (p.name) {
+            const selfCandidate: Candidate = {
+              id: "cand_self",
+              name: p.name,
+              email: p.email || "candidate@getarole.in",
+              phone: p.phone || "",
+              role: p.headline || "Software Engineer",
+              location: p.location || p.city || "India",
+              skills: p.skills || [],
+              matchScore: 95,
+              status: "Applied",
+              dateApplied: new Date().toISOString().slice(0, 10),
+              experienceYears: 3,
+              bio: p.summary || "Full-stack software engineer with expertise across modern web and cloud architecture.",
+              linkedin: p.links?.linkedin,
+              github: p.links?.github
+            };
+            setCandidates([selfCandidate]);
+            return;
+          }
+        }
+        setCandidates([]);
+      }
+    } catch {
+      setCandidates([]);
+    }
+  }, []);
 
   // Filtered list
   const filteredCandidates = useMemo(() => {
@@ -114,10 +84,16 @@ export default function CrmPage() {
   // Quick stats
   const totalCount = candidates.length;
   const shortlistedCount = candidates.filter(c => c.status === "Shortlisted" || c.status === "Interviewing" || c.status === "Offered").length;
-  const avgScore = Math.round(candidates.reduce((acc, c) => acc + c.matchScore, 0) / (totalCount || 1));
+  const avgScore = totalCount > 0 ? Math.round(candidates.reduce((acc, c) => acc + c.matchScore, 0) / totalCount) : 0;
 
   function updateCandidateStatus(id: string, newStatus: Candidate["status"]) {
-    setCandidates(prev => prev.map(c => c.id === id ? { ...c, status: newStatus } : c));
+    setCandidates(prev => {
+      const updated = prev.map(c => c.id === id ? { ...c, status: newStatus } : c);
+      try {
+        localStorage.setItem("getarole_candidates", JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
     if (selectedCandidate && selectedCandidate.id === id) {
       setSelectedCandidate({ ...selectedCandidate, status: newStatus });
     }
@@ -259,89 +235,99 @@ export default function CrmPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-xs">
-              {filteredCandidates.map(c => (
-                <tr 
-                  key={c.id} 
-                  className="hover:bg-slate-50/70 transition-colors cursor-pointer"
-                  onClick={() => setSelectedCandidate(c)}
-                >
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-700 font-extrabold flex items-center justify-center text-xs shadow-2xs">
-                        {c.name.split(" ").map(n => n[0]).join("")}
-                      </div>
-                      <div>
-                        <div className="font-bold text-slate-900">{c.name}</div>
-                        <div className="text-[11px] text-slate-400">{c.email}</div>
-                      </div>
-                    </div>
-                  </td>
-
-                  <td className="py-4 px-6">
-                    <div className="font-semibold text-slate-800">{c.role}</div>
-                    <div className="text-[11px] text-slate-400">{c.location} • {c.experienceYears}y exp</div>
-                  </td>
-
-                  <td className="py-4 px-6">
-                    <div className="flex items-center gap-2">
-                      <div className="w-16 h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full rounded-full ${
-                            c.matchScore >= 90 ? "bg-emerald-500" : c.matchScore >= 80 ? "bg-indigo-500" : "bg-amber-500"
-                          }`}
-                          style={{ width: `${c.matchScore}%` }}
-                        />
-                      </div>
-                      <span className="font-black text-slate-800">{c.matchScore}%</span>
-                    </div>
-                  </td>
-
-                  <td className="py-4 px-6">
-                    <div className="flex flex-wrap gap-1 max-w-xs">
-                      {c.skills.slice(0, 3).map(skill => (
-                        <span key={skill} className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-medium">
-                          {skill}
-                        </span>
-                      ))}
-                      {c.skills.length > 3 && (
-                        <span className="text-[10px] text-slate-400 self-center">
-                          +{c.skills.length - 3}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-
-                  <td className="py-4 px-6" onClick={e => e.stopPropagation()}>
-                    <select
-                      value={c.status}
-                      onChange={e => updateCandidateStatus(c.id, e.target.value as Candidate["status"])}
-                      className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border focus:outline-none ${
-                        c.status === "Offered" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
-                        c.status === "Interviewing" ? "bg-blue-50 text-blue-700 border-blue-200" :
-                        c.status === "Shortlisted" ? "bg-purple-50 text-purple-700 border-purple-200" :
-                        c.status === "Archived" ? "bg-rose-50 text-rose-700 border-rose-200" :
-                        "bg-slate-50 text-slate-700 border-slate-200"
-                      }`}
-                    >
-                      <option value="Applied">Applied</option>
-                      <option value="Shortlisted">Shortlisted</option>
-                      <option value="Interviewing">Interviewing</option>
-                      <option value="Offered">Offered</option>
-                      <option value="Archived">Archived</option>
-                    </select>
-                  </td>
-
-                  <td className="py-4 px-6 text-right" onClick={e => e.stopPropagation()}>
-                    <button
-                      onClick={() => setSelectedCandidate(c)}
-                      className="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors"
-                      title="View Candidate Dossier"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
+              {filteredCandidates.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-16 text-center text-slate-400">
+                    <Users className="w-10 h-10 mx-auto mb-3 text-slate-300" />
+                    <p className="text-sm font-bold text-slate-700 font-outfit">No candidates in talent pipeline</p>
+                    <p className="text-xs text-slate-400 mt-1">Candidates applying through getArole or submitting applications will appear here.</p>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredCandidates.map(c => (
+                  <tr 
+                    key={c.id} 
+                    className="hover:bg-slate-50/70 transition-colors cursor-pointer"
+                    onClick={() => setSelectedCandidate(c)}
+                  >
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-700 font-extrabold flex items-center justify-center text-xs shadow-2xs">
+                          {c.name.split(" ").map(n => n[0]).join("")}
+                        </div>
+                        <div>
+                          <div className="font-bold text-slate-900">{c.name}</div>
+                          <div className="text-[11px] text-slate-400">{c.email}</div>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="py-4 px-6">
+                      <div className="font-semibold text-slate-800">{c.role}</div>
+                      <div className="text-[11px] text-slate-400">{c.location} • {c.experienceYears}y exp</div>
+                    </td>
+
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-2">
+                        <div className="w-16 h-2 bg-slate-100 rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full rounded-full ${
+                              c.matchScore >= 90 ? "bg-emerald-500" : c.matchScore >= 80 ? "bg-indigo-500" : "bg-amber-500"
+                            }`}
+                            style={{ width: `${c.matchScore}%` }}
+                          />
+                        </div>
+                        <span className="font-black text-slate-800">{c.matchScore}%</span>
+                      </div>
+                    </td>
+
+                    <td className="py-4 px-6">
+                      <div className="flex flex-wrap gap-1 max-w-xs">
+                        {c.skills.slice(0, 3).map(skill => (
+                          <span key={skill} className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-medium">
+                            {skill}
+                          </span>
+                        ))}
+                        {c.skills.length > 3 && (
+                          <span className="text-[10px] text-slate-400 self-center">
+                            +{c.skills.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+
+                    <td className="py-4 px-6" onClick={e => e.stopPropagation()}>
+                      <select
+                        value={c.status}
+                        onChange={e => updateCandidateStatus(c.id, e.target.value as Candidate["status"])}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-bold border focus:outline-none ${
+                          c.status === "Offered" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
+                          c.status === "Interviewing" ? "bg-blue-50 text-blue-700 border-blue-200" :
+                          c.status === "Shortlisted" ? "bg-purple-50 text-purple-700 border-purple-200" :
+                          c.status === "Archived" ? "bg-rose-50 text-rose-700 border-rose-200" :
+                          "bg-slate-50 text-slate-700 border-slate-200"
+                        }`}
+                      >
+                        <option value="Applied">Applied</option>
+                        <option value="Shortlisted">Shortlisted</option>
+                        <option value="Interviewing">Interviewing</option>
+                        <option value="Offered">Offered</option>
+                        <option value="Archived">Archived</option>
+                      </select>
+                    </td>
+
+                    <td className="py-4 px-6 text-right" onClick={e => e.stopPropagation()}>
+                      <button
+                        onClick={() => setSelectedCandidate(c)}
+                        className="p-2 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors"
+                        title="View Candidate Dossier"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

@@ -13,112 +13,12 @@ interface UseJobsOptions {
 const SUPABASE_REST_URL = "https://tgmhtlqcjgcjedlnthfk.supabase.co/rest/v1";
 const SUPABASE_ANON_KEY = "sb_publishable_ubfak-i16iK-jZCTpZIxTQ_9o10ZqDn";
 
-const MOCK_JOBS: Job[] = [
-  {
-    id: 'mock-1',
-    title: 'Senior Frontend Engineer',
-    company: 'Google',
-    location: 'Bengaluru',
-    city: 'Bengaluru',
-    workplace_type: 'Hybrid',
-    skills: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS'],
-    fit_score: 95,
-    url: 'https://careers.google.com',
-    description: `Google is seeking a Senior Frontend Engineer to build the next generation of scalable, accessible web applications. You will partner with designers, backend architects, and product leads to deliver ultra-fast, delightful user interfaces serving millions of global users.
-
-Key Responsibilities:
-• Architect resilient, high-performance UI systems using React, TypeScript, and modern web frameworks.
-• Optimize client-side rendering, Core Web Vitals, and asset delivery pipelines for speed and efficiency.
-• Champion accessibility (WCAG), internationalization, and end-to-end testing standards.
-• Mentor junior engineers and conduct rigorous code reviews to maintain world-class engineering quality.
-
-Minimum Qualifications:
-• 4+ years of professional software engineering experience specializing in frontend web development.
-• Deep expertise in React.js, modern JavaScript/TypeScript, CSS architectures, and browser performance.
-• Strong foundation in data structures, algorithms, and modular software design.`
-  },
-  {
-    id: 'mock-2',
-    title: 'Full Stack Developer',
-    company: 'Microsoft',
-    location: 'Hyderabad',
-    city: 'Hyderabad',
-    workplace_type: 'On-site',
-    skills: ['Node.js', 'React', 'Azure', 'TypeScript', 'PostgreSQL'],
-    fit_score: 88,
-    url: 'https://careers.microsoft.com',
-    description: `Microsoft is hiring a Full Stack Developer to build cloud-native enterprise services and developer tooling on Azure. You will design, develop, and maintain both backend microservices and intuitive web frontends.
-
-Key Responsibilities:
-• Build scalable REST and GraphQL APIs backed by Node.js, TypeScript, and distributed relational databases.
-• Create clean, responsive frontend web views using React and contemporary design systems.
-• Implement robust CI/CD pipelines, containerized deployments with Docker, and cloud monitoring on Azure.
-• Diagnose production performance bottlenecks and ensure 99.99% system availability.
-
-Minimum Qualifications:
-• 3+ years of full-stack software development experience.
-• Hands-on experience with Node.js/TypeScript, React, and relational database systems like PostgreSQL.
-• Familiarity with cloud platforms (Azure, AWS, or GCP) and microservices architecture.`
-  },
-  {
-    id: 'mock-3',
-    title: 'Frontend Developer',
-    company: 'Atlassian',
-    location: 'Remote',
-    city: 'Remote',
-    workplace_type: 'Remote',
-    skills: ['React', 'CSS', 'GraphQL', 'JavaScript'],
-    fit_score: 92,
-    url: 'https://atlassian.com',
-    description: `Atlassian is looking for a Frontend Developer to join our distributed global team. You will build collaborative project management experiences used by thousands of engineering teams worldwide.
-
-Key Responsibilities:
-• Develop responsive, modular UI components in React and modern CSS for Jira and Confluence.
-• Integrate frontend clients with GraphQL APIs for real-time data sync and state caching.
-• Collaborate asynchronously across cross-functional engineering teams in a fully remote environment.
-• Participate in design sprints, user testing sessions, and iterative product releases.
-
-Minimum Qualifications:
-• 2+ years of experience developing modern single-page applications.
-• Strong proficiency in React, TypeScript/JavaScript, HTML5, and CSS-in-JS or Tailwind.
-• Experience consuming GraphQL or RESTful web services.`
-  },
-  {
-    id: 'mock-4',
-    title: 'Backend Systems Engineer',
-    company: 'Razorpay',
-    location: 'Bengaluru',
-    city: 'Bengaluru',
-    workplace_type: 'Hybrid',
-    skills: ['Go', 'FastAPI', 'Python', 'Docker', 'PostgreSQL'],
-    fit_score: 91,
-    url: 'https://razorpay.com/jobs',
-    description: `Razorpay is seeking a Backend Systems Engineer to power India's fastest-growing fintech payment infrastructure. You will engineer mission-critical, low-latency financial transaction pipelines handling millions of requests daily.
-
-Key Responsibilities:
-• Design and maintain fault-tolerant backend services written in Go and Python/FastAPI.
-• Architect low-latency database queries, connection pooling, and caching with PostgreSQL and Redis.
-• Guarantee data consistency, transaction idempotency, and enterprise-grade security compliance.
-• Automate deployments using Docker, Kubernetes, and automated integration test suites.
-
-Minimum Qualifications:
-• 3+ years of backend systems engineering experience.
-• Strong proficiency in Go, Python, or Java with deep understanding of concurrency and network protocols.
-• Experience building distributed transaction systems and database optimization.`
-  }
-];
-
 function sanitizeJob(j: unknown): Job {
-  if (!j || typeof j !== 'object') {
-    return MOCK_JOBS[0];
-  }
-  const job = j as Record<string, unknown>;
+  const job = (j && typeof j === 'object' ? j : {}) as Record<string, unknown>;
   const rawDesc = typeof job.description === 'string' ? job.description.trim() : '';
   const skills = extractSkillStrings(job.skills);
   const title = String(job.title || 'Software Engineer');
-  const company = String(job.company || 'Tech Company');
-
-  const fallbackDesc = `We are seeking a talented ${title} to join ${company}. In this role, you will design, develop, and maintain high-performance software applications and distributed systems.\n\nKey Responsibilities:\n• Collaborate with cross-functional product, design, and engineering teams to build scalable solutions.\n• Write clean, testable, and maintainable code adhering to industry best practices.\n• Optimize application performance, reliability, and security across the entire stack.\n\nRequired Skills & Competencies:\n• Hands-on expertise in ${skills.length > 0 ? skills.join(', ') : 'modern software development principles, system architecture, and debugging'}.\n• Experience with version control, automated testing, and cloud environments.\n• Strong analytical and problem-solving abilities with collaborative communication skills.`;
+  const company = String(job.company || 'Direct Employer');
 
   return {
     id: String(job.id || `job-${Math.random().toString(36).slice(2, 9)}`),
@@ -131,7 +31,7 @@ function sanitizeJob(j: unknown): Job {
     workplace_type: typeof job.workplace_type === 'string' ? job.workplace_type : 'Hybrid',
     employment_type: typeof job.employment_type === 'string' ? job.employment_type : 'Full-time',
     stipend_or_salary: typeof job.stipend_or_salary === 'string' ? job.stipend_or_salary : null,
-    description: rawDesc || fallbackDesc,
+    description: rawDesc,
     skills,
     fit_score: typeof job.fit_score === 'number' ? job.fit_score : null,
     date_posted: typeof job.created_at === 'string' ? job.created_at : null,
@@ -181,13 +81,8 @@ export function useJobs(options: UseJobsOptions = {}) {
               }
             }
           } catch {
-            // Supabase network error; fall through to mock data
+            // Supabase network error
           }
-        }
-
-        // 3. Fallback: If both fail, use default curated mock jobs
-        if (rawJobsList.length === 0) {
-          rawJobsList = MOCK_JOBS;
         }
 
         if (isMounted) {
@@ -232,7 +127,7 @@ export function useJobs(options: UseJobsOptions = {}) {
       } catch (err) {
         if (isMounted) {
           setError(err instanceof Error ? err.message : 'Failed to fetch jobs');
-          setJobs(MOCK_JOBS);
+          setJobs([]);
         }
       } finally {
         if (isMounted) {

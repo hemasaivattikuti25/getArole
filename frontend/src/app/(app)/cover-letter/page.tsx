@@ -21,47 +21,23 @@ interface CoverLetterForm {
   jobDescription: string;
 }
 
-const SAMPLE_PRESETS: Record<string, Partial<CoverLetterForm>> = {
-  swe: {
-    targetRole: "Staff Software Engineer",
-    targetCompany: "Stripe",
-    hiringManager: "Infrastructure Engineering Team",
-    tone: "confident",
-    keyHighlights: "Spearheaded low-latency payment processing pipeline scaling to 45k req/sec with 99.999% SLA; reduced AWS spend by $320k/yr via Redis caching and gRPC migration.",
-  },
-  ai: {
-    targetRole: "AI / ML Solutions Engineer",
-    targetCompany: "Databricks",
-    hiringManager: "Applied AI Hiring Committee",
-    tone: "modern",
-    keyHighlights: "Architected semantic vector search pipeline using pgvector and BGE embeddings, cutting query response times by 4x; fine-tuned LLaMA-3 models on enterprise proprietary data.",
-  },
-  product: {
-    targetRole: "Lead Technical Product Manager",
-    targetCompany: "Linear",
-    hiringManager: "Product Leadership Team",
-    tone: "executive",
-    keyHighlights: "Led cross-functional team of 14 engineers to deliver enterprise workspace collaboration tools; accelerated user activation by 38% and reduced churn by 18%.",
-  }
-};
-
 export default function CoverLetterPage() {
   const [formData, setFormData] = useState<CoverLetterForm>({
-    candidateName: "Candidate",
+    candidateName: "",
     candidateEmail: "",
     candidatePhone: "",
-    candidateLocation: "Bengaluru, India",
-    targetRole: "Senior Software Engineer",
-    targetCompany: "Google",
-    hiringManager: "Engineering Hiring Team",
+    candidateLocation: "",
+    targetRole: "",
+    targetCompany: "",
+    hiringManager: "",
     tone: "professional",
-    keyHighlights: "Architected high-throughput distributed systems scaling to 10k+ req/sec with 99.99% uptime SLA.",
+    keyHighlights: "",
     jobDescription: ""
   });
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [generatedLetter, setGeneratedLetter] = useState<string>(() => generateLetterTemplate(formData));
+  const [generatedLetter, setGeneratedLetter] = useState<string>("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -141,39 +117,31 @@ export default function CoverLetterPage() {
 
     const closingParagraph = `What excites me most about ${company} is your commitment to uncompromising technical craftsmanship and forward-thinking innovation. I welcome the opportunity to discuss how my skill set and passion for robust engineering can support ${company}’s strategic roadmap.`;
 
-    return `${today}\n\n${toneGreeting}\n\n${introParagraph}\n\n${highlights}\n\n${closingParagraph}\n\nSincerely,\n\n${data.candidateName}\n${data.candidateEmail} • ${data.candidatePhone}`;
+    return `${today}\n\n${toneGreeting}\n\n${introParagraph}\n\n${highlights}\n\n${closingParagraph}\n\nSincerely,\n\n${data.candidateName || ""}\n${[data.candidateEmail, data.candidatePhone].filter(Boolean).join(" • ")}`;
   }
 
   async function handleGenerate() {
     setIsGenerating(true);
-    // Simulate generation with intelligent tone adaptation
     await new Promise(r => setTimeout(r, 600));
     const newLetter = generateLetterTemplate(formData);
     setGeneratedLetter(newLetter);
     setIsGenerating(false);
   }
 
-  function applyPreset(key: string) {
-    const preset = SAMPLE_PRESETS[key];
-    if (preset) {
-      const updated = { ...formData, ...preset };
-      setFormData(updated);
-      setGeneratedLetter(generateLetterTemplate(updated));
-    }
-  }
-
   function handleCopy() {
+    if (!generatedLetter) return;
     navigator.clipboard.writeText(generatedLetter);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
 
   function handleDownloadTxt() {
+    if (!generatedLetter) return;
     const blob = new Blob([generatedLetter], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `Cover_Letter_${formData.targetCompany.replace(/\s+/g, "_")}.txt`;
+    a.download = `Cover_Letter_${(formData.targetCompany || "Application").replace(/\s+/g, "_")}.txt`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -202,31 +170,6 @@ export default function CoverLetterPage() {
               </p>
             </div>
           </div>
-
-          {/* Quick Presets */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs font-semibold text-slate-400 mr-1 flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Presets:
-            </span>
-            <button
-              onClick={() => applyPreset("swe")}
-              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all"
-            >
-              Stripe SWE
-            </button>
-            <button
-              onClick={() => applyPreset("ai")}
-              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all"
-            >
-              Databricks AI
-            </button>
-            <button
-              onClick={() => applyPreset("product")}
-              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition-all"
-            >
-              Linear Lead
-            </button>
-          </div>
         </div>
       </div>
 
@@ -250,7 +193,7 @@ export default function CoverLetterPage() {
                   type="text"
                   value={formData.targetRole}
                   onChange={e => setFormData({ ...formData, targetRole: e.target.value })}
-                  placeholder="e.g. Senior Backend Engineer"
+                  placeholder="Target Role"
                   className="w-full px-3.5 py-2.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                 />
               </div>
@@ -261,7 +204,7 @@ export default function CoverLetterPage() {
                   type="text"
                   value={formData.targetCompany}
                   onChange={e => setFormData({ ...formData, targetCompany: e.target.value })}
-                  placeholder="e.g. Stripe, Postman"
+                  placeholder="Target Company"
                   className="w-full px-3.5 py-2.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                 />
               </div>
@@ -273,7 +216,7 @@ export default function CoverLetterPage() {
                 type="text"
                 value={formData.hiringManager}
                 onChange={e => setFormData({ ...formData, hiringManager: e.target.value })}
-                placeholder="e.g. Core Infrastructure Hiring Team"
+                placeholder="Hiring Manager or Team Name"
                 className="w-full px-3.5 py-2.5 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
               />
             </div>
@@ -317,7 +260,7 @@ export default function CoverLetterPage() {
                 rows={4}
                 value={formData.keyHighlights}
                 onChange={e => setFormData({ ...formData, keyHighlights: e.target.value })}
-                placeholder="Paste notable achievements, metrics, latency numbers, or technologies you used..."
+                placeholder="Notable achievements, projects, technologies, or metrics to emphasize in this application..."
                 className="w-full p-3 text-xs font-medium bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all leading-relaxed"
               />
             </div>
@@ -349,7 +292,7 @@ export default function CoverLetterPage() {
             <button
               onClick={handleGenerate}
               disabled={isGenerating}
-              className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white rounded-xl font-bold text-xs shadow-md shadow-indigo-200/50 flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99]"
+              className="w-full py-3 px-4 bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white rounded-xl font-bold text-xs shadow-md shadow-indigo-200/50 flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
             >
               {isGenerating ? (
                 <>
@@ -379,7 +322,8 @@ export default function CoverLetterPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={handleCopy}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+                disabled={!generatedLetter}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 title="Copy plain text"
               >
                 {copied ? (
@@ -397,7 +341,8 @@ export default function CoverLetterPage() {
 
               <button
                 onClick={handleDownloadTxt}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 border border-indigo-100 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition-colors"
+                disabled={!generatedLetter}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 border border-indigo-100 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" />
                 <span>Export .TXT</span>
@@ -407,42 +352,66 @@ export default function CoverLetterPage() {
 
           {/* Realistic A4 Paper Sheet */}
           <div className="bg-white rounded-3xl border border-slate-200/90 shadow-lg shadow-slate-200/40 p-8 sm:p-12 min-h-[750px] relative font-sans text-slate-800 leading-relaxed text-sm">
-            {/* Header / Contact Banner */}
-            <div className="border-b border-slate-200 pb-6 mb-8">
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight font-outfit uppercase">
-                {formData.candidateName}
-              </h2>
-              <div className="flex items-center gap-3 text-xs text-slate-500 mt-2 flex-wrap font-medium">
-                <span>{formData.candidateEmail}</span>
-                <span>•</span>
-                <span>{formData.candidatePhone}</span>
-                <span>•</span>
-                <span>{formData.candidateLocation}</span>
+            {generatedLetter ? (
+              <>
+                {/* Header / Contact Banner */}
+                <div className="border-b border-slate-200 pb-6 mb-8">
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight font-outfit uppercase">
+                    {formData.candidateName || "Candidate Name"}
+                  </h2>
+                  <div className="flex items-center gap-3 text-xs text-slate-500 mt-2 flex-wrap font-medium">
+                    {formData.candidateEmail && <span>{formData.candidateEmail}</span>}
+                    {formData.candidatePhone && (
+                      <>
+                        <span>•</span>
+                        <span>{formData.candidatePhone}</span>
+                      </>
+                    )}
+                    {formData.candidateLocation && (
+                      <>
+                        <span>•</span>
+                        <span>{formData.candidateLocation}</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Recipient Block */}
+                <div className="mb-8 text-xs text-slate-600 space-y-1">
+                  <div className="font-bold text-slate-900">{formData.hiringManager || "Hiring Team"}</div>
+                  {formData.targetCompany && <div className="font-semibold text-indigo-700">{formData.targetCompany}</div>}
+                  {formData.targetRole && <div className="text-slate-400">Application for {formData.targetRole}</div>}
+                </div>
+
+                {/* Editable / Live Formatted Body */}
+                <div className="prose prose-slate max-w-none">
+                  <textarea
+                    value={generatedLetter}
+                    onChange={e => setGeneratedLetter(e.target.value)}
+                    rows={18}
+                    className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-slate-700 text-sm leading-relaxed resize-none font-sans"
+                  />
+                </div>
+
+                {/* Professional Footer Signoff */}
+                <div className="mt-10 pt-6 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+                  <span>Tailored via getArole AI Architect</span>
+                  <span>100% ATS Lexical Compatible</span>
+                </div>
+              </>
+            ) : (
+              <div className="h-[600px] flex flex-col items-center justify-center text-center p-8">
+                <div className="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 mb-4 shadow-2xs">
+                  <FileText className="w-7 h-7" />
+                </div>
+                <h3 className="text-base font-bold text-slate-800 mb-1 font-outfit">
+                  No Cover Letter Generated Yet
+                </h3>
+                <p className="text-xs text-slate-500 max-w-md leading-relaxed">
+                  Enter your target role and company details in the form on the left, then click &ldquo;Generate Tailored Cover Letter&rdquo; to build your tailored ATS-friendly letter.
+                </p>
               </div>
-            </div>
-
-            {/* Recipient Block */}
-            <div className="mb-8 text-xs text-slate-600 space-y-1">
-              <div className="font-bold text-slate-900">{formData.hiringManager || "Hiring Team"}</div>
-              <div className="font-semibold text-indigo-700">{formData.targetCompany}</div>
-              <div className="text-slate-400">Application for {formData.targetRole}</div>
-            </div>
-
-            {/* Editable / Live Formatted Body */}
-            <div className="prose prose-slate max-w-none">
-              <textarea
-                value={generatedLetter}
-                onChange={e => setGeneratedLetter(e.target.value)}
-                rows={18}
-                className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-slate-700 text-sm leading-relaxed resize-none font-sans"
-              />
-            </div>
-
-            {/* Professional Footer Signoff */}
-            <div className="mt-10 pt-6 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-              <span>Tailored via getArole AI Architect</span>
-              <span>100% ATS Lexical Compatible</span>
-            </div>
+            )}
           </div>
         </div>
 
