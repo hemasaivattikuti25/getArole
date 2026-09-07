@@ -5,7 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <title>LaTeX Cover Letter Builder — getArole | Your AI Job Search Partner</title>
-  <script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();</script>
+  <script>
+    if (window.self !== window.top) {
+      document.documentElement.classList.add('in-iframe');
+    }
+  </script>
   <meta name="description"
     content="Build, tailor, and export high-impact, professional LaTeX cover letters with personalized AI generation on getArole.">
   <link rel="preconnect" href="https://fonts.googleapis.com">

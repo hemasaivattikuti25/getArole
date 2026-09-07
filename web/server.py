@@ -972,6 +972,18 @@ if os.path.exists(css_dir):
 if os.path.exists(STATIC_DIR):
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
+resume_engine_dir = os.path.join(FRONTEND_OUT_DIR, "resume-engine")
+if not os.path.exists(resume_engine_dir):
+    resume_engine_dir = os.path.join(STATIC_DIR, "resume-engine")
+if os.path.exists(resume_engine_dir):
+    app.mount("/resume-engine", StaticFiles(directory=resume_engine_dir), name="resume-engine")
+
+cover_letter_engine_dir = os.path.join(FRONTEND_OUT_DIR, "cover-letter-builder")
+if not os.path.exists(cover_letter_engine_dir):
+    cover_letter_engine_dir = os.path.join(STATIC_DIR, "cover-letter-builder")
+if os.path.exists(cover_letter_engine_dir):
+    app.mount("/cover-letter-builder", StaticFiles(directory=cover_letter_engine_dir), name="cover-letter-builder")
+
 def create_root_handler(filename):
     @app.get(f"/{filename}")
     async def _serve_file():

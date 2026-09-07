@@ -11,7 +11,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Outfit:wght@600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 <script src="/js/resume-utils.js"></script>
 <script src="/js/storage-sync.js"></script>
-<script>(function () { if (!localStorage.getItem('getarole_user')) window.location.replace('/?auth=1'); })();
+<script>
+    if (window.self !== window.top) {
+      document.documentElement.classList.add('in-iframe');
+    }
     function setResumeMobileTab(mode) {
       const btnEdit = document.getElementById('btn-tab-edit');
       const btnPrev = document.getElementById('btn-tab-preview');
@@ -30,6 +33,14 @@
     
   </script>
 <style>
+    html.in-iframe header,
+    html.in-iframe .skip-link,
+    html.in-iframe .ambient-glow-wrap {
+      display: none !important;
+    }
+    html.in-iframe body {
+      background: #ffffff !important;
+    }
     :root {
       --pr: #0ea5e9;
       --prh: #0284c7;
