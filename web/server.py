@@ -964,6 +964,11 @@ def render_template(filepath: str) -> str:
 
 
 
+@app.get("/", response_class=HTMLResponse)
+async def serve_root():
+    index_file = os.path.join(STATIC_DIR, "index.html")
+    return render_template(index_file)
+
 @app.get("/candidate", response_class=HTMLResponse)
 @app.get("/candidate/", response_class=HTMLResponse)
 async def serve_candidate():
@@ -1009,9 +1014,7 @@ async def serve_profile():
 @app.get("/cover-letter", response_class=HTMLResponse)
 @app.get("/cover-letter/", response_class=HTMLResponse)
 async def serve_cover_letter():
-    cl_file = os.path.join(STATIC_DIR, "cover-letter", "index.html")
-    if not os.path.exists(cl_file):
-        cl_file = os.path.join(STATIC_DIR, "cover-letter.html")
+    cl_file = os.path.join(STATIC_DIR, "cover-letter-builder", "index.html")
     return render_template(cl_file)
     return "<h1>getArole Cover Letter Architect</h1>"
 
