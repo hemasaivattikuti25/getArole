@@ -147,34 +147,36 @@ def test_tailor_resume_invalid_dates_and_special_chars():
 # ── 5. POST /api/user/profile Edge Cases ─────────────────────────────────────
 
 def test_user_profile_missing_header():
-    """Test profile save with missing X-Firebase-UID header."""
+    """Test profile save with missing X-Firebase-UID header rejects with 401."""
     response = client.post("/api/user/profile", json={"name": "Test Candidate"})
-    assert response.status_code == 200  # Falls back to guest_user cleanly
+    assert response.status_code == 401
+    assert "Missing X-Firebase-UID or Authorization header" in response.json().get("error", "")
 
 def test_user_profile_empty_and_huge_arrays():
     """Test profile update with 0 elements, 1 element, and 10,000 array elements."""
+    headers = {"X-Firebase-UID": "test_profile_arrays_user"}
     # 0 elements
-    res_0 = client.post("/api/user/profile", json={"skills": [], "experience": []})
+    res_0 = client.post("/api/user/profile", headers=headers, json={"skills": [], "experience": []})
     assert res_0.status_code == 200
     
     # 1 element
-    res_1 = client.post("/api/user/profile", json={"skills": ["Python"]})
+    res_1 = client.post("/api/user/profile", headers=headers, json={"skills": ["Python"]})
     assert res_1.status_code == 200
 
     # 10,000 elements
     huge_skills = [f"Skill_{i}" for i in range(10000)]
-    res_10k = client.post("/api/user/profile", json={"skills": huge_skills})
+    res_10k = client.post("/api/user/profile", headers=headers, json={"skills": huge_skills})
     assert res_10k.status_code == 200
 
 def test_user_profile_special_char_xss_header():
-    """Test XSS injection in X-Firebase-UID header."""
+    """Test XSS injection in X-Firebase-UID header is blocked by sanitizer with 401."""
     xss_uid = "<script>alert('uid')</script>';--\0"
     response = client.post(
         "/api/user/profile",
         headers={"X-Firebase-UID": xss_uid},
         json={"name": "Jane Doe", "email": "jane@example.com"}
     )
-    assert response.status_code == 200
+    assert response.status_code == 401
 
 
 # ── 6. Idempotency & Concurrent Duplicate Requests ──────────────────────────

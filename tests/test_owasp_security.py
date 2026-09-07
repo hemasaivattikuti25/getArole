@@ -55,15 +55,18 @@ def test_owasp_a04_live_rate_limiting_endpoint():
     """
     OWASP A04: Live endpoint triggers 429 on sustained burst.
     """
-    # Send rapid requests with unique tracking
-    for _ in range(25):
-        client.post("/api/enhance-bullet", json={"bullet": "Developed scalable microservices in Python."})
-        
-    # 26th request within the minute will trigger 429
-    resp = client.post("/api/enhance-bullet", json={"bullet": "Developed scalable microservices in Python."})
-    if resp.status_code == 429:
-        assert "Retry-After" in resp.headers
-        assert "Rate limit exceeded" in resp.json().get("detail", "")
+    from unittest.mock import AsyncMock, patch
+    with patch("services.llm_service.NvidiaLLMService.generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = '{"star": "Engineered systems", "technical": "Tech", "concise": "Concise"}'
+        # Send rapid requests with unique tracking
+        for _ in range(25):
+            client.post("/api/enhance-bullet", json={"bullet": "Developed scalable microservices in Python."})
+            
+        # 26th request within the minute will trigger 429
+        resp = client.post("/api/enhance-bullet", json={"bullet": "Developed scalable microservices in Python."})
+        if resp.status_code == 429:
+            assert "Retry-After" in resp.headers
+            assert "Rate limit exceeded" in resp.json().get("detail", "")
 
 def test_owasp_a05_custom_error_boundaries_no_stack_trace():
     """

@@ -100,13 +100,15 @@ def test_reg_03_main_product_semantic_resume_matcher():
 # ── REG-04: Rate Limiting & Resource Protection Gating ───────────────────────
 def test_reg_04_rate_limiting_and_quota_protection():
     """GIVEN rapid repeated requests, WHEN rate limit is exceeded, THEN returns 429."""
-    # Execute rapid burst on AI enhance endpoint
-    status_codes = []
-    for _ in range(12):
-        r = client.post("/api/enhance-bullet", json={"bullet": "Built scalable cloud pipelines.", "target_role": "SRE"})
-        status_codes.append(r.status_code)
-    
-    assert 200 in status_codes or 429 in status_codes
+    from unittest.mock import AsyncMock, patch
+    with patch("services.llm_service.NvidiaLLMService.generate_text", new_callable=AsyncMock) as mock_gen:
+        mock_gen.return_value = '{"star": "Built scalable cloud pipelines.", "technical": "Tech", "concise": "Concise"}'
+        status_codes = []
+        for _ in range(12):
+            r = client.post("/api/enhance-bullet", json={"bullet": "Built scalable cloud pipelines.", "target_role": "SRE"})
+            status_codes.append(r.status_code)
+        
+        assert 200 in status_codes or 429 in status_codes
 
 # ── REG-05: Data Export & Tailored Resume ATS Formatting ─────────────────────
 def test_reg_05_data_export_and_tailored_resume_formatting():

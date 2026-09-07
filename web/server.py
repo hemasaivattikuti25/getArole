@@ -196,33 +196,108 @@ def load_cached_jobs() -> List[JobListing]:
     except Exception as e:
         print(f"[Server] Supabase job fetch fallback: {e}")
 
+class ManagedJobSyncEngine:
+    """
+    Enterprise Managed Job Sync Engine:
+    - Concurrency lock (asyncio.Lock) ensuring no overlapping scrape executions
+    - Real-time telemetry: sync state, timestamps, job counts, failure recovery
+    - Safe admin manual invocation with conflict detection
+    """
+    def __init__(self):
+        self._lock = asyncio.Lock()
+        self.state: str = "IDLE"  # "IDLE" | "SYNCING"
+        self.last_started_at: Optional[str] = None
+        self.last_finished_at: Optional[str] = None
+        self.last_status: str = "NEVER_RUN"
+        self.last_error: Optional[str] = None
+        self.jobs_synced_count: int = 0
+        self.total_runs: int = 0
+
+    def get_status(self) -> Dict[str, Any]:
+        return {
+            "state": self.state,
+            "is_busy": self._lock.locked(),
+            "last_started_at": self.last_started_at,
+            "last_finished_at": self.last_finished_at,
+            "last_status": self.last_status,
+            "last_error": self.last_error,
+            "jobs_synced_count": self.jobs_synced_count,
+            "total_runs": self.total_runs
+        }
+
+    async def execute_sync(self, trigger_source: str = "scheduler") -> Dict[str, Any]:
+        if self._lock.locked():
+            return {
+                "status": "conflict",
+                "message": "Job sync is already actively executing.",
+                "details": self.get_status()
+            }
+
+        async with self._lock:
+            from datetime import datetime, timezone
+            self.state = "SYNCING"
+            self.last_started_at = datetime.now(timezone.utc).isoformat()
+            self.last_error = None
+            self.total_runs += 1
+            sre_logger = logging.getLogger("sre.sync_engine")
+            sre_logger.info(f"[SyncEngine] 🔄 Starting career gateway sync (trigger={trigger_source})...")
+
+            try:
+                jobs = await AGGREGATOR.aggregate_all()
+                if jobs:
+                    AGGREGATOR.cached_jobs = jobs
+                    for save_path in [SAVED_JOBS_FILE, TMP_JOBS_FILE]:
+                        try:
+                            with open(save_path, "w", encoding="utf-8") as f:
+                                json.dump([j.model_dump() for j in jobs], f, indent=2)
+                        except Exception as e:
+                            sre_logger.warning(f"Failed to persist jobs cache to {save_path}: {e}")
+
+                    # Sync to Supabase PostgreSQL
+                    try:
+                        supabase = get_supabase_service()
+                        if supabase.is_connected():
+                            await supabase.upsert_jobs_bulk(jobs)
+                            sre_logger.info(f"[SyncEngine] ✅ Successfully synced {len(jobs)} live jobs to Supabase.")
+                    except Exception as e:
+                        sre_logger.warning(f"[SyncEngine] Supabase sync notice: {e}")
+
+                    self.jobs_synced_count = len(jobs)
+                else:
+                    self.jobs_synced_count = 0
+
+                self.state = "IDLE"
+                self.last_status = "SUCCESS"
+                self.last_finished_at = datetime.now(timezone.utc).isoformat()
+                return {
+                    "status": "success",
+                    "jobs_synced": self.jobs_synced_count,
+                    "finished_at": self.last_finished_at
+                }
+
+            except Exception as err:
+                sre_logger.error(f"[SyncEngine] Periodic scrape error: {err}")
+                self.state = "IDLE"
+                self.last_status = "FAILED"
+                self.last_error = str(err)
+                self.last_finished_at = datetime.now(timezone.utc).isoformat()
+                return {
+                    "status": "error",
+                    "error": str(err),
+                    "finished_at": self.last_finished_at
+                }
+
+JOB_SYNC_ENGINE = ManagedJobSyncEngine()
+
 async def periodic_scraper_loop():
-    """Background worker that continuously scrapes all job portals every 30 minutes."""
+    """Background worker managed by ManagedJobSyncEngine."""
     # Small initial delay so startup completes smoothly
     await asyncio.sleep(10)
     while True:
         try:
-            print("[Auto-Cron] 🔄 Starting scheduled 30-minute career gateway sync...")
-            jobs = await AGGREGATOR.aggregate_all()
-            if jobs:
-                AGGREGATOR.cached_jobs = jobs
-                for save_path in [SAVED_JOBS_FILE, TMP_JOBS_FILE]:
-                    try:
-                        with open(save_path, "w", encoding="utf-8") as f:
-                            json.dump([j.model_dump() for j in jobs], f, indent=2)
-                    except Exception as e:
-                        logging.getLogger("sre.server").warning(f"Failed to persist jobs cache to {save_path}: {e}")
-                
-                # Sync to Supabase PostgreSQL
-                try:
-                    supabase = get_supabase_service()
-                    if supabase.is_connected():
-                        await supabase.upsert_jobs_bulk(jobs)
-                        print(f"[Auto-Cron] ✅ Successfully synced {len(jobs)} live jobs to Supabase.")
-                except Exception as e:
-                    print(f"[Auto-Cron] Supabase sync notice: {e}")
+            await JOB_SYNC_ENGINE.execute_sync(trigger_source="auto_cron")
         except Exception as err:
-            print(f"[Auto-Cron] Periodic scrape error: {err}")
+            logging.getLogger("sre.sync_engine").error(f"[SyncEngine] Periodic loop error: {err}")
 
         # Wait 30 minutes (1800 seconds) before next automated run
         await asyncio.sleep(1800)
@@ -931,6 +1006,15 @@ async def serve_profile():
     return render_template(prof_file)
     return "<h1>getArole Profile</h1>"
 
+@app.get("/cover-letter", response_class=HTMLResponse)
+@app.get("/cover-letter/", response_class=HTMLResponse)
+async def serve_cover_letter():
+    cl_file = os.path.join(STATIC_DIR, "cover-letter", "index.html")
+    if not os.path.exists(cl_file):
+        cl_file = os.path.join(STATIC_DIR, "cover-letter.html")
+    return render_template(cl_file)
+    return "<h1>getArole Cover Letter Architect</h1>"
+
 @app.get("/privacy", response_class=HTMLResponse)
 @app.get("/privacy/", response_class=HTMLResponse)
 async def serve_privacy():
@@ -1084,6 +1168,38 @@ async def export_crm_csv_endpoint(
             "Content-Disposition": "attachment; filename=getArole_CRM_Candidates_Export.csv"
         }
     )
+
+@app.get("/api/admin/sync-status")
+async def get_admin_sync_status_endpoint(
+    request: Request,
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
+    x_user_email: Optional[str] = Header(None, alias="X-User-Email")
+) -> Dict[str, Any]:
+    """
+    Returns real-time sync engine metrics, lock status, and execution telemetry.
+    Restricted to admin access.
+    """
+    verify_crm_admin_access(request, x_admin_key=x_admin_key, x_user_email=x_user_email)
+    return {
+        "status": "ok",
+        "sync_engine": JOB_SYNC_ENGINE.get_status()
+    }
+
+@app.post("/api/admin/sync-jobs")
+async def trigger_admin_sync_jobs_endpoint(
+    request: Request,
+    x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key"),
+    x_user_email: Optional[str] = Header(None, alias="X-User-Email")
+) -> Dict[str, Any]:
+    """
+    Triggers an immediate, lock-guarded background job portal scrape and Supabase sync.
+    Restricted to admin access. Returns 409 Conflict if sync is already running.
+    """
+    verify_crm_admin_access(request, x_admin_key=x_admin_key, x_user_email=x_user_email)
+    result = await JOB_SYNC_ENGINE.execute_sync(trigger_source="admin_manual_api")
+    if result.get("status") == "conflict":
+        raise HTTPException(status_code=409, detail=result.get("message", "Sync already in progress"))
+    return result
 
 # ─── User Profile & Preferences API (Supabase-backed, Firebase UID keyed) ───
 

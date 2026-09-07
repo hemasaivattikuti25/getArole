@@ -139,7 +139,10 @@ def extract_authenticated_uid(request: Request) -> str:
     return "guest_user"
 
 AUTHORIZED_CRM_EMAILS = {
-    "admingetarole@gmail.com"
+    "admingetarole@gmail.com",
+    "hemasaivattikuti2727@gmail.com",
+    "testcandidatevattikuti2727@gmail.com",
+    "lakshmisatyasrisri@gmail.com"
 }
 
 def get_authorized_crm_emails() -> set:

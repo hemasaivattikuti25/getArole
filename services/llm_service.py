@@ -200,12 +200,23 @@ Respond ONLY in valid JSON:
             if not parsed or not isinstance(parsed, dict):
                 raise last_err or ValueError("Failed to obtain valid LLM evaluation")
 
+            # Calculate deterministic algorithmic baseline for any missing rubric dimensions
+            baseline = self._calculate_algorithmic_ats_score(
+                resume_text=resume_text,
+                job_title=job_title,
+                company=company,
+                job_description=job_description,
+                workplace_preference=workplace_preference,
+                location_preference=location_preference
+            )
+            base_rubric = baseline["rubric_breakdown"]
+
             rubric = parsed.get("rubric_breakdown", {})
-            skills_val = float(rubric.get("skills_match", rubric.get("technical_skills", 7.0)))
-            exp_val = float(rubric.get("experience_alignment", rubric.get("experience_relevance", 7.0)))
-            cult_val = float(rubric.get("culture_workplace_fit", rubric.get("domain_knowledge", 7.0)))
-            loc_val = float(rubric.get("location_synergy", rubric.get("prerequisites_met", 7.5)))
-            growth_val = float(rubric.get("career_growth", 7.0))
+            skills_val = float(rubric.get("skills_match", rubric.get("technical_skills", base_rubric["skills_match"])))
+            exp_val = float(rubric.get("experience_alignment", rubric.get("experience_relevance", base_rubric["experience_alignment"])))
+            cult_val = float(rubric.get("culture_workplace_fit", rubric.get("domain_knowledge", base_rubric["culture_workplace_fit"])))
+            loc_val = float(rubric.get("location_synergy", rubric.get("prerequisites_met", base_rubric["location_synergy"])))
+            growth_val = float(rubric.get("career_growth", base_rubric["career_growth"]))
 
             # Calibrated 5D weighted composite score
             composite = round(
@@ -231,36 +242,186 @@ Respond ONLY in valid JSON:
             parsed["rubric_breakdown"] = rubric
             parsed["composite_score"] = composite
             parsed["score_10"] = composite
-            parsed["improvement_roadmap"] = parsed.get("improvement_roadmap") or [
-                f"Highlight hands-on production experience with {', '.join(parsed.get('missing_skills', ['core stack'])[:2])}",
-                "Quantify business and latency impacts in project summaries"
-            ]
+            parsed["scoring_method"] = "llm_5d_matrix"
+            parsed["improvement_roadmap"] = parsed.get("improvement_roadmap") or baseline.get("improvement_roadmap")
             return parsed
 
         except Exception as e:
-            return {
-                "score_10": 7.5,
-                "composite_score": 7.5,
-                "verdict": "Review",
-                "rubric_breakdown": {
-                    "skills_match": 7.5,
-                    "experience_alignment": 7.0,
-                    "culture_workplace_fit": 7.5,
-                    "location_synergy": 8.0,
-                    "career_growth": 7.5,
-                    "technical_skills": 7.5,
-                    "experience_relevance": 7.0,
-                    "domain_knowledge": 7.5,
-                    "prerequisites_met": 8.0
-                },
-                "strengths": ["Relevant technical background", "Hands-on projects"],
-                "missing_skills": ["Production scaling specifics"],
-                "improvement_roadmap": [
-                    "Add measurable impact metrics to recent experience",
-                    "Highlight architectural trade-offs in key projects"
-                ],
-                "justification": f"Candidate demonstrates baseline competency. Note: {str(e)[:60]}"
-            }
+            logger.warning(f"Evaluating resume via algorithmic ATS fallback: {e}")
+            return self._calculate_algorithmic_ats_score(
+                resume_text=resume_text,
+                job_title=job_title,
+                company=company,
+                job_description=job_description,
+                workplace_preference=workplace_preference,
+                location_preference=location_preference,
+                fallback_reason=str(e)
+            )
+
+    def _calculate_algorithmic_ats_score(
+        self,
+        resume_text: str,
+        job_title: str,
+        company: str,
+        job_description: str,
+        workplace_preference: Optional[str] = None,
+        location_preference: Optional[str] = None,
+        fallback_reason: str = ""
+    ) -> Dict[str, Any]:
+        """
+        Deterministic, algorithmic ATS keyword & lexical matching engine.
+        Evaluates candidate match across:
+        1. Skills match (Jaccard + tech catalog overlap)
+        2. Experience alignment (seniority keyword presence & work history density)
+        3. Culture/workplace fit (remote/hybrid preferences vs job posting)
+        4. Location synergy (geographic/timezone matching)
+        5. Career growth (seniority progression headroom)
+        """
+        resume_lower = resume_text.lower()
+        jd_lower = f"{job_title} {job_description}".lower()
+
+        tech_catalog = [
+            "python", "javascript", "typescript", "react", "next.js", "vue", "angular", "node.js", "nodejs",
+            "go", "golang", "rust", "java", "kotlin", "scala", "c++", "c#", ".net", "ruby", "rails",
+            "fastapi", "django", "flask", "express", "spring", "spring boot", "graphql", "rest api", "grpc",
+            "postgresql", "postgres", "mysql", "mongodb", "redis", "elasticsearch", "cassandra", "sqlite",
+            "docker", "kubernetes", "k8s", "aws", "gcp", "azure", "terraform", "ansible", "ci/cd",
+            "kafka", "rabbitmq", "sqs", "distributed systems", "microservices", "system design",
+            "pytorch", "tensorflow", "machine learning", "deep learning", "llm", "nlp", "rag", "langchain",
+            "linux", "git", "sql", "nosql", "pandas", "numpy", "airflow", "spark"
+        ]
+
+        required_skills = [s for s in tech_catalog if re.search(r'\b' + re.escape(s) + r'\b', jd_lower)]
+        
+        # Fallback to general tokens if no standard tech catalog items were identified
+        if not required_skills:
+            tokens = set(re.findall(r'[a-z]{3,}', jd_lower))
+            common_stopwords = {"and", "the", "for", "with", "this", "that", "from", "have", "will", "your", "team", "role", "work", "join", "help", "build"}
+            required_skills = list(tokens - common_stopwords)[:12]
+
+        matched_skills = [s for s in required_skills if re.search(r'\b' + re.escape(s) + r'\b', resume_lower)]
+        missing_skills = [s for s in required_skills if s not in matched_skills]
+
+        # Calculate skills match (scale 2.5 - 9.8)
+        match_ratio = len(matched_skills) / max(len(required_skills), 1)
+        skills_match = round(min(9.8, max(2.5, 2.5 + (match_ratio * 7.0))), 1)
+
+        # Experience alignment based on seniority markers and resume depth
+        seniority_levels = ["intern", "junior", "associate", "mid", "senior", "staff", "principal", "lead", "architect", "director", "vp"]
+        jd_levels = [lvl for lvl in seniority_levels if re.search(r'\b' + lvl + r'\b', jd_lower)]
+        resume_levels = [lvl for lvl in seniority_levels if re.search(r'\b' + lvl + r'\b', resume_lower)]
+        
+        exp_score = 6.0
+        if len(resume_text) > 1200:
+            exp_score += 1.0
+        if len(resume_text) > 2500:
+            exp_score += 0.5
+        
+        if jd_levels and resume_levels:
+            max_jd_rank = max(seniority_levels.index(l) for l in jd_levels)
+            max_cand_rank = max(seniority_levels.index(l) for l in resume_levels)
+            if max_cand_rank >= max_jd_rank:
+                exp_score += 1.5
+            elif max_cand_rank == max_jd_rank - 1:
+                exp_score += 0.5
+            else:
+                exp_score -= 1.0
+        elif resume_levels:
+            exp_score += 1.0
+        experience_alignment = round(min(9.5, max(3.0, exp_score)), 1)
+
+        # Culture & Workplace Fit
+        culture_score = 7.5
+        wp_pref = (workplace_preference or "").lower().strip()
+        if wp_pref:
+            if "remote" in wp_pref:
+                if "remote" in jd_lower:
+                    culture_score = 9.0
+                elif "onsite" in jd_lower or "on-site" in jd_lower:
+                    culture_score = 5.0
+            elif "hybrid" in wp_pref:
+                if "hybrid" in jd_lower or "remote" in jd_lower:
+                    culture_score = 8.5
+            elif "onsite" in wp_pref or "on-site" in wp_pref:
+                if "onsite" in jd_lower or "on-site" in jd_lower:
+                    culture_score = 8.5
+        culture_workplace_fit = culture_score
+
+        # Location Synergy
+        loc_pref = (location_preference or "").lower().strip()
+        loc_score = 7.5
+        if loc_pref:
+            if loc_pref in jd_lower or "remote" in jd_lower:
+                loc_score = 9.0
+            else:
+                loc_score = 6.0
+        location_synergy = loc_score
+
+        # Career Growth
+        growth_score = 7.5
+        if skills_match >= 8.0:
+            growth_score = 8.0
+        elif skills_match <= 4.5:
+            growth_score = 6.0
+        career_growth = growth_score
+
+        # Calibrated 5D composite score
+        composite = round(
+            (0.30 * skills_match) +
+            (0.25 * experience_alignment) +
+            (0.15 * culture_workplace_fit) +
+            (0.15 * location_synergy) +
+            (0.15 * career_growth),
+            1
+        )
+
+        verdict = "Review"
+        if composite >= 7.8 and skills_match >= 7.0:
+            verdict = "Shortlisted"
+        elif composite < 5.5:
+            verdict = "Rejected"
+
+        strengths = [
+            f"Demonstrated proficiency in {s.title()}" for s in matched_skills[:3]
+        ] if matched_skills else ["Broad foundational domain exposure", "Transferable engineering practices"]
+
+        missing_list = [s.title() for s in missing_skills[:4]] if missing_skills else ["Specialized domain tooling"]
+
+        roadmap = []
+        if missing_skills:
+            roadmap.append(f"Incorporate targeted evidence of {', '.join(missing_list[:2])} in recent project bullets")
+        roadmap.append("Include quantified engineering metrics (latency, cost, uptime, throughput)")
+
+        justification = (
+            f"ATS Lexical Analysis: Candidate matched {len(matched_skills)}/{len(required_skills)} key technical competencies "
+            f"({', '.join(matched_skills[:3]) or 'foundational'}). Experience alignment scored {experience_alignment}/10.0."
+        )
+        if fallback_reason:
+            justification += f" (Evaluated via Algorithmic ATS Engine: {fallback_reason[:45]})"
+
+        rubric = {
+            "skills_match": skills_match,
+            "experience_alignment": experience_alignment,
+            "culture_workplace_fit": culture_workplace_fit,
+            "location_synergy": location_synergy,
+            "career_growth": career_growth,
+            "technical_skills": skills_match,
+            "experience_relevance": experience_alignment,
+            "domain_knowledge": culture_workplace_fit,
+            "prerequisites_met": location_synergy
+        }
+
+        return {
+            "score_10": composite,
+            "composite_score": composite,
+            "verdict": verdict,
+            "rubric_breakdown": rubric,
+            "strengths": strengths,
+            "missing_skills": missing_list,
+            "improvement_roadmap": roadmap,
+            "justification": justification,
+            "scoring_method": "algorithmic_ats_fallback"
+        }
 
     async def a_generate_tailored_application_dual_pass(
         self,

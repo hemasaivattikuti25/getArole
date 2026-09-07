@@ -159,7 +159,9 @@ async def test_5d_fallback_on_llm_error():
             company="Company",
             job_description="Job description"
         )
-        assert res["composite_score"] == 7.5
+        assert isinstance(res["composite_score"], float)
+        assert 1.0 <= res["composite_score"] <= 10.0
+        assert res["scoring_method"] == "algorithmic_ats_fallback"
         assert "skills_match" in res["rubric_breakdown"]
         assert "career_growth" in res["rubric_breakdown"]
         assert len(res["improvement_roadmap"]) >= 1
