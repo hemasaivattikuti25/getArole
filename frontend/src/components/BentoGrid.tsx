@@ -1,92 +1,105 @@
 "use client";
 
-import Link from "next/link";
-import { Sparkles, FileText, Kanban, FileEdit, ArrowRight } from "lucide-react";
+import React from "react";
 
 export default function BentoGrid() {
-  const tools = [
-    {
-      icon: Sparkles,
-      iconColor: "text-blue-600 bg-blue-50",
-      title: "Resume Match Screener",
-      desc: "Compare your resume against any open role to see matching competencies and highlight where your experience aligns best.",
-      linkText: "Try Resume Matcher",
-      href: "/matches",
-    },
-    {
-      icon: FileText,
-      iconColor: "text-indigo-600 bg-indigo-50",
-      title: "Single-Page Resume Builder",
-      desc: "Write and format a clean, single-page resume with standard developer structure, then export directly to PDF for free.",
-      linkText: "Open Resume Builder",
-      href: "/resume-builder",
-    },
-    {
-      icon: Kanban,
-      iconColor: "text-purple-600 bg-purple-50",
-      title: "Application Pipeline Tracker",
-      desc: "Organize every opportunity across simple stages—Saved, Applied, Interview, and Offer—in your personal dashboard.",
-      linkText: "View Dashboard",
-      href: "/dashboard",
-    },
-    {
-      icon: FileEdit,
-      iconColor: "text-emerald-600 bg-emerald-50",
-      title: "Tailored Application Notes",
-      desc: "Draft concise, role-specific cover notes tailored to the exact technologies requested by the hiring team.",
-      linkText: "Generate Notes",
-      href: "/cover-letter-builder",
-    },
-  ];
-
   return (
-    <section className="py-10 md:py-14">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center max-w-xl mx-auto mb-10">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Tools to make applying faster
-          </h2>
-          <p className="mt-2 text-sm text-slate-500">
-            Everything you need to match, build, and organize your job search in one place.
-          </p>
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24 relative z-10">
+      {/* Section Header */}
+      <div className="text-center max-w-2xl mx-auto mb-12">
+        <div className="text-xs font-extrabold text-[#0071e3] uppercase tracking-widest mb-2 font-outfit">
+          How It Works
+        </div>
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-outfit">
+          Built for engineers, by engineers
+        </h2>
+        <p className="mt-2 text-sm sm:text-base text-slate-600">
+          Tools designed around how engineers actually search for jobs.
+        </p>
+      </div>
+
+      {/* 2-Column Responsive Bento Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Card 1: Span 2 cols */}
+        <div className="md:col-span-2 bg-white border border-slate-200/90 rounded-3xl p-8 sm:p-9 shadow-xs hover:border-blue-200 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+          <div>
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200/80 flex items-center justify-center text-2xl mb-5 shadow-2xs">
+              🧠
+            </div>
+            <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 mb-3 font-outfit">
+              Intelligent Semantic Matching
+            </h3>
+            <p className="text-sm text-slate-600 leading-relaxed max-w-2xl">
+              Traditional job boards rely on rigid keyword filters that miss qualified engineers. getArole evaluates your technical skills, experience depth, and career preferences against live job requirements to calculate true conceptual relevance.
+            </p>
+          </div>
+          <div className="flex gap-2.5 mt-6 flex-wrap">
+            <span className="bg-slate-100/90 border border-slate-200/80 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700">
+              Skills &amp; experience matching
+            </span>
+            <span className="bg-slate-100/90 border border-slate-200/80 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700">
+              ATS compatibility checks
+            </span>
+          </div>
         </div>
 
-        {/* Normal, Clean Feature Grid (No Nested Boxes or Heavy Cards) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {tools.map((tool) => {
-            const Icon = tool.icon;
-            return (
-              <div
-                key={tool.title}
-                className="flex flex-col justify-between p-5 rounded-xl hover:bg-slate-50/80 transition-colors group"
-              >
-                <div>
-                  <div className={`w-10 h-10 rounded-xl ${tool.iconColor} flex items-center justify-center font-bold mb-3.5`}>
-                    <Icon className="w-5 h-5" />
-                  </div>
+        {/* Card 2: 1 col */}
+        <div className="bg-white border border-slate-200/90 rounded-3xl p-8 sm:p-9 shadow-xs hover:border-blue-200 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+          <div>
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200/80 flex items-center justify-center text-2xl mb-5 shadow-2xs">
+              🛡️
+            </div>
+            <h3 className="text-xl font-extrabold text-slate-900 mb-3 font-outfit">
+              Continuous Verification Engine
+            </h3>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Every role is verified continuously against source career portals. Inactive postings and duplicate recruiter spam are purged automatically.
+            </p>
+          </div>
+          <div className="text-xs font-bold text-emerald-700 mt-6 flex items-center gap-1">
+            <span>✓ Verified Direct Portal Links</span>
+          </div>
+        </div>
 
-                  <h3 className="text-base font-bold text-slate-900 mb-2 group-hover:text-[#0062e3] transition-colors">
-                    {tool.title}
-                  </h3>
+        {/* Card 3: 1 col */}
+        <div className="bg-white border border-slate-200/90 rounded-3xl p-8 sm:p-9 shadow-xs hover:border-blue-200 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+          <div>
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200/80 flex items-center justify-center text-2xl mb-5 shadow-2xs">
+              📊
+            </div>
+            <h3 className="text-xl font-extrabold text-slate-900 mb-3 font-outfit">
+              Achievement-Focused Bullet Optimizer
+            </h3>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Transform standard job duties into high-impact achievements using structured metrics, quantifiable impact, and clear action verbs.
+            </p>
+          </div>
+          <div className="text-xs font-bold text-[#0071e3] mt-6 flex items-center gap-1">
+            <span>✓ Proven Industry Resume Framework</span>
+          </div>
+        </div>
 
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    {tool.desc}
-                  </p>
-                </div>
-
-                <div className="mt-4 pt-1">
-                  <Link
-                    href={tool.href}
-                    className="text-xs font-bold text-[#0062e3] hover:underline inline-flex items-center gap-1"
-                  >
-                    <span>{tool.linkText}</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                  </Link>
-                </div>
-              </div>
-            );
-          })}
+        {/* Card 4: Span 2 cols */}
+        <div className="md:col-span-2 bg-white border border-slate-200/90 rounded-3xl p-8 sm:p-9 shadow-xs hover:border-blue-200 hover:-translate-y-1 transition-all duration-200 flex flex-col justify-between">
+          <div>
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200/80 flex items-center justify-center text-2xl mb-5 shadow-2xs">
+              🔒
+            </div>
+            <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 mb-3 font-outfit">
+              Privacy-First Architecture
+            </h3>
+            <p className="text-sm text-slate-600 leading-relaxed max-w-2xl">
+              We never sell or distribute your resume or personal details to third parties. You retain complete ownership with one-click permanent account erasure at any time.
+            </p>
+          </div>
+          <div className="flex gap-2.5 mt-6 flex-wrap">
+            <span className="bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-800">
+              🔒 DPDP &amp; GDPR Compliant
+            </span>
+            <span className="bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-800">
+              🛡️ 256-Bit TLS Security
+            </span>
+          </div>
         </div>
       </div>
     </section>

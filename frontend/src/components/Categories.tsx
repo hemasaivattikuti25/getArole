@@ -1,104 +1,89 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight, Globe, Building2, Sparkles, Laptop, GraduationCap, Award } from "lucide-react";
+import React from "react";
 
 export default function Categories() {
   const categories = [
     {
-      title: "Global Tech",
-      desc: "Google, Microsoft, Amazon India, Cisco",
-      icon: Globe,
-      q: "Global",
-      color: "text-blue-600 bg-blue-50 border-blue-200",
-    },
-    {
-      title: "Enterprise & IT",
-      desc: "TCS, Infosys, Wipro, Cognizant",
-      icon: Building2,
+      name: "🏢 Enterprise & MNCs",
+      sub: "TCS, Infosys, Wipro, HCL",
       q: "MNC",
-      color: "text-indigo-600 bg-indigo-50 border-indigo-200",
     },
     {
-      title: "High-Growth Startups",
-      desc: "Razorpay, Zerodha, Swiggy, CRED",
-      icon: Sparkles,
+      name: "🦄 High-Growth Tech",
+      sub: "Razorpay, Zerodha, CRED, Swiggy",
       q: "Unicorn",
-      color: "text-purple-600 bg-purple-50 border-purple-200",
     },
     {
-      title: "Remote Roles",
-      desc: "Distributed engineering teams hiring in India",
-      icon: Laptop,
+      name: "🌐 Global Tech Giants",
+      sub: "Google, Microsoft, Amazon",
+      q: "Global",
+    },
+    {
+      name: "🌍 Remote Opportunities",
+      sub: "Global Engineering Positions",
       q: "Remote",
-      color: "text-emerald-600 bg-emerald-50 border-emerald-200",
     },
     {
-      title: "Freshers & Graduates",
-      desc: "Graduate Trainee & 0-2 yrs experience roles",
-      icon: GraduationCap,
+      name: "🎓 Early Career & Graduates",
+      sub: "Graduate Trainee & Associate Roles",
       q: "Fresher",
-      color: "text-amber-600 bg-amber-50 border-amber-200",
     },
     {
-      title: "Internships",
-      desc: "Summer internships and pre-placement opportunities",
-      icon: Award,
+      name: "🎯 Engineering Internships",
+      sub: "Paid Engineering Programs",
       q: "Internship",
-      color: "text-teal-600 bg-teal-50 border-teal-200",
+    },
+    {
+      name: "💳 Fintech & Banking",
+      sub: "PhonePe, Paytm, Slice, Jupiter",
+      q: "Fintech",
+    },
+    {
+      name: "🧠 AI & Machine Learning",
+      sub: "Applied AI, NLP, Vision, Systems",
+      q: "AI",
     },
   ];
 
   return (
-    <section className="py-10 md:py-14">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-7">
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Explore by Category
-            </h2>
-            <p className="mt-1 text-sm text-slate-600">
-              Browse openings across company stages and work preferences.
-            </p>
+    <section className="bg-slate-100/70 border-y border-slate-200 py-16 px-4 sm:px-6 lg:px-8 mb-24" id="companies">
+      <div className="max-w-7xl mx-auto">
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <div className="text-xs font-extrabold text-[#0071e3] uppercase tracking-widest mb-2 font-outfit">
+            Top Companies Hiring Now
           </div>
-          <Link
-            href="/explore"
-            className="text-xs sm:text-sm font-bold text-[#0062e3] hover:underline inline-flex items-center gap-1"
-          >
-            <span>View all</span>
-            <ArrowUpRight className="w-4 h-4" />
-          </Link>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-outfit">
+            Explore by Company Tier &amp; Category
+          </h2>
+          <p className="mt-2 text-sm sm:text-base text-slate-600">
+            Direct access to verified hiring pipelines across top employers.
+          </p>
         </div>
 
-        {/* Categories Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          {categories.map((cat) => {
-            const Icon = cat.icon;
-            return (
-              <Link
-                key={cat.title}
-                href={`/explore?q=${cat.q}`}
-                className="bg-white rounded-xl p-4 border border-slate-200/80 shadow-2xs hover:border-blue-400 hover:-translate-y-1 transition-all flex flex-col justify-between group"
-              >
-                <div>
-                  <div className={`w-8 h-8 rounded-lg ${cat.color} border flex items-center justify-center font-bold mb-2.5 shadow-2xs`}>
-                    <Icon className="w-4 h-4" />
-                  </div>
-
-                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 mb-1 group-hover:text-[#0062e3] transition-colors leading-snug">
-                    {cat.title}
-                  </h3>
-                  <p className="text-[11px] text-slate-500 leading-normal line-clamp-2">
-                    {cat.desc}
-                  </p>
+        {/* 4-column Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {categories.map((cat) => (
+            <Link
+              key={cat.q}
+              href={`/explore?q=${cat.q}`}
+              className="bg-white border border-slate-200/90 rounded-2xl p-5 hover:border-[#0071e3] hover:-translate-y-1 transition-all duration-200 flex items-center justify-between shadow-2xs group"
+            >
+              <div>
+                <div className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-[#0071e3] transition-colors">
+                  {cat.name}
                 </div>
-
-                <div className="mt-3 text-[10.5px] font-bold text-[#0062e3] opacity-0 group-hover:opacity-100 transition-opacity">
-                  Browse →
+                <div className="text-xs text-slate-500 mt-0.5">
+                  {cat.sub}
                 </div>
-              </Link>
-            );
-          })}
+              </div>
+              <span className="text-xs font-bold text-[#0071e3] bg-blue-50 px-2.5 py-1 rounded-md shrink-0 ml-2">
+                Explore Roles →
+              </span>
+            </Link>
+          ))}
         </div>
       </div>
     </section>

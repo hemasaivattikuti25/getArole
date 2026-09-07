@@ -54,64 +54,61 @@ export default function Navbar() {
         <nav className="hidden md:flex items-center gap-7 text-[14.5px] font-medium text-slate-600">
           <Link
             href="/explore"
-            className="hover:text-[#0062e3] transition-colors"
+            className="hover:text-[#0071e3] transition-colors"
           >
             Explore Jobs
           </Link>
           <Link
             href="/matches"
-            className="hover:text-[#0062e3] transition-colors"
+            className="hover:text-[#0071e3] transition-colors"
           >
-            Match Resume
+            AI Resume Matcher
           </Link>
           <Link
             href="/resume-builder"
-            className="hover:text-[#0062e3] transition-colors"
+            className="hover:text-[#0071e3] transition-colors"
           >
-            Resume Builder
+            LaTeX Resume Builder
           </Link>
           <Link
             href="/cover-letter"
-            className="hover:text-[#0062e3] transition-colors"
+            className="hover:text-[#0071e3] transition-colors"
           >
-            Cover Letter
+            Cover Letter AI
           </Link>
           <Link
             href="/dashboard"
-            className="hover:text-[#0062e3] transition-colors"
+            className="hover:text-[#0071e3] transition-colors"
           >
-            Applications
+            Kanban Tracker
           </Link>
         </nav>
 
         {/* Action CTAs */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="flex items-center gap-2.5 sm:gap-3">
+          <Link
+            href="/explore"
+            className="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-xl text-sm font-bold bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 hover:border-slate-400 shadow-2xs transition-all"
+          >
+            Explore Jobs
+          </Link>
+
           {user ? (
             <Link
               href="/dashboard"
-              className="btn-sweep inline-flex items-center gap-2 bg-[#0062e3] text-white px-4.5 py-2 rounded-xl text-sm font-semibold shadow-xs hover:shadow-md transition-shadow"
+              className="btn-sweep inline-flex items-center gap-2 bg-[#0071e3] text-white px-4.5 py-2 rounded-xl text-sm font-bold shadow-xs hover:shadow-md transition-shadow"
             >
-              <span>Go to Dashboard</span>
+              <span>Dashboard</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           ) : (
-            <>
-              <button
-                type="button"
-                onClick={() => openAuthModal("signin")}
-                className="text-sm font-semibold text-slate-700 hover:text-slate-900 px-3 py-2 transition-colors cursor-pointer"
-              >
-                Sign In
-              </button>
-              <button
-                type="button"
-                onClick={() => openAuthModal("signup")}
-                className="btn-sweep inline-flex items-center gap-2 bg-[#0062e3] text-white px-4.5 py-2 rounded-xl text-sm font-semibold shadow-xs hover:shadow-md transition-shadow cursor-pointer"
-              >
-                <span>Get Started</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </>
+            <button
+              type="button"
+              onClick={() => openAuthModal("signin")}
+              className="btn-sweep inline-flex items-center gap-1.5 bg-[#0071e3] hover:bg-[#0077ed] text-white px-4.5 py-2 rounded-xl text-sm font-bold shadow-xs hover:shadow-md transition-all cursor-pointer whitespace-nowrap"
+            >
+              <span>Sign In →</span>
+            </button>
           )}
         </div>
 

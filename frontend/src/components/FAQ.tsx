@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import React from "react";
 
 interface FAQItem {
   q: string;
@@ -10,24 +11,20 @@ interface FAQItem {
 
 const FAQS: FAQItem[] = [
   {
-    q: "How does getArole match my resume with jobs?",
-    a: "We extract your core skills, programming languages, and project experience, then compare them against open job descriptions to highlight matches and recommend areas to emphasize.",
+    q: "How does getArole differ from traditional job boards?",
+    a: "getArole provides a modern, high-precision job discovery platform. We ingest openings directly from official enterprise career portals (Greenhouse, Lever, Ashby, Workday) to ensure zero ghost jobs and direct application links without middleman redirects.",
   },
   {
-    q: "Is getArole free to use?",
-    a: "Yes. Searching jobs, checking your resume match, building single-page PDF resumes, and tracking your applications are completely free for job seekers.",
+    q: "How does the AI resume match score work?",
+    a: "When you upload your resume, getArole evaluates your technical skills and experience depth against the job description using AI analysis to give you a fit percentage and keyword suggestions.",
   },
   {
-    q: "Can I download my resume as a PDF?",
-    a: "Yes. You can edit your resume in the resume builder and export a clean, formatted single-page PDF whenever you need it.",
+    q: "Is getArole completely free for job seekers?",
+    a: "Yes! getArole provides 100% free access to explore verified live roles, AI resume matching evaluations, LaTeX resume exports, and the Kanban application tracking board.",
   },
   {
-    q: "How do I track jobs I've applied to?",
-    a: "Your dashboard includes an applications board where you can save roles and organize them by status: Saved, Applied, Interview, and Offer.",
-  },
-  {
-    q: "Is my resume data kept private?",
-    a: "Yes. Your resume is used only for matching roles and generating your profile. It is never sold or shared with third-party marketing companies.",
+    q: "How is my personal data and resume protected?",
+    a: "We strictly adhere to the Digital Personal Data Protection (DPDP) Act 2023 and GDPR guidelines. We do not sell user data to telemarketers or third-party recruiters. You can permanently delete your profile and resumes at any time.",
   },
 ];
 
@@ -39,49 +36,52 @@ export default function FAQ() {
   };
 
   return (
-    <section className="py-12 md:py-16" id="faq">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-xl mx-auto mb-8">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Frequently Asked Questions
-          </h2>
-          <p className="mt-2 text-sm text-slate-500">
-            Everything you need to know about finding roles and using getArole.
-          </p>
+    <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-24 relative z-10" id="faq">
+      {/* Section Header */}
+      <div className="text-center max-w-xl mx-auto mb-10">
+        <div className="text-xs font-extrabold text-[#0071e3] uppercase tracking-widest mb-2 font-outfit">
+          Frequently Asked Questions
         </div>
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-outfit">
+          Everything You Need to Know
+        </h2>
+      </div>
 
-        {/* Clean, Lineless Accordion (Zero Border Lines) */}
-        <div className="space-y-3">
-          {FAQS.map((faq, idx) => {
-            const isOpen = openIndex === idx;
-            return (
-              <div
-                key={faq.q}
-                className="rounded-2xl p-4 sm:p-5 bg-slate-50/70 hover:bg-slate-50 transition-colors"
+      {/* Accordion */}
+      <div className="space-y-3.5">
+        {FAQS.map((faq, idx) => {
+          const isOpen = openIndex === idx;
+          return (
+            <div
+              key={faq.q}
+              className={`rounded-2xl border transition-all ${
+                isOpen
+                  ? "bg-white border-blue-300 shadow-xs"
+                  : "bg-white border-slate-200/90 hover:border-slate-300"
+              }`}
+            >
+              <button
+                type="button"
+                onClick={() => toggle(idx)}
+                className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 font-semibold text-slate-900 hover:text-[#0071e3] transition-colors cursor-pointer"
+                aria-expanded={isOpen}
               >
-                <button
-                  type="button"
-                  onClick={() => toggle(idx)}
-                  className="w-full text-left flex items-center justify-between gap-4 font-semibold text-slate-900 hover:text-[#0062e3] transition-colors cursor-pointer"
-                  aria-expanded={isOpen}
-                >
-                  <span className="text-[15px] sm:text-base font-bold text-slate-900">{faq.q}</span>
-                  <ChevronDown
-                    className={`w-4 h-4 text-slate-400 flex-shrink-0 transition-transform duration-200 ${
-                      isOpen ? "rotate-180 text-[#0062e3]" : ""
-                    }`}
-                  />
-                </button>
+                <span className="text-base sm:text-lg font-bold text-slate-900">{faq.q}</span>
+                <ChevronDown
+                  className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${
+                    isOpen ? "rotate-180 text-[#0071e3]" : ""
+                  }`}
+                />
+              </button>
 
-                {isOpen && (
-                  <div className="mt-3 pr-6 text-sm text-slate-600 leading-relaxed font-normal">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+              {isOpen && (
+                <div className="px-5 sm:px-6 pb-5 sm:pb-6 text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
+                  {faq.a}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </section>
   );

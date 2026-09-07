@@ -1,53 +1,48 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import React from "react";
 import { useAuth } from "@/providers/auth-provider";
 
 export default function CTASection() {
   const { user, openAuthModal } = useAuth();
 
   return (
-    <section className="py-10 md:py-14">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden bg-gradient-to-br from-blue-50/70 via-white to-indigo-50/50 rounded-2xl md:rounded-3xl p-6 sm:p-10 md:p-12 border border-blue-200/80 shadow-md text-center">
-          <div className="relative z-10 max-w-xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-950 tracking-tight leading-tight">
-              Ready to find your next role?
-            </h2>
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24 relative z-10">
+      <div className="relative overflow-hidden bg-gradient-to-r from-[#0071e3] to-[#4facfe] rounded-3xl p-10 sm:p-16 text-center text-white shadow-2xl shadow-blue-600/30">
+        <div className="relative z-10 max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight font-outfit mb-3.5">
+            Ready to find your next role?
+          </h2>
 
-            <p className="mt-2.5 text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
-              Upload your resume to see which positions match your skills, or browse all active roles directly.
-            </p>
+          <p className="text-base sm:text-lg opacity-95 leading-relaxed mb-8">
+            Upload your resume and start getting matched with verified opportunities.
+          </p>
 
-            {/* Action Buttons */}
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              {user ? (
-                <Link
-                  href="/dashboard"
-                  className="btn-sweep inline-flex items-center gap-2 bg-[#0062e3] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow-md transition-all"
-                >
-                  <span>Go to Dashboard</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => openAuthModal("signup")}
-                  className="btn-sweep inline-flex items-center gap-2 bg-[#0062e3] text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-sm hover:shadow-md transition-all cursor-pointer"
-                >
-                  <span>Match Your Resume</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
-              )}
-
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            {user ? (
               <Link
-                href="/explore"
-                className="inline-flex items-center gap-2 bg-white text-slate-800 border border-slate-200 px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-slate-50 hover:border-slate-300 shadow-2xs transition-all"
+                href="/matches"
+                className="inline-flex items-center gap-2 bg-white text-[#0071e3] hover:bg-slate-50 px-7 py-3.5 rounded-xl text-sm font-extrabold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
               >
-                <span>Browse Roles →</span>
+                <span>Upload Resume &amp; Get Matched →</span>
               </Link>
-            </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => openAuthModal("signup")}
+                className="inline-flex items-center gap-2 bg-white text-[#0071e3] hover:bg-slate-50 px-7 py-3.5 rounded-xl text-sm font-extrabold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all cursor-pointer"
+              >
+                <span>Upload Resume &amp; Get Matched →</span>
+              </button>
+            )}
+
+            <Link
+              href="/explore"
+              className="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white border border-white/40 px-7 py-3.5 rounded-xl text-sm font-bold shadow-xs hover:-translate-y-0.5 transition-all"
+            >
+              <span>Explore Live Jobs</span>
+            </Link>
           </div>
         </div>
       </div>
