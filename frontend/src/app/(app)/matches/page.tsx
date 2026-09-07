@@ -9,10 +9,14 @@ import {
   CheckCircle2, 
   ExternalLink,
   Filter,
-  FileText
+  FileText,
+  Search,
+  Eye
 } from "lucide-react";
 import { useJobs } from "../explore/hooks/useJobs";
 import { extractSkillStrings } from "@/lib/skills-utils";
+import { Job } from "@/lib/types";
+import JobDrawer from "../explore/components/JobDrawer";
 
 const DEFAULT_SKILLS = [
   "React.js",
@@ -28,6 +32,7 @@ export default function MatchesPage() {
   const { jobs, loading } = useJobs();
   const [minScore, setMinScore] = useState<number>(75);
   const [userSkills, setUserSkills] = useState<string[]>(DEFAULT_SKILLS);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -94,6 +99,7 @@ export default function MatchesPage() {
       ...job,
       title: jobTitle || "Developer Opportunity",
       company: typeof job.company === "string" ? job.company : "Tech Enterprise",
+      description: jobDesc,
       fit_score: typeof job.fit_score === "number" ? job.fit_score : calculatedScore,
       matched_skills: matched,
       missing_skills: missing,
@@ -112,7 +118,7 @@ export default function MatchesPage() {
             <span>AI Semantic Match Engine</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-outfit">
-            Resume Match Screener
+            Explore Resume Matches
           </h1>
           <p className="text-slate-500 text-sm sm:text-base max-w-2xl mt-1">
             Real-time competency screening comparing your verified profile skills against 1,000+ open developer roles.
@@ -120,6 +126,13 @@ export default function MatchesPage() {
         </div>
 
         <div className="flex items-center gap-3">
+          <Link
+            href="/explore"
+            className="inline-flex items-center gap-2 bg-[#0062e3] hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-xs transition-colors"
+          >
+            <Search className="w-4 h-4" />
+            <span>Explore All Jobs</span>
+          </Link>
           <Link
             href="/resume-builder"
             className="inline-flex items-center gap-2 bg-white text-slate-700 border border-slate-200/80 hover:bg-slate-50 px-4 py-2 rounded-xl text-sm font-semibold shadow-2xs transition-colors"
@@ -210,7 +223,8 @@ export default function MatchesPage() {
           {filteredMatches.map((job) => (
             <div
               key={job.id}
-              className="bg-white/80 backdrop-blur-xl border border-slate-200/80 hover:border-blue-300 hover:shadow-md rounded-2xl p-5 transition-all flex flex-col justify-between group"
+              onClick={() => setSelectedJob(job)}
+              className="bg-white/80 backdrop-blur-xl border border-slate-200/80 hover:border-blue-400 hover:shadow-lg rounded-2xl p-5 transition-all flex flex-col justify-between group cursor-pointer"
             >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-2.5">
@@ -265,25 +279,61 @@ export default function MatchesPage() {
                     )}
                   </div>
                 </div>
+
+                {/* Job Description (JD) Sneak Peek */}
+                {job.description && (
+                  <div className="mt-3.5 bg-slate-50/70 p-3 rounded-xl border border-slate-100/90">
+                    <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                      <span>Job Description Overview</span>
+                      <span className="text-[#0062e3] font-semibold lowercase tracking-normal flex items-center gap-1">
+                        <Eye className="w-3 h-3" /> View full JD
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed font-normal">
+                      {job.description}
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Bottom Actions */}
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span className="text-slate-400 font-medium">Source: {job.platform || "Direct"}</span>
-                <a
-                  href={job.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-sweep inline-flex items-center gap-1.5 bg-[#0062e3] text-white px-3.5 py-1.5 rounded-lg font-bold shadow-xs hover:shadow-sm transition-all"
-                >
-                  <span>Apply Now</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
+                <span className="text-slate-400 font-medium">Source: {job.platform || "Direct ATS"}</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedJob(job);
+                    }}
+                    className="inline-flex items-center gap-1.5 bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg font-bold shadow-2xs transition-colors cursor-pointer"
+                  >
+                    <FileText className="w-3.5 h-3.5 text-slate-400" />
+                    <span>View JD</span>
+                  </button>
+                  <a
+                    href={job.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="btn-sweep inline-flex items-center gap-1.5 bg-[#0062e3] text-white px-3.5 py-1.5 rounded-lg font-bold shadow-xs hover:shadow-sm transition-all"
+                  >
+                    <span>Apply Now</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
               </div>
             </div>
           ))}
         </div>
       )}
+
+      {/* ── Rich Job Drawer with Full JD & Match Evaluation ── */}
+      <JobDrawer
+        job={selectedJob}
+        isOpen={!!selectedJob}
+        onClose={() => setSelectedJob(null)}
+      />
     </div>
   );
 }

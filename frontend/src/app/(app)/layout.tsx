@@ -18,7 +18,7 @@ import { useAuth } from '@/providers/auth-provider';
 
 const navigation = [
   { name: 'Explore Jobs', href: '/explore', icon: Search },
-  { name: 'Match Resume', href: '/matches', icon: Sparkles },
+  { name: 'Explore Matches', href: '/matches', icon: Sparkles },
   { name: 'Applications', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Resume Builder', href: '/resume-builder', icon: Sparkles },
   { name: 'Cover Letter', href: '/cover-letter', icon: FileText },
@@ -43,9 +43,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             get<span className="text-[#0062e3]">A</span>role
           </span>
         </Link>
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-slate-600 hover:text-slate-900">
-          <Menu className="w-6 h-6" />
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/explore"
+            className="text-xs font-bold text-[#0062e3] bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100 flex items-center gap-1"
+          >
+            <Search className="w-3 h-3" />
+            <span>Explore</span>
+          </Link>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-slate-600 hover:text-slate-900">
+            <Menu className="w-6 h-6" />
+          </button>
+        </div>
       </div>
 
       <div className="flex">

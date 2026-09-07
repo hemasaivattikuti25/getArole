@@ -25,7 +25,7 @@ export default function ExplorePage() {
       {/* Header section */}
       <div className="mb-8">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tight font-outfit mb-2">
-          Discover Opportunities
+          Explore Jobs & Opportunities
         </h1>
         <p className="text-slate-500 text-sm sm:text-base max-w-2xl">
           Browse verified roles from top tech companies. Our AI matches your profile to the best fit.

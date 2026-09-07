@@ -96,6 +96,23 @@ export default function CoverLetterPage() {
             });
           }
         }
+
+        if (typeof window !== "undefined") {
+          const params = new URLSearchParams(window.location.search);
+          const roleParam = params.get("role");
+          const companyParam = params.get("company");
+          if (roleParam || companyParam) {
+            setFormData((prev) => {
+              const updated = {
+                ...prev,
+                targetRole: roleParam || prev.targetRole,
+                targetCompany: companyParam || prev.targetCompany,
+              };
+              setGeneratedLetter(generateLetterTemplate(updated));
+              return updated;
+            });
+          }
+        }
       } catch {}
     }, 0);
     return () => clearTimeout(timer);
