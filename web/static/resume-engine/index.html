@@ -14,6 +14,11 @@
 <script>
     if (window.self !== window.top) {
       document.documentElement.classList.add('in-iframe');
+      window.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('header a').forEach(el => {
+          if (!el.getAttribute('target')) el.setAttribute('target', '_top');
+        });
+      });
     }
     function setResumeMobileTab(mode) {
       const btnEdit = document.getElementById('btn-tab-edit');
@@ -33,7 +38,6 @@
     
   </script>
 <style>
-    html.in-iframe header,
     html.in-iframe .skip-link,
     html.in-iframe .ambient-glow-wrap {
       display: none !important;

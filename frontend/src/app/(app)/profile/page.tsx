@@ -1233,24 +1233,6 @@ export default function ProfilePage() {
                   </div>
                 </div>
               </div>
-
-              {/* Danger Zone */}
-              <div className="bg-rose-50/50 rounded-2xl border border-rose-200 p-6">
-                <div className="flex items-center gap-2 text-rose-700 font-extrabold text-sm mb-2">
-                  <ShieldAlert className="w-4 h-4" />
-                  <span>Data Reset & Clear Cache</span>
-                </div>
-                <p className="text-xs text-rose-600 mb-4 leading-relaxed">
-                  Reset your profile dossier, cleared skills, and cached resume data across this browser.
-                </p>
-                <button
-                  type="button"
-                  onClick={handleDeleteAllData}
-                  className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition-colors shadow-2xs cursor-pointer"
-                >
-                  Clear All Profile Data
-                </button>
-              </div>
             </div>
           )}
 

@@ -119,7 +119,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               className="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 transition-colors"
             >
               <Settings className="w-4 h-4 text-slate-400" />
-              Preferences
+              Account Settings
             </Link>
             <button
               type="button"
