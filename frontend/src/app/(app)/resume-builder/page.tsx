@@ -6,7 +6,7 @@ import { Sparkles, ArrowUpRight, RefreshCw } from "lucide-react";
 export default function ResumeBuilderPage() {
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [builderUrl] = useState<string>("/resume-builder/index.html");
+  const [builderUrl] = useState<string>("/resume-engine/index.html");
 
   return (
     <div className="relative min-h-screen pt-4 pb-12 px-2 sm:px-4 lg:px-6 max-w-[1600px] mx-auto">

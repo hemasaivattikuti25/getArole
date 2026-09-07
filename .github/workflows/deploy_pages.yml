@@ -28,21 +28,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package.json
       
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        
-      - name: Merge Next.js with Legacy Static Files
+
+      - name: Build Next.js Application
         run: |
-          # Copy the Next.js index (Landing Page) over the old landing page
-          cp -f frontend/out/index.html web/static/index.html
-          # Copy Next.js assets
-          cp -r frontend/out/_next web/static/
-          
+          cd frontend
+          npm install
+          npm run build
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './web/static'
+          path: './frontend/out'
           
       - name: Deploy to GitHub Pages
         id: deployment
