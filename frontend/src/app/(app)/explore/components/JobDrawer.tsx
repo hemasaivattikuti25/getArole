@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Job } from "@/lib/types";
 import { useEffect } from "react";
+import { extractSkillStrings } from "@/lib/skills-utils";
 
 interface JobDrawerProps {
   job: Job | null;
@@ -104,12 +105,12 @@ export default function JobDrawer({ job, isOpen, onClose }: JobDrawerProps) {
               </div>
 
               {/* Skills */}
-              {job.skills && job.skills.length > 0 && (
+              {extractSkillStrings(job.skills).length > 0 && (
                 <div className="mb-10">
                   <h3 className="text-[13px] font-bold text-slate-800 uppercase tracking-wider mb-4">Required Skills</h3>
                   <div className="flex flex-wrap gap-2">
-                    {job.skills.map(skill => (
-                      <span key={skill} className="px-3 py-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 rounded-lg text-xs font-bold tracking-wide">
+                    {extractSkillStrings(job.skills).map((skill, sIdx) => (
+                      <span key={`${skill}-${sIdx}`} className="px-3 py-1.5 bg-indigo-50 border border-indigo-100 text-indigo-700 rounded-lg text-xs font-bold tracking-wide">
                         {skill}
                       </span>
                     ))}

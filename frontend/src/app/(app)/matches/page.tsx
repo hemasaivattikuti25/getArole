@@ -12,41 +12,78 @@ import {
   FileText
 } from "lucide-react";
 import { useJobs } from "../explore/hooks/useJobs";
+import { extractSkillStrings } from "@/lib/skills-utils";
+
+const DEFAULT_SKILLS = [
+  "React.js",
+  "TypeScript",
+  "Node.js",
+  "FastAPI",
+  "PostgreSQL",
+  "Docker",
+  "Tailwind CSS",
+];
 
 export default function MatchesPage() {
   const { jobs, loading } = useJobs();
   const [minScore, setMinScore] = useState<number>(75);
-  const [userSkills, setUserSkills] = useState<string[]>([
-    "React.js",
-    "TypeScript",
-    "Node.js",
-    "FastAPI",
-    "PostgreSQL",
-    "Docker",
-    "Tailwind CSS",
-  ]);
+  const [userSkills, setUserSkills] = useState<string[]>(DEFAULT_SKILLS);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const saved = localStorage.getItem("getarole_resume_v2");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (parsed.skills && Array.isArray(parsed.skills)) {
-            setUserSkills(parsed.skills);
+      try {
+        let loadedSkills: string[] = [];
+        const savedResume = localStorage.getItem("getarole_resume_v2");
+        if (savedResume) {
+          try {
+            const parsed = JSON.parse(savedResume);
+            if (parsed.skills) {
+              loadedSkills = extractSkillStrings(parsed.skills);
+            }
+          } catch {}
+        }
+
+        if (loadedSkills.length === 0) {
+          const savedProfile = localStorage.getItem("getarole_profile");
+          if (savedProfile) {
+            try {
+              const prof = JSON.parse(savedProfile);
+              const profSkills = [
+                ...(prof.skills || []),
+                ...(prof.skills_languages || []),
+                ...(prof.skills_frameworks || []),
+                ...(prof.skills_cloud || []),
+                ...(prof.skills_tools || []),
+              ];
+              loadedSkills = extractSkillStrings(profSkills);
+            } catch {}
           }
-        } catch {}
+        }
+
+        if (loadedSkills.length > 0) {
+          setUserSkills(loadedSkills);
+        }
+      } catch (err) {
+        console.warn("Skill load warning:", err);
       }
     }, 0);
     return () => clearTimeout(timer);
   }, []);
 
-  // Compute match score and skills for each job
-  const matchedJobs = jobs.map((job) => {
-    const jobText = `${job.title} ${job.description || ""} ${(job.skills || []).join(" ")}`.toLowerCase();
-    const matched = userSkills.filter((s) => jobText.includes(s.toLowerCase()));
-    const missing = userSkills.filter((s) => !jobText.includes(s.toLowerCase())).slice(0, 3);
-    
+  // Compute match score and skills for each job defensively
+  const matchedJobs = (jobs || []).map((job) => {
+    const jobTitle = typeof job.title === "string" ? job.title : "";
+    const jobDesc = typeof job.description === "string" ? job.description : "";
+    const jobSkills = extractSkillStrings(job.skills);
+    const jobText = `${jobTitle} ${jobDesc} ${jobSkills.join(" ")}`.toLowerCase();
+
+    const matched = userSkills.filter(
+      (s) => typeof s === "string" && s.trim().length > 0 && jobText.includes(s.toLowerCase())
+    );
+    const missing = userSkills
+      .filter((s) => typeof s === "string" && s.trim().length > 0 && !jobText.includes(s.toLowerCase()))
+      .slice(0, 3);
+
     // Deterministic match score based on overlap
     const calculatedScore = Math.min(
       98,
@@ -55,7 +92,9 @@ export default function MatchesPage() {
 
     return {
       ...job,
-      fit_score: job.fit_score || calculatedScore,
+      title: jobTitle || "Developer Opportunity",
+      company: typeof job.company === "string" ? job.company : "Tech Enterprise",
+      fit_score: typeof job.fit_score === "number" ? job.fit_score : calculatedScore,
       matched_skills: matched,
       missing_skills: missing,
     };
@@ -99,14 +138,17 @@ export default function MatchesPage() {
               Active Screening Skills:
             </span>
             <div className="flex flex-wrap gap-1.5 mt-2">
-              {userSkills.map((skill) => (
-                <span
-                  key={skill}
-                  className="px-2.5 py-1 bg-white text-slate-700 rounded-lg border border-slate-200 text-xs font-semibold shadow-2xs"
-                >
-                  {skill}
-                </span>
-              ))}
+              {userSkills.map((skill, idx) => {
+                const label = typeof skill === "string" ? skill : String(skill || "");
+                return (
+                  <span
+                    key={`${label}-${idx}`}
+                    className="px-2.5 py-1 bg-white text-slate-700 rounded-lg border border-slate-200 text-xs font-semibold shadow-2xs"
+                  >
+                    {label}
+                  </span>
+                );
+              })}
             </div>
           </div>
           <div className="text-right flex-shrink-0">
@@ -207,11 +249,17 @@ export default function MatchesPage() {
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {job.matched_skills && job.matched_skills.length > 0 ? (
-                      job.matched_skills.map((s) => (
-                        <span key={s} className="text-xs bg-emerald-50 text-emerald-800 font-medium px-2 py-0.5 rounded border border-emerald-200/80">
-                          {s}
-                        </span>
-                      ))
+                      job.matched_skills.map((s, sIdx) => {
+                        const sLabel = typeof s === "string" ? s : String(s || "");
+                        return (
+                          <span
+                            key={`${job.id}-${sLabel}-${sIdx}`}
+                            className="text-xs bg-emerald-50 text-emerald-800 font-medium px-2 py-0.5 rounded border border-emerald-200/80"
+                          >
+                            {sLabel}
+                          </span>
+                        );
+                      })
                     ) : (
                       <span className="text-xs text-slate-400">Core software fundamentals aligned</span>
                     )}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   FileText, Sparkles, Copy, Check, Download, 
   RefreshCw, Briefcase, UserCheck, Wand2
@@ -47,21 +47,59 @@ const SAMPLE_PRESETS: Record<string, Partial<CoverLetterForm>> = {
 
 export default function CoverLetterPage() {
   const [formData, setFormData] = useState<CoverLetterForm>({
-    candidateName: "Hemasaivattikuti",
-    candidateEmail: "sai@example.com",
-    candidatePhone: "+1 (555) 349-2810",
+    candidateName: "Candidate",
+    candidateEmail: "",
+    candidatePhone: "",
     candidateLocation: "Bengaluru, India",
-    targetRole: "Senior Platform / Cloud Engineer",
-    targetCompany: "Postman",
-    hiringManager: "Platform Engineering Hiring Team",
+    targetRole: "Senior Software Engineer",
+    targetCompany: "Google",
+    hiringManager: "Engineering Hiring Team",
     tone: "professional",
-    keyHighlights: "Architected high-throughput async scraper gateways handling 100k+ job listings daily; built Prometheus observability pipelines with 99.9% uptime SLOs.",
+    keyHighlights: "Architected high-throughput distributed systems scaling to 10k+ req/sec with 99.99% uptime SLA.",
     jobDescription: ""
   });
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
   const [generatedLetter, setGeneratedLetter] = useState<string>(() => generateLetterTemplate(formData));
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      try {
+        const profRaw = localStorage.getItem("getarole_profile");
+        const userRaw = localStorage.getItem("getarole_user");
+        if (profRaw) {
+          const p = JSON.parse(profRaw);
+          setFormData((prev) => {
+            const updated = {
+              ...prev,
+              candidateName: p.name || prev.candidateName,
+              candidateEmail: p.email || prev.candidateEmail,
+              candidatePhone: p.phone || prev.candidatePhone,
+              candidateLocation: p.location || p.city || prev.candidateLocation,
+              targetRole: p.headline || prev.targetRole,
+            };
+            setGeneratedLetter(generateLetterTemplate(updated));
+            return updated;
+          });
+        } else if (userRaw) {
+          const u = JSON.parse(userRaw);
+          if (u.displayName || u.name) {
+            setFormData((prev) => {
+              const updated = {
+                ...prev,
+                candidateName: u.displayName || u.name || prev.candidateName,
+                candidateEmail: u.email || prev.candidateEmail,
+              };
+              setGeneratedLetter(generateLetterTemplate(updated));
+              return updated;
+            });
+          }
+        }
+      } catch {}
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   function generateLetterTemplate(data: CoverLetterForm): string {
     const today = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });

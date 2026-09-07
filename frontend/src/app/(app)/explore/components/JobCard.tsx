@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Job } from "@/lib/types";
+import { extractSkillStrings } from "@/lib/skills-utils";
 
 interface JobCardProps {
   job: Job;
@@ -55,8 +56,8 @@ export default function JobCard({ job, onClick, index }: JobCardProps) {
         </div>
         
         <div className="flex flex-wrap gap-2">
-          {(job.skills || []).slice(0, 4).map((skill: string) => (
-            <span key={skill} className="text-[10px] font-bold text-slate-500 bg-slate-100/80 px-2 py-1 rounded-md uppercase tracking-wider">
+          {extractSkillStrings(job.skills).slice(0, 4).map((skill, sIdx) => (
+            <span key={`${skill}-${sIdx}`} className="text-[10px] font-bold text-slate-500 bg-slate-100/80 px-2 py-1 rounded-md uppercase tracking-wider">
               {skill}
             </span>
           ))}
