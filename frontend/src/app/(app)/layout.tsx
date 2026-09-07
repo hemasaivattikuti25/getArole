@@ -17,9 +17,9 @@ import BackgroundAurora from '@/components/BackgroundAurora';
 import { useAuth } from '@/providers/auth-provider';
 
 const navigation = [
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Explore Jobs', href: '/explore', icon: Search },
   { name: 'Explore Matches', href: '/matches', icon: Sparkles },
-  { name: 'Applications', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Resume Builder', href: '/resume-builder', icon: Sparkles },
   { name: 'Cover Letter', href: '/cover-letter', icon: FileText },
   { name: 'Profile', href: '/profile', icon: UserSquare2 },
