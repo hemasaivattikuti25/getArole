@@ -3,12 +3,19 @@
 import { useState, useMemo } from "react";
 import { Search, X, Bookmark, RotateCcw } from "lucide-react";
 import { Job } from "@/lib/types";
+import { SYNONYM_MAP } from "@/lib/linkedin-utils";
 import ExploreFilters, { ExploreFiltersState } from "./components/ExploreFilters";
 import JobCard from "./components/JobCard";
 import JobDrawer from "./components/JobDrawer";
 import { useJobs } from "./hooks/useJobs";
 
-const POPULAR_TAGS = [
+interface PopularTag {
+  label: string;
+  icon: string;
+  query: string;
+}
+
+const POPULAR_TAGS: PopularTag[] = [
   { label: "Python", icon: "🐍", query: "Python" },
   { label: "React", icon: "⚛️", query: "React" },
   { label: "SDE", icon: "🚀", query: "SDE" },
@@ -33,21 +40,24 @@ export default function ExplorePage() {
 
   const { jobs, loading, error } = useJobs(filters);
 
-  // Real-time client search and sorting
+  // Real-time client search with intelligent synonym and token expansion
   const filteredJobs = useMemo(() => {
     let result = [...jobs];
 
     if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
+      const qWords = searchQuery.toLowerCase().trim().split(/\s+/).filter(Boolean);
       result = result.filter((j) => {
-        const inTitle = (j.title || "").toLowerCase().includes(q);
-        const inCompany = (j.company || "").toLowerCase().includes(q);
-        const inLocation = (j.location || j.city || "").toLowerCase().includes(q);
-        const inDesc = (j.description || "").toLowerCase().includes(q);
-        const inSkills =
-          Array.isArray(j.skills) &&
-          j.skills.some((s) => String(s).toLowerCase().includes(q));
-        return inTitle || inCompany || inLocation || inDesc || inSkills;
+        const title = (j.title || "").toLowerCase();
+        const comp = (j.company || "").toLowerCase();
+        const loc = `${j.location || ""} ${j.city || ""}`.toLowerCase();
+        const desc = (j.description || "").toLowerCase();
+        const skills = (j.skills || []).map((s) => String(s).toLowerCase()).join(" ");
+        const allText = `${title} ${comp} ${loc} ${skills} ${desc}`;
+
+        return qWords.every((token) => {
+          const expansions = SYNONYM_MAP[token] || [token];
+          return expansions.some((exp) => allText.includes(exp));
+        });
       });
     }
 

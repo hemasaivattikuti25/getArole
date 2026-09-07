@@ -76,6 +76,8 @@ interface ProfileData {
     github: string;
     linkedin: string;
     portfolio: string;
+    leetcode?: string;
+    twitter?: string;
   };
 }
 
@@ -1168,10 +1170,10 @@ export default function ProfilePage() {
                   </h2>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
-                      LinkedIn Profile
+                      💼 LinkedIn Profile
                     </label>
                     <input
                       type="url"
@@ -1183,7 +1185,7 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
-                      GitHub Profile
+                      🐙 GitHub Profile
                     </label>
                     <input
                       type="url"
@@ -1195,7 +1197,7 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
-                      Portfolio Website
+                      🌐 Portfolio Website
                     </label>
                     <input
                       type="url"
@@ -1203,6 +1205,30 @@ export default function ProfilePage() {
                       onChange={(e) => setProfile({ ...profile, links: { ...(profile.links || {}), portfolio: e.target.value } })}
                       className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-600 bg-white"
                       placeholder="https://..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                      ⚡ LeetCode Profile
+                    </label>
+                    <input
+                      type="url"
+                      value={profile.links?.leetcode || ""}
+                      onChange={(e) => setProfile({ ...profile, links: { ...(profile.links || {}), leetcode: e.target.value } })}
+                      className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-600 bg-white"
+                      placeholder="https://leetcode.com/u/..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-extrabold text-slate-700 uppercase tracking-wider mb-1.5">
+                      🐦 Twitter / X
+                    </label>
+                    <input
+                      type="url"
+                      value={profile.links?.twitter || ""}
+                      onChange={(e) => setProfile({ ...profile, links: { ...(profile.links || {}), twitter: e.target.value } })}
+                      className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-600 bg-white"
+                      placeholder="https://x.com/..."
                     />
                   </div>
                 </div>
