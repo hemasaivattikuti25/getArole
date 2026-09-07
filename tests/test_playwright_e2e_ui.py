@@ -13,11 +13,21 @@ Validates:
 import os
 
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "..", "web", "static")
+FRONTEND_OUT = os.path.join(os.path.dirname(__file__), "..", "frontend", "out")
 
 def get_html_content(page_rel_path: str) -> str:
-    full_path = os.path.join(STATIC_DIR, page_rel_path)
-    with open(full_path, "r", encoding="utf-8") as f:
-        return f.read()
+    base_name = page_rel_path.split("/")[0]
+    candidates = [
+        os.path.join(FRONTEND_OUT, f"{base_name}.html"),
+        os.path.join(FRONTEND_OUT, page_rel_path),
+        os.path.join(STATIC_DIR, page_rel_path),
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            with open(p, "r", encoding="utf-8") as f:
+                return f.read()
+    raise FileNotFoundError(f"Page {page_rel_path} not found in {FRONTEND_OUT} or {STATIC_DIR}")
+
 
 # ── 1. iOS Auto-Zoom Prevention Test ──────────────────────────────────────────
 def test_ios_input_auto_zoom_prevention_on_mobile():

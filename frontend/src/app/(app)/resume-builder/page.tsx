@@ -6,16 +6,7 @@ import { Sparkles, ArrowUpRight, RefreshCw } from "lucide-react";
 export default function ResumeBuilderPage() {
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [builderUrl] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      const envUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-      if (envUrl) return `${envUrl.replace(/\/$/, "")}/resume-builder`;
-      if (window.location.port === "3000" || window.location.hostname === "localhost") {
-        return "http://localhost:8000/resume-builder";
-      }
-    }
-    return "/resume-builder";
-  });
+  const [builderUrl] = useState<string>("/resume-builder/index.html");
 
   return (
     <div className="relative min-h-screen pt-4 pb-12 px-2 sm:px-4 lg:px-6 max-w-[1600px] mx-auto">

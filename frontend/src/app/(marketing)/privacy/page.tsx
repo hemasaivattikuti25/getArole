@@ -159,9 +159,24 @@ export default function PrivacyPage() {
             </ul>
           </section>
 
+          <section id="dpdp" className="space-y-3 pt-6 border-t border-slate-100">
+            <h2 className="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-indigo-600" /> 5. DPDP Act 2023 Compliance & Grievance Redressal
+            </h2>
+            <p>
+              Under India’s <strong>Digital Personal Data Protection Act (DPDP Act 2023)</strong>, you are designated as a Data Principal with enforceable rights of consent withdrawal, grievance redressal, and data erasure.
+            </p>
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-1 text-xs text-slate-600">
+              <div className="font-bold text-slate-900">Grievance Redressal Officer:</div>
+              <div>Grievance Officer: Hemasaivattikuti (Lead Data Protection Officer)</div>
+              <div>Email: grievance@getarole.com | Response SLA: &lt;48 business hours</div>
+              <div>Address: getArole Technology Labs, Bengaluru, Karnataka, India</div>
+            </div>
+          </section>
+
           <section id="contact" className="space-y-3 pt-6 border-t border-slate-100 text-xs">
             <h2 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-              5. Contact Our Data Protection Team
+              6. Contact Our Data Protection Team
             </h2>
             <p className="text-slate-600">
               If you have any questions or wish to file a data deletion request, please reach out to:

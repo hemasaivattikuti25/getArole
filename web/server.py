@@ -30,6 +30,7 @@ configure_logging()
 # Dynamic Directory Paths (Works locally and on Vercel/Render Linux containers)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATIC_DIR = os.path.join(BASE_DIR, "web", "static")
+FRONTEND_OUT_DIR = os.path.join(BASE_DIR, "frontend", "out")
 
 # Job cache file paths
 DATA_DIR = os.path.join(BASE_DIR, "data")
@@ -459,20 +460,60 @@ async def get_candidate_by_id(
     
     return {"candidate": candidate}
 
+def serve_nextjs_page(page_name: str) -> HTMLResponse:
+    """Serves a static prerendered HTML page from the consolidated Next.js application."""
+    if os.path.exists(FRONTEND_OUT_DIR):
+        candidates = [
+            os.path.join(FRONTEND_OUT_DIR, f"{page_name}.html"),
+            os.path.join(FRONTEND_OUT_DIR, page_name, "index.html"),
+        ]
+        if page_name == "index":
+            candidates.insert(0, os.path.join(FRONTEND_OUT_DIR, "index.html"))
+        for path in candidates:
+            if os.path.exists(path):
+                with open(path, "r", encoding="utf-8") as f:
+                    return HTMLResponse(content=f.read())
+
+    # Fallback to legacy static dir if ever needed
+    legacy_file = os.path.join(STATIC_DIR, page_name, "index.html") if page_name != "index" else os.path.join(STATIC_DIR, "index.html")
+    if os.path.exists(legacy_file):
+        with open(legacy_file, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+
+    return HTMLResponse(content=f"<!DOCTYPE html><html><head><title>{page_name.title()} | getArole</title></head><body><h1>getArole — {page_name.title()}</h1></body></html>")
+
+
 # ── Resume Builder & Cover Letter Builder Pages ───────────────────────────────
 @app.get("/resume-builder", response_class=HTMLResponse)
 @app.get("/resume-builder/", response_class=HTMLResponse)
 async def serve_resume_builder():
-    rb_file = os.path.join(STATIC_DIR, "resume-builder", "index.html")
-    return render_template(rb_file)
-    return "<h1>Resume Builder — Starting Up</h1>"
+    return serve_nextjs_page("resume-builder")
+
+@app.get("/resume-builder/index.html", response_class=HTMLResponse)
+async def serve_resume_builder_standalone():
+    rb_file = os.path.join(FRONTEND_OUT_DIR, "resume-builder", "index.html")
+    if os.path.exists(rb_file):
+        with open(rb_file, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return serve_nextjs_page("resume-builder")
 
 @app.get("/cover-letter-builder", response_class=HTMLResponse)
 @app.get("/cover-letter-builder/", response_class=HTMLResponse)
 async def serve_cover_letter_builder():
-    cl_file = os.path.join(STATIC_DIR, "cover-letter-builder", "index.html")
-    return render_template(cl_file)
-    return "<h1>Cover Letter Builder — Starting Up</h1>"
+    cl_file = os.path.join(FRONTEND_OUT_DIR, "cover-letter-builder", "index.html")
+    if os.path.exists(cl_file):
+        with open(cl_file, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return serve_nextjs_page("cover-letter")
+
+@app.get("/cover-letter-builder/index.html", response_class=HTMLResponse)
+async def serve_cover_letter_builder_standalone():
+    cl_file = os.path.join(FRONTEND_OUT_DIR, "cover-letter-builder", "index.html")
+    if os.path.exists(cl_file):
+        with open(cl_file, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    return serve_nextjs_page("cover-letter")
+
 
 # ── AI Bullet Enhancer ───────────────────────────────────────────────────────
 class BulletEnhanceRequest(BaseModel):
@@ -910,127 +951,109 @@ async def generate_cover_letter_api(req: CoverLetterRequest, request: Request):
         raise HTTPException(status_code=500, detail="AI cover letter generation failed.")
 
 
+# Mount Next.js static assets (_next)
+next_assets_dir = os.path.join(FRONTEND_OUT_DIR, "_next")
+if os.path.exists(next_assets_dir):
+    app.mount("/_next", StaticFiles(directory=next_assets_dir), name="next_assets")
+
+# Mount client scripts and styles
+js_dir = os.path.join(FRONTEND_OUT_DIR, "js")
+if not os.path.exists(js_dir):
+    js_dir = os.path.join(STATIC_DIR, "js")
+if os.path.exists(js_dir):
+    app.mount("/js", StaticFiles(directory=js_dir), name="js")
+
+css_dir = os.path.join(FRONTEND_OUT_DIR, "css")
+if not os.path.exists(css_dir):
+    css_dir = os.path.join(STATIC_DIR, "css")
+if os.path.exists(css_dir):
+    app.mount("/css", StaticFiles(directory=css_dir), name="css")
+
 if os.path.exists(STATIC_DIR):
     app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-    js_dir = os.path.join(STATIC_DIR, "js")
-    if os.path.exists(js_dir):
-        app.mount("/js", StaticFiles(directory=js_dir), name="js")
-    css_dir = os.path.join(STATIC_DIR, "css")
-    if os.path.exists(css_dir):
-        app.mount("/css", StaticFiles(directory=css_dir), name="css")
 
 def create_root_handler(filename):
     @app.get(f"/{filename}")
     async def _serve_file():
-        fpath = os.path.join(STATIC_DIR, filename)
-        if os.path.exists(fpath):
-            media_type = "application/javascript" if filename.endswith(".js") else \
-                         "image/svg+xml" if filename.endswith(".svg") else \
-                         "image/png" if filename.endswith(".png") else \
-                         "image/x-icon" if filename.endswith(".ico") else \
-                         "text/plain" if filename.endswith(".txt") else \
-                         "application/xml" if filename.endswith(".xml") else None
-            with open(fpath, "rb") as f:
-                return Response(content=f.read(), media_type=media_type)
+        for base in [FRONTEND_OUT_DIR, STATIC_DIR]:
+            fpath = os.path.join(base, filename)
+            if os.path.exists(fpath):
+                media_type = "application/javascript" if filename.endswith(".js") else \
+                             "image/svg+xml" if filename.endswith(".svg") else \
+                             "image/png" if filename.endswith(".png") else \
+                             "image/x-icon" if filename.endswith(".ico") else \
+                             "text/plain" if filename.endswith(".txt") else \
+                             "application/xml" if filename.endswith(".xml") else None
+                with open(fpath, "rb") as f:
+                    return Response(content=f.read(), media_type=media_type)
         raise HTTPException(status_code=404, detail="Not found")
 
 for file in ["firebase-auth.js", "logo.svg", "founder.png", "favicon.png", "favicon.ico", "apple-touch-icon.png", "og-image.png", "robots.txt", "sitemap.xml", "llms.txt"]:
     create_root_handler(file)
+
 @app.get("/sw.js")
 async def serve_service_worker():
-    sw_path = os.path.join(STATIC_DIR, "sw.js")
-    if os.path.exists(sw_path):
-        with open(sw_path, "r", encoding="utf-8") as f:
-            return Response(content=f.read(), media_type="application/javascript", headers={"Cache-Control": "no-cache, must-revalidate", "Service-Worker-Allowed": "/"})
+    for base in [FRONTEND_OUT_DIR, STATIC_DIR]:
+        sw_path = os.path.join(base, "sw.js")
+        if os.path.exists(sw_path):
+            with open(sw_path, "r", encoding="utf-8") as f:
+                return Response(content=f.read(), media_type="application/javascript", headers={"Cache-Control": "no-cache, must-revalidate", "Service-Worker-Allowed": "/"})
     raise HTTPException(status_code=404, detail="Service worker not found.")
-def render_template(filepath: str) -> str:
-    if not os.path.exists(filepath):
-        return "<h1>Not Found</h1>"
-        
-    with open(filepath, "r", encoding="utf-8") as f:
-        html = f.read()
-        
-    header_path = os.path.join(STATIC_DIR, "components", "header.html")
-    if "<!-- GLOBAL_HEADER -->" in html and os.path.exists(header_path):
-        with open(header_path, "r", encoding="utf-8") as hf:
-            html = html.replace("<!-- GLOBAL_HEADER -->", hf.read())
-            
-    footer_path = os.path.join(STATIC_DIR, "components", "footer.html")
-    if "<!-- GLOBAL_FOOTER -->" in html and os.path.exists(footer_path):
-        with open(footer_path, "r", encoding="utf-8") as ff:
-            html = html.replace("<!-- GLOBAL_FOOTER -->", ff.read())
-            
-    return html
-
 
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_root():
-    index_file = os.path.join(STATIC_DIR, "index.html")
-    return render_template(index_file)
+    return serve_nextjs_page("index")
 
 @app.get("/candidate", response_class=HTMLResponse)
 @app.get("/candidate/", response_class=HTMLResponse)
 async def serve_candidate():
-    cand_file = os.path.join(STATIC_DIR, "candidate", "index.html")
-    return render_template(cand_file)
-    return "<h1>Candidate Not Found</h1>"
+    return serve_nextjs_page("crm")
 
 @app.get("/onboarding", response_class=HTMLResponse)
 @app.get("/onboarding/", response_class=HTMLResponse)
 async def serve_onboarding():
-    ob_file = os.path.join(STATIC_DIR, "onboarding", "index.html")
-    return render_template(ob_file)
-    return "<h1>getArole Onboarding</h1>"
+    return serve_nextjs_page("onboarding")
 
 @app.get("/dashboard", response_class=HTMLResponse)
 @app.get("/dashboard/", response_class=HTMLResponse)
 async def serve_dashboard():
-    dash_file = os.path.join(STATIC_DIR, "dashboard", "index.html")
-    return render_template(dash_file)
-    return "<h1>getArole Dashboard</h1>"
+    return serve_nextjs_page("dashboard")
 
 @app.get("/explore", response_class=HTMLResponse)
 @app.get("/explore/", response_class=HTMLResponse)
 async def serve_explore():
-    exp_file = os.path.join(STATIC_DIR, "explore", "index.html")
-    return render_template(exp_file)
-    return "<h1>getArole Explore</h1>"
+    return serve_nextjs_page("explore")
 
 @app.get("/matches", response_class=HTMLResponse)
 @app.get("/matches/", response_class=HTMLResponse)
 async def serve_matches():
-    match_file = os.path.join(STATIC_DIR, "matches", "index.html")
-    return render_template(match_file)
-    return "<h1>getArole Matches</h1>"
+    return serve_nextjs_page("matches")
 
 @app.get("/profile", response_class=HTMLResponse)
 @app.get("/profile/", response_class=HTMLResponse)
 async def serve_profile():
-    prof_file = os.path.join(STATIC_DIR, "profile", "index.html")
-    return render_template(prof_file)
-    return "<h1>getArole Profile</h1>"
+    return serve_nextjs_page("profile")
+
+@app.get("/preferences", response_class=HTMLResponse)
+@app.get("/preferences/", response_class=HTMLResponse)
+async def serve_preferences():
+    return serve_nextjs_page("preferences")
 
 @app.get("/cover-letter", response_class=HTMLResponse)
 @app.get("/cover-letter/", response_class=HTMLResponse)
 async def serve_cover_letter():
-    cl_file = os.path.join(STATIC_DIR, "cover-letter-builder", "index.html")
-    return render_template(cl_file)
-    return "<h1>getArole Cover Letter Architect</h1>"
+    return serve_nextjs_page("cover-letter")
 
 @app.get("/privacy", response_class=HTMLResponse)
 @app.get("/privacy/", response_class=HTMLResponse)
 async def serve_privacy():
-    priv_file = os.path.join(STATIC_DIR, "privacy", "index.html")
-    return render_template(priv_file)
-    return "<h1>getArole Privacy Policy</h1>"
+    return serve_nextjs_page("privacy")
 
 @app.get("/terms", response_class=HTMLResponse)
 @app.get("/terms/", response_class=HTMLResponse)
 async def serve_terms():
-    terms_file = os.path.join(STATIC_DIR, "terms", "index.html")
-    return render_template(terms_file)
-    return "<h1>getArole Terms of Service</h1>"
+    return serve_nextjs_page("terms")
 
 # ─── CRM Sheet & Admin Dashboard (Restricted to hemasaivattikuti2727@gmail.com) ───
 
@@ -1039,9 +1062,8 @@ async def serve_terms():
 @app.get("/admin/crm", response_class=HTMLResponse)
 @app.get("/admin/crm/", response_class=HTMLResponse)
 async def serve_crm_dashboard():
-    crm_file = os.path.join(STATIC_DIR, "crm", "index.html")
-    return render_template(crm_file)
-    return "<h1>getArole CRM Dashboard</h1>"
+    return serve_nextjs_page("crm")
+
 
 @app.get("/api/admin/crm/users")
 async def get_crm_users_endpoint(
@@ -1362,8 +1384,8 @@ async def parse_and_match_resume(request: Request, file: UploadFile = File(...))
 @app.get("/settings", response_class=HTMLResponse)
 @app.get("/settings/", response_class=HTMLResponse)
 async def serve_settings():
-    settings_file = os.path.join(STATIC_DIR, "settings", "index.html")
-    return render_template(settings_file)
+    return serve_nextjs_page("preferences")
+
 
 
 @app.get("/metrics")

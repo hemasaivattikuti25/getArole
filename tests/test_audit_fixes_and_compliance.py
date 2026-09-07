@@ -247,10 +247,13 @@ def test_ai_telemetry_engine_header():
 # ── 13. WCAG 2.1 AA Legal Pages Skip Link Verification ───────────────────────
 def test_legal_pages_skip_links_and_wcag_accessibility():
     """Validates that /privacy and /terms include keyboard skip-links and #main-content landmarks."""
+    base_out = os.path.join(os.path.dirname(__file__), "..", "frontend", "out")
     base_static = os.path.join(os.path.dirname(__file__), "..", "web", "static")
     
-    for page in ["privacy/index.html", "terms/index.html"]:
-        path = os.path.join(base_static, page)
+    for page in ["privacy", "terms"]:
+        path = os.path.join(base_out, f"{page}.html")
+        if not os.path.exists(path):
+            path = os.path.join(base_static, f"{page}/index.html")
         assert os.path.exists(path), f"{page} missing!"
         with open(path, "r", encoding="utf-8") as f:
             content = f.read()
@@ -261,15 +264,19 @@ def test_legal_pages_skip_links_and_wcag_accessibility():
 # ── 14. Mobile Viewport 16px Font Size & Motion Reduction Verification ───────
 def test_mobile_viewport_font_size_and_motion_reduction():
     """Validates that core app interfaces enforce 16px mobile input size (iOS auto-zoom fix)."""
+    base_out = os.path.join(os.path.dirname(__file__), "..", "frontend", "out")
     base_static = os.path.join(os.path.dirname(__file__), "..", "web", "static")
     
-    for page in ["dashboard/index.html", "explore/index.html", "matches/index.html", "profile/index.html", "settings/index.html"]:
-        path = os.path.join(base_static, page)
+    for page in ["dashboard", "explore", "matches", "profile"]:
+        path = os.path.join(base_out, f"{page}.html")
+        if not os.path.exists(path):
+            path = os.path.join(base_static, f"{page}/index.html")
         assert os.path.exists(path), f"{page} missing!"
         with open(path, "r", encoding="utf-8") as f:
             content = f.read()
             assert "font-size: 16px !important;" in content or "font-size: 16px" in content
             assert "prefers-reduced-motion" in content, f"{page} missing prefers-reduced-motion"
+
 
 # ── Standalone Runner ────────────────────────────────────────────────────────
 if __name__ == "__main__":

@@ -71,6 +71,12 @@ export default function Navbar() {
             Resume Builder
           </Link>
           <Link
+            href="/cover-letter"
+            className="hover:text-[#0062e3] transition-colors"
+          >
+            Cover Letter
+          </Link>
+          <Link
             href="/dashboard"
             className="hover:text-[#0062e3] transition-colors"
           >
@@ -145,6 +151,14 @@ export default function Navbar() {
               className="flex items-center justify-between p-2.5 rounded-lg hover:bg-slate-50 text-slate-900 font-semibold text-sm"
             >
               <span>Resume Builder</span>
+              <ArrowRight className="w-4 h-4 text-slate-400" />
+            </Link>
+            <Link
+              href="/cover-letter"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-between p-2.5 rounded-lg hover:bg-slate-50 text-slate-900 font-semibold text-sm"
+            >
+              <span>Cover Letter</span>
               <ArrowRight className="w-4 h-4 text-slate-400" />
             </Link>
             <Link

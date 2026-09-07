@@ -10,21 +10,25 @@ import {
   Settings, 
   Sparkles,
   LogOut,
-  Menu
+  Menu,
+  FileText
 } from 'lucide-react';
 import BackgroundAurora from '@/components/BackgroundAurora';
+import { useAuth } from '@/providers/auth-provider';
 
 const navigation = [
   { name: 'Explore Jobs', href: '/explore', icon: Search },
   { name: 'Match Resume', href: '/matches', icon: Sparkles },
   { name: 'Applications', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Resume Builder', href: '/resume-builder', icon: Sparkles },
+  { name: 'Cover Letter', href: '/cover-letter', icon: FileText },
   { name: 'Profile', href: '/profile', icon: UserSquare2 },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const { user, logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#f8faff] via-white to-[#f4f8ff] text-slate-900 relative selection:bg-[#0062e3] selection:text-white">
@@ -84,22 +88,41 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             })}
           </nav>
 
-          <div className="p-4 border-t border-slate-200/70 space-y-1">
+          <div className="p-4 border-t border-slate-200/70 space-y-2">
+            {user && (
+              <div className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200/60 flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-[#0062e3] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+                  {(user.displayName || user.email || 'U')[0].toUpperCase()}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs font-bold text-slate-800 truncate">
+                    {user.displayName || 'Candidate'}
+                  </div>
+                  <div className="text-[11px] text-slate-400 truncate">
+                    {user.email || ''}
+                  </div>
+                </div>
+              </div>
+            )}
             <Link
               href="/preferences"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 transition-colors"
+              className="flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100/70 hover:text-slate-900 transition-colors"
             >
               <Settings className="w-4 h-4 text-slate-400" />
               Preferences
             </Link>
-            <Link
-              href="/"
-              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-slate-500 hover:bg-rose-50 hover:text-rose-600 transition-colors"
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                logout();
+              }}
+              className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer text-left"
             >
-              <LogOut className="w-4 h-4 text-slate-400" />
-              Back to Home
-            </Link>
+              <LogOut className="w-4 h-4 text-rose-500" />
+              Sign Out
+            </button>
           </div>
         </aside>
 

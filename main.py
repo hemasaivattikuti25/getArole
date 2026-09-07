@@ -52,15 +52,16 @@ async def index():
     next_index = os.path.join(frontend_out_dir, "index.html")
     if os.path.exists(next_index):
         with open(next_index, "r", encoding="utf-8") as f:
-            return f.read()
+            return HTMLResponse(content=f.read())
             
     # 2. Fallback to old legacy static landing page
     index_file = os.path.join(static_dir, "index.html")
     if os.path.exists(index_file):
         with open(index_file, "r", encoding="utf-8") as f:
-            return f.read()
+            return HTMLResponse(content=f.read())
             
-    return f"<h1>{settings.PROJECT_NAME} v{settings.VERSION}</h1><p>Visit <a href='/docs'>/docs</a></p>"
+    return HTMLResponse(content=f"<h1>{settings.PROJECT_NAME} v{settings.VERSION}</h1><p>Visit <a href='/docs'>/docs</a></p>")
+
 
 if __name__ == "__main__":
     import uvicorn

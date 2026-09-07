@@ -150,7 +150,7 @@ export default function CrmPage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-black text-slate-900 tracking-tight font-outfit">
-                Recruiter & Talent CRM
+                getArole CRM Sheet & Talent Pipeline
               </h1>
               <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200/60 uppercase tracking-wider">
                 Enterprise
