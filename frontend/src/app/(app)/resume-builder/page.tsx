@@ -6,7 +6,7 @@ import { RefreshCw } from "lucide-react";
 export default function ResumeBuilderPage() {
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [builderUrl] = useState<string>("/resume-engine/index.html?v=3");
+  const [builderUrl] = useState<string>("/resume-engine/index.html?v=4");
 
   return (
     <div className="relative w-full h-[100vh] min-h-screen bg-white overflow-hidden">
