@@ -27,23 +27,51 @@ def _get_cache_fetch_lock() -> asyncio.Lock:
 
 class SupabaseService:
     def __init__(self):
-        self.url = os.getenv("SUPABASE_URL", "")
-        self.key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_KEY", "")
+        self.url = (os.getenv("SUPABASE_URL") or "").strip().strip("'\"").rstrip("/")
+        self.key = (os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_KEY") or "").strip().strip("'\"")
         self.client: Optional[Any] = None
+        self._loop = None
+        self._init_lock: Optional[asyncio.Lock] = None
         
+    def _get_init_lock(self) -> asyncio.Lock:
+        if self._init_lock is None:
+            self._init_lock = asyncio.Lock()
+        return self._init_lock
+
     async def _get_client(self):
-        if self.url and self.key:
+        if not (self.url and self.key):
+            return None
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+
+        if self.client and getattr(self, "_loop", None) == loop:
+            return self.client
+
+        async with self._get_init_lock():
+            if self.client and getattr(self, "_loop", None) == loop:
+                return self.client
             try:
-                loop = asyncio.get_running_loop()
-                if self.client and getattr(self, "_loop", None) != loop:
-                    self.client = None
-                if not self.client:
-                    from supabase import create_async_client
-                    self.client = await create_async_client(self.url, self.key)
-                    self._loop = loop
+                from supabase import create_async_client
+                self.client = await create_async_client(self.url, self.key)
+                self._loop = loop
             except Exception as e:
                 print(f"[Supabase] Warning: Could not initialize Async Supabase client: {e}")
         return self.client
+
+    async def close(self):
+        """Gracefully closes the Supabase async client and releases underlying connection pools."""
+        if self.client:
+            try:
+                if hasattr(self.client, "aclose"):
+                    await self.client.aclose()
+                elif hasattr(self.client, "postgrest") and hasattr(self.client.postgrest, "aclose"):
+                    await self.client.postgrest.aclose()
+            except Exception as e:
+                logger.debug(f"Error closing Supabase client: {e}")
+            finally:
+                self.client = None
 
     def is_connected(self) -> bool:
         # Note: Since client is initialized lazily, this returns True optimistically if credentials exist.
@@ -83,7 +111,11 @@ class SupabaseService:
                 await client.table("jobs").upsert(batch, on_conflict="id").execute()
                 inserted_count += len(batch)
             except Exception as e:
-                print(f"[Supabase] Batch upsert error (batch {i//batch_size + 1}): {e}")
+                err_str = str(e)
+                if "42501" in err_str or "row-level security policy" in err_str.lower():
+                    print(f"[Supabase] ⚠️ RLS Permission Denied (batch {i//batch_size + 1}): Table 'jobs' requires SUPABASE_SERVICE_ROLE_KEY for write operations. Public anon key is read-only.")
+                else:
+                    print(f"[Supabase] Batch upsert error (batch {i//batch_size + 1}): {e}")
                 DEPENDENCY_ERRORS_TOTAL.labels(dependency="supabase", error_type="batch_upsert_failure").inc()
                 logging.getLogger("sre.database").error(
                     "supabase_batch_upsert_failure",
@@ -118,7 +150,13 @@ class SupabaseService:
         query_start = time.time()
         try:
             async with asyncio.timeout(2.5):  # 2.5s strict timeout
-                query = client.table("jobs").select("id,title,company,location,city,platform,url,workplace_type,employment_type,stipend_or_salary,description,skills,created_at,updated_at").limit(limit)
+                query = (
+                    client.table("jobs")
+                    .select("id,title,company,location,city,platform,url,workplace_type,employment_type,stipend_or_salary,description,skills,created_at,updated_at")
+                    .eq("is_deleted", False)
+                    .order("created_at", desc=True)
+                    .limit(limit)
+                )
                 if city:
                     query = query.ilike("city", f"%{city}%")
                 if workplace_type:
@@ -491,9 +529,13 @@ class SupabaseService:
                 "is_default": True
             }
             clean_record = {k: v for k, v in resume_record.items() if v is not None}
-            # Delete existing resume to act as an upsert and avoid unique constraint errors
-            await client.table("user_resumes").delete().eq("firebase_uid", firebase_uid).execute()
-            res = await client.table("user_resumes").insert(clean_record).execute()
+            # Non-destructive update or insert: prevents data loss if write fails
+            existing = await client.table("user_resumes").select("id").eq("firebase_uid", firebase_uid).order("uploaded_at", desc=True).limit(1).execute()
+            if existing.data and len(existing.data) > 0:
+                row_id = existing.data[0]["id"]
+                res = await client.table("user_resumes").update(clean_record).eq("id", row_id).execute()
+            else:
+                res = await client.table("user_resumes").insert(clean_record).execute()
 
             # If personal identity fields exist in resume, dual-sync to user_profiles
             if sync_profile and (name or email or phone or headline or (links and any(links.values()))):
@@ -520,8 +562,12 @@ class SupabaseService:
                     "firebase_uid": firebase_uid,
                     "raw_text": (resume_data.get("raw_text") or resume_data.get("raw_resume_text") or "")[:5000]
                 }
-                await client.table("user_resumes").delete().eq("firebase_uid", firebase_uid).execute()
-                res = await client.table("user_resumes").insert(minimal_record).execute()
+                existing = await client.table("user_resumes").select("id").eq("firebase_uid", firebase_uid).order("uploaded_at", desc=True).limit(1).execute()
+                if existing.data and len(existing.data) > 0:
+                    row_id = existing.data[0]["id"]
+                    res = await client.table("user_resumes").update(minimal_record).eq("id", row_id).execute()
+                else:
+                    res = await client.table("user_resumes").insert(minimal_record).execute()
                 return res.data[0] if res.data else minimal_record
             except Exception as e2:
                 print(f"[Supabase] save_user_resume error: {e} | fallback: {e2}")

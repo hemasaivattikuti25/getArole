@@ -149,19 +149,32 @@ def get_matcher() -> ResumeMatcher:
         MATCHER = ResumeMatcher()
     return MATCHER
 
-SUPABASE_URL = os.getenv("SUPABASE_URL", "")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
+SUPABASE_URL = (os.getenv("SUPABASE_URL") or "").strip().strip("'\"").rstrip("/")
+SUPABASE_KEY = (os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_KEY") or "").strip().strip("'\"")
+
+_REST_HTTP_CLIENT: Optional[Any] = None
+
+def _get_rest_http_client():
+    global _REST_HTTP_CLIENT
+    if _REST_HTTP_CLIENT is None or getattr(_REST_HTTP_CLIENT, "is_closed", False):
+        import httpx
+        _REST_HTTP_CLIENT = httpx.Client(
+            timeout=httpx.Timeout(15.0, connect=5.0),
+            limits=httpx.Limits(max_keepalive_connections=20, max_connections=50)
+        )
+    return _REST_HTTP_CLIENT
 
 def _fetch_jobs_from_supabase_rest(limit: int = 1500) -> list:
-    """Directly call Supabase REST API using httpx (sync). Always works regardless of async client state."""
+    """Directly call Supabase REST API using pooled httpx.Client. Always works regardless of async client state."""
+    if not (SUPABASE_URL and SUPABASE_KEY):
+        return []
     try:
-        import httpx
-        url = f"{SUPABASE_URL}/rest/v1/jobs?select=*&order=created_at.desc&limit={limit}"
+        url = f"{SUPABASE_URL}/rest/v1/jobs?select=*&is_deleted=eq.false&order=created_at.desc&limit={limit}"
         headers = {"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"}
-        with httpx.Client(timeout=15) as client:
-            res = client.get(url, headers=headers)
-            if res.status_code == 200:
-                return res.json() or []
+        client = _get_rest_http_client()
+        res = client.get(url, headers=headers)
+        if res.status_code == 200:
+            return res.json() or []
     except Exception as e:
         print(f"[Supabase REST] Direct fetch error: {e}")
     return []
@@ -373,7 +386,8 @@ async def get_jobs(
     # If still empty, fetch directly from Supabase REST (always reliable)
     if not jobs:
         try:
-            raw_jobs = await asyncio.get_event_loop().run_in_executor(
+            loop = asyncio.get_running_loop()
+            raw_jobs = await loop.run_in_executor(
                 None, lambda: _fetch_jobs_from_supabase_rest(limit)
             )
             if raw_jobs:
@@ -423,6 +437,15 @@ async def get_all_candidates(
                             break
                 except Exception as e:
                     logging.getLogger("sre.server").debug(f"Failed to read candidates cache {fp}: {e}")
+
+    # If still empty due to RLS on candidates table, fallback to CRM active users
+    if not candidates:
+        try:
+            crm_users = await supabase.fetch_crm_all_users(limit=limit)
+            if crm_users:
+                candidates = crm_users
+        except Exception as e:
+            logging.getLogger("sre.server").debug(f"CRM fallback notice: {e}")
 
     return {
         "total_candidates": len(candidates),
@@ -1459,4 +1482,21 @@ async def readiness_probe(response: Response):
         return JSONResponse(status_code=200, content={"status": "degraded", "degraded": True, "checks": checks})
         
     return JSONResponse(status_code=200, content={"status": "ready", "degraded": False, "checks": checks})
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Gracefully closes all database and HTTP connection pools on server termination."""
+    try:
+        supabase = get_supabase_service()
+        await supabase.close()
+    except Exception as e:
+        logging.getLogger("sre.server").debug(f"Error closing Supabase service: {e}")
+
+    global _REST_HTTP_CLIENT
+    if _REST_HTTP_CLIENT and not getattr(_REST_HTTP_CLIENT, "is_closed", False):
+        try:
+            _REST_HTTP_CLIENT.close()
+        except Exception:
+            pass
 

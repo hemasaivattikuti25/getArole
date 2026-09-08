@@ -52,8 +52,8 @@ TOP_25_LEVER_COMPANIES = [
 ]
 
 def get_supabase_client() -> Client:
-    url = os.environ.get("SUPABASE_URL", "")
-    key = os.environ.get("SUPABASE_KEY", "")
+    url = (os.environ.get("SUPABASE_URL") or "").strip().strip("'\"").rstrip("/")
+    key = (os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("SUPABASE_KEY") or "").strip().strip("'\"")
     return create_client(url, key)
 
 def log_to_dlq(raw_job: Any, reason: str, run_id: str):
@@ -247,7 +247,11 @@ async def run_scrapers():
             supabase.table("jobs").upsert(chunk, on_conflict="id").execute()
             successful_upserts += len(chunk)
         except Exception as e:
-            print(f"Error bulk upserting job batch {i}-{i+len(chunk)}: {e}")
+            err_str = str(e)
+            if "42501" in err_str or "row-level security policy" in err_str.lower():
+                print(f"[Supabase] ⚠️ RLS Permission Denied (batch {i}-{i+len(chunk)}): Table 'jobs' requires SUPABASE_SERVICE_ROLE_KEY in .env for insert/update. Public anon key is read-only.")
+            else:
+                print(f"Error bulk upserting job batch {i}-{i+len(chunk)}: {e}")
 
     # Run Freshness SLA Reaper
     reap_stale_jobs(supabase, max_age_days=45)

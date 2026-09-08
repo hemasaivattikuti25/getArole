@@ -34,6 +34,8 @@ async def test_l1_cache_isolation_prevents_filtered_query_poisoning():
     with patch.object(service, "_get_client", new_callable=AsyncMock, return_value=mock_client):
         mock_query = MagicMock()
         mock_query.select.return_value = mock_query
+        mock_query.eq.return_value = mock_query
+        mock_query.order.return_value = mock_query
         mock_query.limit.return_value = mock_query
         mock_query.execute = AsyncMock(return_value=MagicMock(data=general_jobs))
         mock_client.table.return_value = mock_query
@@ -44,6 +46,8 @@ async def test_l1_cache_isolation_prevents_filtered_query_poisoning():
         # 2. Fetch filtered query (city='chennai')
         mock_filtered_query = MagicMock()
         mock_filtered_query.select.return_value = mock_filtered_query
+        mock_filtered_query.eq.return_value = mock_filtered_query
+        mock_filtered_query.order.return_value = mock_filtered_query
         mock_filtered_query.ilike.return_value = mock_filtered_query
         mock_filtered_query.limit.return_value = mock_filtered_query
         mock_filtered_query.execute = AsyncMock(return_value=MagicMock(data=chennai_jobs))
