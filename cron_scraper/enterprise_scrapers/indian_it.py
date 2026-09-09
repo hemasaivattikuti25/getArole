@@ -32,8 +32,29 @@ class IndianITScraper:
             "clear filters", "view all", "deutsch", "english", "español", "privacy",
             "terms", "cookie", "talent community", "subscribe", "contact us", "about us",
             "home", "search", "careers", "learn more", "read more", "be in the know",
-            "see all", "apply now", "join us", "francais", "italiano", "japanese"
+            "see all", "apply now", "join us", "francais", "italiano", "japanese",
+            "explore careers", "search jobs", "early career faqs", "all jobs",
+            "job search", "filter", "filters", "find jobs", "job openings", "career opportunities",
+            "life at", "who we are", "what we do", "students", "graduates", "working here"
         ]
+
+        def infer_role_skills(title_str: str) -> List[str]:
+            import re
+            t_lower = title_str.lower()
+            detected = []
+            skill_keywords = {
+                "python": "Python", "java": "Java", "c++": "C++", "react": "React",
+                "frontend": "Frontend", "backend": "Backend", "fullstack": "Full-Stack",
+                "full-stack": "Full-Stack", "cloud": "Cloud", "aws": "AWS", "azure": "Azure",
+                "gcp": "GCP", "data": "Data Engineering", "ai": "AI/ML", "ml": "Machine Learning",
+                "devops": "DevOps", "testing": "QA / Testing", "qa": "QA / Testing",
+                "security": "Cybersecurity", "sql": "SQL", "mobile": "Mobile"
+            }
+            for kw, label in skill_keywords.items():
+                if re.search(rf"\b{re.escape(kw)}\b", t_lower):
+                    detected.append(label)
+            return detected or ["Technology", "Software Engineering"]
+
         try:
             resp = await client.get(url, headers=headers, timeout=10.0)
             if resp.status_code == 200 and resp.text:
@@ -63,7 +84,7 @@ class IndianITScraper:
                             workplace_type="Onsite",
                             employment_type="Full-Time",
                             description=f"Active technology role at {name}. Direct application on corporate careers portal.",
-                            skills=["Java", "C++", "Python", "SQL", "Cloud", "Testing", "Full-Stack"]
+                            skills=infer_role_skills(text)
                         )
                         jobs.append(job)
         except Exception as e:

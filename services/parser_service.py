@@ -27,12 +27,42 @@ class ParserService:
         text = ParserService.extract_text_from_pdf(pdf_path)
         lower_text = text.lower()
         
-        # Skill extraction
-        extracted_skills = [s for s in COMMON_TECH_SKILLS if s in lower_text]
+        # Boundary-safe skill extraction
+        extracted_skills = []
+        for s in COMMON_TECH_SKILLS:
+            if s in ("c", "r"):
+                pattern = rf"(?<![a-zA-Z0-9_#+]){s}(?![a-zA-Z0-9_#+])"
+            elif s == "c++":
+                pattern = r"(?<![a-zA-Z0-9_])c\+\+(?![a-zA-Z0-9_])"
+            elif s == "c#":
+                pattern = r"(?<![a-zA-Z0-9_])c#(?![a-zA-Z0-9_])"
+            elif s == ".net":
+                pattern = r"(?<![a-zA-Z0-9_])\.net(?![a-zA-Z0-9_])"
+            else:
+                escaped = re.escape(s)
+                pattern = rf"(?<![a-zA-Z0-9_]){escaped}(?![a-zA-Z0-9_])"
+            if re.search(pattern, lower_text):
+                extracted_skills.append(s)
         
-        # Name heuristic (first clean line)
+        # Name heuristic: skip generic headers like 'CURRICULUM VITAE', 'RESUME', etc.
         lines = [line.strip() for line in text.split("\n") if line.strip()]
-        name = lines[0] if lines and len(lines[0]) < 35 else "Candidate"
+        GENERIC_HEADERS = {
+            "curriculum vitae", "resume", "cv", "page 1", "page 2", "personal details",
+            "contact information", "profile", "summary", "about me", "bio"
+        }
+        name = "Candidate"
+        for line in lines[:8]:
+            clean_l = re.sub(r'[^a-zA-Z\s\.]', '', line).strip()
+            lower_l = clean_l.lower()
+            if (
+                clean_l
+                and 3 <= len(clean_l) <= 35
+                and lower_l not in GENERIC_HEADERS
+                and not any(h in lower_l for h in ["curriculum", "resume", "page ", "@", "http"])
+                and len(clean_l.split()) <= 4
+            ):
+                name = clean_l
+                break
         
         # Email & Phone heuristic extraction
         emails = re.findall(r'[\w\.-]+@[\w\.-]+\.\w+', text)
@@ -42,6 +72,6 @@ class ParserService:
             name=name,
             email=emails[0] if emails else None,
             phone=phones[0] if phones else None,
-            skills=extracted_skills,
+            skills=sorted(list(set(extracted_skills))),
             raw_text=text
         )

@@ -3,6 +3,7 @@ import time
 import asyncio
 import json
 import logging
+import threading
 from collections import OrderedDict
 from typing import List, Dict, Any, Optional
 from dotenv import load_dotenv
@@ -16,27 +17,35 @@ logger = logging.getLogger("sre.supabase")
 
 _JOB_WRITE_THROUGH_CACHE: List[Dict[str, Any]] = []
 _CACHE_TIMESTAMP: float = 0.0
-_CACHE_FETCH_LOCK: Optional[asyncio.Lock] = None
+_CACHE_FETCH_LOCKS: Dict[Any, asyncio.Lock] = {}
 SLOW_QUERY_THRESHOLD_MS = 200.0  # 10% of 2.0s P99 Search Latency SLO
 
 def _get_cache_fetch_lock() -> asyncio.Lock:
-    global _CACHE_FETCH_LOCK
-    if _CACHE_FETCH_LOCK is None:
-        _CACHE_FETCH_LOCK = asyncio.Lock()
-    return _CACHE_FETCH_LOCK
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
+    if loop not in _CACHE_FETCH_LOCKS:
+        _CACHE_FETCH_LOCKS[loop] = asyncio.Lock()
+    return _CACHE_FETCH_LOCKS[loop]
 
 class SupabaseService:
     def __init__(self):
         self.url = (os.getenv("SUPABASE_URL") or "").strip().strip("'\"").rstrip("/")
         self.key = (os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_KEY") or "").strip().strip("'\"")
-        self.client: Optional[Any] = None
-        self._loop = None
-        self._init_lock: Optional[asyncio.Lock] = None
+        self._clients_by_loop: Dict[Any, Any] = {}
+        self._init_locks_by_loop: Dict[Any, asyncio.Lock] = {}
+        self._thread_lock = threading.Lock()
         
     def _get_init_lock(self) -> asyncio.Lock:
-        if self._init_lock is None:
-            self._init_lock = asyncio.Lock()
-        return self._init_lock
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+        with self._thread_lock:
+            if loop not in self._init_locks_by_loop:
+                self._init_locks_by_loop[loop] = asyncio.Lock()
+            return self._init_locks_by_loop[loop]
 
     async def _get_client(self):
         if not (self.url and self.key):
@@ -46,32 +55,32 @@ class SupabaseService:
         except RuntimeError:
             loop = None
 
-        if self.client and getattr(self, "_loop", None) == loop:
-            return self.client
+        if loop in self._clients_by_loop:
+            return self._clients_by_loop[loop]
 
         async with self._get_init_lock():
-            if self.client and getattr(self, "_loop", None) == loop:
-                return self.client
+            if loop in self._clients_by_loop:
+                return self._clients_by_loop[loop]
             try:
                 from supabase import create_async_client
-                self.client = await create_async_client(self.url, self.key)
-                self._loop = loop
+                client = await create_async_client(self.url, self.key)
+                self._clients_by_loop[loop] = client
+                return client
             except Exception as e:
                 print(f"[Supabase] Warning: Could not initialize Async Supabase client: {e}")
-        return self.client
+                return None
 
     async def close(self):
-        """Gracefully closes the Supabase async client and releases underlying connection pools."""
-        if self.client:
+        """Gracefully closes all Supabase async clients and releases underlying connection pools."""
+        for loop, client in list(self._clients_by_loop.items()):
             try:
-                if hasattr(self.client, "aclose"):
-                    await self.client.aclose()
-                elif hasattr(self.client, "postgrest") and hasattr(self.client.postgrest, "aclose"):
-                    await self.client.postgrest.aclose()
+                if hasattr(client, "aclose"):
+                    await client.aclose()
+                elif hasattr(client, "postgrest") and hasattr(client.postgrest, "aclose"):
+                    await client.postgrest.aclose()
             except Exception as e:
                 logger.debug(f"Error closing Supabase client: {e}")
-            finally:
-                self.client = None
+        self._clients_by_loop.clear()
 
     def is_connected(self) -> bool:
         # Note: Since client is initialized lazily, this returns True optimistically if credentials exist.
@@ -888,6 +897,7 @@ class SupabaseService:
 # Prevents memory leak vectors during 24h continuous soak tests
 _USER_LOCKS: OrderedDict = OrderedDict()
 _MAX_MUTEX_LOCKS = 5000
+_USER_LOCKS_MUTEX = threading.Lock()
 
 def get_user_lock(uid: str) -> asyncio.Lock:
     """Returns an async lock bound to the currently active running event loop with LRU bounded capacity."""
@@ -896,18 +906,19 @@ def get_user_lock(uid: str) -> asyncio.Lock:
     except RuntimeError:
         loop = None
     key = (loop, uid)
-    if key in _USER_LOCKS:
-        _USER_LOCKS.move_to_end(key)
-        return _USER_LOCKS[key]
-    
-    # Evict oldest unheld lock if capacity is reached
-    if len(_USER_LOCKS) >= _MAX_MUTEX_LOCKS:
-        # Pop oldest item
-        _USER_LOCKS.popitem(last=False)
+    with _USER_LOCKS_MUTEX:
+        if key in _USER_LOCKS:
+            _USER_LOCKS.move_to_end(key)
+            return _USER_LOCKS[key]
         
-    lock = asyncio.Lock()
-    _USER_LOCKS[key] = lock
-    return lock
+        # Evict oldest unheld lock if capacity is reached
+        if len(_USER_LOCKS) >= _MAX_MUTEX_LOCKS:
+            # Pop oldest item
+            _USER_LOCKS.popitem(last=False)
+            
+        lock = asyncio.Lock()
+        _USER_LOCKS[key] = lock
+        return lock
 
 # Global Singleton
 _supabase_service: Optional[SupabaseService] = None

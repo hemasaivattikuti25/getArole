@@ -62,7 +62,21 @@ class ResumeMatcher:
         ]
         
         lower_text = text.lower()
-        extracted_skills = [s for s in common_tech_skills if s in lower_text]
+        extracted_skills = []
+        for s in common_tech_skills:
+            if s in ("c", "r"):
+                pattern = rf"(?<![a-zA-Z0-9_#+]){s}(?![a-zA-Z0-9_#+])"
+            elif s == "c++":
+                pattern = r"(?<![a-zA-Z0-9_])c\+\+(?![a-zA-Z0-9_])"
+            elif s == "c#":
+                pattern = r"(?<![a-zA-Z0-9_])c#(?![a-zA-Z0-9_])"
+            elif s == ".net":
+                pattern = r"(?<![a-zA-Z0-9_])\.net(?![a-zA-Z0-9_])"
+            else:
+                escaped = re.escape(s)
+                pattern = rf"(?<![a-zA-Z0-9_]){escaped}(?![a-zA-Z0-9_])"
+            if re.search(pattern, lower_text):
+                extracted_skills.append(s)
         
         # Deduplicate and sort
         extracted_skills = sorted(list(set(extracted_skills)))

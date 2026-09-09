@@ -37,7 +37,7 @@ async def main():
     print(f"✅ Ranked {len(ranked_jobs)} jobs by semantic fit score!")
     
     # Save full JSON database
-    output_json = "/Users/sai2005/Downloads/gitprojects/job_finder/scraped_jobs.json"
+    output_json = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scraped_jobs.json")
     with open(output_json, "w", encoding="utf-8") as f:
         json.dump([j.model_dump(mode="json") for j in ranked_jobs], f, indent=2)
     print(f"💾 Full job database saved to: {output_json}")

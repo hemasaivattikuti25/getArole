@@ -4,7 +4,7 @@ import json
 import logging
 import os
 import tempfile
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Tuple
 from fastapi import FastAPI, UploadFile, File, Query, HTTPException, Body, Request, Header, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -60,6 +60,9 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
+
+from api.v1.router import api_router
+app.include_router(api_router, prefix="/api/v1")
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
@@ -483,25 +486,35 @@ async def get_candidate_by_id(
     
     return {"candidate": candidate}
 
+_HTML_PAGE_CACHE: Dict[str, Tuple[float, str]] = {}
+
 def serve_nextjs_page(page_name: str) -> HTMLResponse:
-    """Serves a static prerendered HTML page from the consolidated Next.js application."""
+    """Serves a static prerendered HTML page with mtime-aware in-memory caching to prevent blocking disk I/O."""
+    candidates = []
     if os.path.exists(FRONTEND_OUT_DIR):
-        candidates = [
+        candidates.extend([
             os.path.join(FRONTEND_OUT_DIR, f"{page_name}.html"),
             os.path.join(FRONTEND_OUT_DIR, page_name, "index.html"),
-        ]
+        ])
         if page_name == "index":
             candidates.insert(0, os.path.join(FRONTEND_OUT_DIR, "index.html"))
-        for path in candidates:
-            if os.path.exists(path):
-                with open(path, "r", encoding="utf-8") as f:
-                    return HTMLResponse(content=f.read())
 
-    # Fallback to legacy static dir if ever needed
     legacy_file = os.path.join(STATIC_DIR, page_name, "index.html") if page_name != "index" else os.path.join(STATIC_DIR, "index.html")
-    if os.path.exists(legacy_file):
-        with open(legacy_file, "r", encoding="utf-8") as f:
-            return HTMLResponse(content=f.read())
+    candidates.append(legacy_file)
+
+    for path in candidates:
+        if os.path.exists(path):
+            try:
+                mtime = os.path.getmtime(path)
+                cached = _HTML_PAGE_CACHE.get(path)
+                if cached and cached[0] == mtime:
+                    return HTMLResponse(content=cached[1])
+                with open(path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                _HTML_PAGE_CACHE[path] = (mtime, content)
+                return HTMLResponse(content=content)
+            except Exception as e:
+                logger.warning(f"Error reading {path}: {e}")
 
     return HTMLResponse(content=f"<!DOCTYPE html><html><head><title>{page_name.title()} | getArole</title></head><body><h1>getArole — {page_name.title()}</h1></body></html>")
 

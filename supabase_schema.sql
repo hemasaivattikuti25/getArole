@@ -7,16 +7,18 @@
 -- ALTER TABLE public.user_resumes DROP CONSTRAINT IF EXISTS user_resumes_firebase_uid_key;
 -- ALTER TABLE public.user_resumes ADD CONSTRAINT user_resumes_firebase_uid_key UNIQUE (firebase_uid);
 --
--- 2. Ensure RLS allows full client CRUD with anon publishable key:
+-- 2. Production Row Level Security (RLS) Policy Recommendations:
 -- ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
 -- ALTER TABLE public.user_preferences ENABLE ROW LEVEL SECURITY;
 -- ALTER TABLE public.user_resumes ENABLE ROW LEVEL SECURITY;
--- DROP POLICY IF EXISTS "Anon full access - user_profiles" ON public.user_profiles;
--- CREATE POLICY "Anon full access - user_profiles" ON public.user_profiles FOR ALL USING (true) WITH CHECK (true);
--- DROP POLICY IF EXISTS "Anon full access - user_preferences" ON public.user_preferences;
--- CREATE POLICY "Anon full access - user_preferences" ON public.user_preferences FOR ALL USING (true) WITH CHECK (true);
--- DROP POLICY IF EXISTS "Anon full access - user_resumes" ON public.user_resumes;
--- CREATE POLICY "Anon full access - user_resumes" ON public.user_resumes FOR ALL USING (true) WITH CHECK (true);
+-- -- Service role has full administrative access (used by backend API)
+-- CREATE POLICY "Service role full access - user_profiles" ON public.user_profiles FOR ALL TO service_role USING (true) WITH CHECK (true);
+-- CREATE POLICY "Service role full access - user_preferences" ON public.user_preferences FOR ALL TO service_role USING (true) WITH CHECK (true);
+-- CREATE POLICY "Service role full access - user_resumes" ON public.user_resumes FOR ALL TO service_role USING (true) WITH CHECK (true);
+-- -- Authenticated users can only read/write their own records matching their Firebase UID
+-- CREATE POLICY "User self-access - user_profiles" ON public.user_profiles FOR ALL TO authenticated USING (auth.jwt() ->> 'sub' = firebase_uid) WITH CHECK (auth.jwt() ->> 'sub' = firebase_uid);
+-- CREATE POLICY "User self-access - user_preferences" ON public.user_preferences FOR ALL TO authenticated USING (auth.jwt() ->> 'sub' = firebase_uid) WITH CHECK (auth.jwt() ->> 'sub' = firebase_uid);
+-- CREATE POLICY "User self-access - user_resumes" ON public.user_resumes FOR ALL TO authenticated USING (auth.jwt() ->> 'sub' = firebase_uid) WITH CHECK (auth.jwt() ->> 'sub' = firebase_uid);
 -- ==============================================================================
 
 -- ─────────────────────────────────────────────────────────────

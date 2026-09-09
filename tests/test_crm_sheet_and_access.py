@@ -17,16 +17,20 @@ def test_crm_unauthorized_access_rejected():
     assert res_anon.status_code == 403
     assert "Access Denied" in res_anon.json()["detail"]
 
-    # 2. Non-admin email
-    res_fake = client.get("/api/admin/crm/users", headers={"X-User-Email": "unauthorized_user@gmail.com"})
+    # 2. Email-only request without admin key is rejected (no backdoor!)
+    res_fake = client.get("/api/admin/crm/users", headers={"X-User-Email": "admingetarole@gmail.com"})
     assert res_fake.status_code == 403
 
-    # 3. Unauthorized CSV export attempt
-    res_csv = client.get("/api/admin/crm/export.csv", headers={"X-User-Email": "other_person@gmail.com"})
+    # 3. Request with invalid admin key
+    res_bad = client.get("/api/admin/crm/users", headers={"X-Admin-Key": "wrong_key"})
+    assert res_bad.status_code == 403
+
+    # 4. Unauthorized CSV export attempt
+    res_csv = client.get("/api/admin/crm/export.csv", headers={"X-User-Email": "admingetarole@gmail.com"})
     assert res_csv.status_code == 403
 
 def test_crm_authorized_owner_access_granted():
-    """Validates that testcandidatevattikuti2727@gmail.com is granted access to the CRM endpoints."""
+    """Validates that requests with valid X-Admin-Key are granted access to CRM endpoints."""
     mock_users = [
         {
             "id": "usr_001",
@@ -49,26 +53,27 @@ def test_crm_authorized_owner_access_granted():
         }
     ]
 
-    with patch("services.supabase_service.SupabaseService.fetch_crm_all_users", new_callable=AsyncMock, return_value=mock_users):
-        # 1. Header auth
-        res_header = client.get("/api/admin/crm/users", headers={"X-User-Email": "testcandidatevattikuti2727@gmail.com"})
-        assert res_header.status_code == 200
-        data = res_header.json()
-        assert data["status"] == "ok"
-        assert data["total_users"] == 1
-        assert data["users"][0]["name"] == "Jane Developer"
-        assert data["metrics"]["resumes_count"] == 1
+    test_key = "test_crm_secret_key_123"
+    with patch.dict(os.environ, {"SCRAPER_ADMIN_KEY": test_key}):
+        with patch("services.supabase_service.SupabaseService.fetch_crm_all_users", new_callable=AsyncMock, return_value=mock_users):
+            # 1. Valid Admin Key auth
+            res_header = client.get("/api/admin/crm/users", headers={"X-Admin-Key": test_key})
+            assert res_header.status_code == 200
+            data = res_header.json()
+            assert data["status"] == "ok"
+            assert data["total_users"] == 1
+            assert data["users"][0]["name"] == "Jane Developer"
+            assert data["metrics"]["resumes_count"] == 1
 
-        # 2. Query param auth
-        res_query = client.get("/api/admin/crm/users?email=testcandidatevattikuti2727@gmail.com")
-        assert res_query.status_code == 200
-
-        # 3. Secondary authorized admin email
-        res_admin2 = client.get("/api/admin/crm/users", headers={"X-User-Email": "lakshmisatyasrisri@gmail.com"})
-        assert res_admin2.status_code == 200
+            # 2. Valid Admin Key + authorized email
+            res_both = client.get("/api/admin/crm/users", headers={
+                "X-Admin-Key": test_key,
+                "X-User-Email": "admingetarole@gmail.com"
+            })
+            assert res_both.status_code == 200
 
 def test_crm_csv_export_endpoint():
-    """Validates the CSV export endpoint formats and streams data properly."""
+    """Validates the CSV export endpoint formats and streams data properly when authorized."""
     mock_users = [
         {
             "id": "cand_1",
@@ -93,15 +98,17 @@ def test_crm_csv_export_endpoint():
         }
     ]
 
-    with patch("services.supabase_service.SupabaseService.fetch_crm_all_users", new_callable=AsyncMock, return_value=mock_users):
-        res = client.get("/api/admin/crm/export.csv", headers={"X-User-Email": "testcandidatevattikuti2727@gmail.com"})
-        assert res.status_code == 200
-        assert res.headers["content-type"].startswith("text/csv")
-        assert "getArole_CRM_Candidates_Export.csv" in res.headers["content-disposition"]
-        csv_text = res.content.decode("utf-8-sig")
-        assert "Candidate ID,Name,Email,Phone,Location" in csv_text
-        assert "Test Candidate" in csv_text
-        assert "candidate@test.com" in csv_text
+    test_key = "test_crm_secret_key_123"
+    with patch.dict(os.environ, {"SCRAPER_ADMIN_KEY": test_key}):
+        with patch("services.supabase_service.SupabaseService.fetch_crm_all_users", new_callable=AsyncMock, return_value=mock_users):
+            res = client.get("/api/admin/crm/export.csv", headers={"X-Admin-Key": test_key})
+            assert res.status_code == 200
+            assert res.headers["content-type"].startswith("text/csv")
+            assert "getArole_CRM_Candidates_Export.csv" in res.headers["content-disposition"]
+            csv_text = res.content.decode("utf-8-sig")
+            assert "Candidate ID,Name,Email,Phone,Location" in csv_text
+            assert "Test Candidate" in csv_text
+            assert "candidate@test.com" in csv_text
 
 def test_crm_html_route_serving():
     """Validates that /crm and /admin/crm routes return 200 OK with HTML content."""

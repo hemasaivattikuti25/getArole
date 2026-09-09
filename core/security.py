@@ -140,9 +140,7 @@ def extract_authenticated_uid(request: Request) -> str:
 
 AUTHORIZED_CRM_EMAILS = {
     "admingetarole@gmail.com",
-    "hemasaivattikuti2727@gmail.com",
-    "testcandidatevattikuti2727@gmail.com",
-    "lakshmisatyasrisri@gmail.com"
+    "admin@getarole.in"
 }
 
 def get_authorized_crm_emails() -> set:
@@ -158,19 +156,19 @@ def get_authorized_crm_emails() -> set:
 def is_crm_admin_authorized(request: Request, x_admin_key: Optional[str] = None, x_user_email: Optional[str] = None) -> bool:
     """
     Validates if incoming request has owner/admin CRM permissions.
+    Strictly requires SCRAPER_ADMIN_KEY or ADMIN_API_KEY.
+    Unauthenticated email queries or unverified headers are blocked.
     """
     import os
-    expected_key = os.getenv("SCRAPER_ADMIN_KEY") or os.getenv("ADMIN_API_KEY", "")
-    if expected_key and x_admin_key and x_admin_key == expected_key:
-        return True
-        
-    auth_emails = get_authorized_crm_emails()
-    client_email = (x_user_email or request.headers.get("X-User-Email") or request.headers.get("X-Admin-Email") or "").strip().lower()
-    if client_email and client_email in auth_emails:
-        return True
-        
-    query_email = (request.query_params.get("email") or request.query_params.get("admin_email") or "").strip().lower()
-    if query_email and query_email in auth_emails:
+    expected_key = (os.getenv("SCRAPER_ADMIN_KEY") or os.getenv("ADMIN_API_KEY") or "").strip()
+    provided_key = (x_admin_key or request.headers.get("X-Admin-Key") or request.headers.get("X-API-Key") or "").strip()
+    
+    # Require expected admin key to match
+    if expected_key and provided_key and provided_key == expected_key:
+        auth_emails = get_authorized_crm_emails()
+        client_email = (x_user_email or request.headers.get("X-User-Email") or "").strip().lower()
+        if client_email and auth_emails and client_email not in auth_emails:
+            return False
         return True
         
     return False
