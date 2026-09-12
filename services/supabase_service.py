@@ -96,7 +96,7 @@ class SupabaseService:
 
         records = []
         for j in jobs:
-            records.append({
+            rec = {
                 "id": j.id,
                 "title": j.title,
                 "company": j.company,
@@ -110,7 +110,10 @@ class SupabaseService:
                 "stipend_amount_min": j.stipend_amount_min,
                 "description": (j.description or "")[:4000],
                 "skills": j.skills if hasattr(j, "skills") else []
-            })
+            }
+            if hasattr(j, "embedding") and j.embedding is not None:
+                rec["embedding"] = [float(v) for v in j.embedding]
+            records.append(rec)
 
         inserted_count = 0
         batch_size = 100

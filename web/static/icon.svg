@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <!-- Primary Brand Gradient (Indigo to Violet to Cyan) -->
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="50%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+
+    <!-- Neon Accent Trajectory Gradient -->
+    <linearGradient id="neonAccent" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ec4899"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+
+    <!-- Dark Obsidian Squircle Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <!-- Soft Glow Filter -->
+    <filter id="subtleGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background Squircle with Subtle Border -->
+  <rect x="4" y="4" width="112" height="112" rx="26" fill="url(#bgGrad)" stroke="#4f46e5" stroke-width="2" stroke-opacity="0.4"/>
+
+  <!-- Magnifying Glass Lens Rim -->
+  <circle cx="48" cy="52" r="26" fill="none" stroke="url(#brandGrad)" stroke-width="7" filter="url(#subtleGlow)"/>
+
+  <!-- Magnifying Glass Handle -->
+  <line x1="68" y1="72" x2="96" y2="100" stroke="url(#brandGrad)" stroke-width="8" stroke-linecap="round" filter="url(#subtleGlow)"/>
+
+  <!-- Inner Radar / Aperture Target Arc -->
+  <path d="M 34 52 A 14 14 0 0 1 48 38" fill="none" stroke="#818cf8" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Ascending Growth Trajectory Zigzag (Discovery to Role) -->
+  <path d="M 28 64 L 42 48 L 54 58 L 80 28" fill="none" stroke="url(#neonAccent)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#subtleGlow)"/>
+
+  <!-- Arrowhead at Apex of Trajectory -->
+  <path d="M 66 28 L 80 28 L 80 42" fill="none" stroke="url(#neonAccent)" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#subtleGlow)"/>
+
+  <!-- Glowing Sparkle Dot at Arrow Tip -->
+  <circle cx="80" cy="28" r="2.5" fill="#ffffff"/>
+</svg>

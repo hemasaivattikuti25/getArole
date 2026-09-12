@@ -29,8 +29,16 @@ export const metadata: Metadata = {
   description:
     "Find open developer roles, match your resume directly against requirements, and track your applications in one place.",
   icons: {
-    icon: "/logo.svg",
-    apple: "/logo.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/logo.svg", type: "image/svg+xml" },
+      { url: "/favicon.png", type: "image/png", sizes: "64x64" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      { url: "/logo.svg" },
+    ],
   },
   openGraph: {
     title: "getArole — Developer Job Discovery & Resume Matcher",

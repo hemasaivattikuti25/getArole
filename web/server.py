@@ -1036,7 +1036,7 @@ def create_root_handler(filename):
                     return Response(content=f.read(), media_type=media_type)
         raise HTTPException(status_code=404, detail="Not found")
 
-for file in ["firebase-auth.js", "logo.svg", "founder.png", "favicon.png", "favicon.ico", "apple-touch-icon.png", "og-image.png", "robots.txt", "sitemap.xml", "llms.txt"]:
+for file in ["firebase-auth.js", "logo.svg", "founder.png", "favicon.png", "favicon.ico", "apple-touch-icon.png", "apple-icon.png", "icon.svg", "og-image.png", "robots.txt", "sitemap.xml", "llms.txt"]:
     create_root_handler(file)
 
 @app.get("/sw.js")

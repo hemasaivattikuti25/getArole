@@ -41,4 +41,6 @@ scratch/
 deep_audit.txt
 onboarding_log.txt
 checkpoint_run_state.json
+*.ses
+:memory:*
 

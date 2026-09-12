@@ -5,7 +5,7 @@ import httpx
 from bs4 import BeautifulSoup
 
 from scrapers.models import JobListing
-from scrapers.base import get_scraper_headers, create_scraper_client
+from scrapers.base import get_scraper_headers, create_scraper_client, inspect_response_health
 
 class IndianITScraper:
     def __init__(self):
@@ -18,6 +18,7 @@ class IndianITScraper:
             {"name": "Cognizant", "url": "https://careers.cognizant.com/global/en/search-results?location=India"},
             {"name": "Capgemini", "url": "https://www.capgemini.com/in-en/careers/job-search/"},
         ]
+        self.blocked_targets = []
         
     async def scrape_single_it_giant(self, client: httpx.AsyncClient, company: Dict[str, str]) -> List[JobListing]:
         jobs = []
@@ -57,6 +58,12 @@ class IndianITScraper:
 
         try:
             resp = await client.get(url, headers=headers, timeout=10.0)
+            is_healthy, health_reason = inspect_response_health(resp, name, "Indian_IT")
+            if not is_healthy:
+                print(f"[Indian IT Anti-Bot] ⚠️ {name}: {health_reason}")
+                self.blocked_targets.append({"company": name, "reason": health_reason, "url": url})
+                return []
+
             if resp.status_code == 200 and resp.text:
                 soup = BeautifulSoup(resp.text, "html.parser")
                 links = soup.find_all("a", href=True)
@@ -88,10 +95,12 @@ class IndianITScraper:
                         )
                         jobs.append(job)
         except Exception as e:
-            print(f"[Indian IT] Scrape note for {name}: {e}")
+            print(f"[Indian IT] Scrape exception for {name}: {e}")
+            self.blocked_targets.append({"company": name, "reason": str(e), "url": url})
         return jobs[:15]
 
     async def scrape_all(self) -> List[JobListing]:
+        self.blocked_targets = []
         all_jobs = []
         async with create_scraper_client(timeout=10.0) as client:
             tasks = [self.scrape_single_it_giant(client, comp) for comp in self.companies]
@@ -99,6 +108,8 @@ class IndianITScraper:
             for res in results:
                 if isinstance(res, list):
                     all_jobs.extend(res)
+        if self.blocked_targets:
+            print(f"[Indian IT Resilience] Note: {len(self.blocked_targets)}/{len(self.companies)} targets were blocked or encountered perimeter defenses.")
         return all_jobs
 
 if __name__ == "__main__":

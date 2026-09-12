@@ -5,7 +5,7 @@ import httpx
 from bs4 import BeautifulSoup
 
 from scrapers.models import JobListing
-from scrapers.base import get_scraper_headers, create_scraper_client
+from scrapers.base import get_scraper_headers, create_scraper_client, inspect_response_health
 
 class WorkdayScraper:
     def __init__(self):
@@ -16,6 +16,7 @@ class WorkdayScraper:
             {"name": "Dell", "url": "https://jobs.dell.com/search-jobs/India/375/2/1269750/1/25/50/2"},
             {"name": "Adobe", "url": "https://careers.adobe.com/us/en/search-results?location=India"}
         ]
+        self.blocked_targets = []
         
     async def scrape_single_company(self, client: httpx.AsyncClient, company: Dict[str, str]) -> List[JobListing]:
         jobs = []
@@ -50,6 +51,12 @@ class WorkdayScraper:
 
         try:
             resp = await client.get(url, headers=headers, timeout=10.0)
+            is_healthy, health_reason = inspect_response_health(resp, name, "Workday")
+            if not is_healthy:
+                print(f"[Workday Anti-Bot] ⚠️ {name}: {health_reason}")
+                self.blocked_targets.append({"company": name, "reason": health_reason, "url": url})
+                return []
+
             if resp.status_code == 200 and resp.text:
                 soup = BeautifulSoup(resp.text, "html.parser")
                 links = soup.find_all("a", href=True)
@@ -81,10 +88,12 @@ class WorkdayScraper:
                         )
                         jobs.append(job)
         except Exception as e:
-            print(f"[Workday] Scrape note for {name}: {e}")
+            print(f"[Workday] Scrape exception for {name}: {e}")
+            self.blocked_targets.append({"company": name, "reason": str(e), "url": url})
         return jobs[:15]
 
     async def scrape_all(self) -> List[JobListing]:
+        self.blocked_targets = []
         all_jobs = []
         async with create_scraper_client(timeout=10.0) as client:
             tasks = [self.scrape_single_company(client, comp) for comp in self.companies]
@@ -92,6 +101,8 @@ class WorkdayScraper:
             for res in results:
                 if isinstance(res, list):
                     all_jobs.extend(res)
+        if self.blocked_targets:
+            print(f"[Workday Resilience] Note: {len(self.blocked_targets)}/{len(self.companies)} targets were blocked or encountered perimeter defenses.")
         return all_jobs
 
 if __name__ == "__main__":

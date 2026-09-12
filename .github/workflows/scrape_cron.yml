@@ -31,11 +31,18 @@ jobs:
           pip install pip-audit
           pip-audit -r requirements.txt || echo "Audit advisory logged"
 
+      - name: Cache FastEmbed Models
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/fastembed
+          key: fastembed-bge-small-en-v1.5
+
       - name: Run Scraper & Supabase Sync
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
           NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
+          ROTATING_PROXY_URL: ${{ secrets.ROTATING_PROXY_URL }}
         run: |
           cd cron_scraper
           python main.py
