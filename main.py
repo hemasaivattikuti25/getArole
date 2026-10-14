@@ -6,13 +6,14 @@ from fastapi.responses import HTMLResponse
 
 from core.config import settings
 from api.v1.router import api_router
-from web.server import app as legacy_app  # backward compatibility with legacy endpoints
+from web.server import app as legacy_app, lifespan  # backward compatibility with legacy endpoints
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # CORS Middleware

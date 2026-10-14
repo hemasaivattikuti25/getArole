@@ -217,9 +217,9 @@ async def execute_streaming_stage(
     4. Upserts records + vectors into Supabase in chunks
     5. Immediately flushes memory with explicit garbage collection
     """
-    print(f"\n=======================================================")
+    print("\n=======================================================")
     print(f"🚀 [STAGE: {stage_display_name}] Starting...")
-    print(f"=======================================================")
+    print("=======================================================")
 
     try:
         raw_jobs = await scraper_coro()
@@ -239,7 +239,7 @@ async def execute_streaming_stage(
 
     upserted_count = 0
     if clean_records:
-        print(f"   • Generating 384-dimensional dense embeddings via FastEmbed ONNX (batch_size=32)...")
+        print("   • Generating 384-dimensional dense embeddings via FastEmbed ONNX (batch_size=32)...")
         embedded_records = vector_engine.embed_job_records(clean_records, batch_size=32)
 
         print(f"   • Upserting {len(embedded_records)} jobs with vector embeddings to Supabase...")
@@ -363,9 +363,9 @@ async def run_scrapers():
     print(f"📊 PIPELINE SUMMARY [Run ID: {run_id}]")
     print(f"   • Total Unique Jobs Embedded & Saved: {cumulative_saved}")
     print(f"   • Execution Time: {duration_s:.1f}s")
-    print(f"   • Peak Memory Footprint: Bounded (<300MB via Streaming GC)")
-    print(f"   • Vector Status: 100% 384d Dense Embeddings Attached")
-    print(f"=======================================================")
+    print("   • Peak Memory Footprint: Bounded (<300MB via Streaming GC)")
+    print("   • Vector Status: 100% 384d Dense Embeddings Attached")
+    print("=======================================================")
 
 if __name__ == "__main__":
     try:

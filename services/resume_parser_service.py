@@ -220,7 +220,7 @@ class ResumeParserService:
                 curr_exp["dates"] = date_part
                 if loc_part and not curr_exp.get("location"):
                     curr_exp["location"] = loc_part
-                d_parts = re.split(r'[-–—]', date_part, 1)
+                d_parts = re.split(r'[-–—]', date_part, maxsplit=1)
                 curr_exp["start"] = d_parts[0].strip() if len(d_parts) > 0 else ""
                 curr_exp["end"] = d_parts[1].strip() if len(d_parts) > 1 else "Present"
             elif (is_company or is_role) and not is_bullet:
@@ -291,7 +291,7 @@ class ResumeParserService:
             if not e.get("desc") and e.get("bullets"):
                 e["desc"] = "\n".join(e["bullets"])
             if not e.get("start") and e.get("dates"):
-                d_parts = re.split(r'[-–—]', e["dates"], 1)
+                d_parts = re.split(r'[-–—]', e["dates"], maxsplit=1)
                 e["start"] = d_parts[0].strip() if len(d_parts) > 0 else ""
                 e["end"] = d_parts[1].strip() if len(d_parts) > 1 else "Present"
             if not e.get("title"):

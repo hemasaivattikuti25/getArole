@@ -23,6 +23,7 @@ from services.embedding_service import embedding_service
 from core.logging_config import configure_logging
 from core.observability_middleware import ObservabilityMiddleware
 from core.security import enforce_ai_rate_limit, extract_authenticated_uid, verify_crm_admin_access
+from api.v1.router import api_router
 
 # Initialize Structured JSON logging
 configure_logging()
@@ -38,10 +39,28 @@ os.makedirs(DATA_DIR, exist_ok=True)
 SAVED_JOBS_FILE = os.path.join(DATA_DIR, "jobs.json")
 TMP_JOBS_FILE = os.path.join(tempfile.gettempdir(), "jobs.json")
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    # Gracefully closes all database and HTTP connection pools on server termination.
+    try:
+        supabase = get_supabase_service()
+        await supabase.close()
+    except Exception as e:
+        logging.getLogger("sre.server").debug(f"Error closing Supabase service: {e}")
+
+    global _REST_HTTP_CLIENT
+    if _REST_HTTP_CLIENT and not getattr(_REST_HTTP_CLIENT, "is_closed", False):
+        try:
+            _REST_HTTP_CLIENT.close()
+        except Exception:
+            pass
+
 app = FastAPI(
     title="getArole — Smart Resume Screener & Job Discovery Engine",
     description="Multi-platform job aggregator, local vector matcher, and AI recruiter resume screening pipeline",
-    version="1.1.0"
+    version="1.1.0",
+    lifespan=lifespan
 )
 
 # Attach Observability Middleware for Request ID tracing and Prometheus latency tracking
@@ -61,7 +80,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from api.v1.router import api_router
 app.include_router(api_router, prefix="/api/v1")
 
 @app.exception_handler(Exception)
@@ -412,6 +430,7 @@ async def get_jobs(
 @app.get("/api/candidates")
 async def get_all_candidates(
     request: Request,
+    limit: int = 100,
     x_admin_key: Optional[str] = Header(None, alias="X-Admin-Key")
 ) -> Dict[str, Any]:
     """
@@ -514,7 +533,7 @@ def serve_nextjs_page(page_name: str) -> HTMLResponse:
                 _HTML_PAGE_CACHE[path] = (mtime, content)
                 return HTMLResponse(content=content)
             except Exception as e:
-                logger.warning(f"Error reading {path}: {e}")
+                logging.getLogger("sre.server").warning(f"Error reading {path}: {e}")
 
     return HTMLResponse(content=f"<!DOCTYPE html><html><head><title>{page_name.title()} | getArole</title></head><body><h1>getArole — {page_name.title()}</h1></body></html>")
 
@@ -1495,21 +1514,3 @@ async def readiness_probe(response: Response):
         return JSONResponse(status_code=200, content={"status": "degraded", "degraded": True, "checks": checks})
         
     return JSONResponse(status_code=200, content={"status": "ready", "degraded": False, "checks": checks})
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Gracefully closes all database and HTTP connection pools on server termination."""
-    try:
-        supabase = get_supabase_service()
-        await supabase.close()
-    except Exception as e:
-        logging.getLogger("sre.server").debug(f"Error closing Supabase service: {e}")
-
-    global _REST_HTTP_CLIENT
-    if _REST_HTTP_CLIENT and not getattr(_REST_HTTP_CLIENT, "is_closed", False):
-        try:
-            _REST_HTTP_CLIENT.close()
-        except Exception:
-            pass
-

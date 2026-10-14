@@ -318,8 +318,8 @@ Respond ONLY in valid JSON:
             exp_score += 0.5
         
         if jd_levels and resume_levels:
-            max_jd_rank = max(seniority_levels.index(l) for l in jd_levels)
-            max_cand_rank = max(seniority_levels.index(l) for l in resume_levels)
+            max_jd_rank = max(seniority_levels.index(lvl) for lvl in jd_levels)
+            max_cand_rank = max(seniority_levels.index(lvl) for lvl in resume_levels)
             if max_cand_rank >= max_jd_rank:
                 exp_score += 1.5
             elif max_cand_rank == max_jd_rank - 1:
